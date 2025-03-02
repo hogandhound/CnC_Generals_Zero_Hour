@@ -165,7 +165,7 @@ static char* strtrim(char* buffer)
 		}
 
 		//	Clip trailing white space from the string.
-		for (int index = strlen(buffer)-1; index >= 0; index--)
+		for (int index = (int)strlen(buffer)-1; index >= 0; index--)
 		{
 			if ((*source != 0) && ((unsigned char)buffer[index] <= 32))
 			{
@@ -304,7 +304,9 @@ Int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	initSubsystem(TheTerrainTypes, new TerrainTypeCollection(), "Data\\INI\\Default\\Terrain.ini", "Data\\INI\\Terrain.ini");
 	initSubsystem(TheTerrainRoads, new TerrainRoadCollection(), "Data\\INI\\Default\\Roads.ini", "Data\\INI\\Roads.ini");
 	initSubsystem(TheScriptEngine, (ScriptEngine*)(new ScriptEngine()));
+#ifdef HAS_BINK
 	initSubsystem(TheAudio, (AudioManager*)new MilesAudioManager());
+#endif
 	initSubsystem(TheVideoPlayer, (VideoPlayerInterface*)(new VideoPlayer()));
 	initSubsystem(TheModuleFactory, (ModuleFactory*)(new W3DModuleFactory()));
 	initSubsystem(TheSidesList, new SidesList());

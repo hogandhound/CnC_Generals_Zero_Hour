@@ -284,9 +284,9 @@ void W3DProjectedShadowManager::reset( void )
 
 Bool W3DProjectedShadowManager::init( void )
 {
-	m_W3DShadowTextureManager = NEW W3DShadowTextureManager;
+	m_W3DShadowTextureManager = new W3DShadowTextureManager;
 	m_shadowCamera = NEW_REF( CameraClass, () );
-	m_shadowContext= NEW SpecialRenderInfoClass(*m_shadowCamera,SpecialRenderInfoClass::RENDER_SHADOW);
+	m_shadowContext= new SpecialRenderInfoClass(*m_shadowCamera,SpecialRenderInfoClass::RENDER_SHADOW);
 	m_shadowContext->light_environment = &m_shadowLightEnv;
 
 	return TRUE;
@@ -1520,7 +1520,7 @@ Shadow* W3DProjectedShadowManager::addDecal(Shadow::ShadowTypeInfo *shadowInfo)
 	//simple decal using the premade texture specified.
 	//can be always perpendicular to model's z-axis or projected
 	//onto world geometry.
-	nameLen=strlen(shadowInfo->m_ShadowName);
+	nameLen=(int)strlen(shadowInfo->m_ShadowName);
 	strncpy(texture_name,shadowInfo->m_ShadowName,nameLen);
 	strcpy(texture_name+nameLen,".tga");	//append texture extension
 	
@@ -1539,7 +1539,7 @@ Shadow* W3DProjectedShadowManager::addDecal(Shadow::ShadowTypeInfo *shadowInfo)
 		if (!w3dTexture)
 			return NULL;
 
-		st = NEW W3DShadowTexture;	// poolify
+		st = new W3DShadowTexture;	// poolify
 		SET_REF_OWNER( st );
 		st->Set_Name(texture_name);
 		m_W3DShadowTextureManager->addTexture( st );
@@ -1552,7 +1552,7 @@ Shadow* W3DProjectedShadowManager::addDecal(Shadow::ShadowTypeInfo *shadowInfo)
 	decalSizeX=shadowInfo->m_sizeX;
 	decalSizeY=shadowInfo->m_sizeY;
 
-	W3DProjectedShadow *shadow = NEW W3DProjectedShadow;	// poolify
+	W3DProjectedShadow *shadow = new W3DProjectedShadow;	// poolify
 
 	// sanity
 	if( shadow == NULL )
@@ -1638,7 +1638,7 @@ Shadow* W3DProjectedShadowManager::addDecal(RenderObjClass *robj, Shadow::Shadow
 	//simple decal using the premade texture specified.
 	//can be always perpendicular to model's z-axis or projected
 	//onto world geometry.
-	nameLen=strlen(shadowInfo->m_ShadowName);
+	nameLen= (int)strlen(shadowInfo->m_ShadowName);
 	strncpy(texture_name,shadowInfo->m_ShadowName,nameLen);
 	strcpy(texture_name+nameLen,".tga");	//append texture extension
 	
@@ -1657,7 +1657,7 @@ Shadow* W3DProjectedShadowManager::addDecal(RenderObjClass *robj, Shadow::Shadow
 		if (!w3dTexture)
 			return NULL;
 
-		st = NEW W3DShadowTexture;
+		st = new W3DShadowTexture;
 		SET_REF_OWNER( st );
 		st->Set_Name(texture_name);
 		m_W3DShadowTextureManager->addTexture( st );
@@ -1672,7 +1672,7 @@ Shadow* W3DProjectedShadowManager::addDecal(RenderObjClass *robj, Shadow::Shadow
 	decalOffsetX=shadowInfo->m_offsetX;
 	decalOffsetY=shadowInfo->m_offsetY;
 
-	W3DProjectedShadow *shadow = NEW W3DProjectedShadow;
+	W3DProjectedShadow *shadow = new W3DProjectedShadow;
 
 	// sanity
 	if( shadow == NULL )
@@ -1779,7 +1779,7 @@ W3DProjectedShadow* W3DProjectedShadowManager::addShadow(RenderObjClass *robj, S
 		{		//simple decal using the premade texture specified.
 				//can be always perpendicular to model's z-axis or projected
 				//onto world geometry.
-				nameLen=strlen(shadowInfo->m_ShadowName);
+				nameLen= (int)strlen(shadowInfo->m_ShadowName);
 				if (nameLen <= 1)	//no texture name given, use same as object
 				{	strcpy(texture_name,defaultDecalName);
 				}
@@ -1802,7 +1802,7 @@ W3DProjectedShadow* W3DProjectedShadowManager::addShadow(RenderObjClass *robj, S
 					if (!w3dTexture)
 						return NULL;
 
-					st = NEW W3DShadowTexture;	// poolify
+					st = new W3DShadowTexture;	// poolify
 					SET_REF_OWNER( st );
 					st->Set_Name(texture_name);
 					m_W3DShadowTextureManager->addTexture( st );
@@ -1862,7 +1862,7 @@ W3DProjectedShadow* W3DProjectedShadowManager::addShadow(RenderObjClass *robj, S
 		shadowType=SHADOW_PROJECTION;
 	}
 
-	W3DProjectedShadow *shadow = NEW W3DProjectedShadow;
+	W3DProjectedShadow *shadow = new W3DProjectedShadow;
 
 	// sanity
 	if( shadow == NULL )
@@ -2189,7 +2189,7 @@ Int W3DShadowTexture::init(RenderObjClass *robj)
 
 	TheW3DProjectedShadowManager->getRenderTarget()->Get_Level_Description(surface_desc);
 
-	TextureClass *new_texture = MSGNEW("TextureClass") TextureClass(surface_desc.Width,surface_desc.Height,surface_desc.Format,TextureClass::MIP_LEVELS_1);
+	TextureClass *new_texture = new TextureClass(surface_desc.Width,surface_desc.Height,surface_desc.Format,TextureClass::MIP_LEVELS_1);
 
 	setTexture(new_texture);
 
@@ -2268,8 +2268,8 @@ void W3DShadowTexture::updateBounds(Vector3 &lightPos, RenderObjClass *robj)
 W3DShadowTextureManager::W3DShadowTextureManager(void) 
 {
 	// Create the hash tables
-	texturePtrTable = NEW HashTableClass( 2048 );
-	missingTextureTable = NEW HashTableClass( 2048 );
+	texturePtrTable = new HashTableClass( 2048 );
+	missingTextureTable = new HashTableClass( 2048 );
 }
 
 W3DShadowTextureManager::~W3DShadowTextureManager(void)
@@ -2362,7 +2362,7 @@ private:
 */
 void	W3DShadowTextureManager::registerMissing( const char * name )
 {
-	missingTextureTable->Add( NEW MissingTextureClass( name ) );
+	missingTextureTable->Add(new MissingTextureClass( name ) );
 }
 
 Bool	W3DShadowTextureManager::isMissing( const char * name )
@@ -2375,7 +2375,7 @@ int W3DShadowTextureManager::createTexture(RenderObjClass *robj, const char *nam
 {
 	Bool res=FALSE;
 
-	W3DShadowTexture * newTexture = NEW W3DShadowTexture;
+	W3DShadowTexture * newTexture = new W3DShadowTexture;
 
 	if (newTexture == NULL) {
 		goto Error;

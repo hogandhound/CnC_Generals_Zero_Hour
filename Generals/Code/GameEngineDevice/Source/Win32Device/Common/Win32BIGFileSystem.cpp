@@ -77,7 +77,7 @@ ArchiveFile * Win32BIGFileSystem::openArchiveFile(const Char *filename) {
 	Int archiveFileSize = 0;
 	Int numLittleFiles = 0;
 
-	ArchiveFile *archiveFile = NEW Win32BIGFile;
+	ArchiveFile *archiveFile = new Win32BIGFile;
 
 	DEBUG_LOG(("Win32BIGFileSystem::openArchiveFile - opening BIG file %s\n", filename));
 
@@ -119,7 +119,7 @@ ArchiveFile * Win32BIGFileSystem::openArchiveFile(const Char *filename) {
 	// seek to the beginning of the directory listing.
 	fp->seek(0x10, File::START);
 	// read in each directory listing.
-	ArchivedFileInfo *fileInfo = NEW ArchivedFileInfo;
+	ArchivedFileInfo *fileInfo = new ArchivedFileInfo;
 
 	for (Int i = 0; i < numLittleFiles; ++i) {
 		Int filesize = 0;

@@ -909,7 +909,7 @@ void WaterRenderObjClass::ReAcquireResources(void)
 			add r0.rgb, r0, t3\n\
 			+mul r0.a, r0, t3\n\
 			add r0.rgb, r0, r1\n";
-		hr = D3DXAssembleShader( shader, strlen(shader), 0, NULL, &compiledShader, NULL);
+		hr = D3DXAssembleShader( shader, (uint)strlen(shader), 0, NULL, &compiledShader, NULL);
 		if (hr==0) {
 			hr = 	DX8Wrapper::_Get_D3D_Device8()->CreatePixelShader((DWORD*)compiledShader->GetBufferPointer(), &m_riverWaterPixelShader);
 			compiledShader->Release();
@@ -922,7 +922,7 @@ void WaterRenderObjClass::ReAcquireResources(void)
 			mul r0,v0,t0 ; blend vertex color into t0. \n\
 			mul r1.rgb,t2,c0 ; reduce t2 (environment mapped reflection) by constant\n\
 			add r0.rgb, r0, r1";
-		hr = D3DXAssembleShader( shader, strlen(shader), 0, NULL, &compiledShader, NULL);
+		hr = D3DXAssembleShader( shader, (uint)strlen(shader), 0, NULL, &compiledShader, NULL);
 		if (hr==0) {
 			hr = 	DX8Wrapper::_Get_D3D_Device8()->CreatePixelShader((DWORD*)compiledShader->GetBufferPointer(), &m_waterPixelShader);
 			compiledShader->Release();
@@ -937,7 +937,7 @@ void WaterRenderObjClass::ReAcquireResources(void)
 			mad r0.rgb, t1, t2, r0	; blend sparkles and noise \n\
 			mul r0.rgb, r0, t3 ; blend in black shroud \n\
 			;\n";
-		hr = D3DXAssembleShader( shader, strlen(shader), 0, NULL, &compiledShader, NULL);
+		hr = D3DXAssembleShader( shader, (uint)strlen(shader), 0, NULL, &compiledShader, NULL);
 		if (hr==0) {
 			hr = 	DX8Wrapper::_Get_D3D_Device8()->CreatePixelShader((DWORD*)compiledShader->GetBufferPointer(), &m_trapezoidWaterPixelShader);
 			compiledShader->Release();
@@ -1082,7 +1082,7 @@ Int WaterRenderObjClass::init(Real waterLevel, Real dx, Real dy, SceneClass *par
 	m_riverTexture=WW3DAssetManager::Get_Instance()->Get_Texture("TWWater01.tga"); 
 	
 	//For some reason setting a NULL texture does not result in 0xffffffff for pixel shaders so using explicit "white" texture.
-	m_whiteTexture=MSGNEW("TextureClass") TextureClass(1,1,WW3D_FORMAT_A4R4G4B4,TextureClass::MIP_LEVELS_1);
+	m_whiteTexture= new TextureClass(1,1,WW3D_FORMAT_A4R4G4B4,TextureClass::MIP_LEVELS_1);
 	SurfaceClass *surface=m_whiteTexture->Get_Surface_Level();
 	surface->DrawPixel(0,0,0xffffffff);
 	REF_PTR_RELEASE(surface);
@@ -1091,7 +1091,7 @@ Int WaterRenderObjClass::init(Real waterLevel, Real dx, Real dy, SceneClass *par
 	m_riverAlphaEdge=WW3DAssetManager::Get_Instance()->Get_Texture("TWAlphaEdge.tga");
 	m_waterSparklesTexture=WW3DAssetManager::Get_Instance()->Get_Texture("WaterSurfaceBubbles.tga");
 #ifdef DRAW_WATER_WAKES
-	m_waterTrackSystem = NEW WaterTracksRenderSystem;
+	m_waterTrackSystem = new WaterTracksRenderSystem;
 	m_waterTrackSystem->init();
 #endif
 
@@ -1152,7 +1152,7 @@ void WaterRenderObjClass::enableWaterGrid(Bool state)
 		//contains the current deformed water surface z(height) values.  With 1 vertex invisible border
 		//around surface to speed up normal calculations.
 		m_meshDataSize = (m_gridCellsX+1+2)*(m_gridCellsY+1+2);
-		m_meshData=NEW WaterMeshData[ m_meshDataSize ];
+		m_meshData=new WaterMeshData[ m_meshDataSize ];
 		memset(m_meshData,0,sizeof(WaterMeshData)*(m_gridCellsX+1+2)*(m_gridCellsY+1+2));
 		reset();
 
@@ -1223,7 +1223,7 @@ void WaterRenderObjClass::update( void )
 				{
 
 					// only pay attention to mesh points that are in motion
-					if( BitTest( pData->status, WaterRenderObjClass::IN_MOTION ) )
+					if( BitTestWW( pData->status, WaterRenderObjClass::IN_MOTION ) )
 					{
 
 						// DAMPENING to slow the changes down
@@ -3360,7 +3360,7 @@ void WaterRenderObjClass::xfer( Xfer *xfer )
 	}  // end if
 
 	// xfer each of the mesh data points
-	for( Int i = 0; i < m_meshDataSize; ++i )
+	for( Int i = 0; i < (int)m_meshDataSize; ++i )
 	{
 
 		// height

@@ -106,7 +106,7 @@ static void parseTimeAndLocationInfo( INI *ini, void *instance,
 
 	// delay label
 	const char *token = ini->getNextToken( ini->getSepsColon() );
-	if( stricmp( token, "Delay" ) != 0 )
+	if( _stricmp( token, "Delay" ) != 0 )
 	{
 
 		DEBUG_CRASH(( "Expected 'Delay' token, found '%s'\n", token ));
@@ -123,7 +123,7 @@ static void parseTimeAndLocationInfo( INI *ini, void *instance,
 	{
 
 		// token must be a label for bone location
-		if( stricmp( token, "Bone" ) != 0 )
+		if( _stricmp( token, "Bone" ) != 0 )
 		{
 
 			DEBUG_CRASH(( "Expected 'Bone' token, found '%s'\n", token ));
@@ -156,7 +156,7 @@ static void parseTimeAndLocationInfo( INI *ini, void *instance,
 
 	// fx list label
 	token = ini->getNextToken( ini->getSepsColon() );
-	if( stricmp( token, "FX" ) != 0 )
+	if( _stricmp( token, "FX" ) != 0 )
 	{
 
 		DEBUG_CRASH(( "Expected 'FX' token, found '%s'\n", token ));
@@ -197,7 +197,7 @@ static void parseTimeAndLocationInfo( INI *ini, void *instance,
 
 	// fx list label
 	token = ini->getNextToken( ini->getSepsColon() );
-	if( stricmp( token, "OCL" ) != 0 )
+	if( _stricmp( token, "OCL" ) != 0 )
 	{
 
 		DEBUG_CRASH(( "Expected 'OCL' token, found '%s'\n", token ));
@@ -1430,7 +1430,7 @@ void BridgeBehavior::xfer( Xfer *xfer )
 
 	// scaffold object id list
 	UnsignedShort scaffoldObjectCount = 0;
-	scaffoldObjectCount = m_scaffoldObjectIDList.size();
+	scaffoldObjectCount = (uint16_t)m_scaffoldObjectIDList.size();
 	xfer->xferUnsignedShort( &scaffoldObjectCount );
 	ObjectID scaffoldObjectID;
 	if( xfer->getXferMode() == XFER_SAVE )

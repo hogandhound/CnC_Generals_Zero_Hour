@@ -343,7 +343,7 @@ void GameLogic::prepareNewGame( Int gameMode, GameDifficulty diff, Int rankPoint
 void GameLogic::logicMessageDispatcher( GameMessage *msg, void *userData )
 {
 #ifdef _DEBUG
-	DEBUG_ASSERTCRASH(msg != NULL && msg != (GameMessage*)0xdeadbeef, ("bad msg"));
+	DEBUG_ASSERTCRASH(msg != NULL && msg != (GameMessage*)(uintptr_t)0xdeadbeef, ("bad msg"));
 #endif
 
 	Player *thisPlayer = ThePlayerList->getNthPlayer( msg->getPlayerIndex() );
@@ -1760,7 +1760,8 @@ void GameLogic::logicMessageDispatcher( GameMessage *msg, void *userData )
 			if (msg->getArgument(0)->boolean)
 			{
 				// transfer control to any living ally
-				for (Int i=0; i<ThePlayerList->getPlayerCount(); ++i)
+				Int i = 0;
+				for (; i<ThePlayerList->getPlayerCount(); ++i)
 				{
 					if (i != msg->getPlayerIndex())
 					{

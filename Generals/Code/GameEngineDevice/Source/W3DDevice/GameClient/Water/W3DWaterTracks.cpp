@@ -734,7 +734,7 @@ void WaterTracksRenderSystem::init(void)
 	for( i = 0; i < numModules; i++ )
 	{
 
-		mod = NEW WaterTracksObj;
+		mod = new WaterTracksObj;
 
 		if( mod == NULL )
 		{
@@ -946,7 +946,7 @@ void WaterTracksRenderSystem::saveTracks(void)
 	char path[256];
 
 	strcpy(path,fileName.str());
-	Int len=strlen(path);
+	Int len=(int)strlen(path);
 
 	strcpy(path+len-4,".wak");
 
@@ -984,7 +984,7 @@ void WaterTracksRenderSystem::loadTracks(void)
 	char path[256];
 
 	strcpy(path,fileName.str());
-	Int len=strlen(path);
+	Int len=(int)strlen(path);
 
 	strcpy(path+len-4,".wak");
 
@@ -1098,7 +1098,7 @@ static void TestWaterUpdate(void)
 	{	//create the system
 		doInit=0;
 
-//		TheWaterTracksRenderSystem = NEW (WaterTracksRenderSystem);
+//		TheWaterTracksRenderSystem = new (WaterTracksRenderSystem);
 //		TheWaterTracksRenderSystem->init();
 
 		//create a dummy track

@@ -5870,7 +5870,7 @@ void ScriptEngine::setPriorityThing( ScriptAction *pAction )
 	{
 		// Found a list by this name, so we have a bunch of things
 
-		for( Int typeIndex = 0; typeIndex < types->getListSize(); typeIndex ++ )
+		for( Int typeIndex = 0; typeIndex < (int)types->getListSize(); typeIndex ++ )
 		{
 			AsciiString thisTypeName = types->getNthInList(typeIndex);
 			const ThingTemplate *thisType = TheThingFactory->findTemplate(thisTypeName);
@@ -7819,7 +7819,7 @@ static void xferListAsciiString( Xfer *xfer, ListAsciiString *list )
 	xfer->xferVersion( &version, currentVersion );
 
 	// size of list
-	UnsignedShort count = list->size();
+	UnsignedShort count = (uint16_t)list->size();
 	xfer->xferUnsignedShort( &count );
 
 	// list data
@@ -7882,7 +7882,7 @@ static void xferListAsciiStringUINT( Xfer *xfer, ListAsciiStringUINT *list )
 	xfer->xferVersion( &version, currentVersion );
 
 	// size of list
-	UnsignedShort count = list->size();
+	UnsignedShort count = (uint16_t)list->size();
 	xfer->xferUnsignedShort( &count );
 
 	// list data
@@ -7957,7 +7957,7 @@ static void xferListAsciiStringObjectID( Xfer *xfer, ListAsciiStringObjectID *li
 	xfer->xferVersion( &version, currentVersion );
 
 	// size of list
-	UnsignedShort count = list->size();
+	UnsignedShort count = (uint16_t)list->size();
 	xfer->xferUnsignedShort( &count );
 
 	// list data
@@ -8032,7 +8032,7 @@ static void xferListAsciiStringCoord3D( Xfer *xfer, ListAsciiStringCoord3D *list
 	xfer->xferVersion( &version, currentVersion );
 
 	// size of list
-	UnsignedShort count = list->size();
+	UnsignedShort count = (uint16_t)list->size();
 	xfer->xferUnsignedShort( &count );
 
 	// list data
@@ -8119,7 +8119,7 @@ void ScriptEngine::xfer( Xfer *xfer )
 	xfer->xferVersion( &version, currentVersion );
 
 	// sequential script count and data
-	UnsignedShort sequentialScriptCount = m_sequentialScripts.size();
+	UnsignedShort sequentialScriptCount = (uint16_t)m_sequentialScripts.size();
 	xfer->xferUnsignedShort( &sequentialScriptCount );
 	SequentialScript *sequentialScript;
 	if( xfer->getXferMode() == XFER_SAVE )
@@ -8245,7 +8245,7 @@ void ScriptEngine::xfer( Xfer *xfer )
 	xfer->xferInt( &m_closeWindowTimer );
 
 	// named objects
-	UnsignedShort namedObjectsCount = m_namedObjects.size();
+	UnsignedShort namedObjectsCount = (uint16_t)m_namedObjects.size();
 	xfer->xferUnsignedShort( &namedObjectsCount );
 	AsciiString namedObjectName;
 	Object *obj;
@@ -8435,7 +8435,7 @@ void ScriptEngine::xfer( Xfer *xfer )
 	{
 
 		// number of entries in named reveals
-		UnsignedShort namedRevealCount = m_namedReveals.size();
+		UnsignedShort namedRevealCount = (uint16_t)m_namedReveals.size();
 		xfer->xferUnsignedShort( &namedRevealCount );
 
 		// named reveal data
@@ -8499,7 +8499,7 @@ void ScriptEngine::xfer( Xfer *xfer )
 		}  // end else, load
 
 		// all object type lists size
-		UnsignedShort allObjectTypesCount = m_allObjectTypeLists.size();
+		UnsignedShort allObjectTypesCount = (uint16_t)m_allObjectTypeLists.size();
 		xfer->xferUnsignedShort( &allObjectTypesCount );
 
 		// all object type lists data
@@ -9365,7 +9365,7 @@ void _writeSingleParticleSystem( File *out, ParticleSystemTemplate *templ )
 	thisEntry.append(STR_END).append(SEP_EOL).append(SEP_EOL);
 
 //	fwrite(thisEntry.c_str(), thisEntry.size(), 1, out);
-	out->write(thisEntry.c_str(), thisEntry.size());
+	out->write(thisEntry.c_str(), (int)thisEntry.size());
 }
 
 static int _getEditorBehavior( void )
@@ -9471,7 +9471,7 @@ static void _reloadParticleSystemFromINI( AsciiString particleSystemName )
 
 
 			while (!(iniFile->eof() || INI::isEndOfBlock(linebuff)) ) {
-				outTempINI->write(linebuff, strlen(linebuff));
+				outTempINI->write(linebuff, (int)strlen(linebuff));
 				iniFile->nextLine(linebuff, INI_MAX_CHARS_PER_LINE);
 			}
 
@@ -9481,7 +9481,7 @@ static void _reloadParticleSystemFromINI( AsciiString particleSystemName )
 			
 
 			// write out the closing "END"
-			outTempINI->write(linebuff, strlen(linebuff));
+			outTempINI->write(linebuff, (int)strlen(linebuff));
 			outTempINI->close();
 			outTempINI = NULL;
 		}

@@ -96,7 +96,8 @@ RTS3DScene::RTS3DScene()
 	setName("RTS3DScene");
 	m_drawTerrainOnly = false;
 	m_numGlobalLights=0;
-	for (Int i=0; i<LightEnvironmentClass::MAX_LIGHTS; i++)
+	Int i = 0;
+	for (; i<LightEnvironmentClass::MAX_LIGHTS; i++)
 	{	m_globalLight[i]=NULL;
 		m_infantryLight[i]=NEW_REF( LightClass, (LightClass::DIRECTIONAL) );
 	}
@@ -137,7 +138,7 @@ RTS3DScene::RTS3DScene()
 	//because they are forced translucent.
 	m_translucentObjectsCount = 0;
 	if (TheGlobalData && TheGlobalData->m_maxVisibleTranslucentObjects)
-		m_translucentObjectsBuffer = NEW RenderObjClass* [TheGlobalData->m_maxVisibleTranslucentObjects];
+		m_translucentObjectsBuffer = new RenderObjClass* [TheGlobalData->m_maxVisibleTranslucentObjects];
 	else
 		m_translucentObjectsBuffer = NULL;
 
@@ -155,9 +156,9 @@ RTS3DScene::RTS3DScene()
 	shader.Set_Src_Blend_Func(ShaderClass::SRCBLEND_SRC_ALPHA);
 	shader.Set_Dst_Blend_Func(ShaderClass::DSTBLEND_ONE_MINUS_SRC_ALPHA);
 
-    m_potentialOccluders = NEW RenderObjClass* [TheGlobalData->m_maxVisibleOccluderObjects];
-	m_potentialOccludees = NEW RenderObjClass* [TheGlobalData->m_maxVisibleOccludeeObjects];
-	m_nonOccludersOrOccludees = NEW RenderObjClass* [TheGlobalData->m_maxVisibleNonOccluderOrOccludeeObjects];
+    m_potentialOccluders = new RenderObjClass* [TheGlobalData->m_maxVisibleOccluderObjects];
+	m_potentialOccludees = new RenderObjClass* [TheGlobalData->m_maxVisibleOccludeeObjects];
+	m_nonOccludersOrOccludees = new RenderObjClass* [TheGlobalData->m_maxVisibleNonOccluderOrOccludeeObjects];
 #ifdef USE_NON_STENCIL_OCCLUSION	
 		for (i=0; i<MAX_PLAYER_COUNT; i++)
 		{	m_occludedMaterialPass[i]=NEW_REF(MaterialPassClass,());
@@ -183,7 +184,8 @@ RTS3DScene::RTS3DScene()
 //=============================================================================
 RTS3DScene::~RTS3DScene()
 {
-	for (Int i=0; i<LightEnvironmentClass::MAX_LIGHTS; i++)
+	Int i = 0;
+	for (; i<LightEnvironmentClass::MAX_LIGHTS; i++)
 	{
 		REF_PTR_RELEASE(m_globalLight[i]);
 		REF_PTR_RELEASE(m_infantryLight[i]);
@@ -391,9 +393,9 @@ void RTS3DScene::Visibility_Check(CameraClass * camera)
 	m_numNonOccluderOrOccludee=0;
 
 	Int currentFrame=0;
-	if (TheGameLogic) currentFrame = TheGameLogic->getFrame();
-	if (currentFrame <= TheGlobalData->m_defaultOcclusionDelay)
-		currentFrame = TheGlobalData->m_defaultOcclusionDelay+1;	//make sure occlusion is enabled when game starts (frame 0).
+	if (TheGameLogic) currentFrame = (int)TheGameLogic->getFrame();
+	if (currentFrame <= (int)TheGlobalData->m_defaultOcclusionDelay)
+		currentFrame = (int)TheGlobalData->m_defaultOcclusionDelay+1;	//make sure occlusion is enabled when game starts (frame 0).
 
 
 	if (ShaderClass::Is_Backface_Culling_Inverted()) 
@@ -474,7 +476,7 @@ void RTS3DScene::Visibility_Check(CameraClass * camera)
 							else
 							if (draw->getObject() &&
 									(draw->isKindOf(KINDOF_SCORE) || draw->isKindOf(KINDOF_SCORE_CREATE) || draw->isKindOf(KINDOF_SCORE_DESTROY) || draw->isKindOf(KINDOF_MP_COUNT_FOR_VICTORY)) &&
-									(draw->getObject()->getSafeOcclusionFrame()) <= currentFrame && m_numPotentialOccludees < TheGlobalData->m_maxVisibleOccludeeObjects)
+									((int)draw->getObject()->getSafeOcclusionFrame()) <= currentFrame && m_numPotentialOccludees < TheGlobalData->m_maxVisibleOccludeeObjects)
 							{	//object which could be occluded but still needs to be visible.
 								m_potentialOccludees[m_numPotentialOccludees++]=robj;
 								drawInfo->m_flags |= DrawableInfo::ERF_POTENTIAL_OCCLUDEE;
@@ -1291,7 +1293,8 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 	//Clear pointers into temporary arrays where each player's objects will be stored.
 	//We do this so that all objects are sorted by color which reduces the number of
 	//state changes needed when drawing them.
-	for (Int i=0; i<MAX_PLAYER_COUNT; i++)
+	Int i = 0;
+	for (; i<MAX_PLAYER_COUNT; i++)
 	{	lastPlayerObject[i]=&playerObjects[i][0];
 		playerColorIndex[i]=-1;
 	}
@@ -1304,7 +1307,8 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 	if (m_numPotentialOccludees && m_numPotentialOccluders)
 	{
 		//bucket sort all possibly occluded objects by player index/color.
-		for (Int i=0; i<m_numPotentialOccludees; i++)
+		Int i = 0;
+		for (; i<m_numPotentialOccludees; i++)
 		{
 			robj=m_potentialOccludees[i];
 
@@ -1495,7 +1499,8 @@ void RTS3DScene::flushOccludedObjects(RenderInfoClass & rinfo)
 		//First draw all the solid colored models
 		///@todo: Optimize this so that the extra passes don't actually install the material since it's all the same.
 		rinfo.Push_Override_Flags(RenderInfoClass::RINFO_OVERRIDE_ADDITIONAL_PASSES_ONLY);	//disable textures
-		for (Int i=0; i<m_occludedObjectsCount; i++)
+		Int i = 0;
+		for (; i<m_occludedObjectsCount; i++)
 		{
 			robj=m_potentialOccludees[i];
 
@@ -1577,7 +1582,7 @@ void RTS3DScene::flushTranslucentObjects(RenderInfoClass & rinfo)
 //=============================================================================
 RefRenderObjListIterator * RTS3DScene::createLightsIterator(void)
 {
-	RefRenderObjListIterator * it = NEW RefRenderObjListIterator(&LightList);	// poolify
+	RefRenderObjListIterator * it = new RefRenderObjListIterator(&LightList);	// poolify
 	return it;
 }
 

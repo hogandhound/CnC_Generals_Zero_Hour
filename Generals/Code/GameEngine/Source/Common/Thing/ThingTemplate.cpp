@@ -435,7 +435,7 @@ void ThingTemplate::parseModuleName(INI* ini, void *instance, void* store, const
 {
 	ThingTemplate* self = (ThingTemplate*)instance;
 	ModuleInfo* mi = (ModuleInfo*)store;
-	ModuleType type = (ModuleType)(UnsignedInt)userData;
+	ModuleType type = (ModuleType)(uintptr_t)userData;
 	const char* token = ini->getNextToken();
 	AsciiString tokenStr = token;
 
@@ -536,7 +536,7 @@ void ThingTemplate::parseModuleName(INI* ini, void *instance, void* store, const
 //-------------------------------------------------------------------------------------------------
 void ThingTemplate::parseIntList(INI* ini, void *instance, void* store, const void* userData)
 {
-	Int numberEntries = (Int)userData;
+	Int numberEntries = (Int)(uintptr_t)userData;
 	Int *intList = (Int*)store;
 
 	for( Int intIndex = 0; intIndex < numberEntries; intIndex ++ )
@@ -600,7 +600,7 @@ static void parseArbitraryFXIntoMap( INI* ini, void *instance, void* /* store */
 	const char* name = (const char*)userData;
 	const char* token = ini->getNextToken();
 	const FXList* fxl = TheFXListStore->findFXList(token);	// could be null!
-	DEBUG_ASSERTCRASH(fxl != NULL || stricmp(token, "None") == 0, ("FXList %s not found!\n",token));
+	DEBUG_ASSERTCRASH(fxl != NULL || _stricmp(token, "None") == 0, ("FXList %s not found!\n",token));
 	mapFX->insert(std::make_pair(AsciiString(name), fxl));	
 }
 
@@ -1169,7 +1169,8 @@ void ThingTemplate::initForLTA(const AsciiString& name)
 
 	char buffer[1024];
 	strncpy(buffer, name.str(), sizeof(buffer));
-	for (int i=0; buffer[i]; i++) {
+	int i = 0;
+	for (; buffer[i]; i++) {
 		if (buffer[i] == '/') {
 			i++;
 			break;
@@ -1335,12 +1336,12 @@ Bool ThingTemplate::isEquivalentTo(const ThingTemplate* tt) const
 	// Is this thing a build variation of that thing or vice versa
 	Int i;
 
-	Int numVariations = m_buildVariations.size();
+	Int numVariations = (int)m_buildVariations.size();
 	for (i = 0; i < numVariations; ++i) 
 		if (m_buildVariations[i].compareNoCase(tt->getName()) == 0)
 			return true;
 	
-	numVariations = tt->m_buildVariations.size();
+	numVariations = (int)tt->m_buildVariations.size();
 	for (i = 0; i < numVariations; ++i)
 		if (tt->m_buildVariations[i].compareNoCase(getName()) == 0)
 			return true;

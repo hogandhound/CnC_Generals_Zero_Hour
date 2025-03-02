@@ -226,7 +226,7 @@ ProductionUpdate::~ProductionUpdate( void )
 //-------------------------------------------------------------------------------------------------
 CanMakeType ProductionUpdate::canQueueUpgrade( const UpgradeTemplate *upgrade ) const
 {
-	if (m_productionCount >= getProductionUpdateModuleData()->m_maxQueueEntries)
+	if ((int)m_productionCount >= getProductionUpdateModuleData()->m_maxQueueEntries)
 		return CANMAKE_QUEUE_FULL;
 
 	return CANMAKE_OK;
@@ -249,7 +249,7 @@ CanMakeType ProductionUpdate::canQueueCreateUnit( const ThingTemplate *unitType 
 		}
 	}
 
-	if (m_productionCount >= getProductionUpdateModuleData()->m_maxQueueEntries)
+	if ((int)m_productionCount >= getProductionUpdateModuleData()->m_maxQueueEntries)
 		return CANMAKE_QUEUE_FULL;
 
 	return CANMAKE_OK;
@@ -294,7 +294,7 @@ Bool ProductionUpdate::queueUpgrade( const UpgradeTemplate *upgrade )
       (player->hasUpgradeComplete( upgrade ) || player->hasUpgradeInProduction( upgrade )) ) 
 		return FALSE;
 
-	if (m_productionCount >= getProductionUpdateModuleData()->m_maxQueueEntries)
+	if ((int)m_productionCount >= getProductionUpdateModuleData()->m_maxQueueEntries)
 	{
 		DEBUG_CRASH(("Production Queue is full... how did we get here?"));
 		return FALSE;
@@ -417,7 +417,7 @@ Bool ProductionUpdate::queueCreateUnit( const ThingTemplate *unitType, Productio
 		}
 	}
 
-	if (m_productionCount >= getProductionUpdateModuleData()->m_maxQueueEntries)
+	if ((int)m_productionCount >= getProductionUpdateModuleData()->m_maxQueueEntries)
 	{
 		DEBUG_CRASH(("Production Queue is full... how did we get here?"));
 		return FALSE;
@@ -667,7 +667,7 @@ UpdateSleepTime ProductionUpdate::update( void )
 	// Actually, there will be nothing in the queue since everything gets cancel/refunded
 	// at the start of sell, but we still don't want to do anything here.
 	//
-	if( BitTest( us->getStatusBits(), OBJECT_STATUS_SOLD ) )
+	if( BitTestWW( us->getStatusBits(), OBJECT_STATUS_SOLD ) )
 		return UPDATE_SLEEP_NONE;
 
 	// get the player that is building this thing

@@ -30,7 +30,7 @@
 // INCLUDES ///////////////////////////////////////////////////////////////////////////////////////
 #include "PreRTS.h"	// This must go first in EVERY cpp file int the GameEngine
 
-#include "GameSpy/ghttp/ghttp.h"
+#include "ghttp/ghttp.h"
 
 #include "Common/AudioAffect.h"
 #include "Common/AudioSettings.h"
@@ -316,7 +316,7 @@ Bool OptionPreferences::getAlternateMouseModeEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_useAlternateMouse;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -344,7 +344,7 @@ Bool OptionPreferences::usesSystemMapDir(void)
 	if (it == end())
 		return TRUE;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -356,7 +356,7 @@ Bool OptionPreferences::saveCameraInReplays(void)
 	if (it == end())
 		return TRUE;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -368,7 +368,7 @@ Bool OptionPreferences::useCameraInReplays(void)
 	if (it == end())
 		return TRUE;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -398,7 +398,7 @@ Bool OptionPreferences::getSendDelay(void)
 	if (it == end())
 		return TheGlobalData->m_firewallSendDelay;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -537,7 +537,7 @@ Bool OptionPreferences::getCloudShadowsEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_useCloudMap;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -549,7 +549,7 @@ Bool OptionPreferences::getLightmapEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_useLightMap;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -561,7 +561,7 @@ Bool OptionPreferences::getSmoothWaterEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_showSoftWaterEdge;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -573,7 +573,7 @@ Bool OptionPreferences::getTreesEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_useTrees;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -585,7 +585,7 @@ Bool OptionPreferences::getExtraAnimationsDisabled(void)
 	if (it == end())
 		return TheGlobalData->m_useDrawModuleLOD;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return FALSE;	//we are enabling extra animations, so disabled LOD
 	}
 	return TRUE;
@@ -597,7 +597,7 @@ Bool OptionPreferences::getDynamicLODEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_enableDynamicLOD;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -609,7 +609,7 @@ Bool OptionPreferences::getFPSLimitEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_useFpsLimit;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -621,7 +621,7 @@ Bool OptionPreferences::get3DShadowsEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_useShadowVolumes;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -633,7 +633,7 @@ Bool OptionPreferences::get2DShadowsEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_useShadowDecals;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -645,7 +645,7 @@ Bool OptionPreferences::getBuildingOcclusionEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_enableBehindBuildingMarkers;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -1052,7 +1052,7 @@ static void saveOptions( void )
 				TheShell = NULL;
 
 				// create the shell
-				TheShell = MSGNEW("GameClientSubsystem") Shell;
+				TheShell = new Shell;
 				if( TheShell )
 					TheShell->init();
 				
@@ -1069,14 +1069,14 @@ static void saveOptions( void )
 	GadgetComboBoxGetSelectedPos(comboBoxLANIP, &index);
 	if (index>=0 && TheGlobalData)
 	{
-		ip = (UnsignedInt)GadgetComboBoxGetItemData(comboBoxLANIP, index);
+		ip = (UnsignedInt)(intptr_t)GadgetComboBoxGetItemData(comboBoxLANIP, index);
 		TheWritableGlobalData->m_defaultIP = ip;
 		pref->setLANIPAddress(ip);
 	}
 	GadgetComboBoxGetSelectedPos(comboBoxOnlineIP, &index);
 	if (index>=0)
 	{
-		ip = (UnsignedInt)GadgetComboBoxGetItemData(comboBoxOnlineIP, index);
+		ip = (UnsignedInt)(intptr_t)GadgetComboBoxGetItemData(comboBoxOnlineIP, index);
 		pref->setOnlineIPAddress(ip);
 	}
 
@@ -1436,7 +1436,7 @@ void OptionsMenuInit( WindowLayout *layout, void *userData )
 		count++;
 		str.translate(IPlist->getIPstring());
 		index = GadgetComboBoxAddEntry(comboBoxLANIP, str, color);
-		GadgetComboBoxSetItemData(comboBoxLANIP, index, (void *)(IPlist->getIP()));
+		GadgetComboBoxSetItemData(comboBoxLANIP, index, (void *)(intptr_t)(IPlist->getIP()));
 		if (selectedIP == IPlist->getIP())
 		{
 			selectedIndex = index;
@@ -1472,7 +1472,7 @@ void OptionsMenuInit( WindowLayout *layout, void *userData )
 			count++;
 			str.translate(IPlist->getIPstring());
 			index = GadgetComboBoxAddEntry(comboBoxOnlineIP, str, color);
-			GadgetComboBoxSetItemData(comboBoxOnlineIP, index, (void *)(IPlist->getIP()));
+			GadgetComboBoxSetItemData(comboBoxOnlineIP, index, (void *)(intptr_t)(IPlist->getIP()));
 			if (selectedIP == IPlist->getIP())
 			{
 				selectedIndex = index;
@@ -1521,7 +1521,8 @@ void OptionsMenuInit( WindowLayout *layout, void *userData )
 	AsciiString selectedAliasingMode = (*pref)["AntiAliasing"];
 	GadgetComboBoxReset(comboBoxAntiAliasing);
 	AsciiString temp;
-	for (Int i=0; i < NUM_ALIASING_MODES; ++i)
+	Int i = 0;
+	for (; i < NUM_ALIASING_MODES; ++i)
 	{
 		temp.format("GUI:AntiAliasing%d", i);
 		str = TheGameText->fetch( temp );
@@ -1815,7 +1816,7 @@ WindowMsgHandledType OptionsMenuInput( GameWindow *window, UnsignedInt msg,
 					// send a simulated selected event to the parent window of the
 					// back/exit button
 					//
-					if( BitTest( state, KEY_STATE_UP ) )
+					if( BitTestWW( state, KEY_STATE_UP ) )
 					{
 						AsciiString buttonName( "OptionsMenu.wnd:ButtonBack" );
 						NameKeyType buttonID = TheNameKeyGenerator->nameToKey( buttonName );

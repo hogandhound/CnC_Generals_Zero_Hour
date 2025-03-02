@@ -49,7 +49,7 @@
 #include "Common/GameSounds.h"
 #include "Common/Debug.h"
 #include "Common/GameMemory.h"
-#include "Common/SafeDisc/CdaPfn.h"
+//#include "Common/SafeDisc/CdaPfn.h"
 #include "Common/StackDump.h"
 #include "Common/MessageStream.h"
 #include "Common/Team.h"
@@ -61,8 +61,8 @@
 #include "Win32Device/GameClient/Win32Mouse.h"
 #include "Win32Device/Common/Win32GameEngine.h"
 #include "Common/Version.h"
-#include "BuildVersion.h"
-#include "GeneratedVersion.h"
+//#include "BuildVersion.h"
+//#include "GeneratedVersion.h"
 #include "Resource.h"
 
 #ifdef _INTERNAL
@@ -734,12 +734,14 @@ static Bool initializeAppWindows( HINSTANCE hInstance, Int nCmdShow, Bool runWin
 
 }  // end initializeAppWindows
 
+#if 0
 void munkeeFunc(void);
 CDAPFN_DECLARE_GLOBAL(munkeeFunc, CDAPFN_OVERHEAD_L5, CDAPFN_CONSTRAINT_NONE);
 void munkeeFunc(void)
 {
 	CDAPFN_ENDMARK(munkeeFunc);
 }
+#endif
 
 void checkProtection(void)
 {
@@ -959,9 +961,11 @@ Int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
  
 		// Set up version info
 		TheVersion = NEW Version;
+#if 0
 		TheVersion->setVersion(VERSION_MAJOR, VERSION_MINOR, VERSION_BUILDNUM, VERSION_LOCALBUILDNUM,
 			AsciiString(VERSION_BUILDUSER), AsciiString(VERSION_BUILDLOC),
 			AsciiString(__TIME__), AsciiString(__DATE__));
+#endif
 
 #ifdef DO_COPY_PROTECTION
 		if (!CopyProtect::isLauncherRunning())

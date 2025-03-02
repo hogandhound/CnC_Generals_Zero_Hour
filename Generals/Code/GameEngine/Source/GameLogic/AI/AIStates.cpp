@@ -136,7 +136,7 @@ void AICommandParmsStorage::doXfer(Xfer *xfer)
 	xfer->xferObjectID(&m_obj);
 	xfer->xferObjectID(&m_otherObj);
 	xfer->xferAsciiString(&m_teamName);
-	Int numCoords = m_coords.size();
+	Int numCoords = (int)m_coords.size();
 	xfer->xferInt(&numCoords);
 	Int i;
 	if (xfer->getXferMode() == XFER_LOAD)
@@ -760,7 +760,7 @@ void AIStateMachine::xfer( Xfer *xfer )
 	StateMachine::xfer(xfer);
 
 	Int i;
-	Int count = m_goalPath.size();
+	Int count = (int)m_goalPath.size();
 	xfer->xferInt(&count);
 	for (i=0; i<count; i++) {
 		Coord3D pos;
@@ -1193,7 +1193,7 @@ Bool outOfWeaponRangePosition( State *thisState, void* userData )
  */
 static Bool cannotPossiblyAttackObject( State *thisState, void* userData )
 {
-	AbleToAttackType attackType = (AbleToAttackType)(UnsignedInt)userData;
+	AbleToAttackType attackType = (AbleToAttackType)(uintptr_t)userData;
 	Object *obj = thisState->getMachineOwner();
 	Object *victim = thisState->getMachineGoalObject();
 
@@ -5717,7 +5717,7 @@ Object *AIAttackSquadState::chooseVictim(void)
 		{
 			// pick a random unit
 			VecObjectPtr objects = victimSquad->getLiveObjects();
-			Int numUnits = objects.size();
+			Int numUnits = (int)objects.size();
 			if (numUnits == 0) 
 			{
 				return NULL;

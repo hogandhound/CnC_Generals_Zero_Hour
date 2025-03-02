@@ -199,7 +199,7 @@ TextureClass::TextureClass(
 	}
 
 	WWASSERT_PRINT(name && name[0], "TextureClass CTor: NULL or empty texture name\n");
-	int len=strlen(name);
+	int len=(int)strlen(name);
 	for (int i=0;i<len;++i) {
 		if (name[i]=='+') {
 			IsLightmap=true;
@@ -926,7 +926,7 @@ void Save_Texture(TextureClass * texture,ChunkSaveClass & csave)
 	setup_texture_attributes(texture, &texinfo);
 
 	csave.Begin_Chunk(W3D_CHUNK_TEXTURE_NAME);
-	csave.Write(filename,strlen(filename)+1);
+	csave.Write(filename, (uint32)strlen(filename)+1);
 	csave.End_Chunk();
 
 	if ((texinfo.Attributes != 0) || (texinfo.AnimType != 0) || (texinfo.FrameCount != 0)) {

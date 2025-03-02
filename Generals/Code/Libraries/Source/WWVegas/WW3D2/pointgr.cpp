@@ -1690,7 +1690,7 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 
 
 	//// VOLUME_PARTICLE LOOP ///////////////
-	for ( int t = 0; t < depth; ++t )
+	for ( unsigned int t = 0; t < depth; ++t )
 	{
 
 

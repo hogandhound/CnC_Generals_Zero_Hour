@@ -145,10 +145,10 @@ struct Geometry
 	Int Create( Int numVertices, Int numPolygons )
 	{
 		if (numVertices)
-			if((m_verts=NEW Vector3[numVertices]) == 0)
+			if((m_verts=new Vector3[numVertices]) == 0)
 				return FALSE;
 		if (numPolygons)
-			if((m_indices=NEW UnsignedShort[numPolygons*3]) == 0)
+			if((m_indices=new UnsignedShort[numPolygons*3]) == 0)
 				return FALSE;
 		m_numPolygon=numPolygons;
 		m_numVertex=numVertices;
@@ -308,7 +308,7 @@ public:
 	{
 		if (!m_polygonNormals)
 		{	//need to allocate storage
-			Vector3 *tempVec = NEW Vector3[m_numPolygons];
+			Vector3 *tempVec = new Vector3[m_numPolygons];
 			for (int i=0; i<m_numPolygons; i++)
 			{
 				GetPolygonNormal(i,&tempVec[i]);
@@ -557,7 +557,7 @@ void W3DVolumetricShadowManager::loadTerrainShadows(void)
 	short indexList[3];
 	Vector3 vertexList[3];
 */
-/*	W3DShadow *shadow = NEW W3DShadow;
+/*	W3DShadow *shadow = new W3DShadow;
 	// add to our shadow list through the shadow next links
 	shadow->m_next = m_shadowList;
 	m_shadowList = shadow;	
@@ -663,7 +663,7 @@ Int W3DShadowGeometry::initFromHLOD(RenderObjClass *robj)
 				}
 				vertParent[j]=j;	//first instance of new vertex
 			}
-			geomMesh->m_parentVerts = NEW UnsignedShort[geomMesh->m_numVerts];
+			geomMesh->m_parentVerts = new UnsignedShort[geomMesh->m_numVerts];
 			memcpy(geomMesh->m_parentVerts,vertParent,sizeof(UnsignedShort)*geomMesh->m_numVerts);
 			geomMesh->m_numVerts=newVertexCount;	//adjust actual vertex count to ignore duplicates
 			m_numTotalsVerts += newVertexCount;
@@ -732,7 +732,7 @@ Int W3DShadowGeometry::initFromMesh(RenderObjClass *robj)
 		vertParent[j]=j;	//first instance of new vertex
 	}
 
-	geomMesh->m_parentVerts = NEW UnsignedShort[geomMesh->m_numVerts];
+	geomMesh->m_parentVerts = new UnsignedShort[geomMesh->m_numVerts];
 	memcpy(geomMesh->m_parentVerts,vertParent,sizeof(UnsignedShort)*geomMesh->m_numVerts);
 	geomMesh->m_numVerts=newVertexCount;	//adjust actual vertex count to ignore duplicates
 	geomMesh->m_parentGeometry = this;
@@ -1035,7 +1035,7 @@ Bool W3DShadowGeometryMesh::allocateNeighbors( Int numPolys )
 	assert( m_polyNeighbors == NULL );
 
 	// allocate the list
-	m_polyNeighbors = NEW PolyNeighbor[ numPolys ];
+	m_polyNeighbors = new PolyNeighbor[ numPolys ];
 	if( m_polyNeighbors == NULL )
 	{
 
@@ -2377,7 +2377,7 @@ void W3DVolumetricShadow::buildSilhouette(Int meshIndex, Vector3 *lightPosObject
 				// ignore neighbors that are marked as processed as those
 				// onces have already detected edges if present
 				//
-				if( BitTest( otherNeighbor->status, POLY_PROCESSED ) )
+				if( BitTestWW( otherNeighbor->status, POLY_PROCESSED ) )
 					continue;  // for j
 
 			}  // end if
@@ -2390,7 +2390,7 @@ void W3DVolumetricShadow::buildSilhouette(Int meshIndex, Vector3 *lightPosObject
 			// if we have no neighbor we just record the fact that we have
 			// real model end edges to add after this inner j loop;
 			//
-			if( BitTest( polyNeighbor->status, POLY_VISIBLE ) )
+			if( BitTestWW( polyNeighbor->status, POLY_VISIBLE ) )
 			{
 
 				// check for no neighbor edges
@@ -2400,7 +2400,7 @@ void W3DVolumetricShadow::buildSilhouette(Int meshIndex, Vector3 *lightPosObject
 					visibleNeighborless = TRUE;
 
 				}  // end if
-				else if( BitTest( otherNeighbor->status, POLY_VISIBLE ) == FALSE )
+				else if( BitTestWW( otherNeighbor->status, POLY_VISIBLE ) == FALSE )
 				{
 
 					// "we" are visible and "they" are not
@@ -2410,7 +2410,7 @@ void W3DVolumetricShadow::buildSilhouette(Int meshIndex, Vector3 *lightPosObject
 
 			}  // end if
 			else if( otherNeighbor != NULL &&
-							 BitTest( otherNeighbor->status, POLY_VISIBLE ) )
+							 BitTestWW( otherNeighbor->status, POLY_VISIBLE ) )
 			{
 
 				// "they" are visible and "we" are not
@@ -3038,7 +3038,7 @@ Bool W3DVolumetricShadow::allocateShadowVolume( Int volumeIndex, Int meshIndex )
 	if ((shadowVolume = m_shadowVolume[ volumeIndex ][meshIndex]) == 0)
 	{	
 		// poolify
-		shadowVolume = NEW Geometry;		// create the new geometry
+		shadowVolume = new Geometry;		// create the new geometry
 		// we now have one more valid geometry volume
 		m_shadowVolumeCount[meshIndex]++;
 	}
@@ -3188,7 +3188,7 @@ Bool W3DVolumetricShadow::allocateSilhouette(Int meshIndex, Int numVertices )
 					numEntries > 0 );
 
 	// allocate memory
-	m_silhouetteIndex[meshIndex] = NEW short[ numEntries ];
+	m_silhouetteIndex[meshIndex] = new short[ numEntries ];
 	if( m_silhouetteIndex[meshIndex] == NULL )
 	{
 	
@@ -3604,9 +3604,9 @@ W3DVolumetricShadowManager::W3DVolumetricShadowManager( void )
 
 	m_shadowList = NULL;
 
-	m_W3DShadowGeometryManager = NEW W3DShadowGeometryManager;
+	m_W3DShadowGeometryManager = new W3DShadowGeometryManager;
 
-	TheW3DBufferManager = NEW W3DBufferManager;
+	TheW3DBufferManager = new W3DBufferManager;
 
 }  // end ShadowManager
 
@@ -3729,7 +3729,7 @@ W3DVolumetricShadow* W3DVolumetricShadowManager::addShadow(RenderObjClass *robj,
 			return NULL;	//could not create the shadow geometry
 	}
 
-	W3DVolumetricShadow *shadow = NEW W3DVolumetricShadow;	// poolify
+	W3DVolumetricShadow *shadow = new W3DVolumetricShadow;	// poolify
 
 	// sanity
 	if( shadow == NULL )
@@ -3806,8 +3806,8 @@ void W3DVolumetricShadowManager::removeAllShadows(void)
 W3DShadowGeometryManager::W3DShadowGeometryManager(void) 
 {
 	// Create the hash tables
-	GeomPtrTable = NEW HashTableClass( 2048 );
-	MissingGeomTable = NEW HashTableClass( 2048 );
+	GeomPtrTable = new HashTableClass( 2048 );
+	MissingGeomTable = new HashTableClass( 2048 );
 }
 
 W3DShadowGeometryManager::~W3DShadowGeometryManager(void)
@@ -3888,7 +3888,7 @@ private:
 */
 void	W3DShadowGeometryManager::Register_Missing( const char * name )
 {
-	MissingGeomTable->Add( NEW MissingGeomClass( name ) );
+	MissingGeomTable->Add( new MissingGeomClass( name ) );
 }
 
 Bool	W3DShadowGeometryManager::Is_Missing( const char * name )
@@ -3901,7 +3901,7 @@ int W3DShadowGeometryManager::Load_Geom(RenderObjClass *robj, const char *name)
 {
 	Bool res=FALSE;
 
-	W3DShadowGeometry * newgeom = NEW W3DShadowGeometry;
+	W3DShadowGeometry * newgeom = new W3DShadowGeometry;
 
 	if (newgeom == NULL) {
 		goto Error;

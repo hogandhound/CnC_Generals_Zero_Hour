@@ -38,7 +38,7 @@ DDSFileClass::DDSFileClass(const char* name,unsigned reduction_factor)
 	Format(WW3D_FORMAT_UNKNOWN)
 {
 	// The name could be given in .tga or .dds format, so ensure we're opening .dds...
-	int len=strlen(Name);
+	int len=(int)strlen(Name);
 	Name[len-3]='d';
 	Name[len-2]='d';
 	Name[len-1]='s';
@@ -68,12 +68,12 @@ DDSFileClass::DDSFileClass(const char* name,unsigned reduction_factor)
 	if (MipLevels==0) MipLevels=1;
 
 	//Adjust the reduction factor to keep textures above some minimum dimensions
-	if (MipLevels <= WW3D::Get_Texture_Min_Mip_Levels())
+	if ((int)MipLevels <= WW3D::Get_Texture_Min_Mip_Levels())
 		ReductionFactor=0;
 	else
 	{	int mipToDrop=MipLevels-WW3D::Get_Texture_Min_Mip_Levels();
-		if (ReductionFactor >= mipToDrop)
-			ReductionFactor=mipToDrop;
+		if ((int)ReductionFactor >= mipToDrop)
+			ReductionFactor= (unsigned int)mipToDrop;
 	}
 
 	if (MipLevels>ReductionFactor) MipLevels-=ReductionFactor;
@@ -97,7 +97,8 @@ DDSFileClass::DDSFileClass(const char* name,unsigned reduction_factor)
 
 	LevelSizes=W3DNEWARRAY unsigned[MipLevels];
 	LevelOffsets=W3DNEWARRAY unsigned[MipLevels];
-	for (unsigned level=0;level<ReductionFactor;++level) {
+	unsigned level = 0;
+	for (;level<ReductionFactor;++level) {
 //		level_offset+=level_size;
 		if (level_size>16) {	// If surface is bigger than one block (8 or 16 bytes)...
 			level_size/=4;

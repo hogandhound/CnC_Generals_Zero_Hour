@@ -848,7 +848,7 @@ FXListStore::~FXListStore()
 //-------------------------------------------------------------------------------------------------
 const FXList *FXListStore::findFXList(const char* name) const
 {
-	if (stricmp(name, "None") == 0)
+	if (_stricmp(name, "None") == 0)
 		return NULL;
 
   FXListMap::const_iterator it = m_fxmap.find(NAMEKEY(name));

@@ -109,7 +109,7 @@ RailroadBehavior::RailroadBehavior( Thing *thing, const ModuleData *moduleData )
 {
 	const RailroadBehaviorModuleData *modData = getRailroadBehaviorModuleData();
 
-	m_carriageTemplateNameIterator = 0;
+	m_carriageTemplateNameIterator = {};
 
 	m_nextStationTask = DO_NOTHING;
 	m_trailerID = INVALID_ID;
@@ -275,7 +275,7 @@ void RailroadBehavior::onCollide( Object *other, const Coord3D *loc, const Coord
 		DemoTrapUpdate *dtu = (DemoTrapUpdate*)other->findUpdateModule(key_DemoTrapUpdate);
 		if( dtu )
 		{
-			if( ! BitTest( other-> getStatusBits(), OBJECT_STATUS_UNDER_CONSTRUCTION ) )
+			if( ! BitTestWW( other-> getStatusBits(), OBJECT_STATUS_UNDER_CONSTRUCTION ) )
 				obj->kill(); // it can only detonate on me if it is ready
 
 			playImpactSound(other, other->getPosition());

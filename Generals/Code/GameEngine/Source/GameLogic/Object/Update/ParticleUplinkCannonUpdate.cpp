@@ -278,7 +278,7 @@ void ParticleUplinkCannonUpdate::initiateIntentToDoSpecialPower(const SpecialPow
 		return;
 	}
 
-	if( !BitTest( commandOptions, COMMAND_FIRED_BY_SCRIPT ) )
+	if( !BitTestWW( commandOptions, COMMAND_FIRED_BY_SCRIPT ) )
 	{
 		//All human players have manual control and must "drive" the beam around!
 		m_startAttackFrame = TheGameLogic->getFrame();
@@ -727,7 +727,7 @@ void ParticleUplinkCannonUpdate::createOuterNodeParticleSystems( IntensityTypes 
 		if( tmp )
 		{
 			ParticleSystem *system;
-			for( int i = 0; i < data->m_outerEffectNumBones; i++ )
+			for( int i = 0; i < (int)data->m_outerEffectNumBones; i++ )
 			{
 				system = TheParticleSystemManager->createParticleSystem( tmp );
 				if( system )
@@ -772,7 +772,7 @@ void ParticleUplinkCannonUpdate::createConnectorLasers( IntensityTypes intensity
 		const ThingTemplate *thingTemplate = TheThingFactory->findTemplate( str );
 		if( thingTemplate )
 		{
-			for( int i = 0; i < data->m_outerEffectNumBones; i++ )
+			for( int i = 0; i < (int)data->m_outerEffectNumBones; i++ )
 			{
 				Drawable *beam = TheThingFactory->newDrawable( thingTemplate );
 				if( beam )
@@ -948,7 +948,7 @@ void ParticleUplinkCannonUpdate::createGroundHitParticleSystem( IntensityTypes i
 void ParticleUplinkCannonUpdate::removeAllEffects()
 {
 	const ParticleUplinkCannonUpdateModuleData *data = getParticleUplinkCannonUpdateModuleData();
-	for( int i = 0; i < data->m_outerEffectNumBones; i++ )
+	for( int i = 0; i < (int)data->m_outerEffectNumBones; i++ )
 	{
 		if( m_outerSystemIDs && m_outerSystemIDs[ i ] )
 		{
@@ -1001,7 +1001,7 @@ Bool ParticleUplinkCannonUpdate::calculateDefaultInformation()
 		return false;
 	}
 
-	for( int i = 0; i < data->m_outerEffectNumBones; i++ )
+	for( int i = 0; i < (int)data->m_outerEffectNumBones; i++ )
 	{
 		m_laserBeamIDs[ i ] = INVALID_DRAWABLE_ID;
 		m_outerSystemIDs[ i ] = INVALID_PARTICLE_SYSTEM_ID;

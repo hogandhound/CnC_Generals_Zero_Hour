@@ -118,7 +118,7 @@ void INI::parseWebpageURLDefinition( INI* ini )
 	if (url->m_url.startsWith("file://"))
 	{
 		char cwd[_MAX_PATH] = "\\";
-		getcwd(cwd, _MAX_PATH);
+		_getcwd(cwd, _MAX_PATH);
 
 		url->m_url.format("file://%s\\Data\\%s\\%s", encodeURL(cwd).str(), GetRegistryLanguage().str(), url->m_url.str()+7);
 		DEBUG_LOG(("INI::parseWebpageURLDefinition() - converted URL to [%s]\n", url->m_url.str()));

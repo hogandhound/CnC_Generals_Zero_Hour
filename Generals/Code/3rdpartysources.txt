@@ -1,0 +1,5 @@
+NVASM
+https://web.archive.org/web/20061006093538/http://developer.nvidia.com/object/nvasm.html
+
+GameSpy
+https://github.com/GameProgressive/UniSpySDK

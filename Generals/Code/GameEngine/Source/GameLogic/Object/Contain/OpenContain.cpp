@@ -1483,7 +1483,7 @@ void OpenContain::xfer( Xfer *xfer )
 	xfer->xferBool( &m_rallyPointExists );
 
 	// enter exit map info
-	UnsignedShort enterExitCount = m_objectEnterExitInfo.size();
+	UnsignedShort enterExitCount = (uint16_t)m_objectEnterExitInfo.size();
 	xfer->xferUnsignedShort( &enterExitCount );
 	ObjectEnterExitType enterExitType;
 	if( xfer->getXferMode() == XFER_SAVE )

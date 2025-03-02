@@ -282,7 +282,7 @@ Object::Object( const ThingTemplate *tt, ObjectStatusBits statusBits, Team *team
 
 	// allocate the publicModule arrays
 // pool[]ify
-	m_behaviors = MSGNEW("ModulePtrs") BehaviorModule*[totalModules + 1];
+	m_behaviors = new BehaviorModule*[totalModules + 1];
 	BehaviorModule** curB = m_behaviors;
 
 	// set m_team to null before the first call, to avoid naughtiness...
@@ -1673,7 +1673,7 @@ void Object::attemptDamage( DamageInfo *damageInfo )
 	if( damageInfo->out.m_actualDamageDealt > 0.0f &&
 			damageInfo->in.m_damageType != DAMAGE_PENALTY &&
 			damageInfo->in.m_damageType != DAMAGE_HEALING &&
-			!BitTest(damageInfo->in.m_sourcePlayerMask, getControllingPlayer()->getPlayerMask()) && 
+			!BitTestWW(damageInfo->in.m_sourcePlayerMask, getControllingPlayer()->getPlayerMask()) && 
 			m_radarData != NULL &&
 			getControllingPlayer() == ThePlayerList->getLocalPlayer() )
 		TheRadar->tryUnderAttackEvent( this );
@@ -3888,7 +3888,7 @@ void Object::loadPostProcess()
 //-------------------------------------------------------------------------------------------------
 Bool Object::hasUpgrade( const UpgradeTemplate *upgradeT ) const 
 {
-	return BitTest( m_objectUpgradesCompleted, upgradeT->getUpgradeMask() );
+	return BitTestWW( m_objectUpgradesCompleted, upgradeT->getUpgradeMask() );
 }  // end hasUpgrade
 
 //-------------------------------------------------------------------------------------------------

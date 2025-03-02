@@ -738,7 +738,7 @@ void userMemoryManagerInitPools()
 			{
 				for (PoolSizeRec* p = sizes; p->name != NULL; ++p)
 				{
-					if (stricmp(p->name, poolName) == 0)
+					if (_stricmp(p->name, poolName) == 0)
 					{
 						// currently, these must be multiples of 4. so round up.
 						p->initial = roundUpMemBound(initial);

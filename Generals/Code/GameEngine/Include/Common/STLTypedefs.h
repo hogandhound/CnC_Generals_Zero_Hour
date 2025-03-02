@@ -70,7 +70,7 @@ enum DrawableID;
 
 #include <algorithm>
 #include <bitset>
-#include <hash_map>
+#include <unordered_map>
 #include <list>
 #include <map>
 #include <queue>

@@ -774,7 +774,8 @@ void ActiveBody::createParticleSystems( const AsciiString &boneBaseName,
 
 		// find the actual bone location to use and mark that bone index as used
 		Int count = 0;
-		for( Int j = 0; j < numBones; j++ )
+		Int j = 0;
+		for( ; j < numBones; j++ )
 		{
 
 			// ignore bone positions that have already been used
@@ -991,7 +992,7 @@ void ActiveBody::internalChangeHealth( Real delta )
 		// for damage states when things are under construction because we just don't have
 		// all the art states for that during buildup animation
 		//
-		if( BitTest( getObject()->getStatusBits(), OBJECT_STATUS_UNDER_CONSTRUCTION ) == FALSE)
+		if( BitTestWW( getObject()->getStatusBits(), OBJECT_STATUS_UNDER_CONSTRUCTION ) == FALSE)
 			evaluateVisualCondition();
 
 	}  // end if

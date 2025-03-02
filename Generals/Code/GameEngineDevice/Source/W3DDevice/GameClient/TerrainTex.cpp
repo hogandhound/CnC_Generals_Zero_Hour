@@ -862,8 +862,8 @@ int AlphaEdgeTextureClass::update(WorldHeightMap *htMap)
 #if 1
 #if 1
 		Int cellX, cellY;
-		for (cellX = 0; (UnsignedInt)cellX < surface_desc.Width; cellX++) {
-			for (cellY = 0; cellY < surface_desc.Height; cellY++) {
+		for (cellX = 0; (UnsignedInt)cellX < (int)surface_desc.Width; cellX++) {
+			for (cellY = 0; cellY < (int)surface_desc.Height; cellY++) {
 				UnsignedByte *pBGR = ((UnsignedByte *)locked_rect.pBits)+(cellY*surface_desc.Width+cellX)*4;
 				pBGR[2] = 255-cellY/2;
 				pBGR[0] = cellX/2;

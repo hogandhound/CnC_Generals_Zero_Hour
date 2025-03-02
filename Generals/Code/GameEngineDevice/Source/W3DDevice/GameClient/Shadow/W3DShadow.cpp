@@ -109,8 +109,8 @@ W3DShadowManager::W3DShadowManager( void )
 
 	LightPosWorld[0]=lightRay*SUN_DISTANCE_FROM_GROUND;
 
-	TheW3DVolumetricShadowManager = NEW W3DVolumetricShadowManager;
-	TheProjectedShadowManager = TheW3DProjectedShadowManager = NEW W3DProjectedShadowManager;
+	TheW3DVolumetricShadowManager = new W3DVolumetricShadowManager;
+	TheProjectedShadowManager = TheW3DProjectedShadowManager = new W3DProjectedShadowManager;
 }
 
 W3DShadowManager::~W3DShadowManager( void )

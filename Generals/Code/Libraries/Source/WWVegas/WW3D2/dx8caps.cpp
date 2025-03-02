@@ -41,19 +41,19 @@
 #include "dx8wrapper.h"
 #include "formconv.h"
 
-D3DCAPS8 DX8Caps::hwVPCaps;
-D3DCAPS8 DX8Caps::swVPCaps;
-bool DX8Caps::UseTnL;	
-bool DX8Caps::SupportDOT3;
-bool DX8Caps::SupportDXTC;
-bool DX8Caps::supportGamma;
-bool DX8Caps::SupportNPatches;
-bool DX8Caps::SupportBumpEnvmap;
-bool DX8Caps::SupportBumpEnvmapLuminance;
-bool DX8Caps::SupportTextureFormat[WW3D_FORMAT_COUNT];
-int DX8Caps::VertexShaderVersion;
-int DX8Caps::PixelShaderVersion;
-int DX8Caps::MaxSimultaneousTextures;
+//D3DCAPS8 DX8Caps::hwVPCaps;
+//D3DCAPS8 DX8Caps::swVPCaps;
+//bool DX8Caps::UseTnL;	
+//bool DX8Caps::SupportDOT3;
+//bool DX8Caps::SupportDXTC;
+//bool DX8Caps::supportGamma;
+//bool DX8Caps::SupportNPatches;
+//bool DX8Caps::SupportBumpEnvmap;
+//bool DX8Caps::SupportBumpEnvmapLuminance;
+//bool DX8Caps::SupportTextureFormat[WW3D_FORMAT_COUNT];
+//int DX8Caps::VertexShaderVersion;
+//int DX8Caps::PixelShaderVersion;
+//int DX8Caps::MaxSimultaneousTextures;
 
 enum {
 	VENDOR_ID_NVIDIA=0x10de,

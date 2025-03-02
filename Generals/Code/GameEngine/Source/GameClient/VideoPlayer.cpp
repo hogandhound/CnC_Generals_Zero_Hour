@@ -78,7 +78,9 @@
 //         Public Data                                                      
 //----------------------------------------------------------------------------
 
+#ifdef HAS_BINK
 VideoPlayerInterface *TheVideoPlayer = NULL;
+#endif
 
 //----------------------------------------------------------------------------
 //         Private Prototypes                                               
@@ -341,7 +343,7 @@ void VideoPlayer::removeVideo( Video* videoToRemove )
 //============================================================================
 Int VideoPlayer::getNumVideos( void )
 {
-	return mVideosAvailableForPlay.size();
+	return (int)mVideosAvailableForPlay.size();
 }
 
 //============================================================================

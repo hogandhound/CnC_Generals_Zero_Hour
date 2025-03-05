@@ -1280,7 +1280,7 @@ void OptionsMenuInit( WindowLayout *layout, void *userData )
 	OptionsLayout = layout;
 	if (!pref)
 	{
-		pref = NEW OptionPreferences;
+		pref = new OptionPreferences;
 	}
 
 	SignalUIInteraction(SHELL_SCRIPT_HOOK_OPTIONS_OPENED);

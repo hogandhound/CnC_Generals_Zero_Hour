@@ -1795,7 +1795,9 @@ AGAIN:
 
 				if ( m_videoStream && m_videoBuffer )
 				{
+#ifdef HAS_BINK
 					drawVideoBuffer( m_videoBuffer, 0, 0, getWidth(), getHeight() );
+#endif
 				}
 				if( m_copyrightDisplayString )
 				{
@@ -2655,7 +2657,7 @@ void W3DDisplay::drawImage( const Image *image, Int startX, Int startY,
 //============================================================================
 // W3DDisplay::createVideoBuffer
 //============================================================================
-
+#ifdef HAS_BINK
 VideoBuffer*	W3DDisplay::createVideoBuffer( void )
 {
 	VideoBuffer::Type format = VideoBuffer::TYPE_UNKNOWN;
@@ -2721,6 +2723,7 @@ void W3DDisplay::drawVideoBuffer( VideoBuffer *buffer, Int startX, Int startY, I
 	m_2DRender->Render();
 
 }
+#endif
 
 // W3DDisplay::setClipRegion ============================================
 /** Set the clipping region for images.

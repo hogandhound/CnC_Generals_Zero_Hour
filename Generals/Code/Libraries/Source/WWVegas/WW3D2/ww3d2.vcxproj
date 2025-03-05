@@ -532,7 +532,7 @@
     </Bscmake>
     <Lib>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\..\Lib\ww3d2Debug.lib</OutputFile>
+      <OutputFile>$(SolutionDir)\Libraries\Lib\ww3d2Debug.lib</OutputFile>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

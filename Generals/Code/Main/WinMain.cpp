@@ -776,7 +776,7 @@ static char* strtrim(char* buffer)
 		}
 
 		//	Clip trailing white space from the string.
-		for (int index = strlen(buffer)-1; index >= 0; index--)
+		for (int index = (int)strlen(buffer)-1; index >= 0; index--)
 		{
 			if ((*source != 0) && ((unsigned char)buffer[index] <= 32))
 			{
@@ -858,7 +858,7 @@ Int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	try {
 
-		_set_se_translator( DumpExceptionInfo ); // Hook that allows stack trace.
+		//_set_se_translator( DumpExceptionInfo ); // Hook that allows stack trace.
 		//
 		// there is something about checkin in and out the .dsp and .dsw files 
 		// that blows the working directory information away on each of the 
@@ -901,7 +901,7 @@ Int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		while (argc < 20 && token != NULL) {
 			argv[argc++] = strtrim(token);
 			//added a preparse step for this flag because it affects window creation style
-			if (stricmp(token,"-win")==0)
+			if (_stricmp(token,"-win")==0)
 				ApplicationIsWindowed=true;
 			token = nextParam(NULL, "\" ");	   
 		}
@@ -916,7 +916,7 @@ Int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				char name[_MAX_PATH], file[_MAX_PATH];
 				unsigned int line;
 				unsigned int addr;
-				GetFunctionDetails((void*)pc, name, file, &line, &addr);
+				GetFunctionDetails((void*)(intptr_t)pc, name, file, &line, &addr);
 				DEBUG_LOG(("0x%x - %s, %s, line %d address 0x%x\n", pc, name, file, line, addr));
 			}
 			DEBUG_LOG(("\n--- END OF DX STACK DUMP\n"));

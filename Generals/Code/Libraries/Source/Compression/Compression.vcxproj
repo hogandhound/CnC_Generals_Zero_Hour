@@ -185,7 +185,7 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_LIB;Z_PREFIX;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -348,14 +348,9 @@
     <ClCompile Include="ZLib\compress.c" />
     <ClCompile Include="ZLib\crc32.c" />
     <ClCompile Include="ZLib\deflate.c" />
-    <ClCompile Include="ZLib\gzio.c" />
-    <ClCompile Include="ZLib\infblock.c" />
-    <ClCompile Include="ZLib\infcodes.c" />
     <ClCompile Include="ZLib\inffast.c" />
     <ClCompile Include="ZLib\inflate.c" />
     <ClCompile Include="ZLib\inftrees.c" />
-    <ClCompile Include="ZLib\infutil.c" />
-    <ClCompile Include="ZLib\maketree.c" />
     <ClCompile Include="ZLib\trees.c" />
     <ClCompile Include="ZLib\uncompr.c" />
     <ClCompile Include="ZLib\zutil.c" />

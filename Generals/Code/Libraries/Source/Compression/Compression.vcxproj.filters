@@ -41,15 +41,6 @@
     <ClCompile Include="ZLib\deflate.c">
       <Filter>Source Files\Zlib</Filter>
     </ClCompile>
-    <ClCompile Include="ZLib\gzio.c">
-      <Filter>Source Files\Zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="ZLib\infblock.c">
-      <Filter>Source Files\Zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="ZLib\infcodes.c">
-      <Filter>Source Files\Zlib</Filter>
-    </ClCompile>
     <ClCompile Include="ZLib\inffast.c">
       <Filter>Source Files\Zlib</Filter>
     </ClCompile>
@@ -57,12 +48,6 @@
       <Filter>Source Files\Zlib</Filter>
     </ClCompile>
     <ClCompile Include="ZLib\inftrees.c">
-      <Filter>Source Files\Zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="ZLib\infutil.c">
-      <Filter>Source Files\Zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="ZLib\maketree.c">
       <Filter>Source Files\Zlib</Filter>
     </ClCompile>
     <ClCompile Include="ZLib\trees.c">

@@ -1519,6 +1519,7 @@ void InGameUI::update( void )
 	//USE_PERF_TIMER(InGameUI_update)
 	Int i;
 
+#ifdef HAS_BINK
 	/// @todo make sure this code gets called even when the UI is not being drawn
 	if ( m_videoStream && m_videoBuffer )
 	{
@@ -1547,6 +1548,7 @@ void InGameUI::update( void )
 //			}
 		}
 	}
+#endif
 
 	//
 	// remove any message strings that have expired, note that the oldest strings are
@@ -3701,6 +3703,7 @@ void InGameUI::playMovie( const AsciiString& movieName )
 
 	stopMovie();
 
+#ifdef HAS_BINK
 	m_videoStream = TheVideoPlayer->open( movieName );
 
 	if ( m_videoStream == NULL )
@@ -3719,12 +3722,14 @@ void InGameUI::playMovie( const AsciiString& movieName )
 		stopMovie();
 		return;
 	}
+#endif
 }
 
 // ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
 void InGameUI::stopMovie( void )
 {
+#ifdef HAS_BINK
 	delete m_videoBuffer;
 	m_videoBuffer = NULL;
 
@@ -3738,6 +3743,7 @@ void InGameUI::stopMovie( void )
 		//TheScriptEngine->notifyOfCompletedVideo(m_currentlyPlayingMovie); // removing sync error source -MDC
 		m_currentlyPlayingMovie = AsciiString::TheEmptyString;
 	}
+#endif
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -3756,6 +3762,7 @@ void InGameUI::playCameoMovie( const AsciiString& movieName )
 
 	stopCameoMovie();
 
+#ifdef HAS_BINK
 	m_cameoVideoStream = TheVideoPlayer->open( movieName );
 
 	if ( m_cameoVideoStream == NULL )
@@ -3776,6 +3783,7 @@ void InGameUI::playCameoMovie( const AsciiString& movieName )
 	GameWindow *window = TheWindowManager->winGetWindowFromId(NULL,TheNameKeyGenerator->nameToKey( AsciiString("ControlBar.wnd:RightHUD") ));
 	WinInstanceData *winData = window->winGetInstanceData();
 	winData->setVideoBuffer(m_cameoVideoBuffer);
+#endif
 //	window->winHide(FALSE);
 }
 
@@ -3789,7 +3797,8 @@ void InGameUI::stopCameoMovie( void )
 //	window->winHide(FALSE);
 	WinInstanceData *winData = window->winGetInstanceData();
 	winData->setVideoBuffer(NULL);
-	
+
+#ifdef HAS_BINK
 	delete m_cameoVideoBuffer;
 	m_cameoVideoBuffer = NULL;
 
@@ -3798,7 +3807,7 @@ void InGameUI::stopCameoMovie( void )
 		m_cameoVideoStream->close();
 		m_cameoVideoStream = NULL;
 	}
-	
+#endif
 }
 
 // ------------------------------------------------------------------------------------------------

@@ -385,7 +385,9 @@ void W3DGameWinDefaultDraw( GameWindow *window, WinInstanceData *instData )
 		window->winGetScreenPosition( &pos.x, &pos.y );
 		window->winGetSize( &size.x, &size.y );
 
+#ifdef HAS_BINK
 		TheDisplay->drawVideoBuffer( instData->m_videoBuffer, pos.x, pos.y, pos.x + size.x, pos.y + size.y );
+#endif
 	}
 
 }  // end W3DGameWinDefaultDraw

@@ -306,8 +306,8 @@ Int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	initSubsystem(TheScriptEngine, (ScriptEngine*)(new ScriptEngine()));
 #ifdef HAS_BINK
 	initSubsystem(TheAudio, (AudioManager*)new MilesAudioManager());
-#endif
 	initSubsystem(TheVideoPlayer, (VideoPlayerInterface*)(new VideoPlayer()));
+#endif
 	initSubsystem(TheModuleFactory, (ModuleFactory*)(new W3DModuleFactory()));
 	initSubsystem(TheSidesList, new SidesList());
 	initSubsystem(TheCaveSystem, new CaveSystem());

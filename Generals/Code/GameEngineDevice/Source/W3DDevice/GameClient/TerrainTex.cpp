@@ -53,6 +53,7 @@
 #include "common/GlobalData.h"
 #include "WW3D2/dx8wrapper.h"
 #include "d3dx8tex.h"
+#include "DirectXMath.h"
 
 /******************************************************************************
 						TerrainTextureClass
@@ -791,11 +792,10 @@ void LightMapTerrainTextureClass::Apply(unsigned int stage)
 	DX8Wrapper::_Get_DX8_Transform(D3DTS_VIEW, curView);
 
 
-	D3DXMATRIX inv;
-	float det;
-	D3DXMatrixInverse(&inv, &det, (D3DXMATRIX*)&curView);
-	D3DXMATRIX scale;
-	D3DXMatrixScaling(&scale, STRETCH_FACTOR, STRETCH_FACTOR,1);
+	DirectX::XMMATRIX inv;
+	inv = DirectX::XMMatrixInverse(nullptr, *(DirectX::XMMATRIX*)&curView);
+	DirectX::XMMATRIX scale;
+	scale = DirectX::XMMatrixScaling(STRETCH_FACTOR, STRETCH_FACTOR,1);
 	inv *=scale;
 	if (stage==0) {
 		DX8Wrapper::_Set_DX8_Transform(D3DTS_TEXTURE0, *((Matrix4*)&inv));
@@ -1041,13 +1041,12 @@ void CloudMapTerrainTextureClass::Apply(unsigned int stage)
 	DX8Wrapper::_Get_DX8_Transform(D3DTS_VIEW, curView);
 
 
-	D3DXMATRIX inv;
-	float det;
-	D3DXMatrixInverse(&inv, &det, (D3DXMATRIX*)&curView);
-	D3DXMATRIX scale;
-	D3DXMatrixScaling(&scale, STRETCH_FACTOR, STRETCH_FACTOR,1);
+	DirectX::XMMATRIX inv;
+	inv = DirectX::XMMatrixInverse(nullptr, *(DirectX::XMMATRIX*)&curView);
+	DirectX::XMMATRIX scale;
+	scale = DirectX::XMMatrixScaling(STRETCH_FACTOR, STRETCH_FACTOR,1);
 	inv *=scale;
-	D3DXMATRIX offset;
+	DirectX::XMMATRIX offset;
 
 	Int delta = m_curTick;
 	m_curTick = ::GetTickCount();
@@ -1061,7 +1060,7 @@ void CloudMapTerrainTextureClass::Apply(unsigned int stage)
 	if (m_yOffset < -1) m_yOffset += 1;
 
 
-	D3DXMatrixTranslation(&offset, m_xOffset, m_yOffset,0);
+	offset = DirectX::XMMatrixTranslation(m_xOffset, m_yOffset,0);
 
 	inv *= offset;
 

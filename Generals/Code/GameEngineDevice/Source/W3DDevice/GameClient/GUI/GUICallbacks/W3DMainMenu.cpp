@@ -739,10 +739,12 @@ void W3DMainMenuButtonDropShadowDraw( GameWindow *window,
 
 
 	// if we have a video buffer, draw the video buffer
+#ifdef HAS_BINK
 	if ( instData->m_videoBuffer )
 	{
 		TheDisplay->drawVideoBuffer( instData->m_videoBuffer, start.x, start.y, start.x + size.x, start.y + size.y );
 	}
+#endif
 	PushButtonData *pData = (PushButtonData *)window->winGetUserData();
 	if( pData )
 	{

@@ -339,7 +339,9 @@ void GameEngine::init( int argc, char *argv[] )
 		initSubsystem(TheTerrainRoads, "TheTerrainRoads", new  TerrainRoadCollection(), &xferCRC, "Data\\INI\\Default\\Roads.ini", "Data\\INI\\Roads.ini");
 		initSubsystem(TheGlobalLanguageData,"TheGlobalLanguageData",new GlobalLanguage, NULL); // must be before the game text
 		initSubsystem(TheCDManager,"TheCDManager", CreateCDManager(), NULL);
+#ifdef HAS_BINK
 		initSubsystem(TheAudio,"TheAudio", createAudioManager(), NULL);
+#endif
 		if (!TheAudio->isMusicAlreadyLoaded())
 			setQuitting(TRUE);
 		initSubsystem(TheFunctionLexicon,"TheFunctionLexicon", createFunctionLexicon(), NULL);

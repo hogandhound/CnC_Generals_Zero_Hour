@@ -49,7 +49,7 @@
 #include "Lib/BaseType.h"
 #include "W3DDevice/GameClient/W3DGranny.h"
 #include "W3DDevice/GameClient/Heightmap.h"
-#include "D3dx8math.h"
+#include "DirectXMath.h"
 #include "common/GlobalData.h"
 #include "common/drawmodule.h"
 #include "W3DDevice/GameClient/W3DVolumetricShadow.h"
@@ -1956,8 +1956,7 @@ void W3DVolumetricShadow::updateMeshVolume(Int meshIndex, Int lightIndex, const 
 		// care only about the rotation of components for the coordinate
 		// system change, not the translations
 		//
-		Real det;
-		D3DXMatrixInverse((D3DXMATRIX*)&worldToObject, &det, (D3DXMATRIX*)&objectToWorld);
+		worldToObject = *(Matrix4*) & DirectX::XMMatrixInverse(nullptr, *(DirectX::XMMATRIX*)&objectToWorld);
 
 		// find out light position in object space
 		Matrix4::Transform_Vector(worldToObject,lightPosWorld,&lightPosObject);
@@ -3245,7 +3244,7 @@ void W3DVolumetricShadowManager::renderStencilShadows( void )
 		return;	//need device to render anything.
 
 	struct _TRANSLITVERTEX {
-	    D3DXVECTOR4 p;
+	    DirectX::XMVECTOR p;
 		DWORD color;   // diffuse color    
 	} v[4];
 
@@ -3255,10 +3254,10 @@ void W3DVolumetricShadowManager::renderStencilShadows( void )
 	width=TheTacticalView->getWidth();
 	height=TheTacticalView->getHeight();
 
-    v[0].p = D3DXVECTOR4( xpos+width, ypos+height, 0.0f, 1.0f );
-    v[1].p = D3DXVECTOR4( xpos+width, 0, 0.0f, 1.0f );
-    v[2].p = D3DXVECTOR4(  xpos, ypos+height, 0.0f, 1.0f );
-    v[3].p = D3DXVECTOR4(  xpos,  0, 0.0f, 1.0f );
+	v[0].p = DirectX::XMVECTOR{ (float)xpos + width, (float)ypos + height, 0.0f, 1.0f };
+	v[1].p = DirectX::XMVECTOR{ (float)xpos + width, 0, 0.0f, 1.0f };
+	v[2].p = DirectX::XMVECTOR{ (float)xpos, (float)ypos + height, 0.0f, 1.0f };
+	v[3].p = DirectX::XMVECTOR{ (float)xpos,  0, 0.0f, 1.0f };
     v[0].color = TheW3DShadowManager->getShadowColor();
     v[1].color = TheW3DShadowManager->getShadowColor();
     v[2].color = TheW3DShadowManager->getShadowColor();

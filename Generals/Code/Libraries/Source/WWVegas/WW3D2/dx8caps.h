@@ -51,13 +51,13 @@ class DX8Caps
 {
 public:
 	static void Compute_Caps(D3DFORMAT display_format, D3DFORMAT depth_stencil_format, IDirect3DDevice8* D3DDevice);
-	static bool Use_TnL() { return UseTnL; };	
-	static bool Support_DXTC() { return SupportDXTC; }
-	static bool Support_Gamma() { return supportGamma; }
-	static bool Support_NPatches() { return SupportNPatches; }
-	static bool Support_DOT3() { return SupportDOT3; }
-	static bool	Support_Bump_Envmap() { return SupportBumpEnvmap; }
-	static bool	Support_Bump_Envmap_Luminance() { return SupportBumpEnvmapLuminance; }
+	static bool Use_TnL();// { return DX8Caps::UseTnL; };
+	static bool Support_DXTC();// { return DX8Caps::SupportDXTC; }
+	static bool Support_Gamma();// { return DX8Caps::supportGamma; }
+	static bool Support_NPatches();// { return DX8Caps::SupportNPatches; }
+	static bool Support_DOT3();// { return DX8Caps::SupportDOT3; }
+	static bool	Support_Bump_Envmap();// { return DX8Caps::SupportBumpEnvmap; }
+	static bool	Support_Bump_Envmap_Luminance();// { return DX8Caps::SupportBumpEnvmapLuminance; }
 
 	// -------------------------------------------------------------------------
 	//
@@ -66,17 +66,17 @@ public:
 	//
 	// -------------------------------------------------------------------------
 
-	static int Get_Vertex_Shader_Majon_Version() { return 0xff&(VertexShaderVersion>>8); }
-	static int Get_Vertex_Shader_Minor_Version() { return 0xff&(VertexShaderVersion); }
-	static int Get_Pixel_Shader_Majon_Version() { return 0xff&(PixelShaderVersion>>8); }
-	static int Get_Pixel_Shader_Minor_Version() { return 0xff&(PixelShaderVersion); }
-	static int Get_Max_Simultaneous_Textures()	{ return MaxSimultaneousTextures;}
+	static int Get_Vertex_Shader_Majon_Version();// { return 0xff & (DX8Caps::VertexShaderVersion >> 8); }
+	static int Get_Vertex_Shader_Minor_Version();// { return 0xff & (DX8Caps::VertexShaderVersion); }
+	static int Get_Pixel_Shader_Majon_Version();// { return 0xff & (DX8Caps::PixelShaderVersion >> 8); }
+	static int Get_Pixel_Shader_Minor_Version();// { return 0xff & (DX8Caps::PixelShaderVersion); }
+	static int Get_Max_Simultaneous_Textures();// { return DX8Caps::MaxSimultaneousTextures; }
 
-	static bool Support_Texture_Format(WW3DFormat format) { return SupportTextureFormat[format]; }
+	static bool Support_Texture_Format(WW3DFormat format);// { return DX8Caps::SupportTextureFormat[format]; }
 
-	static D3DCAPS8 const & Get_HW_VP_Caps() { return hwVPCaps; };
-	static D3DCAPS8 const & Get_SW_VP_Caps() { return swVPCaps; };
-	static D3DCAPS8 const & Get_Default_Caps() { return (UseTnL?hwVPCaps:swVPCaps); };
+	static D3DCAPS8 const& Get_HW_VP_Caps();// { return DX8Caps::hwVPCaps; };
+	static D3DCAPS8 const& Get_SW_VP_Caps();// { return DX8Caps::swVPCaps; };
+	static D3DCAPS8 const& Get_Default_Caps();// { return (DX8Caps::UseTnL ? DX8Caps::hwVPCaps : DX8Caps::swVPCaps); };
 
 private:
 	static void Init_Caps(IDirect3DDevice8* D3DDevice);
@@ -87,19 +87,6 @@ private:
 	static void Check_Maximum_Texture_Support(const D3DCAPS8& caps);
 	static void Vendor_Specific_Hacks(const D3DADAPTER_IDENTIFIER8& adapter_id);
 
-	static D3DCAPS8 hwVPCaps;
-	static D3DCAPS8 swVPCaps;
-	static bool UseTnL;	
-	static bool SupportDXTC;
-	static bool supportGamma;
-	static bool SupportNPatches;
-	static bool SupportDOT3;
-	static bool SupportBumpEnvmap;
-	static bool SupportBumpEnvmapLuminance;
-	static bool SupportTextureFormat[WW3D_FORMAT_COUNT];
-	static int VertexShaderVersion;
-	static int PixelShaderVersion;
-	static int MaxSimultaneousTextures;
 };
 
 #endif

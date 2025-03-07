@@ -83,7 +83,7 @@
 #include "rinfo.h"
 #include "camera.h"
 #include "dx8fvf.h"
-#include "D3DXMath.h"
+#include "DirectXMath.h"
 #include "sortingrenderer.h"
 
 // Upgraded to DX8 2/2/01 HY
@@ -115,8 +115,10 @@ Vector3 PointGroupClass::_ScreenspaceVertexLocationSizeTable[2][3] =
 };
 
 // useful for particles that aren't aligned with the screen.
-static Vector3 GroundMultiplierX(1.0f, 0.0f, 0.0f);
-static Vector3 GroundMultiplierY(0.0f, 1.0f, 0.0f);
+//static Vector3 GroundMultiplierX(1.0f, 0.0f, 0.0f);
+//static Vector3 GroundMultiplierY(0.0f, 1.0f, 0.0f);
+static DirectX::XMVECTORF32 GroundMultiplierX = { 1.0f, 0.0f, 0.0f, 0.f };
+static DirectX::XMVECTORF32 GroundMultiplierY = { 0.0f, 1.0f, 0.0f, 0.f };
 
 // Some internal variables
 VectorClass<Vector3>			VertexLoc;		// camera-space vertex locations
@@ -1205,26 +1207,26 @@ void PointGroupClass::Update_Arrays(
 				for (i = 0; i < active_points; i++) {
 					if (!Billboard) {
 						// If we're not billboarding, then the coordinate we have is in screen space.
-						Matrix4 rotMat;
-						D3DXMatrixRotationZ(&(D3DXMATRIX&) rotMat, ((float)point_orientation[i] / 255.0f * 2 * D3DX_PI));
-						
-						Vector4 orientedVecX = rotMat * GroundMultiplierX;
-						Vector4 orientedVecY = rotMat * GroundMultiplierY;
+						DirectX::XMMATRIX rotMat;
+						rotMat = DirectX::XMMatrixRotationZ(((float)point_orientation[i] / 255.0f * 2 * DirectX::XM_PI));
 
-						vertex_loc[vert + 0].X = point_loc[i].X +	(orientedVecX.X + orientedVecY.X) * point_size[i];
-						vertex_loc[vert + 0].Y = point_loc[i].Y +	(orientedVecX.Y + orientedVecY.Y) * point_size[i];
+						DirectX::XMVECTOR orientedVecX = DirectX::XMVector4Transform(GroundMultiplierX, rotMat);
+						DirectX::XMVECTOR orientedVecY = DirectX::XMVector4Transform(GroundMultiplierY, rotMat);
+
+						vertex_loc[vert + 0].X = point_loc[i].X +	(orientedVecX.m128_f32[0] + orientedVecY.m128_f32[0]) * point_size[i];
+						vertex_loc[vert + 0].Y = point_loc[i].Y +	(orientedVecX.m128_f32[1] + orientedVecY.m128_f32[1]) * point_size[i];
 						vertex_loc[vert + 0].Z = point_loc[i].Z;
 
-						vertex_loc[vert + 1].X = point_loc[i].X +	(orientedVecX.X - orientedVecY.X) * point_size[i];
-						vertex_loc[vert + 1].Y = point_loc[i].Y +	(orientedVecX.Y - orientedVecY.Y) * point_size[i];
+						vertex_loc[vert + 1].X = point_loc[i].X +	(orientedVecX.m128_f32[0] - orientedVecY.m128_f32[0]) * point_size[i];
+						vertex_loc[vert + 1].Y = point_loc[i].Y +	(orientedVecX.m128_f32[1] - orientedVecY.m128_f32[1]) * point_size[i];
 						vertex_loc[vert + 1].Z = point_loc[i].Z;
 
-						vertex_loc[vert + 2].X = point_loc[i].X +	-(orientedVecX.X + orientedVecY.X) * point_size[i];
-						vertex_loc[vert + 2].Y = point_loc[i].Y +	-(orientedVecX.Y + orientedVecY.Y) * point_size[i];
+						vertex_loc[vert + 2].X = point_loc[i].X +	-(orientedVecX.m128_f32[0] + orientedVecY.m128_f32[0]) * point_size[i];
+						vertex_loc[vert + 2].Y = point_loc[i].Y +	-(orientedVecX.m128_f32[1] + orientedVecY.m128_f32[1]) * point_size[i];
 						vertex_loc[vert + 2].Z = point_loc[i].Z;
 
-						vertex_loc[vert + 3].X = point_loc[i].X +	(-orientedVecX.X + orientedVecY.X) * point_size[i];
-						vertex_loc[vert + 3].Y = point_loc[i].Y +	(-orientedVecX.Y + orientedVecY.Y) * point_size[i];
+						vertex_loc[vert + 3].X = point_loc[i].X +	(-orientedVecX.m128_f32[0] + orientedVecY.m128_f32[0]) * point_size[i];
+						vertex_loc[vert + 3].Y = point_loc[i].Y +	(-orientedVecX.m128_f32[1] + orientedVecY.m128_f32[1]) * point_size[i];
 						vertex_loc[vert + 3].Z = point_loc[i].Z;
 
 						// now apply the view transform so that this data is in the format expected

@@ -23,7 +23,7 @@
 #include "vertmaterial.h"
 #include "texture.h"
 #include "d3d8.h"
-#include "D3dx8math.h"
+#include "DirectXMath.h"
 #include "statistics.h"
 
 bool SortingRendererClass::_EnableTriangleDraw=true;
@@ -351,14 +351,12 @@ void SortingRendererClass::Insert_Triangles(
 	WWASSERT(vertex_buffer);
 	WWASSERT(state->vertex_count<=vertex_buffer->Get_Vertex_Count());
 
-	D3DXMATRIX mtx=(D3DXMATRIX&)state->sorting_state.world*(D3DXMATRIX&)state->sorting_state.view;
-	D3DXVECTOR3 vec=(D3DXVECTOR3&)state->bounding_sphere.Center;
-	D3DXVECTOR4 transformed_vec;
-	D3DXVec3Transform(
-		&transformed_vec,
-		&vec,
-		&mtx); 
-	state->transformed_center=Vector3(transformed_vec[0],transformed_vec[1],transformed_vec[2]);
+	DirectX::XMMATRIX mtx=(DirectX::XMMATRIX&)state->sorting_state.world*(DirectX::XMMATRIX&)state->sorting_state.view;
+	DirectX::XMVECTOR vec=(DirectX::XMVECTOR&)state->bounding_sphere.Center;
+	DirectX::XMVECTOR transformed_vec = DirectX::XMVector3Transform(
+		vec,
+		mtx); 
+	state->transformed_center=Vector3(transformed_vec.m128_f32[0],transformed_vec.m128_f32[1],transformed_vec.m128_f32[2]);
 
 	
 	/// @todo lorenzen sez use a bucket sort here... and stop copying so much data so many times
@@ -553,8 +551,8 @@ void SortingRendererClass::Flush_Sorting_Pool()
 			src_verts+=state->sorting_state.index_base_offset;
 			src_verts+=state->min_vertex_index;
 
-			D3DXMATRIX d3d_mtx=(D3DXMATRIX&)state->sorting_state.world*(D3DXMATRIX&)state->sorting_state.view;
-			D3DXMatrixTranspose(&d3d_mtx,&d3d_mtx);
+			DirectX::XMMATRIX d3d_mtx=(DirectX::XMMATRIX&)state->sorting_state.world*(DirectX::XMMATRIX&)state->sorting_state.view;
+			d3d_mtx = DirectX::XMMatrixTranspose(d3d_mtx);
 			const Matrix4& mtx=(const Matrix4&)d3d_mtx;
 			unsigned i;
 			for (i=0;i<state->vertex_count;++i,++src_verts) {
@@ -817,14 +815,12 @@ void SortingRendererClass::Insert_VolumeParticle(
 
 	// Transform the center point to view space for sorting
 
-	D3DXMATRIX mtx=(D3DXMATRIX&)state->sorting_state.world*(D3DXMATRIX&)state->sorting_state.view;
-	D3DXVECTOR3 vec=(D3DXVECTOR3&)state->bounding_sphere.Center;
-	D3DXVECTOR4 transformed_vec;
-	D3DXVec3Transform(
-		&transformed_vec,
-		&vec,
-		&mtx); 
-	state->transformed_center=Vector3(transformed_vec[0],transformed_vec[1],transformed_vec[2]);
+	DirectX::XMMATRIX mtx=(DirectX::XMMATRIX&)state->sorting_state.world*(DirectX::XMMATRIX&)state->sorting_state.view;
+	DirectX::XMVECTOR vec=(DirectX::XMVECTOR&)state->bounding_sphere.Center;
+	DirectX::XMVECTOR transformed_vec = DirectX::XMVector4Transform(
+		vec,
+		mtx); 
+	state->transformed_center=Vector3(transformed_vec.m128_f32[0],transformed_vec.m128_f32[1],transformed_vec.m128_f32[2]);
 
 
 	// BUT WHAT IS THE DEAL WITH THE VERTCOUNT AND POLYCOUNT BEING N BUT TRANSFORMED CENTER COUNT == 1

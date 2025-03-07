@@ -41,19 +41,19 @@
 #include "dx8wrapper.h"
 #include "formconv.h"
 
-//D3DCAPS8 DX8Caps::hwVPCaps;
-//D3DCAPS8 DX8Caps::swVPCaps;
-//bool DX8Caps::UseTnL;	
-//bool DX8Caps::SupportDOT3;
-//bool DX8Caps::SupportDXTC;
-//bool DX8Caps::supportGamma;
-//bool DX8Caps::SupportNPatches;
-//bool DX8Caps::SupportBumpEnvmap;
-//bool DX8Caps::SupportBumpEnvmapLuminance;
-//bool DX8Caps::SupportTextureFormat[WW3D_FORMAT_COUNT];
-//int DX8Caps::VertexShaderVersion;
-//int DX8Caps::PixelShaderVersion;
-//int DX8Caps::MaxSimultaneousTextures;
+static D3DCAPS8 hwVPCaps;
+static D3DCAPS8 swVPCaps;
+static bool UseTnL;
+static bool SupportDXTC;
+static bool supportGamma;
+static bool SupportNPatches;
+static bool SupportDOT3;
+static bool SupportBumpEnvmap;
+static bool SupportBumpEnvmapLuminance;
+static bool SupportTextureFormat[WW3D_FORMAT_COUNT];
+static int VertexShaderVersion;
+static int PixelShaderVersion;
+static int MaxSimultaneousTextures;
 
 enum {
 	VENDOR_ID_NVIDIA=0x10de,
@@ -197,3 +197,22 @@ void DX8Caps::Vendor_Specific_Hacks(const D3DADAPTER_IDENTIFIER8& adapter_id)
 //	SupportDXTC=false;
 
 }
+
+bool DX8Caps::Use_TnL() { return UseTnL; };
+bool DX8Caps::Support_DXTC() { return SupportDXTC; }
+bool DX8Caps::Support_Gamma() { return supportGamma; }
+bool DX8Caps::Support_NPatches() { return SupportNPatches; }
+bool DX8Caps::Support_DOT3() { return SupportDOT3; }
+bool	DX8Caps::Support_Bump_Envmap() { return SupportBumpEnvmap; }
+bool	DX8Caps::Support_Bump_Envmap_Luminance() { return SupportBumpEnvmapLuminance; }
+int DX8Caps::Get_Vertex_Shader_Majon_Version() { return 0xff & (VertexShaderVersion >> 8); }
+int DX8Caps::Get_Vertex_Shader_Minor_Version() { return 0xff & (VertexShaderVersion); }
+int DX8Caps::Get_Pixel_Shader_Majon_Version() { return 0xff & (PixelShaderVersion >> 8); }
+int DX8Caps::Get_Pixel_Shader_Minor_Version() { return 0xff & (PixelShaderVersion); }
+int DX8Caps::Get_Max_Simultaneous_Textures() { return MaxSimultaneousTextures; }
+
+bool DX8Caps::Support_Texture_Format(WW3DFormat format) { return SupportTextureFormat[format]; }
+
+D3DCAPS8 const& DX8Caps::Get_HW_VP_Caps() { return hwVPCaps; };
+D3DCAPS8 const& DX8Caps::Get_SW_VP_Caps() { return swVPCaps; };
+D3DCAPS8 const& DX8Caps::Get_Default_Caps() { return (UseTnL ? hwVPCaps : swVPCaps); };

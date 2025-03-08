@@ -81,7 +81,9 @@ protected:
 	virtual NetworkInterface *createNetwork( void );				///< Factory for the network
 	virtual Radar *createRadar( void );											///< Factory for radar
 	virtual WebBrowser *createWebBrowser( void );						///< Factory for embedded browser
+#ifdef HAS_BINK
 	virtual AudioManager *createAudioManager( void );				///< Factory for audio device
+#endif
 	virtual ParticleSystemManager* createParticleSystemManager( void );
 
 

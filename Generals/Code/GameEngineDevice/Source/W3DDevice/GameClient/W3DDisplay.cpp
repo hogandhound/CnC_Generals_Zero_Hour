@@ -2872,7 +2872,7 @@ void W3DDisplay::takeScreenShot(void)
 
 	// Lock front buffer and copy
 
-	IDirect3DSurface8 *fb;
+	IDirect3DSurface9 *fb;
 	fb=DX8Wrapper::_Get_DX8_Front_Buffer();
 	D3DSURFACE_DESC desc;
 	fb->GetDesc(&desc);

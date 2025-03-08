@@ -57,7 +57,7 @@
 #include <coltest.h>
 #include <rinfo.h>
 #include <camera.h>
-#include <d3dx8core.h>
+#include <D3dx9core.h>
 #include "Common/GlobalData.h"
 #include "Common/PerfTimer.h"
 
@@ -2737,7 +2737,7 @@ Int HeightMapRenderObjClass::initHeightData(Int x, Int y, WorldHeightMap *pMap, 
 		DX8Wrapper::_Get_D3D_Device8()->GetCreationParameters(&parms);
 		Bool softwareVertexProcessing = 0!=(parms.BehaviorFlags&D3DCREATE_SOFTWARE_VERTEXPROCESSING);
 		if (m_xformedVertexBuffer == NULL && softwareVertexProcessing) {
-			m_xformedVertexBuffer = new IDirect3DVertexBuffer8*[m_numVertexBufferTiles];
+			m_xformedVertexBuffer = new IDirect3DVertexBuffer9*[m_numVertexBufferTiles];
 		}
 #endif
 
@@ -3976,7 +3976,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 						0,
 						m_xformedVertexBuffer[j*m_numVBTilesX+i],
 						D3DXGetFVFVertexSize(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2));
-					DX8Wrapper::_Get_D3D_Device8()->SetVertexShader(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2);
+					DX8Wrapper::_Get_D3D_Device8()->SetFVF(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2);
 				}
 #endif				
 				if (Is_Hidden() == 0) {
@@ -4251,7 +4251,7 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 					0,
 					m_xformedVertexBuffer[j*m_numVBTilesX+i],
 					D3DXGetFVFVertexSize(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2));
-				DX8Wrapper::_Get_D3D_Device8()->SetVertexShader(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2);
+				DX8Wrapper::_Get_D3D_Device8()->SetFVF(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2);
 			}
 #endif				
 			if (Is_Hidden() == 0) {

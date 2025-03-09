@@ -983,7 +983,7 @@ void AISkirmishPlayer::adjustBuildList(BuildListInfo *list)
 	}
 	// Find the location of the command center in the build list.
 	Bool foundInBuildList = false;
-	Coord3D buildPos;
+	Coord3D buildPos = {};
 	BuildListInfo *cur = list;
 	while (cur) {
 		const ThingTemplate *tTemplate = TheThingFactory->findTemplate(cur->getTemplateName());

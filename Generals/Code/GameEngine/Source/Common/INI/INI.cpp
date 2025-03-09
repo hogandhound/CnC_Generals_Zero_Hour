@@ -726,7 +726,7 @@ void INI::parseAsciiStringVectorAppend( INI* ini, void * /*instance*/, void *sto
 AsciiString INI::getNextQuotedAsciiString()
 {
 	AsciiString result;
-	char buff[INI_MAX_CHARS_PER_LINE];
+	char buff[INI_MAX_CHARS_PER_LINE] = { 0 };
 
 	const char *token = getNextTokenOrNull();	// if null, just leave an empty string
 	if (token != NULL)

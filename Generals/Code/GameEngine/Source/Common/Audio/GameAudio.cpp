@@ -435,7 +435,7 @@ AudioHandle AudioManager::addAudioEvent(const AudioEventRTS *eventToAdd)
 	if (!eventToAdd->getAudioEventInfo()) {
 		getInfoForAudioEvent(eventToAdd);
 		if (!eventToAdd->getAudioEventInfo()) {
-			DEBUG_CRASH(("No info for requested audio event '%s'\n", eventToAdd->getEventName().str()));
+			DEBUG_WARNING("No info for requested audio event '%s'\n", eventToAdd->getEventName().str());
 			return AHSV_Error;
 		}
 	}
@@ -1004,7 +1004,7 @@ Bool AudioManager::shouldPlayLocally(const AudioEventRTS *audioEvent)
 	}
 
 	if (!BitTestWW(ei->m_type, (ST_PLAYER | ST_ALLIES | ST_ENEMIES | ST_EVERYONE))) {
-		DEBUG_CRASH(("No player restrictions specified for '%s'. Using Everyone.\n", ei->m_audioName.str()));
+		DEBUG_WARNING(("No player restrictions specified for '%s'. Using Everyone.\n", ei->m_audioName.str()));
 		return TRUE;
 	}
 
@@ -1020,7 +1020,7 @@ Bool AudioManager::shouldPlayLocally(const AudioEventRTS *audioEvent)
 	}
 
 	if (owningPlayer == NULL) {
-		DEBUG_CRASH(("Sound '%s' expects an owning player, but the audio event that created it didn't specify one.\n", ei->m_audioName.str()));
+		DEBUG_WARNING(("Sound '%s' expects an owning player, but the audio event that created it didn't specify one.\n", ei->m_audioName.str()));
 		return FALSE;
 	}
 

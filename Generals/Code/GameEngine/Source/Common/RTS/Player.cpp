@@ -2240,7 +2240,7 @@ Bool Player::attemptToPurchaseScience(ScienceType science)
 {
 	if (!isCapableOfPurchasingScience(science))
 	{
-		DEBUG_CRASH(("isCapableOfPurchasingScience: need other prereqs/points to purchase, request is ignored!\n"));
+		DEBUG_WARNING(("isCapableOfPurchasingScience: need other prereqs/points to purchase, request is ignored!\n"));
 		return false;
 	}
 
@@ -2255,7 +2255,7 @@ Bool Player::grantScience(ScienceType science)
 {
 	if (!TheScienceStore->isScienceGrantable(science))
 	{
-		DEBUG_CRASH(("Cannot grant science %s, since it is marked as nonGrantable.\n",TheScienceStore->getInternalNameForScience(science).str()));
+		DEBUG_WARNING(("Cannot grant science %s, since it is marked as nonGrantable.\n",TheScienceStore->getInternalNameForScience(science).str()));
 		return false;	// it's not grantable, so tough, can't have it, even via this method.
 	}
 
@@ -3216,7 +3216,7 @@ void Player::processCreateTeamGameMessage(Int hotkeyNum, GameMessage *msg) {
 	// GameMessage arguments are the object ID's of the objects that are to be in this team.
 
 	if ((hotkeyNum < 0) || (hotkeyNum >= NUM_HOTKEY_SQUADS)) {
-		DEBUG_CRASH(("processCreateTeamGameMessage got an invalid hotkey number"));
+		DEBUG_WARNING(("processCreateTeamGameMessage got an invalid hotkey number"));
 		return;
 	}
 
@@ -3239,7 +3239,7 @@ void Player::processCreateTeamGameMessage(Int hotkeyNum, GameMessage *msg) {
 //-------------------------------------------------------------------------------------------------
 void Player::processSelectTeamGameMessage(Int hotkeyNum, GameMessage *msg) {
 	if ((hotkeyNum < 0) || (hotkeyNum >= NUM_HOTKEY_SQUADS)) {
-		DEBUG_CRASH(("processSelectTeamGameMessage got an invalid hotkey number"));
+		DEBUG_WARNING(("processSelectTeamGameMessage got an invalid hotkey number"));
 		return;
 	}
 
@@ -3262,7 +3262,7 @@ void Player::processSelectTeamGameMessage(Int hotkeyNum, GameMessage *msg) {
 //-------------------------------------------------------------------------------------------------
 void Player::processAddTeamGameMessage(Int hotkeyNum, GameMessage *msg) {
 	if ((hotkeyNum < 0) || (hotkeyNum >= NUM_HOTKEY_SQUADS)) {
-		DEBUG_CRASH(("processAddTeamGameMessage got an invalid hotkey number"));
+		DEBUG_WARNING(("processAddTeamGameMessage got an invalid hotkey number"));
 		return;
 	}
 

@@ -2278,7 +2278,7 @@ void PathfindZoneManager::calculateZones( PathfindCell **map, PathfindLayer laye
 	Int xCount = (globalBounds.hi.x-globalBounds.lo.x+1+ZONE_BLOCK_SIZE-1)/ZONE_BLOCK_SIZE;
 	Int yCount = (globalBounds.hi.y-globalBounds.lo.y+1+ZONE_BLOCK_SIZE-1)/ZONE_BLOCK_SIZE;
 
-	Int xBlock, yBlock;
+	Int xBlock, yBlock = 0;
 	for (xBlock = 0; xBlock<xCount; xBlock++) {
 		for (yBlock=0; yBlock<yCount; yBlock++) {
 			IRegion2D bounds;

@@ -3917,7 +3917,7 @@ void Drawable::startAmbientSound(BodyDamageType dt, TimeOfDay tod)
 		}
 		else
 		{
-			DEBUG_CRASH( ("Ambient sound %s missing! Skipping...", m_ambientSound->m_event.getEventName().str() ) );
+			DEBUG_WARNING( ("Ambient sound %s missing! Skipping...", m_ambientSound->m_event.getEventName().str() ) );
 			m_ambientSound->deleteInstance();
 			m_ambientSound = NULL;
 		}

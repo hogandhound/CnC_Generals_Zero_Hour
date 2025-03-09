@@ -2024,10 +2024,10 @@ Bool PartitionManager::geomCollidesWithGeom(const Coord3D* pos1,
 //-----------------------------------------------------------------------------
 void PartitionData::updateCellsTouched()
 {
-	GeometryType geom;
-	Bool isSmall;
-	Coord3D pos;
-	Real angle,majorRadius,minorRadius;
+	GeometryType geom = {};
+	Bool isSmall = {};
+	Coord3D pos = {};
+	Real angle = {},majorRadius = {},minorRadius = {};
 
 
 	Object *obj = getObject();
@@ -3221,7 +3221,7 @@ Object *PartitionManager::getClosestObjects(
 
 	Object* closestObj = NULL;
 	Real closestDistSqr = maxDist * maxDist;	// if it's not closer than this, we shouldn't consider it anyway...
-	Coord3D closestVec;
+	Coord3D closestVec = {};
 
 #ifdef FASTER_GCO
 

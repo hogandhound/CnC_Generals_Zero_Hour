@@ -99,7 +99,7 @@ Player *PlayerList::getNthPlayer(Int i)
 { 
 	if( i < 0 || i >= MAX_PLAYER_COUNT )
 	{
-//		DEBUG_CRASH( ("Illegal player index\n") );
+		DEBUG_WARNING( ("Illegal player index\n") );
 		return NULL;
 	}
 	return m_players[i]; 
@@ -301,7 +301,7 @@ Team *PlayerList::validateTeam( AsciiString owner )
 	}	
 	else
 	{
-		//DEBUG_CRASH(("no team or player named %s could be found!\n", owner.str()));
+		DEBUG_WARNING(("no team or player named %s could be found!\n", owner.str()));
 		t = getNeutralPlayer()->getDefaultTeam();
 	}
 	return t;
@@ -387,7 +387,7 @@ Player *PlayerList::getEachPlayerFromMask( PlayerMaskType& maskToAdjust )
 		}
 	}  // end for i
 
-	DEBUG_CRASH( ("No players found that contain any matching masks.\n") );
+	DEBUG_WARNING( ("No players found that contain any matching masks.\n") );
 	maskToAdjust = 0;
 	return NULL; // mask not found
 }

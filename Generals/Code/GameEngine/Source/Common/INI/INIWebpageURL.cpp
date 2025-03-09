@@ -83,7 +83,7 @@ AsciiString encodeURL(AsciiString source)
 void INI::parseWebpageURLDefinition( INI* ini )
 {
 	AsciiString tag;
-	WebBrowserURL *url;
+	WebBrowserURL *url = 0;
 
 	// read the name
 	const char* c = ini->getNextToken();

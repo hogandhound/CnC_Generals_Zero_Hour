@@ -134,7 +134,7 @@ struct LegacyDDSURFACEDESC2 {
 		unsigned RefreshRate;
 	};
 	unsigned AlphaBitDepth;
-	unsigned Reserved;
+	//unsigned Reserved;
 	void* Surface;
 	union
 	{
@@ -147,6 +147,7 @@ struct LegacyDDSURFACEDESC2 {
 	LegacyDDPIXELFORMAT PixelFormat;
 	LegacyDDSCAPS2 Caps;
 	unsigned TextureStage;
+	unsigned Reserved;
 };
 
 // ----------------------------------------------------------------------------

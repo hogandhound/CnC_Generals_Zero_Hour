@@ -52,7 +52,7 @@ DDSFileClass::DDSFileClass(const char* name,unsigned reduction_factor)
 	char header[4];
 	file->Read(header,4);
 	// Now, we read DDSURFACEDESC2 defining the compressed data
-	unsigned read_bytes=file->Read(&SurfaceDesc,sizeof(LegacyDDSURFACEDESC2));
+	unsigned read_bytes=file->Read(&SurfaceDesc,sizeof(LegacyDDSURFACEDESC2) - 4); //-4 because it's 8 bit aligned
 	// Verify the structure size matches the read size
 	WWASSERT(read_bytes==SurfaceDesc.Size);
 

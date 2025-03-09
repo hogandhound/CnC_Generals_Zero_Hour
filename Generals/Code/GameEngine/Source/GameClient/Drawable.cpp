@@ -3888,6 +3888,7 @@ void Drawable::startAmbientSound(BodyDamageType dt, TimeOfDay tod)
 		}
 	}
 	
+#ifdef HAS_BINK
 	if( trySound && m_ambientSound )
 	{
 		const AudioEventInfo *info = m_ambientSound->m_event.getAudioEventInfo();
@@ -3898,15 +3899,12 @@ void Drawable::startAmbientSound(BodyDamageType dt, TimeOfDay tod)
 				//Play it anyways.
 				m_ambientSound->m_event.setDrawableID(getID());
 				m_ambientSound->m_event.setTimeOfDay(tod);
-#ifdef HAS_BINK
 				m_ambientSound->m_event.setPlayingHandle(TheAudio->addAudioEvent( &m_ambientSound->m_event ));
-#endif
 			}
 			else
 			{
 				//Check if it's close enough to try playing (optimization)
 				Coord3D vector = *getPosition();
-#ifdef HAS_BINK
 				vector.sub( TheAudio->getListenerPosition() );
 				Real distSqr = vector.lengthSqr();
 				if( distSqr < sqr( info->m_maxDistance ) )
@@ -3915,7 +3913,6 @@ void Drawable::startAmbientSound(BodyDamageType dt, TimeOfDay tod)
 					m_ambientSound->m_event.setTimeOfDay(tod);
 					m_ambientSound->m_event.setPlayingHandle(TheAudio->addAudioEvent( &m_ambientSound->m_event ));
 				}
-#endif
 			}
 		}
 		else
@@ -3925,6 +3922,7 @@ void Drawable::startAmbientSound(BodyDamageType dt, TimeOfDay tod)
 			m_ambientSound = NULL;
 		}
 	}
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

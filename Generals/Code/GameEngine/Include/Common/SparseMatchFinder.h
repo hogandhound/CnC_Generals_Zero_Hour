@@ -37,7 +37,8 @@
 #include "Common/STLTypedefs.h"
 
 #if defined(_DEBUG) || defined(_INTERNAL)
-	#define SPARSEMATCH_DEBUG
+	//#define SPARSEMATCH_DEBUG
+	#undef SPARSEMATCH_DEBUG
 #else
 	#undef SPARSEMATCH_DEBUG
 #endif

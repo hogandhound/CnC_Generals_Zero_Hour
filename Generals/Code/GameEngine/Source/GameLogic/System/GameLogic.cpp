@@ -2508,7 +2508,7 @@ Int GameLogic::rebalanceChildSleepyUpdate(Int i)
 	// our children are i*2 and i*2+1
   Int child = ((i+1)<<1)-1;
 	UpdateModulePtr* pChild = &m_sleepyUpdates[child];
-	UpdateModulePtr* pSZ = &m_sleepyUpdates[m_sleepyUpdates.size()];	// yes, this is off the end.
+	UpdateModulePtr* pSZ = m_sleepyUpdates.data() + m_sleepyUpdates.size();	// yes, this is off the end.
 
   while (pChild < pSZ) 
 	{

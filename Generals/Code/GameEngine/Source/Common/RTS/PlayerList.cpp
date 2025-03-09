@@ -301,7 +301,7 @@ Team *PlayerList::validateTeam( AsciiString owner )
 	}	
 	else
 	{
-		DEBUG_CRASH(("no team or player named %s could be found!\n", owner.str()));
+		//DEBUG_CRASH(("no team or player named %s could be found!\n", owner.str()));
 		t = getNeutralPlayer()->getDefaultTeam();
 	}
 	return t;

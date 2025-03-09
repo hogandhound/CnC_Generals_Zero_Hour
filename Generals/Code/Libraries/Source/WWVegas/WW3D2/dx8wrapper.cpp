@@ -97,11 +97,10 @@ static DynamicVectorClass<RenderDeviceDescClass>	_RenderDeviceDescriptionTable;
 ** DX8Wrapper Static Variables
 **
 ***********************************************************************************/
-
+static DXS _dxs;
 DXS& DXS::G()
 {
-	static DXS dxs;
-	return dxs;
+	return _dxs;
 }
 
 /*
@@ -1701,7 +1700,7 @@ void DX8Wrapper::Draw(
 				DX8_RECORD_RENDER(polygon_count,vertex_count,DXS::G().render_state.shader);
 				DX8CALL(DrawIndexedPrimitive(
 					(D3DPRIMITIVETYPE)primitive_type,
-					0,
+					DXS::G().render_state.index_base_offset + DXS::G().render_state.vba_offset,
 					min_vertex_index,
 					vertex_count,
 					start_index+ DXS::G().render_state.iba_offset,
@@ -2055,7 +2054,7 @@ IDirect3DSurface9 * DX8Wrapper::_Create_DX8_Surface(unsigned int width, unsigned
 	// Paletted surfaces not supported!
 	WWASSERT(format!=D3DFMT_P8);
 
-	DX8CALL(CreateOffscreenPlainSurface(width, height, WW3DFormat_To_D3DFormat(format), D3DPOOL_DEFAULT, &surface, nullptr));
+	DX8CALL(CreateOffscreenPlainSurface(width, height, WW3DFormat_To_D3DFormat(format), D3DPOOL_SYSTEMMEM, &surface, nullptr));
 
 	return surface;
 }
@@ -2595,3 +2594,111 @@ WW3DFormat	DX8Wrapper::getBackBufferFormat( void )
 {
 	return D3DFormat_To_WW3DFormat( _PresentParameters.BackBufferFormat );
 }
+
+#ifdef _DEBUG
+void DX8Wrapper::Get_Transform(D3DTRANSFORMSTATETYPE transform, Matrix4& m)
+{
+	D3DMATRIX mat;
+
+	switch ((int)transform) {
+	case D3DTS_WORLD:
+		if (DXS::G().render_state_changed & WORLD_IDENTITY) m.Make_Identity();
+		else m = DXS::G().render_state.world.Transpose();
+		break;
+	case D3DTS_VIEW:
+		if (DXS::G().render_state_changed & VIEW_IDENTITY) m.Make_Identity();
+		else m = DXS::G().render_state.view.Transpose();
+		break;
+	default:
+		DX8CALL(GetTransform(transform, &mat));
+		m = *(Matrix4*)&mat;
+		m = m.Transpose();
+		break;
+	}
+}
+
+void DX8Wrapper::Set_Transform(D3DTRANSFORMSTATETYPE transform, const Matrix4& m)
+{
+	switch ((int)transform) {
+	case D3DTS_WORLD:
+		DXS::G().render_state.world = m.Transpose();
+		DXS::G().render_state_changed |= (unsigned)WORLD_CHANGED;
+		DXS::G().render_state_changed &= ~(unsigned)WORLD_IDENTITY;
+		break;
+	case D3DTS_VIEW:
+		DXS::G().render_state.view = m.Transpose();
+		DXS::G().render_state_changed |= (unsigned)VIEW_CHANGED;
+		DXS::G().render_state_changed &= ~(unsigned)VIEW_IDENTITY;
+		break;
+	default:
+		DX8_RECORD_MATRIX_CHANGE();
+		Matrix4 m2 = m.Transpose();
+		DX8CALL(SetTransform(transform, (D3DMATRIX*)&m2));
+		break;
+	}
+}
+
+
+void DX8Wrapper::_Copy_DX8_Rects(
+	IDirect3DSurface9* pSourceSurface,
+	CONST RECT* pSourceRectsArray,
+	UINT cRects,
+	IDirect3DSurface9* pDestinationSurface,
+	CONST POINT* pDestPointsArray
+)
+{
+	if (cRects == 0)
+		cRects = 1;
+	if (pDestPointsArray)
+	{
+		for (UINT i = 0; i < cRects; ++i)
+		{
+			auto hr = DX8Wrapper::_Get_D3D_Device8()->UpdateSurface(pSourceSurface, pSourceRectsArray + i, pDestinationSurface, pDestPointsArray + i); DXS::G().number_of_DX8_calls++;;
+			//DX8_ErrorCode(hr);
+		}
+	}
+	else
+	{
+		for (UINT i = 0; i < cRects; ++i)
+		{
+			auto hr = DX8Wrapper::_Get_D3D_Device8()->UpdateSurface(pSourceSurface, pSourceRectsArray + i, pDestinationSurface, nullptr); DXS::G().number_of_DX8_calls++;;
+			//DX8_ErrorCode(hr);
+		}
+	}
+	//DX8CALL(CopyRects(
+ // pSourceSurface,
+ // pSourceRectsArray,
+ // cRects,
+ // pDestinationSurface,
+ // pDestPointsArray));
+}
+
+void DX8Wrapper::_Stretch_DX9_Rects(
+	IDirect3DSurface9* pSourceSurface,
+	CONST RECT* pSourceRectsArray,
+	UINT cRects,
+	IDirect3DSurface9* pDestinationSurface,
+	CONST RECT* pDestPointsArray,
+	D3DTEXTUREFILTERTYPE Filter)
+{
+	if (cRects == 0)
+		cRects = 1;
+	if (pDestPointsArray)
+	{
+		for (UINT i = 0; i < cRects; ++i)
+		{
+			HRESULT hr = DX8Wrapper::_Get_D3D_Device8()->StretchRect(pSourceSurface, pSourceRectsArray + i, pDestinationSurface, pDestPointsArray + i, Filter); DXS::G().number_of_DX8_calls++;;
+			DX8_ErrorCode(hr);
+		}
+	}
+	else
+	{
+		for (UINT i = 0; i < cRects; ++i)
+		{
+			
+			HRESULT hr = DX8Wrapper::_Get_D3D_Device8()->StretchRect(pSourceSurface, pSourceRectsArray + i, pDestinationSurface, nullptr, Filter); DXS::G().number_of_DX8_calls++;;
+			DX8_ErrorCode(hr);
+		}
+	}
+}
+#endif

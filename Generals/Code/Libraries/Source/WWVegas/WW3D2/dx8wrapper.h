@@ -419,6 +419,15 @@ public:
 			IDirect3DSurface9* pDestinationSurface,
 			CONST POINT* pDestPointsArray
 	);
+	static void _Stretch_DX9_Rects(
+		IDirect3DSurface9* pSourceSurface,
+		CONST RECT* pSourceRectsArray,
+		UINT cRects,
+		IDirect3DSurface9* pDestinationSurface,
+		CONST RECT* pDestPointsArray,
+		D3DTEXTUREFILTERTYPE Filter
+
+	);
 
 	static void _Update_Texture(TextureClass *system, TextureClass *video);
 	static void Flush_DX8_Resource_Manager(unsigned int bytes=0);
@@ -723,14 +732,18 @@ WWINLINE void DX8Wrapper::Set_DX8_Texture(unsigned int stage, IDirect3DBaseTextu
 	DX8_RECORD_TEXTURE_CHANGE();
 }
 
-WWINLINE void DX8Wrapper::_Copy_DX8_Rects(
-  IDirect3DSurface9* pSourceSurface,
-  CONST RECT* pSourceRectsArray,
-  UINT cRects,
-  IDirect3DSurface9* pDestinationSurface,
-  CONST POINT* pDestPointsArray
+#ifndef _DEBUG
+WWINLINE
+void DX8Wrapper::_Copy_DX8_Rects(
+	IDirect3DSurface9* pSourceSurface,
+	CONST RECT* pSourceRectsArray,
+	UINT cRects,
+	IDirect3DSurface9* pDestinationSurface,
+	CONST POINT* pDestPointsArray
 )
 {
+	if (cRects == 0)
+		cRects = 1;
 	if (pDestPointsArray)
 	{
 		for (UINT i = 0; i < cRects; ++i)
@@ -752,6 +765,7 @@ WWINLINE void DX8Wrapper::_Copy_DX8_Rects(
  // pDestinationSurface,
  // pDestPointsArray));
 }
+#endif
 
 WWINLINE Vector4 DX8Wrapper::Convert_Color(unsigned color)
 {
@@ -1001,6 +1015,7 @@ WWINLINE void DX8Wrapper::Set_Shader(const ShaderClass& shader)
 	DXS::G().render_state_changed|=SHADER_CHANGED;
 }
 
+#ifndef _DEBUG
 WWINLINE void DX8Wrapper::Set_Transform(D3DTRANSFORMSTATETYPE transform,const Matrix4& m)
 {
 	switch ((int)transform) {
@@ -1021,6 +1036,7 @@ WWINLINE void DX8Wrapper::Set_Transform(D3DTRANSFORMSTATETYPE transform,const Ma
 		break;
 	}
 }
+#endif
 
 WWINLINE void DX8Wrapper::Set_Transform(D3DTRANSFORMSTATETYPE transform,const Matrix3D& m)
 {
@@ -1068,6 +1084,7 @@ WWINLINE bool DX8Wrapper::Is_View_Identity()
 	return !!(DXS::G().render_state_changed&(unsigned)VIEW_IDENTITY);
 }
 
+#ifndef _DEBUG
 WWINLINE void DX8Wrapper::Get_Transform(D3DTRANSFORMSTATETYPE transform, Matrix4& m)
 {
 	D3DMATRIX mat;
@@ -1088,6 +1105,7 @@ WWINLINE void DX8Wrapper::Get_Transform(D3DTRANSFORMSTATETYPE transform, Matrix4
 		break;
 	}
 }
+#endif
 
 WWINLINE void DX8Wrapper::Set_Light(unsigned index, const D3DLIGHT9* light)
 {

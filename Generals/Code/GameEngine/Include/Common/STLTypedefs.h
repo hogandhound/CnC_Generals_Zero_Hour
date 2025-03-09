@@ -192,7 +192,7 @@ namespace rts
 	{
 		size_t operator()(const AsciiString& ast) const
 		{
-#pragma message Figure out the upgrade to C++17 or add a string hashing algorithm
+#pragma message("Figure out the upgrade to C++17 or add a string hashing algorithm")
 			std::hash<std::string> tmp;
 			const char* str = (const char*) ast.str();
 			return tmp(str);

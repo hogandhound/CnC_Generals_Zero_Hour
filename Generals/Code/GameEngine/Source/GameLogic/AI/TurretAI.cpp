@@ -760,7 +760,9 @@ void TurretAI::startRotOrPitchSound()
 	if (!m_turretRotOrPitchSound.isCurrentlyPlaying()) 
 	{
 		m_turretRotOrPitchSound.setObjectID(m_owner->getID());
+#ifdef HAS_BINK
 		m_turretRotOrPitchSound.setPlayingHandle(TheAudio->addAudioEvent(&m_turretRotOrPitchSound));
+#endif
 	}
 }
 
@@ -772,7 +774,9 @@ void TurretAI::stopRotOrPitchSound()
 {
 	if (m_turretRotOrPitchSound.isCurrentlyPlaying()) 
 	{
+#ifdef HAS_BINK
 		TheAudio->removeAudioEvent(m_turretRotOrPitchSound.getPlayingHandle());
+#endif
 	}
 }
 

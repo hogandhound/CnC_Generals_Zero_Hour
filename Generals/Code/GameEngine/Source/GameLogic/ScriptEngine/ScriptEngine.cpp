@@ -6578,9 +6578,13 @@ Bool ScriptEngine::isSpeechComplete( const AsciiString& testSpeech, Bool removeF
 
 	if (findIt == m_testingSpeech.end()) {
 		PairAsciiStringUINT newPair;
+#ifdef HAS_BINK
 		AudioEventRTS event(testSpeech);
 		Real audioLength = TheAudio->getAudioLengthMS(&event);
 		UnsignedInt frameCount = REAL_TO_UNSIGNEDINT(audioLength / MSEC_PER_LOGICFRAME_REAL);
+#else
+		UnsignedInt frameCount = 0;
+#endif
 
 		newPair.first = testSpeech;
 		newPair.second = frameCount + TheGameLogic->getFrame();
@@ -6614,8 +6618,12 @@ Bool ScriptEngine::isAudioComplete( const AsciiString& testAudio, Bool removeFro
 	if (findIt == m_testingAudio.end()) {
 		PairAsciiStringUINT newPair;
 		AudioEventRTS event(testAudio);
+#ifdef HAS_BINK
 		Real audioLength = TheAudio->getAudioLengthMS(&event);
 		UnsignedInt frameCount = REAL_TO_UNSIGNEDINT(audioLength / MSEC_PER_LOGICFRAME_REAL);
+#else
+		UnsignedInt frameCount = 0;
+#endif
 
 		newPair.first = testAudio;
 		newPair.second = frameCount + TheGameLogic->getFrame();
@@ -8600,9 +8608,11 @@ void ScriptEngine::loadPostProcess( void )
 
 	if (m_currentTrackName.isNotEmpty())
 	{
+#ifdef HAS_BINK
 		AudioEventRTS event(m_currentTrackName);
 		event.setPlayerIndex(ThePlayerList->getLocalPlayer()->getPlayerIndex());
 		TheAudio->addAudioEvent(&event);
+#endif
 	}
 
 }  // end loadPostProcess

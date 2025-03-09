@@ -503,6 +503,7 @@ void SpecialPowerModule::aboutToDoSpecialPower( const Coord3D *location )
 	//}
 
 	// get module data
+#ifdef HAS_BINK
 	const SpecialPowerModuleData *modData = getSpecialPowerModuleData();
 
 	// play our initiate sound if we have one
@@ -520,6 +521,7 @@ void SpecialPowerModule::aboutToDoSpecialPower( const Coord3D *location )
 		TheAudio->addAudioEvent( &soundAtLocation );
 
 	}  // end if
+#endif
 
 }
 

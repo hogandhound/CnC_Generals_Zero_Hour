@@ -2569,7 +2569,11 @@ Bool ScriptConditions::evaluateSkirmishPlayerHasDiscoveredPlayer(Parameter *pSki
 Bool ScriptConditions::evaluateMusicHasCompleted(Parameter *pMusicParm, Parameter *pIntParm)
 {
 	AsciiString str = pMusicParm->getString();
+#ifdef HAS_BINK
 	return TheAudio->hasMusicTrackCompleted(str, pIntParm->getInt());
+#else
+	return true;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

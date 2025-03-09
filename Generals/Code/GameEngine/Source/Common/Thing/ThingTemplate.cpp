@@ -932,6 +932,7 @@ void ThingTemplate::validateAudio()
 			DEBUG_ASSERTLOG(TheAudio->isValidAudioEvent(get##y()), ("Invalid Sound '%s' in Object '%s'. (%s?)\n", #y, getName().str(), get##y()->getEventName().str())); \
 		}
 
+#ifdef HAS_BINK
 	AUDIO_TEST(VoiceSelect)
 	AUDIO_TEST(VoiceGroupSelect)
 	AUDIO_TEST(VoiceMove)
@@ -976,6 +977,7 @@ void ThingTemplate::validateAudio()
 	AUDIO_TEST(SoundPromotedVeteran)
 	AUDIO_TEST(SoundPromotedElite)
 	AUDIO_TEST(SoundPromotedHero)
+#endif
 	
 	#undef AUDIO_TEST
 
@@ -989,11 +991,13 @@ void ThingTemplate::validateAudio()
 	{
 		if (!it->second.getEventName().isEmpty() && it->second.getEventName().compareNoCase("NoSound") != 0) 
 		{
+#ifdef HAS_BINK
 			DEBUG_ASSERTCRASH(TheAudio->isValidAudioEvent(&it->second), 
 												("Invalid UnitSpecificSound '%s' in Object '%s'. (%s?)", 
 												it->first.str(), 
 												getName().str(), 
 												it->second.getEventName().str())); 
+#endif
 		}
 	}
 #endif

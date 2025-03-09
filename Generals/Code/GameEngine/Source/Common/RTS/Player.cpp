@@ -2720,9 +2720,11 @@ void Player::addRadar( Bool disableProof )
 	if( !hadRadar && hasRadar()	&& okToPlayRadarEdgeSound() )
 	{
 		// This player just got radar, so play the "You have Radar!" sound
+#ifdef HAS_BINK
 		AudioEventRTS soundToPlay = TheAudio->getMiscAudio()->m_radarOnlineSound;
 		soundToPlay.setPlayerIndex(getPlayerIndex());
 		TheAudio->addAudioEvent(&soundToPlay);
+#endif
 	}
 }  // end addRadar
 
@@ -2743,9 +2745,11 @@ void Player::removeRadar( Bool disableProof )
 	if( hadRadar && !hasRadar()	&& okToPlayRadarEdgeSound() ) 
 	{
 		// This player just lost radar, so play the "You lost Radar!" sound
+#ifdef HAS_BINK
 		AudioEventRTS soundToPlay = TheAudio->getMiscAudio()->m_radarOfflineSound;
 		soundToPlay.setPlayerIndex(getPlayerIndex());
 		TheAudio->addAudioEvent(&soundToPlay);
+#endif
 	}
 }  // end removeRadar
 
@@ -2759,9 +2763,11 @@ void Player::disableRadar()
 		&& !hasRadar() && okToPlayRadarEdgeSound() ) 
 	{
 		// This player just lost radar, so play the "You lost Radar!" sound
+#ifdef HAS_BINK
 		AudioEventRTS soundToPlay = TheAudio->getMiscAudio()->m_radarOfflineSound;
 		soundToPlay.setPlayerIndex(getPlayerIndex());
 		TheAudio->addAudioEvent(&soundToPlay);
+#endif
 	}
 }
 
@@ -2774,9 +2780,11 @@ void Player::enableRadar()
 	if( !hadRadar && hasRadar() && okToPlayRadarEdgeSound() )  
 	{
 		// This player just got radar, so play the "You have Radar!" sound
+#ifdef HAS_BINK
 		AudioEventRTS soundToPlay = TheAudio->getMiscAudio()->m_radarOnlineSound;
 		soundToPlay.setPlayerIndex(getPlayerIndex());
 		TheAudio->addAudioEvent(&soundToPlay);
+#endif
 	}
 }
 

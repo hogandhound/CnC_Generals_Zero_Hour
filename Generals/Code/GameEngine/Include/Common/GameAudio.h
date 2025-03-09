@@ -367,6 +367,8 @@ class AudioManager : public SubsystemInterface
 		Bool m_disallowSpeech			: 1;
 };
 
+#ifdef HAS_BINK
 extern AudioManager *TheAudio;
+#endif
 
 #endif // __COMMON_GAMEAUDIO_H_

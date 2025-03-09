@@ -1163,9 +1163,11 @@ void INI::parseDynamicAudioEventRTS( INI *ini, void * /*instance*/, void *store,
 			*theSound = newInstance(DynamicAudioEventRTS);
 		(*theSound)->m_event.setEventName(AsciiString(token));
 	}
-	
+
+#ifdef HAS_BINK
 	if (*theSound)
 		TheAudio->getInfoForAudioEvent(&(*theSound)->m_event);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1182,7 +1184,9 @@ void INI::parseAudioEventRTS( INI *ini, void * /*instance*/, void *store, const 
 		theSound->setEventName(AsciiString(token));
 	}
 
+#ifdef HAS_BINK
 	TheAudio->getInfoForAudioEvent(theSound);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

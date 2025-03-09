@@ -97,6 +97,7 @@ static DynamicVectorClass<RenderDeviceDescClass>	_RenderDeviceDescriptionTable;
 ** DX8Wrapper Static Variables
 **
 ***********************************************************************************/
+
 DXS& DXS::G()
 {
 	static DXS dxs;

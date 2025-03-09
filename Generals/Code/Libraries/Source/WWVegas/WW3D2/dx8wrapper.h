@@ -1157,7 +1157,7 @@ WWINLINE RenderStateStruct::RenderStateStruct()
 	vertex_buffer(0),
 	index_buffer(0)
 {
-	for (unsigned i=0;i<MAX_TEXTURE_STAGES;++i) DXS::G().Textures[i]=0;
+	for (unsigned i=0;i<MAX_TEXTURE_STAGES;++i) Textures[i]=0;
 }
 
 WWINLINE RenderStateStruct::~RenderStateStruct()

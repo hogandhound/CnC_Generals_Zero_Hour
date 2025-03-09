@@ -548,11 +548,13 @@ void HandleBuddyResponses( void )
 					insertChat(message);
 					
 					// play audio notification
+#ifdef HAS_BINK
 					AudioEventRTS buddyMsgAudio("GUIMessageReceived");
 					if( TheAudio )
 					{
 						TheAudio->addAudioEvent( &buddyMsgAudio );
 					}  // end if
+#endif
 
 					UnicodeString snippet = message.m_message;
 					while (snippet.getLength() > 11)
@@ -680,12 +682,14 @@ void showNotificationBox( AsciiString nick, UnicodeString message)
 	noticeExpires = timeGetTime() + NOTIFICATION_EXPIRES;
 	noticeLayout->bringForward();
 
+#ifdef HAS_BINK
 	AudioEventRTS buttonClick("GUICommunicatorIncoming");
 
 	if( TheAudio )
 	{
 		TheAudio->addAudioEvent( &buttonClick );
 	}  // end if
+#endif
 
 }
 
@@ -1224,11 +1228,13 @@ void RequestBuddyAdd(Int profileID, AsciiString nick)
 	insertChat(message);
 	
 	// play audio notification
+#ifdef HAS_BINK
 	AudioEventRTS buddyMsgAudio("GUIMessageReceived");
 	if( TheAudio )
 	{
 		TheAudio->addAudioEvent( &buddyMsgAudio );
 	}  // end if
+#endif
 
 	lastNotificationWasStatus = FALSE;
 	numOnlineInNotification = 0;

@@ -830,9 +830,11 @@ UpdateSleepTime ProductionUpdate::update( void )
 							production->setExitDoor(DOOR_NONE_AVAILABLE);
 
 							// Now, play the sound associated with the new object's production.
+#ifdef HAS_BINK
 							AudioEventRTS voiceCreate = *newObj->getTemplate()->getVoiceCreated();
 							voiceCreate.setObjectID(newObj->getID());
 							TheAudio->addAudioEvent(&voiceCreate);
+#endif
 
 							// call the onUnitCreated for the player
 							creationBuilding->getControllingPlayer()->onUnitCreated( creationBuilding, newObj );
@@ -849,10 +851,12 @@ UpdateSleepTime ProductionUpdate::update( void )
 
 							if( production->getProductionQuantity() == production->getProductionQuantityRemaining() )
 							{
+#ifdef HAS_BINK
 								//Call the voice created for the 1st object -- because it's possible to create multiple objects like redguards!
 								AudioEventRTS sound = *newObj->getTemplate()->getPerUnitSound( "VoiceCreate" );
 								sound.setObjectID( newObj->getID() );
 								TheAudio->addAudioEvent( &sound );
+#endif
 							}
 
 							//We created one guy, but we may want to do more so we should stay in this node of production.
@@ -920,6 +924,7 @@ UpdateSleepTime ProductionUpdate::update( void )
 				
 				//Play the sound for the upgrade, because we just built it!
 				AudioEventRTS sound = *upgrade->getResearchCompleteSound();
+#ifdef HAS_BINK
 				if( TheAudio->isValidAudioEvent( &sound ) ) 
 				{
 					//We have a custom upgrade complete sound.
@@ -927,15 +932,18 @@ UpdateSleepTime ProductionUpdate::update( void )
 					TheAudio->addAudioEvent( &sound );
 				}
 				else
+#endif
 				{
 					//Use a generic EVA event.
 					TheEva->setShouldPlay(EVA_UpgradeComplete);
-				}
+			}
 
 				//Play any available unit specific sound for upgrade.
 				sound = *upgrade->getUnitSpecificSound();
 				sound.setObjectID( us->getID() );
+#ifdef HAS_BINK
 				TheAudio->addAudioEvent( &sound );
+#endif
 			
 			}  // end if
 

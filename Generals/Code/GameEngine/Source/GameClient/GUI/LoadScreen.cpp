@@ -196,9 +196,9 @@ SinglePlayerLoadScreen::~SinglePlayerLoadScreen( void )
 	if ( m_videoStream )
 		m_videoStream->close();
 	m_videoStream = NULL;
-#endif
 	
 	TheAudio->removeAudioEvent( m_ambientLoopHandle );
+#endif
 	m_ambientLoopHandle = NULL;
 	
 }
@@ -227,7 +227,9 @@ void SinglePlayerLoadScreen::moveWindows( Int frame )
 	if( frame == STATE_BEGIN_BREIFING)
 	{
 		// add sound support here
+#ifdef HAS_BINK
 		TheAudio->friend_forcePlayAudioEventRTS(&TheCampaignManager->getCurrentMission()->m_briefingVoice);
+#endif
 	}
 
 	if( frame == STATE_BEGIN_ANIMATING_TEXT)
@@ -589,7 +591,9 @@ void SinglePlayerLoadScreen::init( GameInfo *game )
 #endif
 	setFPMode();
 	m_percent->winHide(TRUE);
+#ifdef HAS_BINK
 	m_ambientLoopHandle = TheAudio->addAudioEvent(&m_ambientLoop);
+#endif
 	
 }
 
@@ -771,8 +775,10 @@ MultiPlayerLoadScreen::~MultiPlayerLoadScreen( void )
 		m_playerLookup[i] = -1;
 	}
 
+#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( AHSV_StopTheMusicFade );
 //	TheAudio->stopAudio( AudioAffect_Music );
+#endif
 }
 
 void MultiPlayerLoadScreen::init( GameInfo *game )
@@ -795,12 +801,14 @@ void MultiPlayerLoadScreen::init( GameInfo *game )
 	AsciiString musicName = pt->getLoadScreenMusic();
 	if ( ! musicName.isEmpty() )
 	{
+#ifdef HAS_BINK
 		TheAudio->removeAudioEvent( AHSV_StopTheMusicFade );
 		AudioEventRTS event( musicName );
 		event.setShouldFade( TRUE );
 
 		TheAudio->addAudioEvent( &event );
 		TheAudio->update();//Since GameEngine::update() is suspended until after I am gone... 
+#endif
 
 	}
 

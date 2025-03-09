@@ -689,7 +689,11 @@ Bool AudioEventRTS::isPositionalAudio( void ) const
 //-------------------------------------------------------------------------------------------------
 Bool AudioEventRTS::isCurrentlyPlaying( void ) const
 {
+#ifdef HAS_BINK
 	return TheAudio->isCurrentlyPlaying(m_playingHandle);
+#else
+	return false;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -770,6 +774,7 @@ const Coord3D *AudioEventRTS::getCurrentPosition( void )
 AsciiString AudioEventRTS::generateFilenamePrefix( AudioType audioTypeToPlay, Bool localized )
 {
 	AsciiString retStr;
+#ifdef HAS_BINK
 	retStr = TheAudio->getAudioSettings()->m_audioRoot;
 	retStr.concat("\\");
 	if (audioTypeToPlay == AT_Music) {
@@ -780,6 +785,7 @@ AsciiString AudioEventRTS::generateFilenamePrefix( AudioType audioTypeToPlay, Bo
 		retStr.concat(TheAudio->getAudioSettings()->m_soundsFolder);
 	}
 	retStr.concat("\\");
+#endif
 
 	if (localized) {
 		retStr.concat(GetRegistryLanguage());
@@ -793,10 +799,12 @@ AsciiString AudioEventRTS::generateFilenamePrefix( AudioType audioTypeToPlay, Bo
 AsciiString AudioEventRTS::generateFilenameExtension( AudioType audioTypeToPlay )
 {
 	AsciiString retStr = AsciiString::TheEmptyString;
+#ifdef HAS_BINK
 	if (audioTypeToPlay != AT_Music) {
 		retStr = ".";
 		retStr.concat(TheAudio->getAudioSettings()->m_soundsExtension);
 	}
+#endif
 
 	return retStr;
 }

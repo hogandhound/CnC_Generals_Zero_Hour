@@ -101,6 +101,7 @@ public:
 
 	virtual void doFXPos(const Coord3D *primary, const Matrix3D* /*primaryMtx*/, const Real /*primarySpeed*/, const Coord3D * /*secondary*/, const Real /*overrideRadius*/ ) const
 	{
+#ifdef HAS_BINK
 		AudioEventRTS sound(m_soundName);
 		
 		if (primary) 
@@ -109,10 +110,12 @@ public:
 		}
 
 		TheAudio->addAudioEvent(&sound);
+#endif
 	}
 
 	virtual void doFXObj(const Object* primary, const Object* secondary = NULL) const
 	{
+#ifdef HAS_BINK
 		AudioEventRTS sound(m_soundName);
 		if (primary)
 		{
@@ -121,6 +124,7 @@ public:
 		}
 
 		TheAudio->addAudioEvent(&sound);
+#endif
 	}
 
 

@@ -92,17 +92,17 @@ int Streamer::underflow(void)
 
 int Streamer::doallocate()
 {
-#if 0
-  if (base()==NULL)
+#if 1
+  if (pbase()==NULL)
   {
     char *buf=new char[(2*STREAMER_BUFSIZ)];   // deleted by destructor
     memset(buf,0,2*STREAMER_BUFSIZ);
 
     // Buffer
-    setb(
+    setbuf(
        buf,         // base pointer
-       buf+STREAMER_BUFSIZ,  // ebuf pointer (end of buffer);
-       0);          // 0 = manual deletion of buff 
+       STREAMER_BUFSIZ  // ebuf pointer (end of buffer);
+       );          // 0 = manual deletion of buff 
 
     // Get area
     setg(

@@ -3898,12 +3898,15 @@ void Drawable::startAmbientSound(BodyDamageType dt, TimeOfDay tod)
 				//Play it anyways.
 				m_ambientSound->m_event.setDrawableID(getID());
 				m_ambientSound->m_event.setTimeOfDay(tod);
+#ifdef HAS_BINK
 				m_ambientSound->m_event.setPlayingHandle(TheAudio->addAudioEvent( &m_ambientSound->m_event ));
+#endif
 			}
 			else
 			{
 				//Check if it's close enough to try playing (optimization)
 				Coord3D vector = *getPosition();
+#ifdef HAS_BINK
 				vector.sub( TheAudio->getListenerPosition() );
 				Real distSqr = vector.lengthSqr();
 				if( distSqr < sqr( info->m_maxDistance ) )
@@ -3912,6 +3915,7 @@ void Drawable::startAmbientSound(BodyDamageType dt, TimeOfDay tod)
 					m_ambientSound->m_event.setTimeOfDay(tod);
 					m_ambientSound->m_event.setPlayingHandle(TheAudio->addAudioEvent( &m_ambientSound->m_event ));
 				}
+#endif
 			}
 		}
 		else
@@ -3943,8 +3947,10 @@ void Drawable::startAmbientSound()
 //-------------------------------------------------------------------------------------------------
 void	Drawable::stopAmbientSound( void )
 {
+#ifdef HAS_BINK
 	if (m_ambientSound)
 		TheAudio->removeAudioEvent(m_ambientSound->m_event.getPlayingHandle());
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -4277,9 +4283,11 @@ void Drawable::xfer( Xfer *xfer )
 	//and restore it in loadPostProcess().
 	if( xfer->getXferMode() == XFER_LOAD && m_ambientSound )
 	{
+#ifdef HAS_BINK
 		TheAudio->killAudioEventImmediately( m_ambientSound->m_event.getPlayingHandle() );
 		m_ambientSound->deleteInstance();
 		m_ambientSound = NULL;
+#endif
 	}
 
 	// drawable id

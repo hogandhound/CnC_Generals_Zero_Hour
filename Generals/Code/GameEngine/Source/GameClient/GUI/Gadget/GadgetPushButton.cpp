@@ -153,10 +153,12 @@ WindowMsgHandledType GadgetPushButtonInput( GameWindow *window,
 			else
 				buttonClick.setEventName("GUIClick");
 
+#ifdef HAS_BINK
 			if( TheAudio )
 			{
 				TheAudio->addAudioEvent( &buttonClick );
 			}  // end if
+#endif
 
 			//
 			// for 'check-like' buttons we have "dual state", we flip the selected status
@@ -230,10 +232,12 @@ WindowMsgHandledType GadgetPushButtonInput( GameWindow *window,
 			if( BitTestWW( instData->getStatus(), WIN_STATUS_RIGHT_CLICK ) )
 			{
 				// Need to be specially marked to care about right mouse events
+#ifdef HAS_BINK
 				if( TheAudio )
 				{
 					TheAudio->addAudioEvent( &buttonClick );
 				}  // end if
+#endif
 
 				//
 				// for 'check-like' buttons we have "dual state", we flip the selected status

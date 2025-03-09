@@ -108,12 +108,14 @@ static void doAudioFeedback(GameWindow *window)
 
 	if (lData->audioFeedback)
 	{
+#ifdef HAS_BINK
 		AudioEventRTS buttonClick("GUIComboBoxClick");
 
 		if( TheAudio )
 		{
 			TheAudio->addAudioEvent( &buttonClick );
 		}  // end if
+#endif
 	}
 }
 

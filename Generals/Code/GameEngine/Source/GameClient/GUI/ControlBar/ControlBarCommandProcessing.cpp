@@ -164,9 +164,11 @@ CBCommandStatus ControlBar::processCommandUI( GameWindow *control,
 	Player *player = ThePlayerList->getLocalPlayer();
 	if( player )
 	{
+#ifdef HAS_BINK
 		AudioEventRTS sound = *commandButton->getUnitSpecificSound();
 		sound.setPlayerIndex( player->getPlayerIndex() );
 		TheAudio->addAudioEvent( &sound );
+#endif
 	}
 
 	if( BitTestWW( commandButton->getOptions(), COMMAND_OPTION_NEED_TARGET ) )

@@ -396,10 +396,12 @@ void GameEngine::init( int argc, char *argv[] )
 
 		setFramesPerSecondLimit(TheGlobalData->m_framesPerSecondLimit);
 
+#ifdef HAS_BINK
 		TheAudio->setOn(TheGlobalData->m_audioOn && TheGlobalData->m_musicOn, AudioAffect_Music);
 		TheAudio->setOn(TheGlobalData->m_audioOn && TheGlobalData->m_soundsOn, AudioAffect_Sound);
 		TheAudio->setOn(TheGlobalData->m_audioOn && TheGlobalData->m_sounds3DOn, AudioAffect_Sound3D);
 		TheAudio->setOn(TheGlobalData->m_audioOn && TheGlobalData->m_speechOn, AudioAffect_Speech);
+#endif
 			
 		// We're not in a network game yet, so set the network singleton to NULL.
 		TheNetwork = NULL;
@@ -579,8 +581,10 @@ void GameEngine::update( void )
 			TheRadar->UPDATE();
 
 			/// @todo Move audio init, update, etc, into GameClient update
-			
+
+#ifdef HAS_BINK
 			TheAudio->UPDATE();
+#endif
 			TheGameClient->UPDATE();
 			TheMessageStream->propagateMessages();
 

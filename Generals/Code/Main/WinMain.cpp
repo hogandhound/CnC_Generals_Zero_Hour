@@ -454,16 +454,20 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message,
 				{
 
 					ClipCursor( NULL );
+#ifdef HAS_BINK
 					if (TheAudio)
 						TheAudio->loseFocus();
+#endif
 				}  // end if
 				else
 				{
 					if( TheMouse )
 						TheMouse->setMouseLimits();
 
+#ifdef HAS_BINK
 					if (TheAudio)
 						TheAudio->regainFocus();
+#endif
 
 				}  // end else
 				break;

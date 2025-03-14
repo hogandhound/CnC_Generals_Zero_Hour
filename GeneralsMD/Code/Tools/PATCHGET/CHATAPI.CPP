@@ -21,7 +21,7 @@
 //
 
 #include <list>
-#include "GameSpy/ghttp/ghttp.h"
+#include "ghttp/ghttp.h"
 #include "downloadManager.h"
 
 #include "chatapi.h"
@@ -31,7 +31,7 @@
 #include <windows.h>
 #include <initguid.h>
 #include <olectl.h>
-#include <mapicode.h>
+//#include <mapicode.h>
 #include "resource.h"
 #include "winblows.h"
 #include <crtdbg.h>
@@ -68,7 +68,7 @@ static int checksLeft = 0;
 static bool cantConnect = false;
 static std::list<QueuedDownload> queuedDownloads;
 
-BOOL CALLBACK downloadDialogProc( HWND hwndDlg, UINT uMsg, WPARAM wParam,
+long long CALLBACK downloadDialogProc( HWND hwndDlg, UINT uMsg, WPARAM wParam,
     LPARAM lParam );
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -184,7 +184,7 @@ static void startOnline( void )
 				queuedDownloads.pop_front();
 				TheDownloadManager = new DownloadManagerMunkee;
 				/**/
-		    int retVal = DialogBox(Global_instance, MAKEINTRESOURCE(IDD_DOWNLOAD_DIALOG), g_PrimaryWindow, downloadDialogProc);
+				int retVal = DialogBox(Global_instance, MAKEINTRESOURCE(IDD_DOWNLOAD_DIALOG), g_PrimaryWindow, downloadDialogProc);
 				if (retVal)
 				{
 					DEBUG_LOG(("Error %d\n", GetLastError()));
@@ -228,7 +228,7 @@ static void startOnline( void )
 
 static std::string trim(std::string s, const std::string& delim)
 {
-	unsigned int i;
+	size_t i;
 	i = s.find_first_not_of(delim);
 	if (i != s.npos)
 	{
@@ -248,7 +248,7 @@ static std::string trim(std::string s, const std::string& delim)
 
 static std::string getNextLine(std::string in, std::string& remainder)
 {
-	int lineEnd;
+	size_t  lineEnd;
 	lineEnd = in.find_first_of("\n\r", 0);
 	if (lineEnd < 1)
 	{
@@ -295,7 +295,7 @@ bool nextToken(std::string& base, std::string& tok, const char* seps = NULL)
 
 	if (end > start)
 	{
-		int len = end - start;
+		uintptr_t len = end - start;
 		char* tmp = new char[len+1];
 		memcpy(tmp, start, len);
 		tmp[len] = 0;
@@ -347,7 +347,7 @@ static void queuePatch(bool mandatory, std::string downloadURL)
 	}
 
 	std::string fileStr = filePath;
-	unsigned int slashPos = filePath.find_last_of('/');
+	size_t slashPos = filePath.find_last_of('/');
 	std::string fileDir = "patches\\";
 	std::string fileName = "";
 	if (slashPos == filePath.npos)
@@ -387,8 +387,17 @@ static void queuePatch(bool mandatory, std::string downloadURL)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
-
-static GHTTPBool patchCheckCallback( GHTTPRequest request, GHTTPResult result, char * buffer, int bufferLen, void * param )
+/*
+typedef GHTTPBool (* ghttpCompletedCallback)(
+	GHTTPRequest	request,     // The request.
+	GHTTPResult		result,      // The result (success or an error).
+	char			* buffer,    // The file's bytes (only valid if ghttpGetFile[Ex] was used).
+	GHTTPByteCount	bufferLen,   // The file's length.
+	char			* headers,
+	void			* param      // User-data.
+);
+*/
+static GHTTPBool patchCheckCallback( GHTTPRequest request, GHTTPResult result, char * buffer, GHTTPByteCount bufferLen, char* headers, void * param )
 {
 	--checksLeft;
 	DEBUG_ASSERTCRASH(checksLeft>=0, ("Too many callbacks"));
@@ -462,7 +471,7 @@ static void StartPatchCheck( void )
 ///////////////////////////////////////////////////////////////////////////////////////
 
 
-BOOL CALLBACK downloadDialogProc( HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
+long long CALLBACK downloadDialogProc( HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
 	//   HRESULT res;
 	
@@ -585,7 +594,7 @@ uint32       g_AppVer=-1;
 BOOL CALLBACK Download_Dialog_Proc( HWND hwndDlg, UINT uMsg, WPARAM wParam,
     LPARAM lParam );
 
-BOOL CALLBACK Simple_Dialog_Proc( HWND hwndDlg, UINT uMsg, WPARAM wParam,
+long long CALLBACK Simple_Dialog_Proc( HWND hwndDlg, UINT uMsg, WPARAM wParam,
     LPARAM lParam );
 
 HWND CreatePrimaryWin(void);
@@ -1353,7 +1362,7 @@ BOOL CALLBACK Download_Dialog_Proc( HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
 
 
 // Whoeee this is an exciting one...
-BOOL CALLBACK Simple_Dialog_Proc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
+long long CALLBACK Simple_Dialog_Proc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
   switch( uMsg )
   {

@@ -73,22 +73,20 @@ public:
 	bool		IsCameraShaking(void);
 	void		Update_Camera_Shaker(Vector3 camera_position, Vector3 * shaker_angles);
 
-protected:
-
 	/**
-	** CameraShakerClass 
+	** CameraShakerClass
 	** This class encapsulates the current state of a camera shaker.  It is a multi-list object
 	** and is allocated in pools.
 	*/
-	class CameraShakerClass : public MultiListObjectClass, public AutoPoolClass<CameraShakerClass,256>
-	{	
+	class CameraShakerClass : public MultiListObjectClass, public AutoPoolClass<CameraShakerClass, 256>
+	{
 	public:
-		CameraShakerClass(const Vector3 & position,float radius,float duration,float power);
+		CameraShakerClass(const Vector3& position, float radius, float duration, float power);
 		~CameraShakerClass(void);
 
-		void					Timestep(float dt)							{ ElapsedTime += dt; }	
-		bool					Is_Expired(void)								{ return (ElapsedTime >= Duration); }
-		void					Compute_Rotations(const Vector3 & pos,Vector3 * set_angles);
+		void					Timestep(float dt) { ElapsedTime += dt; }
+		bool					Is_Expired(void) { return (ElapsedTime >= Duration); }
+		void					Compute_Rotations(const Vector3& pos, Vector3* set_angles);
 
 	protected:
 
@@ -96,11 +94,13 @@ protected:
 		float					Radius;
 		float					Duration;
 		float					Intensity;
-	
+
 		float					ElapsedTime;
 		Vector3				Omega;
 		Vector3				Phi;
 	};
+
+protected:
 
 	MultiListClass<CameraShakerClass>	CameraShakerList;
 

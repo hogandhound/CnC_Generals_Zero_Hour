@@ -203,6 +203,7 @@ void CrateCollide::doSabotageFeedbackFX( const Object *other, SabotageVictimType
   if ( ! other )
     return;
 
+#ifdef HAS_BINK
 	AudioEventRTS soundToPlay;
   switch ( type )
   {
@@ -234,6 +235,7 @@ void CrateCollide::doSabotageFeedbackFX( const Object *other, SabotageVictimType
 
 	soundToPlay.setPosition( other->getPosition() );
 	TheAudio->addAudioEvent( &soundToPlay );
+#endif
 
   Drawable *draw = other->getDrawable();
   if ( draw )

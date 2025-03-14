@@ -168,20 +168,20 @@ static char const *ImagehelpFunctionNames[] =
  * HISTORY:                                                                                    *
  *   8/22/00 11:42AM ST : Created                                                              *
  *=============================================================================================*/
+#ifdef WWDEBUG
 int __cdecl _purecall(void)
 {
 	int return_code = 0;
 
-#ifdef WWDEBUG
 	/*
 	** Use int3 to cause an exception.
 	*/
 	WWDEBUG_SAY(("Pure Virtual Function call. Oh No!\n"));
 	_asm int 0x03;
-#endif	//_DEBUG_ASSERT
 
 	return(return_code);
 }
+#endif	//_DEBUG_ASSERT
 
 
 
@@ -281,6 +281,7 @@ static void Add_Txt (char const *txt)
  *=============================================================================================*/
 void Dump_Exception_Info(EXCEPTION_POINTERS *e_info)
 {
+#if 0
 	/*
 	** List of possible exceptions
 	*/
@@ -727,6 +728,7 @@ void Dump_Exception_Info(EXCEPTION_POINTERS *e_info)
 	}
 
 	Add_Txt ("\r\n\r\n");
+#endif
 }
 
 
@@ -810,7 +812,7 @@ int Exception_Handler(int exception_code, EXCEPTION_POINTERS *e_info)
 		DWORD	actual;
 		debug_file = CreateFile("_except.txt", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (debug_file != INVALID_HANDLE_VALUE){
-			WriteFile(debug_file, ExceptionText, strlen(ExceptionText), &actual, NULL);
+			WriteFile(debug_file, ExceptionText, (uint32_t)strlen(ExceptionText), &actual, NULL);
 			CloseHandle (debug_file);
 
 #if (0)
@@ -1070,7 +1072,7 @@ void Load_Image_Helper(void)
 			do {
 				function_name = ImagehelpFunctionNames[count];
 				if (function_name) {
-					*fptr = (unsigned long) GetProcAddress(ImageHelp, function_name);
+					*fptr = (unsigned long)(uintptr_t)GetProcAddress(ImageHelp, function_name);
 					fptr++;
 					count++;
 				}
@@ -1168,12 +1170,12 @@ bool Lookup_Symbol(void *code_ptr, char *symbol, int &displacement)
 	symbol_struct_ptr->SizeOfStruct = sizeof (symbol_struct_buf);
 	symbol_struct_ptr->MaxNameLength = sizeof(symbol_struct_buf)-sizeof (IMAGEHLP_SYMBOL);
 	symbol_struct_ptr->Size = 0;
-	symbol_struct_ptr->Address = (unsigned long)code_ptr;
+	symbol_struct_ptr->Address = (uintptr_t)code_ptr;
 
 	/*
 	** See if we have the symbol for that address.
 	*/
-	if (_SymGetSymFromAddr(GetCurrentProcess(), (unsigned long)code_ptr, (unsigned long *)&displacement, symbol_struct_ptr)) {
+	if (_SymGetSymFromAddr(GetCurrentProcess(), (unsigned long)(uintptr_t)code_ptr, (unsigned long *)&displacement, symbol_struct_ptr)) {
 
 		/*
 		** Copy it back into the buffer provided.
@@ -1205,6 +1207,7 @@ bool Lookup_Symbol(void *code_ptr, char *symbol, int &displacement)
  *=============================================================================================*/
 int Stack_Walk(unsigned long *return_addresses, int num_addresses, CONTEXT *context)
 {
+#if 0
 	static HINSTANCE _imagehelp = (HINSTANCE) -1;
 
 	/*
@@ -1276,6 +1279,9 @@ here:
 	}
 
 	return(pointer_index);
+#else
+	return 0;
+#endif
 }
 
 

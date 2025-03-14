@@ -76,7 +76,7 @@ void parseUpgradePair( INI *ini, void *instance, void *store, const void *userDa
 
 	const char *token = ini->getNextToken( ini->getSepsColon() );
 
-	if ( stricmp(token, "UpgradeType") == 0 )
+	if ( _stricmp(token, "UpgradeType") == 0 )
 	{
 		token = ini->getNextTokenOrNull( ini->getSepsColon() );
 		if (!token)	throw INI_INVALID_DATA;
@@ -88,7 +88,7 @@ void parseUpgradePair( INI *ini, void *instance, void *store, const void *userDa
 
 
 	token = ini->getNextTokenOrNull( ini->getSepsColon() );
-	if ( stricmp(token, "Boost") == 0 )
+	if ( _stricmp(token, "Boost") == 0 )
 		info.amount = INI::scanInt(ini->getNextToken( ini->getSepsColon() ));
 	else
 		throw INI_INVALID_DATA;

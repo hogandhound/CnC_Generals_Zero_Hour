@@ -543,7 +543,7 @@ void WbView3d::ReAcquireResources(void)
 		TheTerrainRenderObject->worldBuilderUpdateBridgeTowers( m_assetManager, m_scene );
 	}
 	m_drawObject->initData();
-	IDirect3DDevice8* pDev = DX8Wrapper::_Get_D3D_Device8();
+	IDirect3DDevice9* pDev = DX8Wrapper::_Get_D3D_Device8();
 	if (pDev) {
 
 //		CDC* pDC = GetDC();
@@ -2258,7 +2258,7 @@ void WbView3d::initWW3D()
 			}
 		}
 
-		IDirect3DDevice8* pDev = DX8Wrapper::_Get_D3D_Device8();
+		IDirect3DDevice9* pDev = DX8Wrapper::_Get_D3D_Device8();
 		if (pDev) {
 
 //			CDC* pDC = GetDC();

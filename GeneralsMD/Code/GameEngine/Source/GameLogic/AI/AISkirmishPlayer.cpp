@@ -263,9 +263,9 @@ void AISkirmishPlayer::processBaseBuilding( void )
 
 				m_readyToBuildStructure = false;
 				m_structureTimer = TheAI->getAiData()->m_structureSeconds*LOGICFRAMES_PER_SECOND;
-				if (m_player->getMoney()->countMoney() < TheAI->getAiData()->m_resourcesPoor) {
+				if ((int)m_player->getMoney()->countMoney() < TheAI->getAiData()->m_resourcesPoor) {
 					m_structureTimer = m_structureTimer/TheAI->getAiData()->m_structuresPoorMod;
-				}	else if (m_player->getMoney()->countMoney() > TheAI->getAiData()->m_resourcesWealthy) {
+				}	else if ((int)m_player->getMoney()->countMoney() > TheAI->getAiData()->m_resourcesWealthy) {
 					m_structureTimer = m_structureTimer/TheAI->getAiData()->m_structuresWealthyMod;
 				}
 				m_frameLastBuildingBuilt = TheGameLogic->getFrame();
@@ -991,7 +991,7 @@ void AISkirmishPlayer::adjustBuildList(BuildListInfo *list)
 	}
 	// Find the location of the command center in the build list.
 	Bool foundInBuildList = false;
-	Coord3D buildPos;
+	Coord3D buildPos = {};
 	BuildListInfo *cur = list;
 	while (cur) {
 		const ThingTemplate *tTemplate = TheThingFactory->findTemplate(cur->getTemplateName());

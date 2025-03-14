@@ -542,7 +542,7 @@ void GenerateMinefieldBehavior::xfer( Xfer *xfer )
 	xfer->xferCoord3D( &m_target );
 
 		// spaces info count and objectID data
-	UnsignedByte spacesCount = m_mineList.size();
+	UnsignedByte spacesCount = (uint8_t)m_mineList.size();
 	xfer->xferUnsignedByte( &spacesCount );
 	if( xfer->getXferMode() == XFER_SAVE )
 	{

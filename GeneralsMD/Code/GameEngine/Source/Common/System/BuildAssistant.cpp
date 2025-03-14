@@ -419,10 +419,12 @@ Object *BuildAssistant::buildObjectNow( Object *constructorObject, const ThingTe
 		{
 			owningPlayer->onUnitCreated( constructorObject, obj );
 
+#ifdef HAS_BINK
 			//Call the voice created for the 1st object -- because it's possible to create multiple objects like redguards!
 			AudioEventRTS sound = *obj->getTemplate()->getPerUnitSound( "VoiceCreated" );
 			sound.setObjectID( obj->getID() );
 			TheAudio->addAudioEvent( &sound );
+#endif
 		}
 
 		// Now onCreates were called at the constructor.  This magically created
@@ -684,13 +686,13 @@ LegalBuildCode BuildAssistant::isLocationClearOfObjects( const Coord3D *worldPos
 		Relationship rel = builderObject ? builderObject->getRelationship( them ) : NEUTRAL;
 
 		//Kris: If the object is stealthed and we can't see it, pretend we can build there.
-		if( BitTest( options, IGNORE_STEALTHED ) )
+		if( BitTestWW( options, IGNORE_STEALTHED ) )
 		{
 			if( rel != ALLIES )
 			{
 				if( them->testStatus( OBJECT_STATUS_STEALTHED ) && !them->testStatus( OBJECT_STATUS_DETECTED ) && !them->testStatus( OBJECT_STATUS_DISGUISED ) )
 				{
-					if( BitTest( options, FAIL_STEALTHED_WITHOUT_FEEDBACK ) )
+					if( BitTestWW( options, FAIL_STEALTHED_WITHOUT_FEEDBACK ) )
 					{
 						feedbackWithFailure = FALSE; //We want to fail now but without feedback
 					}
@@ -823,7 +825,7 @@ LegalBuildCode BuildAssistant::isLocationClearOfObjects( const Coord3D *worldPos
 
 		Relationship rel = builderObject ? builderObject->getRelationship( them ) : NEUTRAL;
 		//Kris: If the building is stealthed and we can't see it, pretend we can build there.
-		if( BitTest( options, IGNORE_STEALTHED ) )
+		if( BitTestWW( options, IGNORE_STEALTHED ) )
 		{
 			if( rel != ALLIES )
 			{
@@ -922,7 +924,7 @@ LegalBuildCode BuildAssistant::isLocationLegalToBuild( const Coord3D *worldPos,
 
 	// check shroud level
 	// This should be the first check, since returning other errors for shrouded areas could be used to game the system
-	if( BitTest( options, SHROUD_REVEALED ) )
+	if( BitTestWW( options, SHROUD_REVEALED ) )
 	{
 		{
 			Int x, y;
@@ -943,7 +945,7 @@ LegalBuildCode BuildAssistant::isLocationLegalToBuild( const Coord3D *worldPos,
 	// any immobile objects, or an enemy object.  Friendly objects should politely 
 	// "move out of the way" when you build something where they're standing
 	//
-	if( BitTest( options, NO_OBJECT_OVERLAP ) )
+	if( BitTestWW( options, NO_OBJECT_OVERLAP ) )
 	{
 		LegalBuildCode code = isLocationClearOfObjects(worldPos, build, angle, builderObject, options, player);
 		if( code != LBC_OK )
@@ -956,7 +958,7 @@ LegalBuildCode BuildAssistant::isLocationLegalToBuild( const Coord3D *worldPos,
 	// if NO_ENEMY_OBJECT_OVERLAP is set, we are not allowed to construct 'build' if it would overlap
 	// any enemy objects.  Friendly objects are ignored.
 	//
-	if( BitTest( options, NO_ENEMY_OBJECT_OVERLAP ) )
+	if( BitTestWW( options, NO_ENEMY_OBJECT_OVERLAP ) )
 	{
 		LegalBuildCode code = isLocationClearOfObjects(worldPos, build, angle, builderObject, options, player);
 		if( code != LBC_OK )
@@ -994,7 +996,7 @@ LegalBuildCode BuildAssistant::isLocationLegalToBuild( const Coord3D *worldPos,
 	}
 
 	// if clear path is requested check to see if the builder object can get there (unless it's a structure)
-	if( BitTest( options, CLEAR_PATH ) && builderObject && !builderObject->isKindOf( KINDOF_IMMOBILE ) )
+	if( BitTestWW( options, CLEAR_PATH ) && builderObject && !builderObject->isKindOf( KINDOF_IMMOBILE ) )
 	{
 		AIUpdateInterface *ai = builderObject->getAIUpdateInterface();
 
@@ -1014,7 +1016,7 @@ LegalBuildCode BuildAssistant::isLocationLegalToBuild( const Coord3D *worldPos,
 	}  // end if
 
 	// check basic terrain restrctions
-	if( BitTest( options, TERRAIN_RESTRICTIONS ) )
+	if( BitTestWW( options, TERRAIN_RESTRICTIONS ) )
 	{
 
 		//
@@ -1340,7 +1342,7 @@ CanMakeType BuildAssistant::canMakeUnit( Object *builder, const ThingTemplate *w
 
 	// make sure we have enough money to build this
 	Money *money = player->getMoney();
-	if( whatToBuild->calcCostToBuild( player ) > money->countMoney() )
+	if( whatToBuild->calcCostToBuild( player ) > (int)money->countMoney() )
 		return CANMAKE_NO_MONEY;
 
 	// get the command set for the producer object

@@ -38,6 +38,7 @@
 
 #if defined(_DEBUG) || defined(_INTERNAL)
 	#define SPARSEMATCH_DEBUG
+	//#undef SPARSEMATCH_DEBUG
 #else
 	#undef SPARSEMATCH_DEBUG
 #endif
@@ -93,8 +94,7 @@ private:
 	};
 
 	//-------------------------------------------------------------------------------------------------
-	//typedef std::hash_map< BITSET, const MATCHABLE*, HashMapHelper, HashMapHelper > HashMatchMap;
-	typedef std::map< const BITSET, const MATCHABLE*, MapHelper> MatchMap;
+	typedef std::unordered_map< BITSET, const MATCHABLE*, HashMapHelper, HashMapHelper > MatchMap;
 
 	//-------------------------------------------------------------------------------------------------
 	// MEMBER VARS
@@ -174,7 +174,7 @@ private:
 		{
 			AsciiString curConditionStr;
 			bits.buildDescription(&curConditionStr); 
-			DEBUG_CRASH(("ambiguous model match in findBestInfoSlow \n\nbetween \n(%s)\n<and>\n(%s)\n\n(%d extra matches found)\n\ncurrent bits are (\n%s)\n",
+			DEBUG_WARNING(("ambiguous model match in findBestInfoSlow \n\nbetween \n(%s)\n<and>\n(%s)\n\n(%d extra matches found)\n\ncurrent bits are (\n%s)\n",
 					curBestMatchStr.str(),
 					dupMatchStr.str(),
 					numDupMatches,

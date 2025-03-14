@@ -207,7 +207,7 @@ Bool TransportContain::isValidContainerFor(const Object* rider, Bool checkCapaci
     Int containMax = getContainMax();
     Int containCount = getContainCount();
     
-		return (m_extraSlotsInUse + containCount + transportSlotCount <= containMax);
+		return (int)(m_extraSlotsInUse + containCount + transportSlotCount <= containMax);
 
 	}
 	else
@@ -291,7 +291,7 @@ void TransportContain::onContaining( Object *rider, Bool wasSelected )
 
 	DEBUG_ASSERTCRASH(transportSlotCount > 0, ("Hmm, this object isnt transportable"));
 	m_extraSlotsInUse += transportSlotCount - 1;
-	DEBUG_ASSERTCRASH(m_extraSlotsInUse >= 0 && m_extraSlotsInUse + getContainCount() <= getContainMax(), ("Hmm, bad slot count"));
+	DEBUG_ASSERTCRASH(m_extraSlotsInUse >= 0 && (int)(m_extraSlotsInUse + getContainCount()) <= getContainMax(), ("Hmm, bad slot count"));
 
 	//
 	// when we go from holding nothing to holding something we have a model condition
@@ -494,7 +494,7 @@ UpdateSleepTime TransportContain::update()
 				ContainedItemsList::const_iterator it;
 				it = items->begin();
 
-				while( *it )
+				while( it != items->end() && *it )
 				{
 					Object *object = *it;
 

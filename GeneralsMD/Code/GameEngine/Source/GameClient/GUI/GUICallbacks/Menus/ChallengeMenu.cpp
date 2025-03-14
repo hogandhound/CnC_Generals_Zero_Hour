@@ -430,6 +430,7 @@ void ChallengeMenuUpdate( WindowLayout *layout, void *userData )
 //		updateButtonSequence( 1 );
 
 	// delay the voice for N updates after the transition is done
+#ifdef HAS_BINK
 	if (!hasPlayedIntroAudio && TheTransitionHandler->isFinished())
 	{
 		introAudioMagicNumber++;
@@ -441,6 +442,7 @@ void ChallengeMenuUpdate( WindowLayout *layout, void *userData )
 			hasPlayedIntroAudio = TRUE;
 		}
 	}
+#endif
 
 	updateBio( TELETYPE_SKIP );
 
@@ -482,8 +484,10 @@ void ChallengeMenuShutdown( WindowLayout *layout, void *userData )
 		delete TheChallengeGameInfo;
 	TheChallengeGameInfo = NULL;
 
+#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( lastSelectionSound );
 	TheAudio->removeAudioEvent( lastPreviewSound );
+#endif
 	lastSelectionSound = NULL;
 	lastPreviewSound = NULL;
 	introAudioMagicNumber = 0;
@@ -515,7 +519,7 @@ WindowMsgHandledType ChallengeMenuInput( GameWindow *window, UnsignedInt msg, Wi
 					// send a simulated selected event to the parent window of the
 					// back/exit button
 					//
-					if( BitTest( state, KEY_STATE_UP ) )
+					if( BitTestWW( state, KEY_STATE_UP ) )
 					{
 
 						TheWindowManager->winSendSystemMsg( window, GBM_SELECTED, (WindowMsgData)buttonBack, buttonBackID );
@@ -569,8 +573,10 @@ WindowMsgHandledType ChallengeMenuSystem( GameWindow *window, UnsignedInt msg, W
 				setGeneralBio(buttonIndex);
 
 				// special sound for Harvard
+#ifdef HAS_BINK
 				AudioEventRTS event( "GUILogoMouseOver" );
 				TheAudio->addAudioEvent( &event );
+#endif
 
 				lastHilitedIndex = buttonIndex;
 			}
@@ -628,11 +634,13 @@ WindowMsgHandledType ChallengeMenuSystem( GameWindow *window, UnsignedInt msg, W
 				}
 
 				// play audio to indicate selection
+#ifdef HAS_BINK
 				TheAudio->removeAudioEvent(lastSelectionSound);
 				TheAudio->removeAudioEvent(lastPreviewSound);
 				const GeneralPersona* generals = TheChallengeGenerals->getChallengeGenerals();
 				AudioEventRTS event( generals[buttonIndex].getPreviewSound() );
 				lastPreviewSound = TheAudio->addAudioEvent( &event );
+#endif
 
 /*
 				// play audio to indicate selection

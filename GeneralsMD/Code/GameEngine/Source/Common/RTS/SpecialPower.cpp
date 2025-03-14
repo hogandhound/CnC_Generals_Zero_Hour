@@ -314,7 +314,7 @@ const SpecialPowerTemplate *SpecialPowerStore::getSpecialPowerTemplateByIndex( U
 Int SpecialPowerStore::getNumSpecialPowers( void )
 {
 
-	return m_specialPowerTemplates.size();
+	return (int)m_specialPowerTemplates.size();
 
 }  // end getNumSpecialPowers
 

@@ -827,6 +827,7 @@ void Targa::XFlip(void)
 
 static __forceinline void _swapBytes(char *p1, char *p2, unsigned count)
 {
+#if 0
   _asm
   {
     mov esi,[p1]
@@ -865,6 +866,14 @@ static __forceinline void _swapBytes(char *p1, char *p2, unsigned count)
     jmp lpLessThan16
   done:
   }
+#else
+	for (int i = 0; i < (int)count; ++i)
+	{
+		char temp = p1[i];
+		p1[i] = p2[i];
+		p2[i] = temp;
+	}
+#endif
 }
 
 void Targa::YFlip(void)

@@ -259,15 +259,15 @@ Bool W3DBridge::load(enum BodyDamageType curDamageState)
 	for (i=0; i<pObj->Get_Num_Sub_Objects(); i++) {
 		RenderObjClass *pSub = pObj->Get_Sub_Object(i);
 		Matrix3D mtx = pSub->Get_Transform();
-		if (0==strnicmp(left, pSub->Get_Name(), strlen(left))) {
+		if (0==_strnicmp(left, pSub->Get_Name(), strlen(left))) {
 			m_leftMtx = mtx;
 			strcpy(left, pSub->Get_Name());
 		}
-		if (0==strnicmp(section, pSub->Get_Name(), strlen(section))) {
+		if (0==_strnicmp(section, pSub->Get_Name(), strlen(section))) {
 			m_sectionMtx = mtx;
 			strcpy(section, pSub->Get_Name());
 		}
-		if (0==strnicmp(right, pSub->Get_Name(), strlen(right))) {
+		if (0==_strnicmp(right, pSub->Get_Name(), strlen(right))) {
 			m_rightMtx = mtx;
 			strcpy(right, pSub->Get_Name());
 		}
@@ -777,7 +777,7 @@ void W3DBridgeBuffer::allocateBridgeBuffers(void)
 	m_indexBridge=NEW_REF(DX8IndexBufferClass,(MAX_BRIDGE_INDEX+4, DX8IndexBufferClass::USAGE_DYNAMIC));
 	m_vertexMaterial=VertexMaterialClass::Get_Preset(VertexMaterialClass::PRELIT_DIFFUSE);
 #ifdef USE_BRIDGE_NORMALS
-	m_vertexMaterial= NEW VertexMaterialClass();
+	m_vertexMaterial= new VertexMaterialClass();
 	m_vertexMaterial->Set_Shininess(0.0);
 	m_vertexMaterial->Set_Ambient(1,1,1);		  
 	m_vertexMaterial->Set_Diffuse(1,1,1);

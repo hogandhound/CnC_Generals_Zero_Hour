@@ -128,7 +128,7 @@ void OpenMap::populateMapListbox( Bool systemMaps )
 		strcat(dirBuf, "Maps\\");
 	}
 
-	int len = strlen(dirBuf);
+	int len = (int)strlen(dirBuf);
 
 	if (len > 0 && dirBuf[len - 1] != '\\') {
 		dirBuf[len++] = '\\';

@@ -784,4 +784,4 @@ ProfileFuncLevel::ProfileFuncLevel(void)
 #endif // !defined HAS_PROFILE
 
 ProfileFuncLevel ProfileFuncLevel::Instance;
-HANDLE ProfileFastCS::testEvent=::CreateEvent(NULL,FALSE,FALSE,"");
+//HANDLE ProfileFastCS::testEvent=::CreateEvent(NULL,FALSE,FALSE,"");

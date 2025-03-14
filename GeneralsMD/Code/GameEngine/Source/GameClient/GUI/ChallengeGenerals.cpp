@@ -41,7 +41,7 @@ ChallengeGenerals *TheChallengeGenerals = NULL;
 
 ChallengeGenerals *createChallengeGenerals( void )
 {
-	return MSGNEW("ChallengeGenerals") ChallengeGenerals;
+	return new ChallengeGenerals;
 }
 
 

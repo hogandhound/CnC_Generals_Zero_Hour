@@ -319,7 +319,7 @@ UInt UString::Length(void) const
 void UString::Copy(const Char* s)
 	{
 	assert(s != NULL);
-	UInt length = strlen(s);
+	UInt length = (int)strlen(s);
 
 	if (length == 0)
 		{
@@ -425,7 +425,7 @@ void UString::Concat(const Char* s)
 	assert(s != NULL);
 
 	UInt length = Length();
-	UInt additional = strlen(s);
+	UInt additional = (int)strlen(s);
 	UInt totalLength = (length + additional);
 
 	// Resize the string if the combined size is to small
@@ -776,7 +776,7 @@ Int UString::Find(Char c) const
 
 Int UString::Find(WChar c) const
 	{
-	WChar* ptr = wcschr(Get(), c);
+	const WChar* ptr = wcschr(Get(), c);
 
 	// Not found?
 	if (ptr == NULL)

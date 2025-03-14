@@ -247,7 +247,7 @@ BOOL RoadOptions::OnInitDialog()
 		char				fileBuf[_MAX_PATH];
 
 		strcpy(dirBuf, ROAD_DIRECTORY);
-		int len = strlen(dirBuf);
+		int len = (int)strlen(dirBuf);
 
 		strcpy(findBuf, dirBuf);
 

@@ -107,15 +107,18 @@ const char *DebugExceptionhandler::GetExceptionType(struct _EXCEPTION_POINTERS *
 
 void DebugExceptionhandler::LogExceptionLocation(Debug &dbg, struct _EXCEPTION_POINTERS *exptr)
 {
+#if 0
   struct _CONTEXT &ctx=*exptr->ContextRecord;
 
   char buf[512];
   DebugStackwalk::Signature::GetSymbol(ctx.Eip,buf,sizeof(buf));
   dbg << "Exception occured at\n" << buf << ".";
+#endif
 }
 
 void DebugExceptionhandler::LogRegisters(Debug &dbg, struct _EXCEPTION_POINTERS *exptr)
 {
+#if 0
   struct _CONTEXT &ctx=*exptr->ContextRecord;
 
   dbg << Debug::FillChar('0')
@@ -136,10 +139,12 @@ void DebugExceptionhandler::LogRegisters(Debug &dbg, struct _EXCEPTION_POINTERS 
       << "\nES:" << Debug::Width(4) << ctx.SegEs
       << " FS:" << Debug::Width(4) << ctx.SegFs
       << " GS:" << Debug::Width(4) << ctx.SegGs << "\n" << Debug::FillChar() << Debug::Dec();
+#endif
 }
 
 void DebugExceptionhandler::LogFPURegisters(Debug &dbg, struct _EXCEPTION_POINTERS *exptr)
 {
+#if 0
   struct _CONTEXT &ctx=*exptr->ContextRecord;
 
   if (!(ctx.ContextFlags&CONTEXT_FLOATING_POINT))
@@ -182,6 +187,7 @@ void DebugExceptionhandler::LogFPURegisters(Debug &dbg, struct _EXCEPTION_POINTE
     dbg << " " << fpVal << "\n";
   }
   dbg << Debug::FillChar() << Debug::Dec();
+#endif
 }
 
 // include exception dialog box
@@ -198,6 +204,7 @@ static DebugStackwalk::Signature sig;
 
 static BOOL CALLBACK ExceptionDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+#if 0
   switch(uMsg)
   {
     case WM_INITDIALOG:
@@ -329,7 +336,7 @@ static BOOL CALLBACK ExceptionDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
       ListView_SetItem(list,&item);
     }
   }
-
+#endif
   return TRUE;
 }
 
@@ -337,6 +344,7 @@ static BOOL CALLBACK ExceptionDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 
 LONG __stdcall DebugExceptionhandler::ExceptionFilter(struct _EXCEPTION_POINTERS* pExPtrs)
 {
+#if 0
   // we should not be calling ourselves! 
   static bool inExceptionFilter;
   if (inExceptionFilter)
@@ -388,7 +396,7 @@ LONG __stdcall DebugExceptionhandler::ExceptionFilter(struct _EXCEPTION_POINTERS
   regInfo[len]=0;
 
   // now finally add stack & EIP dump
-  dbg.m_stackWalk.StackWalk(sig,pExPtrs->ContextRecord);
+  dbg.m_stackWalk.StackWalkWW(sig,pExPtrs->ContextRecord);
   dbg << sig << "\n";
 
   dbg << "Bytes around EIP:" << Debug::MemDump::Char(((char *)(pExPtrs->ContextRecord->Eip))-32,80);
@@ -403,7 +411,7 @@ LONG __stdcall DebugExceptionhandler::ExceptionFilter(struct _EXCEPTION_POINTERS
   InitCommonControls();
   exPtrs=pExPtrs;
   DialogBoxIndirect(NULL,(LPDLGTEMPLATE)rcException,NULL,ExceptionDlgProc);
-
+#endif
   // Now die
   return EXCEPTION_EXECUTE_HANDLER;
 }

@@ -140,6 +140,7 @@ void GlobalLanguage::init( void )
 	AsciiString fname;
 	fname.format("Data\\%s\\Language.ini", GetRegistryLanguage().str());
 
+#if 0
 	OSVERSIONINFO	osvi;
 	osvi.dwOSVersionInfoSize=sizeof(OSVERSIONINFO);
 
@@ -151,6 +152,7 @@ void GlobalLanguage::init( void )
 	{	//check if we're running Win9x variant since they may need different fonts
 		fname = tempName;
 	}
+#endif
 
 
 	ini.load( fname, INI_LOAD_OVERWRITE, NULL );

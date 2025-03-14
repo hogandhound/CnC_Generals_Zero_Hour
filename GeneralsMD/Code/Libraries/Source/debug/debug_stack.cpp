@@ -86,9 +86,10 @@ static void InitDbghelp(void)
 
   // Get function addresses
   unsigned *funcptr=gDbg.funcPtr;
-  for (unsigned k=0;DebughelpFunctionNames[k];++k,++funcptr)
+  unsigned k = 0;
+  for (;DebughelpFunctionNames[k];++k,++funcptr)
   {
-    *funcptr=(unsigned)GetProcAddress(g_dbghelp,DebughelpFunctionNames[k]);
+    *funcptr=(unsigned)(uintptr_t)GetProcAddress(g_dbghelp,DebughelpFunctionNames[k]);
     if (!*funcptr)
       break;
   }
@@ -104,7 +105,7 @@ static void InitDbghelp(void)
     gDbg._SymSetOptions(gDbg._SymGetOptions()|SYMOPT_DEFERRED_LOADS|SYMOPT_LOAD_LINES);
 
     // Init module
-    gDbg._SymInitialize((HANDLE)GetCurrentProcessId(),NULL,TRUE);
+    gDbg._SymInitialize((HANDLE)(uintptr_t)GetCurrentProcessId(),NULL,TRUE);
 
     // Check: are we using a newer version of dbghelp.dll?
     // (older versions have some serious issues.. err... bugs)
@@ -136,7 +137,7 @@ unsigned DebugStackwalk::Signature::GetAddress(int n) const
   return m_addr[n];
 }
 
-void DebugStackwalk::Signature::GetSymbol(unsigned addr, char *buf, unsigned bufSize) 
+void DebugStackwalk::Signature::GetSymbol(uintptr_t addr, char *buf, unsigned bufSize)
 {
   DFAIL_IF(!buf) return;
   DFAIL_IF(bufSize<64||bufSize>=0x80000000) return;
@@ -148,7 +149,7 @@ void DebugStackwalk::Signature::GetSymbol(unsigned addr, char *buf, unsigned buf
   buf+=wsprintf(buf,"%08x",addr);
 
   // determine module
-  unsigned modBase=gDbg._SymGetModuleBase((HANDLE)GetCurrentProcessId(),addr);
+  unsigned modBase=gDbg._SymGetModuleBase((HANDLE)(uintptr_t)GetCurrentProcessId(),(DWORD)addr);
   if (!modBase)
 	{
 		strcpy(buf," (unknown module)");
@@ -156,14 +157,14 @@ void DebugStackwalk::Signature::GetSymbol(unsigned addr, char *buf, unsigned buf
 	}
 
   // illegal code ptr?
-	if (IsBadReadPtr((void *)addr,4)||IsBadCodePtr((FARPROC)addr))
+	if (IsBadReadPtr((void *)addr,4)||IsBadCodePtr((FARPROC)(uintptr_t)addr))
 	{
 		strcpy(buf," (invalid code addr)");
 		return;
 	}
 
   char symbolBuffer[512];
-  GetModuleFileName((HMODULE)modBase,symbolBuffer,sizeof(symbolBuffer));
+  GetModuleFileName((HMODULE)(uintptr_t)modBase,symbolBuffer,sizeof(symbolBuffer));
 
   char *p=strrchr(symbolBuffer,'\\'); // use filename only, strip off path
   p=p?p+1:symbolBuffer;
@@ -180,7 +181,7 @@ void DebugStackwalk::Signature::GetSymbol(unsigned addr, char *buf, unsigned buf
   symPtr->SizeOfStruct=sizeof(IMAGEHLP_SYMBOL);
   symPtr->MaxNameLength=sizeof(symbolBuffer)-sizeof(IMAGEHLP_SYMBOL);
   DWORD displacement;
-  if (!gDbg._SymGetSymFromAddr((HANDLE)GetCurrentProcessId(),addr,&displacement,symPtr))
+  if (!gDbg._SymGetSymFromAddr((HANDLE)(uintptr_t)GetCurrentProcessId(), (DWORD)addr,&displacement,symPtr))
     return;
   if ((unsigned int)(bufEnd-buf)<strlen(symPtr->Name)+16)
     return;
@@ -190,7 +191,7 @@ void DebugStackwalk::Signature::GetSymbol(unsigned addr, char *buf, unsigned buf
   IMAGEHLP_LINE line;
   memset(&line,0,sizeof(line));
   line.SizeOfStruct=sizeof(line);
-  if (!gDbg._SymGetLineFromAddr((HANDLE)GetCurrentProcessId(),addr,&displacement,&line))
+  if (!gDbg._SymGetLineFromAddr((HANDLE)(uintptr_t)GetCurrentProcessId(), (DWORD)addr,&displacement,&line))
     return;
 
   p=strrchr(line.FileName,'\\'); // use filename only, strip off path
@@ -201,7 +202,7 @@ void DebugStackwalk::Signature::GetSymbol(unsigned addr, char *buf, unsigned buf
   buf+=wsprintf(buf,", %s:%i+0x%x",p,line.LineNumber,displacement);
 }
 
-void DebugStackwalk::Signature::GetSymbol(unsigned addr,
+void DebugStackwalk::Signature::GetSymbol(uintptr_t addr,
                                           char *bufMod, unsigned sizeMod, unsigned *relMod,
                                           char *bufSym, unsigned sizeSym, unsigned *relSym,
                                           char *bufFile, unsigned sizeFile, unsigned *linePtr, unsigned *relLine)
@@ -222,7 +223,7 @@ void DebugStackwalk::Signature::GetSymbol(unsigned addr,
   DFAIL_IF(bufFile&&sizeFile<16) return;
 
   // determine module
-  unsigned modBase=gDbg._SymGetModuleBase((HANDLE)GetCurrentProcessId(),addr);
+  unsigned modBase=gDbg._SymGetModuleBase((HANDLE)(uintptr_t)GetCurrentProcessId(), (DWORD)addr);
   if (!modBase)
 	{
     if (bufMod)
@@ -245,7 +246,7 @@ void DebugStackwalk::Signature::GetSymbol(unsigned addr,
   char symbolBuffer[512];
   if (bufMod)
   {
-    GetModuleFileName((HMODULE)modBase,symbolBuffer,sizeof(symbolBuffer));
+    GetModuleFileName((HMODULE)(uintptr_t)modBase,symbolBuffer,sizeof(symbolBuffer));
 
     char *p=strrchr(symbolBuffer,'\\'); // use filename only, strip off path
     p=p?p+1:symbolBuffer;
@@ -253,7 +254,7 @@ void DebugStackwalk::Signature::GetSymbol(unsigned addr,
     bufMod[sizeMod-1]=0;
   }
   if (relMod)
-    *relMod=addr-modBase;
+      *relMod = (uint32_t)(addr - modBase);
 
   // determine symbol
   if (bufSym)
@@ -263,7 +264,7 @@ void DebugStackwalk::Signature::GetSymbol(unsigned addr,
     symPtr->SizeOfStruct=sizeof(IMAGEHLP_SYMBOL);
     symPtr->MaxNameLength=sizeof(symbolBuffer)-sizeof(IMAGEHLP_SYMBOL);
     DWORD displacement;
-    if (gDbg._SymGetSymFromAddr((HANDLE)GetCurrentProcessId(),addr,&displacement,symPtr))
+    if (gDbg._SymGetSymFromAddr((HANDLE)(uintptr_t)GetCurrentProcessId(), (DWORD)addr,&displacement,symPtr))
     {
       strncpy(bufSym,symPtr->Name,sizeSym);
       bufSym[sizeSym-1]=0;
@@ -281,7 +282,7 @@ void DebugStackwalk::Signature::GetSymbol(unsigned addr,
     memset(&line,0,sizeof(line));
     line.SizeOfStruct=sizeof(line);
     DWORD displacement;
-    if (!gDbg._SymGetLineFromAddr((HANDLE)GetCurrentProcessId(),addr,&displacement,&line))
+    if (!gDbg._SymGetLineFromAddr((HANDLE)(uintptr_t)GetCurrentProcessId(), (DWORD)addr,&displacement,&line))
       strcpy(bufFile,"(unknown)");
     else
     {
@@ -333,8 +334,9 @@ bool DebugStackwalk::IsOldDbghelp(void)
   return g_oldDbghelp;
 }
 
-int DebugStackwalk::StackWalk(Signature &sig, struct _CONTEXT *ctx)
+int DebugStackwalk::StackWalkWW(Signature &sig, struct _CONTEXT *ctx)
 {
+#if 0
   InitDbghelp();
 
   sig.m_numAddr=0;
@@ -388,4 +390,6 @@ int DebugStackwalk::StackWalk(Signature &sig, struct _CONTEXT *ctx)
   }
 
 	return sig.m_numAddr;
+#endif
+    return 0;
 }

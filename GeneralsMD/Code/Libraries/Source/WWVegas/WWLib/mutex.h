@@ -114,7 +114,7 @@ public:
 // of it is that it can't be locked multiple times from the same thread.
 //
 // ----------------------------------------------------------------------------
-
+#if 0
 class FastCriticalSectionClass
 {
 	unsigned Flag;
@@ -173,5 +173,6 @@ public:
 
   friend class LockClass;
 };
+#endif
 
 #endif

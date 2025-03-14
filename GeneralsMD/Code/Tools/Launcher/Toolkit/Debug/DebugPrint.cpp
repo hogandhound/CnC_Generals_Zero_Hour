@@ -110,7 +110,7 @@ void __cdecl DebugPrint(const char* string, ...)
 			{
 			if (_buffer[i] == '\n')
 				{
-				int end = strlen(_buffer);
+				int end = (int)strlen(_buffer);
 				assert((end + 1) <= sizeof(_buffer));
 
 				while (end >= i)

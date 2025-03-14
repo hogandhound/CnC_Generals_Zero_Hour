@@ -38,6 +38,7 @@
 /*		7/18/2002 : Initial creation                                           */
 /*---------------------------------------------------------------------------*/
 
+#if HAS_BINK
 #include <dsound.h>
 #include "Lib/Basetype.h"
 #include "MilesAudioDevice/MilesAudioManager.h"
@@ -94,11 +95,13 @@ MilesAudioManager::MilesAudioManager() :
 	m_num3DSamples(0),
 	m_numStreams(0),
 	m_delayFilter(NULL),
+#if HAS_BINK
 	m_binkHandle(NULL),
+#endif
 	m_pref3DProvider(AsciiString::TheEmptyString),
 	m_prefSpeaker(AsciiString::TheEmptyString)
 {
-	m_audioCache = NEW AudioFileCache;
+	m_audioCache = new AudioFileCache;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -504,7 +507,7 @@ void MilesAudioManager::stopAudio( AudioAffect which )
 	std::list<PlayingAudio *>::iterator it;
 
 	PlayingAudio *playing = NULL;
-	if (BitTest(which, AudioAffect_Sound)) {
+	if (BitTestWW(which, AudioAffect_Sound)) {
 		for (it = m_playingSounds.begin(); it != m_playingSounds.end(); ++it) {
 			playing = *it;
 			if (playing) {
@@ -515,7 +518,7 @@ void MilesAudioManager::stopAudio( AudioAffect which )
 		}
 	}
 
-	if (BitTest(which, AudioAffect_Sound3D)) {
+	if (BitTestWW(which, AudioAffect_Sound3D)) {
 		for (it = m_playing3DSounds.begin(); it != m_playing3DSounds.end(); ++it) {
 			playing = *it;
 			if (playing) {
@@ -526,16 +529,16 @@ void MilesAudioManager::stopAudio( AudioAffect which )
 		}
 	}
 
-	if (BitTest(which, AudioAffect_Speech | AudioAffect_Music)) {
+	if (BitTestWW(which, AudioAffect_Speech | AudioAffect_Music)) {
 		for (it = m_playingStreams.begin(); it != m_playingStreams.end(); ++it) {
 			playing = *it;
 			if (playing) {
 				if (playing->m_audioEventRTS->getAudioEventInfo()->m_soundType == AT_Music) {
-					if (!BitTest(which, AudioAffect_Music)) {
+					if (!BitTestWW(which, AudioAffect_Music)) {
 						continue;
 					}
 				} else {
-					if (!BitTest(which, AudioAffect_Speech)) {
+					if (!BitTestWW(which, AudioAffect_Speech)) {
 						continue;
 					}
 				}
@@ -553,7 +556,7 @@ void MilesAudioManager::pauseAudio( AudioAffect which )
 	std::list<PlayingAudio *>::iterator it;
 
 	PlayingAudio *playing = NULL;
-	if (BitTest(which, AudioAffect_Sound)) {
+	if (BitTestWW(which, AudioAffect_Sound)) {
 		for (it = m_playingSounds.begin(); it != m_playingSounds.end(); ++it) {
 			playing = *it;
 			if (playing) {
@@ -562,7 +565,7 @@ void MilesAudioManager::pauseAudio( AudioAffect which )
 		}
 	}
 
-	if (BitTest(which, AudioAffect_Sound3D)) {
+	if (BitTestWW(which, AudioAffect_Sound3D)) {
 		for (it = m_playing3DSounds.begin(); it != m_playing3DSounds.end(); ++it) {
 			playing = *it;
 			if (playing) {
@@ -571,16 +574,16 @@ void MilesAudioManager::pauseAudio( AudioAffect which )
 		}
 	}
 
-	if (BitTest(which, AudioAffect_Speech | AudioAffect_Music)) {
+	if (BitTestWW(which, AudioAffect_Speech | AudioAffect_Music)) {
 		for (it = m_playingStreams.begin(); it != m_playingStreams.end(); ++it) {
 			playing = *it;
 			if (playing) {
 				if (playing->m_audioEventRTS->getAudioEventInfo()->m_soundType == AT_Music) {
-					if (!BitTest(which, AudioAffect_Music)) {
+					if (!BitTestWW(which, AudioAffect_Music)) {
 						continue;
 					}
 				} else {
-					if (!BitTest(which, AudioAffect_Speech)) {
+					if (!BitTestWW(which, AudioAffect_Speech)) {
 						continue;
 					}
 				}
@@ -614,7 +617,7 @@ void MilesAudioManager::resumeAudio( AudioAffect which )
 	std::list<PlayingAudio *>::iterator it;
 
 	PlayingAudio *playing = NULL;
-	if (BitTest(which, AudioAffect_Sound)) {
+	if (BitTestWW(which, AudioAffect_Sound)) {
 		for (it = m_playingSounds.begin(); it != m_playingSounds.end(); ++it) {
 			playing = *it;
 			if (playing) {
@@ -623,7 +626,7 @@ void MilesAudioManager::resumeAudio( AudioAffect which )
 		}
 	}
 
-	if (BitTest(which, AudioAffect_Sound3D)) {
+	if (BitTestWW(which, AudioAffect_Sound3D)) {
 		for (it = m_playing3DSounds.begin(); it != m_playing3DSounds.end(); ++it) {
 			playing = *it;
 			if (playing) {
@@ -632,16 +635,16 @@ void MilesAudioManager::resumeAudio( AudioAffect which )
 		}
 	}
 
-	if (BitTest(which, AudioAffect_Speech | AudioAffect_Music)) {
+	if (BitTestWW(which, AudioAffect_Speech | AudioAffect_Music)) {
 		for (it = m_playingStreams.begin(); it != m_playingStreams.end(); ++it) {
 			playing = *it;
 			if (playing) {
 				if (playing->m_audioEventRTS->getAudioEventInfo()->m_soundType == AT_Music) {
-					if (!BitTest(which, AudioAffect_Music)) {
+					if (!BitTestWW(which, AudioAffect_Music)) {
 						continue;
 					}
 				} else {
-					if (!BitTest(which, AudioAffect_Speech)) {
+					if (!BitTestWW(which, AudioAffect_Speech)) {
 						continue;
 					}
 				}
@@ -1066,7 +1069,7 @@ void MilesAudioManager::closeFile( void *fileRead )
 //-------------------------------------------------------------------------------------------------
 PlayingAudio *MilesAudioManager::allocatePlayingAudio( void )
 {
-	PlayingAudio *aud = NEW PlayingAudio;	// poolify
+	PlayingAudio *aud = new PlayingAudio;	// poolify
 	aud->m_status = PS_Playing;
 	return aud;
 }
@@ -2330,7 +2333,7 @@ void MilesAudioManager::processPlayingList( void )
 				{
 					Real volForConsideration = getEffectiveVolume(playing->m_audioEventRTS);
 					volForConsideration /= (m_sound3DVolume > 0.0f ? m_soundVolume : 1.0f);
-					Bool playAnyways = BitTest( playing->m_audioEventRTS->getAudioEventInfo()->m_type, ST_GLOBAL) || playing->m_audioEventRTS->getAudioEventInfo()->m_priority == AP_CRITICAL;
+					Bool playAnyways = BitTestWW( playing->m_audioEventRTS->getAudioEventInfo()->m_type, ST_GLOBAL) || playing->m_audioEventRTS->getAudioEventInfo()->m_priority == AP_CRITICAL;
 					if( volForConsideration < m_audioSettings->m_minVolume && !playAnyways ) 
 					{
 						// don't want to get an additional callback for this sample
@@ -2962,9 +2965,10 @@ void MilesAudioManager::processRequest( AudioRequest *req )
 //-------------------------------------------------------------------------------------------------
 void *MilesAudioManager::getHandleForBink( void )
 {
+#if HAS_BINK
 	if (m_binkHandle == NULL) {
 		PlayingAudio *aud = allocatePlayingAudio();
-		aud->m_audioEventRTS = NEW AudioEventRTS("BinkHandle");	// poolify
+		aud->m_audioEventRTS = new AudioEventRTS("BinkHandle");	// poolify
 		getInfoForAudioEvent(aud->m_audioEventRTS);
 		aud->m_sample = getFirst2DSample(aud->m_audioEventRTS);
 		aud->m_type = PAT_Sample;
@@ -2980,15 +2984,19 @@ void *MilesAudioManager::getHandleForBink( void )
 	AILLPDIRECTSOUND lpDS;
 	AIL_get_DirectSound_info(m_binkHandle->m_sample, &lpDS, NULL);
 	return lpDS;
+#endif
+	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------
 void MilesAudioManager::releaseHandleForBink( void )
 {
+#if HAS_BINK
 	if (m_binkHandle) {
 		releasePlayingAudio(m_binkHandle);
 		m_binkHandle = NULL;
 	}
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3387,4 +3395,6 @@ void MilesAudioManager::dumpAllAssetsUsed()
 	fclose(logfile);
 	logfile = NULL;
 }
+#endif
+
 #endif

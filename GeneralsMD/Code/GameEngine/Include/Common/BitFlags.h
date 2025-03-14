@@ -182,12 +182,12 @@ public:
 
 	inline Int size() const
 	{
-		return m_bits.size();
+		return (int)m_bits.size();
 	}
 
 	inline Int count() const
 	{
-		return m_bits.count();
+		return (int)m_bits.count();
 	}
 
 	inline Bool any() const
@@ -209,7 +209,7 @@ public:
 	{
 		BitFlags tmp = *this;
 		tmp.m_bits &= that.m_bits;
-		return tmp.m_bits.count();
+		return (int)tmp.m_bits.count();
 	} 
 
 	inline Int countInverseIntersection(const BitFlags& that) const
@@ -217,7 +217,7 @@ public:
 		BitFlags tmp = *this;
 		tmp.m_bits.flip();
 		tmp.m_bits &= that.m_bits;
-		return tmp.m_bits.count();
+		return (int)tmp.m_bits.count();
 	} 
 
 	inline Bool anyIntersectionWith(const BitFlags& that) const
@@ -276,7 +276,7 @@ public:
     Int i = 0;
 	  for(const char** name = s_bitNameList; *name; ++name, ++i )
 	  {
-		  if( stricmp( *name, token ) == 0 )
+		  if( _stricmp( *name, token ) == 0 )
 		  {
         return i;
 		  }

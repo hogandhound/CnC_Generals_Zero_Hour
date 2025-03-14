@@ -33,7 +33,7 @@
 DebugIOFlat::OutputStream::OutputStream(const char *filename, unsigned maxSize):
   m_bufferUsed(0), m_nextChar(0)
 {
-  m_fileName=(char *)DebugAllocMemory(strlen(filename)+1);
+  m_fileName=(char *)DebugAllocMemory((uint32_t)strlen(filename)+1);
   strcpy(m_fileName,filename);
 
   m_limitedFileSize=maxSize>0;
@@ -71,7 +71,7 @@ void DebugIOFlat::OutputStream::Delete(const char *path)
     char *fileNameOnly=strrchr(m_fileName,'\\');
     fileNameOnly=fileNameOnly?fileNameOnly+1:m_fileName;
 
-    unsigned pathLen=strlen(path);
+    unsigned pathLen= (uint32_t)strlen(path);
     for (;;)
     {
       // absolute path?
@@ -118,7 +118,7 @@ void DebugIOFlat::OutputStream::Write(const char *src)
   }
   else
   {
-    unsigned len=strlen(src);
+    unsigned len= (uint32_t)strlen(src);
 
     while (len>m_bufferSize)
     {
@@ -269,7 +269,7 @@ void DebugIOFlat::ExpandMagic(const char *src, const char *splitName, char *buf)
         *dst++=src[-1];
     }
 
-    unsigned len=strlen(help);
+    unsigned len= (uint32_t)strlen(help);
     if (dst-buf+len>250)
       break;
     strcpy(dst,help);
@@ -306,17 +306,18 @@ DebugIOFlat::~DebugIOFlat()
 
 void DebugIOFlat::Write(StringType type, const char *src, const char *str)
 {
-  for (SplitListEntry *cur=m_firstSplit;cur;cur=cur->next)
-  {
-    if (!(cur->stringTypes&(1<<type)))
-      continue;
-    if (src&&*src&&!Debug::SimpleMatch(src,cur->items))
-      continue;
-    cur->stream->Write(str);
-    break;
-  }
-  if (!cur)
-    m_firstStream->stream->Write(str);
+    SplitListEntry* cur = m_firstSplit;
+    for (; cur; cur = cur->next)
+    {
+        if (!(cur->stringTypes & (1 << type)))
+            continue;
+        if (src && *src && !Debug::SimpleMatch(src, cur->items))
+            continue;
+        cur->stream->Write(str);
+        break;
+    }
+    if (!cur)
+        m_firstStream->stream->Write(str);
 }
 
 void DebugIOFlat::EmergencyFlush(void)
@@ -468,7 +469,8 @@ void DebugIOFlat::Execute(class Debug& dbg, const char *cmd, bool structuredCmd,
       // create our filename, search for stream with same filename
       char fn[256];
       ExpandMagic(m_baseFilename,cur->name,fn);
-      for (StreamListEntry *stream=m_firstStream;stream;stream=stream->next)
+      StreamListEntry* stream = m_firstStream;
+      for (;stream;stream=stream->next)
         if (!strcmp(stream->stream->GetFilename(),fn))
           break;
       if (!stream)
@@ -526,8 +528,9 @@ void DebugIOFlat::Execute(class Debug& dbg, const char *cmd, bool structuredCmd,
     // must fixup m_lastSplitPtr now
     if (m_firstSplit)
     {
-      for (SplitListEntry *cur=m_firstSplit;cur->next;cur=cur->next);
-      m_firstSplit=cur;
+        SplitListEntry* cur = m_firstSplit;
+        for (; cur->next; cur = cur->next);
+        m_firstSplit = cur;
     }
     else
       m_firstSplit=NULL;

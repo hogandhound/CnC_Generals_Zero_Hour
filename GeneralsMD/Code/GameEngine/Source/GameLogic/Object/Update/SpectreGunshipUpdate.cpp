@@ -196,7 +196,7 @@ Bool SpectreGunshipUpdate::initiateIntentToDoSpecialPower(const SpecialPowerTemp
 		return FALSE;
 	}
 
-	if( !BitTest( commandOptions, COMMAND_FIRED_BY_SCRIPT ) )
+	if( !BitTestWW( commandOptions, COMMAND_FIRED_BY_SCRIPT ) )
 	{
 		m_initialTargetPosition.set( targetPos );
 		m_overrideTargetDestination.set( targetPos );
@@ -296,12 +296,14 @@ void SpectreGunshipUpdate::setSpecialPowerOverridableDestination( const Coord3D 
 	{
 		m_overrideTargetDestination = *loc; 
 
+#ifdef HAS_BINK
 		if( me->getControllingPlayer()  &&  me->getControllingPlayer()->isLocalPlayer() )
 		{
 			AudioEventRTS soundToPlay = *me->getTemplate()->getVoiceAttack();
 			soundToPlay.setObjectID( me->getID() );
 			TheAudio->addAudioEvent(&soundToPlay);
 		}
+#endif
 	}
 }
 
@@ -607,8 +609,9 @@ UpdateSleepTime SpectreGunshipUpdate::update()
 	              TheWeaponStore->createAndFireTempWeapon( wt, gunship, &attackPositionWithRandomOffset );
 
                 m_howitzerFireSound.setObjectID(gunship->getID());
+#ifdef HAS_BINK
                 TheAudio->addAudioEvent( &m_howitzerFireSound );
-
+#endif
               }
             }
 
@@ -719,16 +722,20 @@ void SpectreGunshipUpdate::friend_enableAfterburners(Bool v)
 		if (!m_afterburnerSound.isCurrentlyPlaying())
 		{
 			m_afterburnerSound.setObjectID(gunship->getID());
+#ifdef HAS_BINK
 			m_afterburnerSound.setPlayingHandle(TheAudio->addAudioEvent(&m_afterburnerSound));
+#endif
 		}
 	}
 	else
 	{
 		gunship->clearModelConditionState(MODELCONDITION_JETAFTERBURNER);
+#ifdef HAS_BINK
 		if (m_afterburnerSound.isCurrentlyPlaying())
 		{
 			TheAudio->removeAudioEvent(m_afterburnerSound.getPlayingHandle());
 		}
+#endif
 	}
 }
 

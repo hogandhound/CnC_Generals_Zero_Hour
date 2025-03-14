@@ -42,11 +42,11 @@
 #define SHDHWSHADER_H
 
 #ifndef _D3D8_H_
-#include <d3d8.h>
+#include <d3d9.h>
 #endif
 
 #ifndef __D3DX8_H__
-#include <d3dx8.h>
+#include <d3dx9.h>
 #endif
 
 #ifndef SHDHW_CONSTANTS_H
@@ -57,13 +57,14 @@
 class RenderInfoClass;
 class Vector4;
 
+template <class T>
 class ShdHWShader
 {
 public:
 	ShdHWShader() : Shader(0) {}
 	virtual ~ShdHWShader() {}
 
-	DWORD Peek_Shader() const { return Shader; }
+	T* Peek_Shader() const { return Shader; }
 
 protected:
 
@@ -76,21 +77,21 @@ protected:
 		LPD3DXBUFFER*	shader_code
 	);
 
-	DWORD Shader;
+	T* Shader;
 };
 
-class ShdHWVertexShader : public ShdHWShader
+class ShdHWVertexShader : public ShdHWShader<IDirect3DVertexShader9>
 {
 public:
 	virtual ~ShdHWVertexShader();
 
-	DWORD Create
+	IDirect3DVertexShader9* Create
 	(
 		char* file_name, 
 		DWORD* vertex_shader_declaration
 	);
 
-	DWORD Create
+	IDirect3DVertexShader9* Create
 	(
 		DWORD* shader_code, 
 		DWORD* vertex_shader_declaration
@@ -119,13 +120,13 @@ private:
 	static bool Using_Hardware;
 };
 
-class ShdHWPixelShader : public ShdHWShader
+class ShdHWPixelShader : public ShdHWShader< IDirect3DPixelShader9>
 {
 public:
 	virtual ~ShdHWPixelShader();
 
-	DWORD Create(char* file_name);
-	DWORD Create(DWORD* shader_code);
+	IDirect3DPixelShader9* Create(char* file_name);
+	IDirect3DPixelShader9* Create(DWORD* shader_code);
 
 	void Destroy();
 };

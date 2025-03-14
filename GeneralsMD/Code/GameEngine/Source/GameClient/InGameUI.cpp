@@ -381,7 +381,7 @@ void InGameUI::xfer( Xfer *xfer )
 		// addNamedTimer needs (const AsciiString& timerName, const UnicodeString& text, Bool isCountdown)
 		if (xfer->getXferMode() == XFER_SAVE)
 		{
-			Int timerCount = m_namedTimers.size();
+			Int timerCount = (int)m_namedTimers.size();
 			xfer->xferInt( &timerCount );
 			for( NamedTimerMapIt timerIter = m_namedTimers.begin(); timerIter != m_namedTimers.end(); ++timerIter )
 			{
@@ -1618,6 +1618,7 @@ void InGameUI::update( void )
 	//USE_PERF_TIMER(InGameUI_update)
 	Int i;
 
+#ifdef HAS_BINK
 	/// @todo make sure this code gets called even when the UI is not being drawn
 	if ( m_videoStream && m_videoBuffer )
 	{
@@ -1646,6 +1647,7 @@ void InGameUI::update( void )
 //			}
 		}
 	}
+#endif
 
 	//
 	// remove any message strings that have expired, note that the oldest strings are
@@ -1660,7 +1662,7 @@ void InGameUI::update( void )
 	for( i = MAX_UI_MESSAGES - 1; i >= 0; i-- )
 	{
 
-		if( currLogicFrame - m_uiMessages[ i ].timestamp > messageTimeout )
+		if( currLogicFrame - m_uiMessages[ i ].timestamp > (uint32_t)messageTimeout )
 		{
 
 			// get the current color of this text
@@ -1765,7 +1767,9 @@ void InGameUI::update( void )
 
 					// lets make a sound
 					static AudioEventRTS click("MilitarySubtitlesTyping");
+#ifdef HAS_BINK
 					TheAudio->addAudioEvent(&click);
+#endif
 					if(TheGlobalLanguageData)
 						m_militarySubtitle->incrementOnFrame = currLogicFrame + TheGlobalLanguageData->m_militaryCaptionSpeed;
 					else
@@ -1774,7 +1778,7 @@ void InGameUI::update( void )
 				}
 				// increment the index			
 				m_militarySubtitle->index++;
-				if(m_militarySubtitle->index >= m_militarySubtitle->subtitle.getLength())
+				if(m_militarySubtitle->index >= (uint32_t)m_militarySubtitle->subtitle.getLength())
 				{
 					// We're at the end of the subtitle, set everything to persist till the subtitle has expired
 					m_militarySubtitle->incrementOnFrame = m_militarySubtitle->lifetime + 1;
@@ -2257,7 +2261,7 @@ void InGameUI::createMouseoverHint( const GameMessage *msg )
 		}
 		
 		// check to see if it or any of its parents are opaque.  If so, we can't select anything.
-		if (!BitTest( window->winGetStatus(), WIN_STATUS_SEE_THRU ))
+		if (!BitTestWW( window->winGetStatus(), WIN_STATUS_SEE_THRU ))
 		{
 			underWindow = true;
 			break;
@@ -2579,7 +2583,7 @@ void InGameUI::createCommandHint( const GameMessage *msg )
 		}
 		
 		// check to see if it or any of its parents are opaque.  If so, we can't select anything.
-		if (!BitTest( window->winGetStatus(), WIN_STATUS_SEE_THRU ))
+		if (!BitTestWW( window->winGetStatus(), WIN_STATUS_SEE_THRU ))
 		{
 			underWindow = true;
 			break;
@@ -2774,7 +2778,7 @@ void InGameUI::createCommandHint( const GameMessage *msg )
 														m_pendingGUICommand->getSpecialPowerTemplate(),
 														m_pendingGUICommand->getWeaponSlot());
 					}
-					else if( BitTest( m_pendingGUICommand->getOptions(), COMMAND_OPTION_NEED_TARGET ) )
+					else if( BitTestWW( m_pendingGUICommand->getOptions(), COMMAND_OPTION_NEED_TARGET ) )
 					{
 						Int index = TheMouse->getCursorIndex(m_pendingGUICommand->getCursorName());
 						if (index != Mouse::INVALID_MOUSE_CURSOR)
@@ -2895,7 +2899,7 @@ void InGameUI::setGUICommand( const CommandButton *command )
 	if( command )
 	{
 
-		if( BitTest( command->getOptions(), COMMAND_OPTION_NEED_TARGET ) == FALSE )
+		if( BitTestWW( command->getOptions(), COMMAND_OPTION_NEED_TARGET ) == FALSE )
 		{
 
 			DEBUG_ASSERTCRASH( 0, ("setGUICommand: Command '%s' does not need additional user interaction\n",	
@@ -2918,7 +2922,7 @@ void InGameUI::setGUICommand( const CommandButton *command )
 	m_pendingGUICommand = command;
 
 	// set the mouse cursor for commands that need a targeting or to normal with no command
-	if( command && BitTest( command->getOptions(), COMMAND_OPTION_NEED_TARGET ) && !command->isContextCommand() )
+	if( command && BitTestWW( command->getOptions(), COMMAND_OPTION_NEED_TARGET ) && !command->isContextCommand() )
 	{
 		setMouseCursor( Mouse::ARROW );// This occurs on the mouse-up of a panel button, so make an arrow
 		// the mouseoverhint code will take care of the cursor context, once the mouse leaves the panel
@@ -3491,7 +3495,7 @@ void InGameUI::postDraw( void )
 		UnsignedByte r, g, b, a;
 		GameGetColorComponents( m_militarySubtitle->color, &r, &g, &b, &a );
 		dropColor = GameMakeColor( 0, 0, 0, a );
-		for(Int i = 0; i <= m_militarySubtitle->currentDisplayString; i++)
+		for(Int i = 0; i <= (int)m_militarySubtitle->currentDisplayString; i++)
 		{
 			m_militarySubtitle->displayStrings[i]->draw(pos.x,pos.y, m_militarySubtitle->color,dropColor );
 			Int height;
@@ -3679,7 +3683,7 @@ void InGameUI::postDraw( void )
 								  {
 									  if ( m_superweaponFlashDuration != 0.0f )
 									  {
-										  if ( TheGameLogic->getFrame() >= m_superweaponLastFlashFrame + (Int)(m_superweaponFlashDuration) )
+										  if ( (int)TheGameLogic->getFrame() >= m_superweaponLastFlashFrame + (Int)(m_superweaponFlashDuration) )
 										  {
 											  m_superweaponUsedFlashColor = !m_superweaponUsedFlashColor;
 											  m_superweaponLastFlashFrame = TheGameLogic->getFrame();
@@ -3784,7 +3788,7 @@ void InGameUI::postDraw( void )
 				{
 					if ( m_namedTimerFlashDuration != 0.0f )
 					{
-						if ( TheGameLogic->getFrame() >= m_namedTimerLastFlashFrame + (Int)(m_namedTimerFlashDuration) )
+						if ((int)TheGameLogic->getFrame() >= m_namedTimerLastFlashFrame + (Int)(m_namedTimerFlashDuration) )
 						{
 							m_namedTimerUsedFlashColor = !m_namedTimerUsedFlashColor;
 							m_namedTimerLastFlashFrame = TheGameLogic->getFrame();
@@ -3900,6 +3904,7 @@ void InGameUI::playMovie( const AsciiString& movieName )
 
 	stopMovie();
 
+#ifdef HAS_BINK
 	m_videoStream = TheVideoPlayer->open( movieName );
 
 	if ( m_videoStream == NULL )
@@ -3918,12 +3923,14 @@ void InGameUI::playMovie( const AsciiString& movieName )
 		stopMovie();
 		return;
 	}
+#endif
 }
 
 // ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
 void InGameUI::stopMovie( void )
 {
+#ifdef HAS_BINK
 	delete m_videoBuffer;
 	m_videoBuffer = NULL;
 
@@ -3937,6 +3944,7 @@ void InGameUI::stopMovie( void )
 		//TheScriptEngine->notifyOfCompletedVideo(m_currentlyPlayingMovie); // removing sync error source -MDC
 		m_currentlyPlayingMovie = AsciiString::TheEmptyString;
 	}
+#endif
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -3955,6 +3963,7 @@ void InGameUI::playCameoMovie( const AsciiString& movieName )
 
 	stopCameoMovie();
 
+#ifdef HAS_BINK
 	m_cameoVideoStream = TheVideoPlayer->open( movieName );
 
 	if ( m_cameoVideoStream == NULL )
@@ -3975,6 +3984,7 @@ void InGameUI::playCameoMovie( const AsciiString& movieName )
 	GameWindow *window = TheWindowManager->winGetWindowFromId(NULL,TheNameKeyGenerator->nameToKey( AsciiString("ControlBar.wnd:RightHUD") ));
 	WinInstanceData *winData = window->winGetInstanceData();
 	winData->setVideoBuffer(m_cameoVideoBuffer);
+#endif
 //	window->winHide(FALSE);
 }
 
@@ -3988,7 +3998,8 @@ void InGameUI::stopCameoMovie( void )
 //	window->winHide(FALSE);
 	WinInstanceData *winData = window->winGetInstanceData();
 	winData->setVideoBuffer(NULL);
-	
+
+#ifdef HAS_BINK
 	delete m_cameoVideoBuffer;
 	m_cameoVideoBuffer = NULL;
 
@@ -3997,7 +4008,7 @@ void InGameUI::stopCameoMovie( void )
 		m_cameoVideoStream->close();
 		m_cameoVideoStream = NULL;
 	}
-	
+#endif
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -4123,7 +4134,7 @@ void InGameUI::removeMilitarySubtitle( void )
 	TheInGameUI->clearTooltipsDisabled();
 
 	// loop through and free up the display strings
-	for(Int i = 0; i <= m_militarySubtitle->currentDisplayString; i ++)
+	for(Int i = 0; i <= (int)m_militarySubtitle->currentDisplayString; i ++)
 	{
 		TheDisplayStringManager->freeDisplayString(m_militarySubtitle->displayStrings[i]);
 		m_militarySubtitle->displayStrings[i] = NULL;
@@ -4438,8 +4449,8 @@ Bool InGameUI::canSelectedObjectsDoSpecialPower( const CommandButton *command, c
 	//1) NO TARGET OR POS
 	//2) COMMAND_OPTION_NEED_OBJECT_TARGET
 	//3) NEED_TARGET_POS
-	Bool doAtPosition = BitTest( command->getOptions(), NEED_TARGET_POS );
-	Bool doAtObject = BitTest( command->getOptions(), COMMAND_OPTION_NEED_OBJECT_TARGET );
+	Bool doAtPosition = BitTestWW( command->getOptions(), NEED_TARGET_POS );
+	Bool doAtObject = BitTestWW( command->getOptions(), COMMAND_OPTION_NEED_OBJECT_TARGET );
 
 	//Sanity checks
 	if( doAtObject && !objectToInteractWith )
@@ -4562,8 +4573,8 @@ Bool InGameUI::canSelectedObjectsEffectivelyUseWeapon( const CommandButton *comm
 	//1) NO TARGET OR POS
 	//2) COMMAND_OPTION_NEED_OBJECT_TARGET
 	//3) NEED_TARGET_POS
-	Bool doAtPosition = BitTest( command->getOptions(), NEED_TARGET_POS );
-	Bool doAtObject = BitTest( command->getOptions(), COMMAND_OPTION_NEED_OBJECT_TARGET );
+	Bool doAtPosition = BitTestWW( command->getOptions(), NEED_TARGET_POS );
+	Bool doAtObject = BitTestWW( command->getOptions(), COMMAND_OPTION_NEED_OBJECT_TARGET );
 
 	//Sanity checks
 	if( doAtObject && !objectToInteractWith )
@@ -4640,7 +4651,7 @@ Int InGameUI::selectAllUnitsByTypeAcrossRegion( IRegion2D *region, KindOfMaskTyp
 {
 	KindOfSelectionData data;
 	Int newSelectionCount = 0;
-	Int oldSelectionCount = getAllSelectedDrawables()->size();
+	Int oldSelectionCount = (int)getAllSelectedDrawables()->size();
 
 	data.m_mustbeSet = mustBeSet;
 	data.m_mustbeClear = mustBeClear;
@@ -4648,7 +4659,7 @@ Int InGameUI::selectAllUnitsByTypeAcrossRegion( IRegion2D *region, KindOfMaskTyp
 	if (region)
 	{
 		TheTacticalView->iterateDrawablesInRegion(region, kindOfUnitSelection, (void *)&data);
-		newSelectionCount += data.newlySelectedDrawables.size();
+		newSelectionCount += (int)data.newlySelectedDrawables.size();
 	}
 	else
 	{
@@ -5074,7 +5085,7 @@ void InGameUI::updateFloatingText( void )
 		++ftd->m_frameCount;
 		
 		// fade the text
-		if( currLogicFrame > ftd->m_frameTimeOut)
+		if((int)currLogicFrame > ftd->m_frameTimeOut)
 		{
 			// modify the color
 			GameGetColorComponents(ftd->m_color, &r, &g, &b, &a);		
@@ -5365,8 +5376,8 @@ void InGameUI::updateAndDrawWorldAnimations( void )
 			// the expire frame
 			//
 			if( TheGameLogic->getFrame() >= wad->m_expireFrame ||
-					(BitTest( wad->m_options, WORLD_ANIM_PLAY_ONCE_AND_DESTROY ) &&
-					 BitTest( wad->m_anim->getStatus(), ANIM_2D_STATUS_COMPLETE )) )
+					(BitTestWW( wad->m_options, WORLD_ANIM_PLAY_ONCE_AND_DESTROY ) &&
+					 BitTestWW( wad->m_anim->getStatus(), ANIM_2D_STATUS_COMPLETE )) )
 			{
 
 				// delete this element and continue
@@ -5397,7 +5408,7 @@ void InGameUI::updateAndDrawWorldAnimations( void )
 		}  // end if
 
 		// update translucency value
-		if( BitTest( wad->m_options, WORLD_ANIM_FADE_ON_EXPIRE ) )
+		if( BitTestWW( wad->m_options, WORLD_ANIM_FADE_ON_EXPIRE ) )
 		{
 
 			// see if we should be setting the translucency value
@@ -5578,7 +5589,7 @@ void InGameUI::selectNextIdleWorker( void )
 Int InGameUI::getIdleWorkerCount( void )
 {
 	Int index = ThePlayerList->getLocalPlayer()->getPlayerIndex();
-	return m_idleWorkers[index].size();
+	return (int)m_idleWorkers[index].size();
 }
 
 void InGameUI::showIdleWorkerLayout( void )

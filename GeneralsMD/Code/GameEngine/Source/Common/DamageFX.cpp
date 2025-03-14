@@ -157,7 +157,7 @@ static void parseCommonStuff(
 	}
 
 	const char* damageName = ini->getNextToken();
-	if (stricmp(damageName, "Default") == 0)
+	if (_stricmp(damageName, "Default") == 0)
 	{
 		damageFirst = (DamageType)0;
 		damageLast = (DamageType)(DAMAGE_NUM_TYPES - 1);

@@ -149,7 +149,8 @@ void HTreeManagerClass::Free_All_Trees_With_Exclusion_List(const W3DExclusionLis
 	// or copying it to the new tail index if it is excluded.
 	int new_tail = 0;
 
-	for (int treeidx=0; treeidx < MAX_TREES; treeidx++) {
+	int treeidx = 0;
+	for (; treeidx < MAX_TREES; treeidx++) {
 		if (TreePtr[treeidx] != NULL) {
 			
 			if (exclusion_list.Is_Excluded(TreePtr[treeidx])) {
@@ -249,7 +250,7 @@ Error:
 int HTreeManagerClass::Get_Tree_ID(const char * name)
 {
 	for (int i=0; i<NumTrees; i++) {
-		if (TreePtr[i] && (stricmp(name,TreePtr[i]->Get_Name()) == 0)) {
+		if (TreePtr[i] && (_stricmp(name,TreePtr[i]->Get_Name()) == 0)) {
 			return i;
 		}
 	}
@@ -300,7 +301,7 @@ HTreeClass * HTreeManagerClass::Get_Tree(const char * name)
 	return TreeHash.Get(lower_case_name);
 
 //	for (int i=0; i<NumTrees; i++) {
-//		if (TreePtr[i] && (stricmp(name,TreePtr[i]->Get_Name()) == 0)) {
+//		if (TreePtr[i] && (_stricmp(name,TreePtr[i]->Get_Name()) == 0)) {
 //
 //			return TreePtr[i];
 //		}

@@ -79,7 +79,7 @@ RegistryClass::RegistryClass( const char * sub_key, bool create ) :
 
 	if (ERROR_SUCCESS == result) {
 		IsValid = true;
-		Key = (int)key;
+		Key = (intptr_t)key;
 	}
 }
 
@@ -232,7 +232,7 @@ char *RegistryClass::Get_String( const char * name, char *value, int value_size,
 void	RegistryClass::Set_String( const char * name, const char *value )
 {
 	assert( IsValid );
-   int size = strlen( value ) + 1; // must include NULL
+   int size = (int)(int)strlen( value ) + 1; // must include NULL
 	if (IsLocked) {
 		return;
 	}
@@ -326,7 +326,7 @@ void	RegistryClass::Set_String( const WCHAR * name, const WCHAR *value )
    //
 	//	Determine the size
 	//
-	int size = wcslen( value ) + 1;
+	int size = (int)wcslen( value ) + 1;
 	size		= size * 2;
 
 	//
@@ -550,7 +550,7 @@ void RegistryClass::Load_Registry(const char *filename, char *old_path, char *ne
 		INIClass ini;
 		ini.Load(file);
 
-		int old_path_len = strlen(old_path);
+		int old_path_len = (int)strlen(old_path);
 		char path[1024];
 		char string[1024];
 		unsigned char buffer[8192];

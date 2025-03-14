@@ -53,7 +53,7 @@
 #include "dx8caps.h"
 #include "missingtexture.h"
 #include "targa.h"
-#include <D3dx8tex.h>
+#include <d3dx9tex.h>
 #include <cstdio>
 #include "wwmemlog.h"
 #include "texture.h"
@@ -172,13 +172,13 @@ SynchronizedTextureLoadTaskListClass::SynchronizedTextureLoadTaskListClass(void)
 
 void SynchronizedTextureLoadTaskListClass::Push_Front(TextureLoadTaskClass *task)
 {
-	FastCriticalSectionClass::LockClass lock(CriticalSection);
+	CriticalSectionClass::LockClass lock(CriticalSection);
 	TextureLoadTaskListClass::Push_Front(task);
 }
 
 void SynchronizedTextureLoadTaskListClass::Push_Back(TextureLoadTaskClass *task)
 {
-	FastCriticalSectionClass::LockClass lock(CriticalSection);
+	CriticalSectionClass::LockClass lock(CriticalSection);
 	TextureLoadTaskListClass::Push_Back(task);
 }
 
@@ -189,7 +189,7 @@ TextureLoadTaskClass *SynchronizedTextureLoadTaskListClass::Pop_Front(void)
 		return 0;
 	}
 
-	FastCriticalSectionClass::LockClass lock(CriticalSection);
+	CriticalSectionClass::LockClass lock(CriticalSection);
 	return TextureLoadTaskListClass::Pop_Front();
 
 }
@@ -201,13 +201,13 @@ TextureLoadTaskClass *SynchronizedTextureLoadTaskListClass::Pop_Back(void)
 		return 0;
 	}
 
-	FastCriticalSectionClass::LockClass lock(CriticalSection);
+	CriticalSectionClass::LockClass lock(CriticalSection);
 	return TextureLoadTaskListClass::Pop_Back();
 }
 
 void SynchronizedTextureLoadTaskListClass::Remove(TextureLoadTaskClass *task)
 {
-	FastCriticalSectionClass::LockClass lock(CriticalSection);
+	CriticalSectionClass::LockClass lock(CriticalSection);
 	TextureLoadTaskListClass::Remove(task);
 }
 
@@ -218,8 +218,8 @@ void SynchronizedTextureLoadTaskListClass::Remove(TextureLoadTaskClass *task)
 // they are defined below. No ordering is necessary for the task list locks,
 // since one thread can never hold two at once.
 
-static FastCriticalSectionClass					_ForegroundCriticalSection;
-static FastCriticalSectionClass					_BackgroundCriticalSection;
+static CriticalSectionClass					_ForegroundCriticalSection;
+static CriticalSectionClass					_BackgroundCriticalSection;
 
 // Lists
 
@@ -246,7 +246,7 @@ public:
 
 
 // TODO: Legacy - remove this call!
-IDirect3DTexture8* Load_Compressed_Texture(
+IDirect3DTexture9* Load_Compressed_Texture(
 	const StringClass& filename,
 	unsigned reduction_factor,
 	MipCountType mip_level_count,
@@ -266,7 +266,7 @@ IDirect3DTexture8* Load_Compressed_Texture(
 	// Note that the nearest valid format could be anything, even uncompressed.
 	if (dest_format==WW3D_FORMAT_UNKNOWN) dest_format=Get_Valid_Texture_Format(dds_file.Get_Format(),true);
 
-	IDirect3DTexture8* d3d_texture = DX8Wrapper::_Create_DX8_Texture
+	IDirect3DTexture9* d3d_texture = DX8Wrapper::_Create_DX8_Texture
 	(
 		width,
 		height,
@@ -275,7 +275,7 @@ IDirect3DTexture8* Load_Compressed_Texture(
 	);
 
 	for (unsigned level=0;level<mips;++level) {
-		IDirect3DSurface8* d3d_surface=NULL;
+		IDirect3DSurface9* d3d_surface=NULL;
 		WWASSERT(d3d_texture);
 		DX8_ErrorCode(d3d_texture->GetSurfaceLevel(level/*-reduction_factor*/,&d3d_surface));
 		dds_file.Copy_Level_To_Surface(level,d3d_surface);
@@ -337,7 +337,7 @@ void TextureLoader::Init()
 
 void TextureLoader::Deinit()
 {
-	FastCriticalSectionClass::LockClass lock(_BackgroundCriticalSection);
+	CriticalSectionClass::LockClass lock(_BackgroundCriticalSection);
 	_TextureLoadThread.Stop();
 
 	ThumbnailManagerClass::Deinit();
@@ -364,7 +364,7 @@ void TextureLoader::Validate_Texture_Size
 	unsigned& depth
 )
 {
-	const D3DCAPS8& dx8caps=DX8Wrapper::Get_Current_Caps()->Get_DX8_Caps();
+	const D3DCAPS9& dx8caps=DX8Wrapper::Get_Current_Caps()->Get_DX8_Caps();
 
 	unsigned poweroftwowidth = 1;
 	while (poweroftwowidth < width) 
@@ -417,7 +417,7 @@ void TextureLoader::Validate_Texture_Size
 	depth=poweroftwodepth;
 }
 
-IDirect3DTexture8* TextureLoader::Load_Thumbnail(const StringClass& filename, const Vector3& hsv_shift)//,WW3DFormat texture_format)
+IDirect3DTexture9* TextureLoader::Load_Thumbnail(const StringClass& filename, const Vector3& hsv_shift)//,WW3DFormat texture_format)
 {
 	WWASSERT(Is_DX8_Thread());
 
@@ -441,7 +441,7 @@ IDirect3DTexture8* TextureLoader::Load_Thumbnail(const StringClass& filename, co
 		WWASSERT(dest_format==texture_format);
 	}
 
-	IDirect3DTexture8* sysmem_texture = DX8Wrapper::_Create_DX8_Texture(
+	IDirect3DTexture9* sysmem_texture = DX8Wrapper::_Create_DX8_Texture(
 		thumb->Get_Width(),
 		thumb->Get_Height(),
 		dest_format,
@@ -501,7 +501,7 @@ IDirect3DTexture8* TextureLoader::Load_Thumbnail(const StringClass& filename, co
 #ifdef USE_MANAGED_TEXTURES
 	return sysmem_texture;
 #else
-	IDirect3DTexture8* d3d_texture = DX8Wrapper::_Create_DX8_Texture(
+	IDirect3DTexture9* d3d_texture = DX8Wrapper::_Create_DX8_Texture(
 		thumb->Get_Width(),
 		thumb->Get_Height(),
 		dest_format,
@@ -523,7 +523,7 @@ IDirect3DTexture8* TextureLoader::Load_Thumbnail(const StringClass& filename, co
 // format and performs color space conversion.
 //
 // ----------------------------------------------------------------------------
-IDirect3DSurface8* TextureLoader::Load_Surface_Immediate(
+IDirect3DSurface9* TextureLoader::Load_Surface_Immediate(
 	const StringClass& filename,
 	WW3DFormat texture_format,
 	bool allow_compression)
@@ -533,9 +533,9 @@ IDirect3DSurface8* TextureLoader::Load_Surface_Immediate(
 	bool compressed=Is_Format_Compressed(texture_format,allow_compression);
 
 	if (compressed) {
-		IDirect3DTexture8* comp_tex=Load_Compressed_Texture(filename,0,MIP_LEVELS_1,WW3D_FORMAT_UNKNOWN);
+		IDirect3DTexture9* comp_tex=Load_Compressed_Texture(filename,0,MIP_LEVELS_1,WW3D_FORMAT_UNKNOWN);
 		if (comp_tex) {
-			IDirect3DSurface8* d3d_surface=NULL;
+			IDirect3DSurface9* d3d_surface=NULL;
 			DX8_ErrorCode(comp_tex->GetSurfaceLevel(0,&d3d_surface));
 			comp_tex->Release();
 			return d3d_surface;
@@ -600,7 +600,7 @@ IDirect3DSurface8* TextureLoader::Load_Surface_Immediate(
 
 	unsigned src_pitch=src_width*src_bpp;
 
-	IDirect3DSurface8* d3d_surface = DX8Wrapper::_Create_DX8_Surface(width,height,dest_format);
+	IDirect3DSurface9* d3d_surface = DX8Wrapper::_Create_DX8_Surface(width,height,dest_format);
 	WWASSERT(d3d_surface);
 	D3DLOCKED_RECT locked_rect;
 	DX8_ErrorCode(
@@ -637,7 +637,7 @@ void TextureLoader::Request_Thumbnail(TextureBaseClass *tc)
 	// Grab the foreground lock. This prevents the foreground thread
 	// from retiring any tasks related to this texture. It also
 	// serializes calls to Request_Thumbnail from multiple threads.
-	FastCriticalSectionClass::LockClass lock(_ForegroundCriticalSection);
+	CriticalSectionClass::LockClass lock(_ForegroundCriticalSection);
 
 	// Has a Direct3D texture already been loaded?
 	if (tc->Peek_D3D_Base_Texture()) {
@@ -680,7 +680,7 @@ void TextureLoader::Request_Background_Loading(TextureBaseClass *tc)
 	// from retiring any tasks related to this texture. It also 
 	// serializes calls to Request_Background_Loading from other
 	// threads.
-	FastCriticalSectionClass::LockClass foreground_lock(_ForegroundCriticalSection);
+	CriticalSectionClass::LockClass foreground_lock(_ForegroundCriticalSection);
 
 	// Has the texture already been loaded?
 	if (tc->Is_Initialized()) {
@@ -711,7 +711,7 @@ void TextureLoader::Request_Foreground_Loading(TextureBaseClass *tc)
 	// from retiring the load tasks for this texture. It also 
 	// serializes calls to Request_Foreground_Loading from other
 	// threads.
-	FastCriticalSectionClass::LockClass foreground_lock(_ForegroundCriticalSection);
+	CriticalSectionClass::LockClass foreground_lock(_ForegroundCriticalSection);
 
 	// Has the texture already been loaded?
 	if (tc->Is_Initialized()) {
@@ -739,7 +739,7 @@ void TextureLoader::Request_Foreground_Loading(TextureBaseClass *tc)
 			// halt background thread. After we're holding this lock,
 			// we know the background thread cannot begin loading
 			// mipmap levels for this texture.
-			FastCriticalSectionClass::LockClass background_lock(_BackgroundCriticalSection);
+			CriticalSectionClass::LockClass background_lock(_BackgroundCriticalSection);
 			_ForegroundQueue.Remove(task);
 			_BackgroundQueue.Remove(task);
 		} else {
@@ -759,7 +759,7 @@ void TextureLoader::Request_Foreground_Loading(TextureBaseClass *tc)
 		// Grab the background lock. After we're holding this lock, we
 		// know the background thread cannot begin loading mipmap levels 
 		// for this texture.
-		FastCriticalSectionClass::LockClass background_lock(_BackgroundCriticalSection);
+		CriticalSectionClass::LockClass background_lock(_BackgroundCriticalSection);
 
 		// if we have a thumbnail task, we should cancel it. Since we are not
 		// the foreground thread, we are not allowed to call Destroy(). Instead,
@@ -819,7 +819,7 @@ void TextureLoader::Flush_Pending_Load_Tasks(void)
 			// violate the lock order when we call Update() (which grabs
 			// the foreground lock) or never give the background thread
 			// a chance to empty its queue.
-			FastCriticalSectionClass::LockClass background_lock(_BackgroundCriticalSection);
+			CriticalSectionClass::LockClass background_lock(_BackgroundCriticalSection);
 			done = _BackgroundQueue.Is_Empty() && _ForegroundQueue.Is_Empty();
 		}
 
@@ -857,7 +857,7 @@ void TextureLoader::Update(void (*network_callback)(void))
 
 	// grab foreground lock to prevent any other thread from
 	// modifying texture tasks.
-	FastCriticalSectionClass::LockClass lock(_ForegroundCriticalSection);
+	CriticalSectionClass::LockClass lock(_ForegroundCriticalSection);
 
 	unsigned long time = timeGetTime();
 
@@ -959,7 +959,7 @@ void TextureLoader::Load_Thumbnail(TextureBaseClass *tc)
 	WWASSERT(Is_DX8_Thread());
 
 	// load thumbnail texture
-	IDirect3DTexture8 *d3d_texture = Load_Thumbnail(tc->Get_Full_Path(),tc->Get_HSV_Shift());
+	IDirect3DTexture9 *d3d_texture = Load_Thumbnail(tc->Get_Full_Path(),tc->Get_HSV_Shift());
 
 	// apply thumbnail to texture
 	if (tc->Get_Asset_Type()==TextureBaseClass::TEX_REGULAR)
@@ -980,7 +980,7 @@ void LoaderThreadClass::Thread_Function(void)
 		if (!_BackgroundQueue.Is_Empty()) {
 			// Grab background load so other threads know we could be 
 			// loading a texture.
-			FastCriticalSectionClass::LockClass lock(_BackgroundCriticalSection);
+			CriticalSectionClass::LockClass lock(_BackgroundCriticalSection);
 
 			// try to remove a task from the background queue. This could fail
 			// if another thread modified the queue between our test above and
@@ -1329,7 +1329,7 @@ static bool	Get_Texture_Information
 			//Figure out correct reduction
 			int reqReduction=WW3D::Get_Texture_Reduction();	//requested reduction
 
-			if (reqReduction >= mip_count)
+			if (reqReduction >= (int)mip_count)
 				reqReduction=mip_count-1;	//leave only the lowest level
 
 			//Clamp reduction
@@ -1366,8 +1366,8 @@ static bool	Get_Texture_Information
 		//Figure out correct reduction
 		int reqReduction=WW3D::Get_Texture_Reduction();	//requested reduction
 
-		if (reqReduction >= mip_count)
-			reqReduction=mip_count-1;	//leave only the lowest level
+		if (reqReduction >= (int)mip_count)
+			reqReduction= (int)(mip_count-1);	//leave only the lowest level
 
 		//Clamp reduction
 		int curReduction=0;
@@ -1812,7 +1812,7 @@ void TextureLoadTaskClass::Unlock_Surfaces(void)
 	}
 
 #ifndef USE_MANAGED_TEXTURES
-	IDirect3DTexture8* tex = DX8Wrapper::_Create_DX8_Texture(Width, Height, Format, Texture->MipLevelCount,D3DPOOL_DEFAULT);
+	IDirect3DTexture9* tex = DX8Wrapper::_Create_DX8_Texture(Width, Height, Format, Texture->MipLevelCount,D3DPOOL_DEFAULT);
 	DX8CALL(UpdateTexture(Peek_D3D_Texture(),tex));
 	Peek_D3D_Texture()->Release();
 	D3DTexture=tex;
@@ -2200,7 +2200,7 @@ void CubeTextureLoadTaskClass::Unlock_Surfaces(void)
 	}
 
 #ifndef USE_MANAGED_TEXTURES
-	IDirect3DCubeTexture8* tex = DX8Wrapper::_Create_DX8_Cube_Texture
+	IDirect3DCubeTexture9* tex = DX8Wrapper::_Create_DX8_Cube_Texture
 	(
 		Width, 
 		Height, 
@@ -2567,7 +2567,7 @@ void VolumeTextureLoadTaskClass::Unlock_Surfaces()
 	}
 
 #ifndef USE_MANAGED_TEXTURES
-	IDirect3DTexture8* tex = DX8Wrapper::_Create_DX8_Volume_Texture(Width, Height, Depth, Format, Texture->MipLevelCount,D3DPOOL_DEFAULT);
+	IDirect3DTexture9* tex = DX8Wrapper::_Create_DX8_Volume_Texture(Width, Height, Depth, Format, Texture->MipLevelCount,D3DPOOL_DEFAULT);
 	DX8CALL(UpdateTexture(Peek_D3D_Volume_Texture(),tex));
 	Peek_D3D_Volume_Texture()->Release();
 	D3DTexture=tex;

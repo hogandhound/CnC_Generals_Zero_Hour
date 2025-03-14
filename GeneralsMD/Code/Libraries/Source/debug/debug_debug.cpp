@@ -257,7 +257,7 @@ static void LocalSETranslator(unsigned, struct _EXCEPTION_POINTERS *pExPtrs)
 
 void Debug::InstallExceptionHandler(void)
 {
-  _set_se_translator(LocalSETranslator);
+  //_set_se_translator(LocalSETranslator);
 }
 
 bool Debug::SkipNext(void)
@@ -266,7 +266,7 @@ bool Debug::SkipNext(void)
   // is running
   if (Instance.disableAssertsEtc)
     return true;
-
+#if 0
   // do not implement this function inline, we do need
   // a valid frame pointer here!
   unsigned help;
@@ -289,6 +289,8 @@ bool Debug::SkipNext(void)
 
   // now we now wether to skip or not
   return e->status==Skip;
+#endif
+  return true;
 }
 
 Debug& Debug::AssertBegin(const char *file, int line, const char *expr)
@@ -344,7 +346,7 @@ bool Debug::AssertDone(void)
                         "'retry' for breaking into the debugger, or\n"
                         "'ignore' for ignoring this assertion for the\n"
                         "time being (stops logging this assertion as well).";
-    char *help=(char *)DebugAllocMemory(ioBuffer[curType].used+strlen(addInfo)+1);
+    char *help=(char *)DebugAllocMemory((unsigned int)(ioBuffer[curType].used+strlen(addInfo)+1));
     strcpy(help,ioBuffer[curType].buffer+82);
     strcat(help,addInfo);
     
@@ -352,7 +354,7 @@ bool Debug::AssertDone(void)
     if (curFrameEntry->hits==1)
     {
       DebugStackwalk::Signature sig;
-      if (m_stackWalk.StackWalk(sig))
+      if (m_stackWalk.StackWalkWW(sig))
         (*this) << sig;
     }
 
@@ -386,7 +388,9 @@ bool Debug::AssertDone(void)
           }
           break;
         case IDRETRY:
+#if 0
           _asm int 0x03
+#endif
           break;
         default:
           ((void)0);
@@ -472,7 +476,7 @@ bool Debug::CheckDone(void)
     if (curFrameEntry->hits==1)
     {
       DebugStackwalk::Signature sig;
-      if (m_stackWalk.StackWalk(sig))
+      if (m_stackWalk.StackWalkWW(sig))
         (*this) << sig;
     }
 
@@ -608,7 +612,7 @@ bool Debug::CrashDone(bool die)
         "'ignore' for ignoring this assertion for the\n"
         "time being (stops logging this assertion as well).";
 #endif
-    char *help=(char *)DebugAllocMemory(ioBuffer[curType].used+strlen(addInfo)+1);
+    char *help=(char *)DebugAllocMemory(ioBuffer[curType].used+(uint32_t)strlen(addInfo)+1);
     strcpy(help,ioBuffer[curType].buffer+82);
     strcat(help,addInfo);
     
@@ -616,7 +620,7 @@ bool Debug::CrashDone(bool die)
     if (curFrameEntry->hits==1)
     {
       DebugStackwalk::Signature sig;
-      if (m_stackWalk.StackWalk(sig))
+      if (m_stackWalk.StackWalkWW(sig))
         (*this) << sig;
     }
 
@@ -654,7 +658,7 @@ bool Debug::CrashDone(bool die)
             }
             break;
           case IDRETRY:
-            _asm int 0x03
+            //_asm int 0x03
             break;
           default:
             ((void)0);
@@ -710,12 +714,12 @@ Debug& Debug::operator<<(const char *str)
   else if (!*str)
     return *this;
 
-  unsigned len=strlen(str);
+  int len=(int)strlen(str);
 
   // forced width?
   if (len<m_width)
   {
-    for (unsigned k=len;k<m_width;k++)
+    for (unsigned k=len;k<(uint32_t)m_width;k++)
       AddOutput(&m_fillChar,1);
   }
 
@@ -740,7 +744,7 @@ Debug& Debug::operator<<(int val)
   // that doesn't check for buffer overflow isn't a good idea
   // but in this case we know how long it can be at max...
   char help[1+32+1]; // sign, 32 digits (binary), NUL
-  AddOutput(m_prefix,strlen(m_prefix));
+  AddOutput(m_prefix,(uint32_t)strlen(m_prefix));
   return (*this) << _itoa(val,help,m_radix);
 }
 
@@ -750,7 +754,7 @@ Debug& Debug::operator<<(unsigned val)
   // that doesn't check for buffer overflow isn't a good idea
   // but in this case we know how long it can be at max...
   char help[32+1]; // 32 digits, NUL
-  AddOutput(m_prefix,strlen(m_prefix));
+  AddOutput(m_prefix, (uint32_t)strlen(m_prefix));
   return (*this) << _ultoa(val,help,m_radix);
 }
 
@@ -760,7 +764,7 @@ Debug& Debug::operator<<(long val)
   // that doesn't check for buffer overflow isn't a good idea
   // but in this case we know how long it can be at max...
   char help[1+32+1]; // sign, 32 digits, NUL
-  AddOutput(m_prefix,strlen(m_prefix));
+  AddOutput(m_prefix, (uint32_t)strlen(m_prefix));
   return (*this) << _itoa(val,help,m_radix);
 }
 
@@ -770,7 +774,7 @@ Debug& Debug::operator<<(unsigned long val)
   // that doesn't check for buffer overflow isn't a good idea
   // but in this case we know how long it can be at max...
   char help[32+1]; // 32 digits, NUL
-  AddOutput(m_prefix,strlen(m_prefix));
+  AddOutput(m_prefix, (uint32_t)strlen(m_prefix));
   return (*this) << _ultoa(val,help,m_radix);
 }
 
@@ -801,7 +805,7 @@ Debug& Debug::operator<<(short val)
   // that doesn't check for buffer overflow isn't a good idea
   // but in this case we know how long it can be at max...
   char help[1+16+1]; // sign, 16 digits, NUL
-  AddOutput(m_prefix,strlen(m_prefix));
+  AddOutput(m_prefix, (uint32_t)strlen(m_prefix));
   return (*this) << _itoa(val,help,m_radix);
 }
 
@@ -811,7 +815,7 @@ Debug& Debug::operator<<(unsigned short val)
   // that doesn't check for buffer overflow isn't a good idea
   // but in this case we know how long it can be at max...
   char help[16+1]; // 16 digits, NUL
-  AddOutput(m_prefix,strlen(m_prefix));
+  AddOutput(m_prefix, (uint32_t)strlen(m_prefix));
   return (*this) << _itoa(val,help,m_radix);
 }
 
@@ -821,7 +825,7 @@ Debug& Debug::operator<<(__int64 val)
   // that doesn't check for buffer overflow isn't a good idea
   // but in this case we know how long it can be at max...
   char help[1+64+1]; // sign, 64 digits, NUL
-  AddOutput(m_prefix,strlen(m_prefix));
+  AddOutput(m_prefix, (uint32_t)strlen(m_prefix));
   return (*this) << _i64toa(val,help,m_radix);
 }
 
@@ -831,7 +835,7 @@ Debug& Debug::operator<<(unsigned __int64 val)
   // that doesn't check for buffer overflow isn't a good idea
   // but in this case we know how long it can be at max...
   char help[64+1]; // sign, 64 digits, NUL
-  AddOutput(m_prefix,strlen(m_prefix));
+  AddOutput(m_prefix, (uint32_t)strlen(m_prefix));
   return (*this) << _ui64toa(val,help,m_radix);
 }
 
@@ -841,7 +845,7 @@ Debug& Debug::operator<<(const void *ptr)
   if (ptr)
   {
     char help[9];
-    (*this) << "0x" << _ultoa((unsigned long)ptr,help,16);
+    (*this) << "0x" << _ultoa((uint32_t)(uintptr_t)ptr,help,16);
   }
   else
     (*this) << "NULL";
@@ -873,12 +877,13 @@ Debug& Debug::operator<<(const MemDump &dump)
   {
     // address
     char buf[9];
-    sprintf(buf,"%08x",dump.m_absAddr?unsigned(cur):cur-dump.m_startPtr);
+    sprintf(buf,"%08x",dump.m_absAddr? (uint32_t)(uintptr_t)(cur):(uint32_t)(uintptr_t)(cur-dump.m_startPtr));
     operator<<(buf);
 
     // items
     const unsigned char *curByte=cur;
-    for (unsigned k=0;k<itemPerLine;k++,curByte+=dump.m_bytePerItem)
+    unsigned k = 0;
+    for (;k<itemPerLine;k++,curByte+=dump.m_bytePerItem)
     {
       operator<<(" ");
 
@@ -950,9 +955,9 @@ bool Debug::IsLogEnabled(const char *fileOrGroup)
   // to be used from the D_ISLOG macros only and those guarantee
   // that we are having real static strings let's use
   // that strings address as frame address...
-  FrameHashEntry *e=Instance.LookupFrame((unsigned)fileOrGroup);
+  FrameHashEntry *e=Instance.LookupFrame((unsigned)(uintptr_t)fileOrGroup);
   if (!e)
-    e=Instance.AddFrameEntry((unsigned)fileOrGroup,FrameTypeLog,fileOrGroup,0);
+    e=Instance.AddFrameEntry((unsigned)(uintptr_t)fileOrGroup,FrameTypeLog,fileOrGroup,0);
   if (e->status==Unknown)
     Instance.UpdateFrameStatus(*e);
   return e->status==NoSkip;
@@ -971,7 +976,8 @@ void Debug::AddHResultTranslator(unsigned prio, HResultTranslator func, void *us
 
   // now find the right place to insert the translator
   // (slow but this function is not time critical)
-  for (unsigned k=0;k<Instance.numHrTranslators;++k)
+  unsigned k = 0;
+  for (;k<Instance.numHrTranslators;++k)
     if (Instance.hrTranslators[k].prio<prio)
       break;
 
@@ -1129,7 +1135,7 @@ void Debug::Update(void)
 
       Instance.ExecCommand(cur->input,p);
       strcpy(cur->input,p+1);
-      cur->inputUsed=strlen(cur->input);
+      cur->inputUsed=(uint32_t)strlen(cur->input);
     }
   }
 }
@@ -1220,7 +1226,8 @@ const char *Debug::AddLogGroup(const char *fileOrGroup, const char *descr)
   }
 
   // is that log group known?
-  for (KnownLogGroupList *cur=firstLogGroup;cur;cur=cur->next)
+  KnownLogGroupList* cur = firstLogGroup;
+  for (;cur;cur=cur->next)
   {
     if (!strcmp(cur->nameGroup,fileOrGroup))
     {
@@ -1232,7 +1239,7 @@ const char *Debug::AddLogGroup(const char *fileOrGroup, const char *descr)
   // no, add new entry
   cur=(KnownLogGroupList *)DebugAllocMemory(sizeof(KnownLogGroupList));
   cur->next=firstLogGroup;
-  cur->nameGroup=(char *)DebugAllocMemory(strlen(fileOrGroup)+1);
+  cur->nameGroup=(char *)DebugAllocMemory((uint32_t)strlen(fileOrGroup)+1);
   strcpy(cur->nameGroup,fileOrGroup);
   cur->descr=descr;
   firstLogGroup=cur;
@@ -1277,7 +1284,7 @@ void Debug::AddOutput(const char *str, unsigned remainingLen)
         wsprintf(ts,"[%02i:%02i.%02i.%03i] ",systime.wHour,systime.wMinute,
                       systime.wSecond,systime.wMilliseconds);
 
-        unsigned tsLen=strlen(ts);
+        unsigned tsLen= (uint32_t)strlen(ts);
         memcpy(ioBuffer[curType].buffer+ioBuffer[curType].used,ts,tsLen+1);
         ioBuffer[curType].used+=tsLen;
       }
@@ -1285,7 +1292,7 @@ void Debug::AddOutput(const char *str, unsigned remainingLen)
       // search for next '\n'
       const char *p=strchr(str,'\n');
       p=p?p+1:str+remainingLen;
-      len=p-str;
+      len = (uint32_t)(uintptr_t)(p - str);
     }
     else
       len=remainingLen;
@@ -1356,7 +1363,7 @@ void Debug::FlushOutput(bool defaultLog)
                         OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
     SetFilePointer(h,0,NULL,FILE_END);
     DWORD dwDummy;
-    WriteFile(h,ioBuffer[curType].buffer,strlen(ioBuffer[curType].buffer),&dwDummy,NULL);
+    WriteFile(h,ioBuffer[curType].buffer,(DWORD)strlen(ioBuffer[curType].buffer),&dwDummy,NULL);
     CloseHandle(h);
 #endif
   }
@@ -1380,7 +1387,7 @@ void Debug::AddPatternEntry(unsigned types, bool isActive, const char *pattern)
   cur->next=NULL;
   cur->frameTypes=types;
   cur->isActive=isActive;
-  cur->pattern=(char *)DebugAllocMemory(strlen(pattern)+1);
+  cur->pattern=(char *)DebugAllocMemory((uint32_t)strlen(pattern)+1);
   strcpy(cur->pattern,pattern);
 
   // add to list
@@ -1452,7 +1459,7 @@ void Debug::ExecCommand(const char *cmdstart, const char *cmdend)
   // split off into command and arguments
 
   // alloc & copy string
-  char *strbuf=(char *)DebugAllocMemory(cmdend-cmdstart+1);
+  char *strbuf=(char *)DebugAllocMemory((uint32_t)(cmdend-cmdstart+1));
   memcpy(strbuf,cmdstart,cmdend-cmdstart);
   strbuf[cmdend-cmdstart]=0;
 
@@ -1539,7 +1546,7 @@ void Debug::ExecCommand(const char *cmdstart, const char *cmdend)
       AddOutput("> ",2);
   
     // repeat current command first
-    AddOutput(cmdstart,cmdend-cmdstart);
+    AddOutput(cmdstart, (uint32_t)(cmdend-cmdstart));
     AddOutput("\n",1);
 
     // command group known?

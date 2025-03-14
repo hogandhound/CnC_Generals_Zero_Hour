@@ -140,7 +140,9 @@ static const FieldParse audioSettingsFieldParseTable[] =
 };
 
 // Singleton TheAudio /////////////////////////////////////////////////////////////////////////////
+#ifdef HAS_BINK
 AudioManager *TheAudio = NULL;
+#endif
 
 
 // AudioManager Device Independent functions //////////////////////////////////////////////////////
@@ -320,8 +322,13 @@ void AudioManager::update()
 	Vector3 forward( 0, 1, 0 );
 	rot.mulVector3( forward );
 
+#ifdef HAS_BINK
 	Real desiredHeight = TheAudio->getAudioSettings()->m_microphoneDesiredHeightAboveTerrain;
 	Real maxPercentage = TheAudio->getAudioSettings()->m_microphoneMaxPercentageBetweenGroundAndCamera;
+#else
+	Real desiredHeight = 0.f;
+	Real maxPercentage = 0.f;
+#endif
 
 	Coord3D lookTo;
 	lookTo.set(forward.X, forward.Y, forward.Z);
@@ -363,9 +370,15 @@ void AudioManager::update()
 
 
 	//Now determine if we would like to boost the volume based on the camera being close to the microphone!
+#ifdef HAS_BINK
 	Real maxBoostScalar = TheAudio->getAudioSettings()->m_zoomSoundVolumePercentageAmount;
 	Real minDist = TheAudio->getAudioSettings()->m_zoomMinDistance;
 	Real maxDist = TheAudio->getAudioSettings()->m_zoomMaxDistance;
+#else
+	Real maxBoostScalar = 1.f;
+	Real minDist = 0.f;
+	Real maxDist = 1.f;
+#endif
 
 	//We can't boost a sound above 100%, instead reduce the normal sound level.
 	m_zoomVolume = 1.0f - maxBoostScalar;
@@ -423,7 +436,7 @@ AudioHandle AudioManager::addAudioEvent(const AudioEventRTS *eventToAdd)
 	if (!eventToAdd->getAudioEventInfo()) {
 		getInfoForAudioEvent(eventToAdd);
 		if (!eventToAdd->getAudioEventInfo()) {
-			DEBUG_CRASH(("No info for requested audio event '%s'\n", eventToAdd->getEventName().str()));
+			DEBUG_WARNING("No info for requested audio event '%s'\n", eventToAdd->getEventName().str());
 			return AHSV_Error;
 		}
 	}
@@ -450,7 +463,7 @@ AudioHandle AudioManager::addAudioEvent(const AudioEventRTS *eventToAdd)
 	}
 
 
-	AudioEventRTS *audioEvent = MSGNEW("AudioEventRTS") AudioEventRTS(*eventToAdd);		// poolify
+	AudioEventRTS *audioEvent = new AudioEventRTS(*eventToAdd);		// poolify
 	audioEvent->setPlayingHandle( allocateNewHandle() );
 	audioEvent->generateFilename();	// which file are we actually going to play?
 	((AudioEventRTS*)eventToAdd)->setPlayingAudioIndex( audioEvent->getPlayingAudioIndex() );
@@ -472,6 +485,7 @@ AudioHandle AudioManager::addAudioEvent(const AudioEventRTS *eventToAdd)
 	}
 
 	// cull muted audio
+#ifdef HAS_BINK
 	if (audioEvent->getVolume() < TheAudio->getAudioSettings()->m_minVolume) {
 #ifdef INTENSIVE_AUDIO_DEBUG
 		DEBUG_LOG((" - culled due to muting (%d).\n", audioEvent->getVolume()));
@@ -479,6 +493,7 @@ AudioHandle AudioManager::addAudioEvent(const AudioEventRTS *eventToAdd)
 		releaseAudioEventRTS(audioEvent);
 		return AHSV_Muted;
 	}
+#endif
 
 	AudioType type = eventToAdd->getAudioEventInfo()->m_soundType;
 	if (type == AT_Music) 
@@ -1001,11 +1016,13 @@ void AudioManager::findAllAudioEventsOfType( AudioType audioType, std::vector<Au
 //-------------------------------------------------------------------------------------------------
 Bool AudioManager::isCurrentProviderHardwareAccelerated()
 {
+#ifdef HAS_BINK
 	for (Int i = 0; i < MAX_HW_PROVIDERS; ++i) {
 		if (getProviderName(getSelectedProvider()) == TheAudio->getAudioSettings()->m_preferred3DProvider[i]) {
 			return TRUE;
 		}
 	}
+#endif
 
 	return FALSE;
 }
@@ -1013,7 +1030,11 @@ Bool AudioManager::isCurrentProviderHardwareAccelerated()
 //-------------------------------------------------------------------------------------------------
 Bool AudioManager::isCurrentSpeakerTypeSurroundSound()
 {
+#ifdef HAS_BINK
 	return (getSpeakerType() == TheAudio->getAudioSettings()->m_defaultSpeakerType3D);
+#else
+	return false;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1034,24 +1055,24 @@ Bool AudioManager::shouldPlayLocally(const AudioEventRTS *audioEvent)
 		return TRUE;
 	}
 
-	if (!BitTest(ei->m_type, (ST_PLAYER | ST_ALLIES | ST_ENEMIES | ST_EVERYONE))) {
-		DEBUG_CRASH(("No player restrictions specified for '%s'. Using Everyone.\n", ei->m_audioName.str()));
+	if (!BitTestWW(ei->m_type, (ST_PLAYER | ST_ALLIES | ST_ENEMIES | ST_EVERYONE))) {
+		DEBUG_WARNING(("No player restrictions specified for '%s'. Using Everyone.\n", ei->m_audioName.str()));
 		return TRUE;
 	}
 
-	if (BitTest(ei->m_type, ST_EVERYONE)) {
+	if (BitTestWW(ei->m_type, ST_EVERYONE)) {
 		return TRUE;
 	}
 
 	Player *owningPlayer = ThePlayerList->getNthPlayer(audioEvent->getPlayerIndex());
 
-	if (BitTest(ei->m_type, ST_PLAYER) && BitTest(ei->m_type, ST_UI) && owningPlayer == NULL) {
+	if (BitTestWW(ei->m_type, ST_PLAYER) && BitTestWW(ei->m_type, ST_UI) && owningPlayer == NULL) {
 		DEBUG_ASSERTCRASH(!TheGameLogic->isInGameLogicUpdate(), ("Playing %s sound -- player-based UI sound without specifying a player.\n"));
 		return TRUE;
 	}
 
 	if (owningPlayer == NULL) {
-		DEBUG_CRASH(("Sound '%s' expects an owning player, but the audio event that created it didn't specify one.\n", ei->m_audioName.str()));
+		DEBUG_WARNING(("Sound '%s' expects an owning player, but the audio event that created it didn't specify one.\n", ei->m_audioName.str()));
 		return FALSE;
 	}
 
@@ -1065,17 +1086,17 @@ Bool AudioManager::shouldPlayLocally(const AudioEventRTS *audioEvent)
 		return FALSE;
 	}
 
-	if (BitTest(ei->m_type, ST_PLAYER))  {
+	if (BitTestWW(ei->m_type, ST_PLAYER))  {
 		return owningPlayer == localPlayer;
 	}
 
-	if (BitTest(ei->m_type, ST_ALLIES)) { 
+	if (BitTestWW(ei->m_type, ST_ALLIES)) { 
 		// We have to also check that the owning player isn't the local player, because PLAYER 
 		// wasn't specified, or we wouldn't have gotten here.
 		return (owningPlayer != localPlayer) && owningPlayer->getRelationship(localTeam) == ALLIES;
 	}
 
-	if (BitTest(ei->m_type, ST_ENEMIES)) {
+	if (BitTestWW(ei->m_type, ST_ENEMIES)) {
 		return owningPlayer->getRelationship(localTeam) == ENEMIES;
 	}
 	
@@ -1137,6 +1158,7 @@ void AudioManager::regainFocus( void )
 //-------------------------------------------------------------------------------------------------
 void INI::parseAudioSettingsDefinition( INI *ini )
 {
+#ifdef HAS_BINK
 	ini->initFromINI(TheAudio->friend_getAudioSettings(), TheAudio->getFieldParseTable());
 
 	// time to override the volume settings, default 3-D provider, and speaker setup with the
@@ -1153,6 +1175,7 @@ void INI::parseAudioSettingsDefinition( INI *ini )
 	TheAudio->friend_getAudioSettings()->m_preferred3DSoundVolume	= prefs.get3DSoundVolume() / 100.0f;
 	TheAudio->friend_getAudioSettings()->m_preferredSpeechVolume	= prefs.getSpeechVolume() / 100.0f;
 	TheAudio->friend_getAudioSettings()->m_preferredMusicVolume		= prefs.getMusicVolume() / 100.0f;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1165,6 +1188,8 @@ void parseSpeakerType( INI *ini, void *instance, void *store, const void* userDa
 	AsciiString str;
 	ini->parseAsciiString( ini, instance, &str, userData );
 
+#ifdef HAS_BINK
 	(*(UnsignedInt*)store) = TheAudio->translateSpeakerTypeToUnsignedInt(str);
+#endif
 }
 

@@ -30,7 +30,7 @@
 // INCLUDES ///////////////////////////////////////////////////////////////////////////////////////
 #include "PreRTS.h"	// This must go first in EVERY cpp file int the GameEngine
 
-#include "GameSpy/ghttp/ghttp.h"
+#include "ghttp/ghttp.h"
 
 #include "Common/AudioAffect.h"
 #include "Common/AudioSettings.h"
@@ -325,7 +325,7 @@ Bool OptionPreferences::getAlternateMouseModeEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_useAlternateMouse;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -337,7 +337,7 @@ Bool OptionPreferences::getRetaliationModeEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_clientRetaliationModeEnabled;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -349,7 +349,7 @@ Bool OptionPreferences::getDoubleClickAttackMoveEnabled(void)
 	if( it == end() )
 		return TheGlobalData->m_doubleClickAttackMove;
 
-	if( stricmp( it->second.str(), "yes" ) == 0 )
+	if( _stricmp( it->second.str(), "yes" ) == 0 )
 		return TRUE;
 
 	return FALSE;
@@ -376,7 +376,7 @@ Bool OptionPreferences::usesSystemMapDir(void)
 	if (it == end())
 		return TRUE;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -388,7 +388,7 @@ Bool OptionPreferences::saveCameraInReplays(void)
 	if (it == end())
 		return TRUE;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -400,7 +400,7 @@ Bool OptionPreferences::useCameraInReplays(void)
 	if (it == end())
 		return TRUE;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -430,7 +430,7 @@ Bool OptionPreferences::getSendDelay(void)
 	if (it == end())
 		return TheGlobalData->m_firewallSendDelay;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -493,7 +493,11 @@ AsciiString OptionPreferences::getPreferred3DProvider(void)
 {
 	OptionPreferences::const_iterator it = find("3DAudioProvider");
 	if (it == end())
+#ifdef HAS_BINK
 		return TheAudio->getAudioSettings()->m_preferred3DProvider[MAX_HW_PROVIDERS];
+#else
+		return "";
+#endif
 	return it->second;
 }
 
@@ -501,7 +505,11 @@ AsciiString OptionPreferences::getSpeakerType(void)
 {
 	OptionPreferences::const_iterator it = find("SpeakerType");
 	if (it == end())
+#ifdef HAS_BINK
 		return TheAudio->translateUnsignedIntToSpeakerType(TheAudio->getAudioSettings()->m_defaultSpeakerType2D);
+#else
+		return "";
+#endif
 	return it->second;
 }
 
@@ -510,6 +518,7 @@ Real OptionPreferences::getSoundVolume(void)
 	OptionPreferences::const_iterator it = find("SFXVolume");
 	if (it == end())
 	{
+#ifdef HAS_BINK
 		Real relative = TheAudio->getAudioSettings()->m_relative2DVolume;
 		if( relative < 0 )
 		{
@@ -517,6 +526,9 @@ Real OptionPreferences::getSoundVolume(void)
 			return TheAudio->getAudioSettings()->m_defaultSoundVolume * 100.0f * scale;
 		}
 		return TheAudio->getAudioSettings()->m_defaultSoundVolume * 100.0f;
+#else
+		return 0.f;
+#endif
 	}
 
 	Real volume = (Real) atof(it->second.str());
@@ -532,6 +544,7 @@ Real OptionPreferences::get3DSoundVolume(void)
 	OptionPreferences::const_iterator it = find("SFX3DVolume");
 	if (it == end())
 	{
+#ifdef HAS_BINK
 		Real relative = TheAudio->getAudioSettings()->m_relative2DVolume;
 		if( relative > 0 )
 		{
@@ -539,6 +552,9 @@ Real OptionPreferences::get3DSoundVolume(void)
 			return TheAudio->getAudioSettings()->m_default3DSoundVolume * 100.0f * scale;
 		}
 		return TheAudio->getAudioSettings()->m_default3DSoundVolume * 100.0f;
+#else
+		return 0.f;
+#endif
 	}
 
 	Real volume = (Real) atof(it->second.str());
@@ -553,7 +569,11 @@ Real OptionPreferences::getSpeechVolume(void)
 {
 	OptionPreferences::const_iterator it = find("VoiceVolume");
 	if (it == end())
+#ifdef HAS_BINK
 		return TheAudio->getAudioSettings()->m_defaultSpeechVolume * 100.0f;
+#else
+		return 0.f;
+#endif
 
 	Real volume = (Real) atof(it->second.str());
 	if (volume < 0.0f)
@@ -569,7 +589,7 @@ Bool OptionPreferences::getCloudShadowsEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_useCloudMap;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -581,7 +601,7 @@ Bool OptionPreferences::getLightmapEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_useLightMap;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -593,7 +613,7 @@ Bool OptionPreferences::getSmoothWaterEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_showSoftWaterEdge;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -605,7 +625,7 @@ Bool OptionPreferences::getTreesEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_useTrees;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -617,7 +637,7 @@ Bool OptionPreferences::getExtraAnimationsDisabled(void)
 	if (it == end())
 		return TheGlobalData->m_useDrawModuleLOD;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return FALSE;	//we are enabling extra animations, so disabled LOD
 	}
 	return TRUE;
@@ -629,7 +649,7 @@ Bool OptionPreferences::getUseHeatEffects(void)
 	if (it == end())
 		return TheGlobalData->m_useHeatEffects;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -641,7 +661,7 @@ Bool OptionPreferences::getDynamicLODEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_enableDynamicLOD;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -653,7 +673,7 @@ Bool OptionPreferences::getFPSLimitEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_useFpsLimit;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -665,7 +685,7 @@ Bool OptionPreferences::get3DShadowsEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_useShadowVolumes;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -677,7 +697,7 @@ Bool OptionPreferences::get2DShadowsEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_useShadowDecals;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -689,7 +709,7 @@ Bool OptionPreferences::getBuildingOcclusionEnabled(void)
 	if (it == end())
 		return TheGlobalData->m_enableBehindBuildingMarkers;
 
-	if (stricmp(it->second.str(), "yes") == 0) {
+	if (_stricmp(it->second.str(), "yes") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -751,7 +771,11 @@ Real OptionPreferences::getMusicVolume(void)
 {
 	OptionPreferences::const_iterator it = find("MusicVolume");
 	if (it == end())
+#ifdef HAS_BINK
 		return TheAudio->getAudioSettings()->m_defaultMusicVolume * 100.0f;
+#else
+		return 0.f;
+#endif
 
 	Real volume = (Real) atof(it->second.str());
 	if (volume < 0.0f)
@@ -840,18 +864,34 @@ static void setDefaults( void )
 	//-------------------------------------------------------------------------------------------------
 	// slider music volume
 	GadgetSliderGetMinMax(sliderMusicVolume,&valMin, &valMax);
-	GadgetSliderSetPosition(sliderMusicVolume,REAL_TO_INT(TheAudio->getAudioSettings()->m_defaultMusicVolume * 100.0f));
+	GadgetSliderSetPosition(sliderMusicVolume,
+#ifdef HAS_BINK
+		REAL_TO_INT(TheAudio->getAudioSettings()->m_defaultMusicVolume * 100.0f)
+#else
+		0
+#endif
+	);
 
 	//-------------------------------------------------------------------------------------------------
 	// slider SFX volume
 	GadgetSliderGetMinMax(sliderSFXVolume,&valMin, &valMax);
+#ifdef HAS_BINK
 	Real maxVolume = MAX( TheAudio->getAudioSettings()->m_defaultSoundVolume, TheAudio->getAudioSettings()->m_default3DSoundVolume );
+#else
+	Real maxVolume = 0.f;
+#endif
 	GadgetSliderSetPosition( sliderSFXVolume, REAL_TO_INT( maxVolume * 100.0f ) );
 
 	//-------------------------------------------------------------------------------------------------
 	// slider Voice volume
 	GadgetSliderGetMinMax(sliderVoiceVolume,&valMin, &valMax);
-	GadgetSliderSetPosition(sliderVoiceVolume, REAL_TO_INT(TheAudio->getAudioSettings()->m_defaultSpeechVolume * 100.0f));
+	GadgetSliderSetPosition(sliderVoiceVolume,
+#ifdef HAS_BINK
+		REAL_TO_INT(TheAudio->getAudioSettings()->m_defaultSpeechVolume * 100.0f)
+#else
+		0
+#endif
+	);
 
 	//-------------------------------------------------------------------------------------------------
  	// slider Gamma
@@ -1107,7 +1147,7 @@ static void saveOptions( void )
 				TheShell = NULL;
 
 				// create the shell
-				TheShell = MSGNEW("GameClientSubsystem") Shell;
+				TheShell = new Shell;
 				if( TheShell )
 					TheShell->init();
 				
@@ -1124,14 +1164,14 @@ static void saveOptions( void )
 	GadgetComboBoxGetSelectedPos(comboBoxLANIP, &index);
 	if (index>=0 && TheGlobalData)
 	{
-		ip = (UnsignedInt)GadgetComboBoxGetItemData(comboBoxLANIP, index);
+		ip = (UnsignedInt)(intptr_t)GadgetComboBoxGetItemData(comboBoxLANIP, index);
 		TheWritableGlobalData->m_defaultIP = ip;
 		pref->setLANIPAddress(ip);
 	}
 	GadgetComboBoxGetSelectedPos(comboBoxOnlineIP, &index);
 	if (index>=0)
 	{
-		ip = (UnsignedInt)GadgetComboBoxGetItemData(comboBoxOnlineIP, index);
+		ip = (UnsignedInt)(intptr_t)GadgetComboBoxGetItemData(comboBoxOnlineIP, index);
 		pref->setOnlineIPAddress(ip);
 	}
 
@@ -1205,11 +1245,13 @@ static void saveOptions( void )
 	val = GadgetSliderGetPosition(sliderMusicVolume);
 	if(val != -1)
 	{
-	  TheWritableGlobalData->m_musicVolumeFactor = val;
-    AsciiString prefString;
-    prefString.format("%d", val);
-    (*pref)["MusicVolume"] = prefString;
-    TheAudio->setVolume(val / 100.0f, (AudioAffect) (AudioAffect_Music | AudioAffect_SystemSetting));
+		TheWritableGlobalData->m_musicVolumeFactor = val;
+		AsciiString prefString;
+		prefString.format("%d", val);
+		(*pref)["MusicVolume"] = prefString;
+#ifdef HAS_BINK
+		TheAudio->setVolume(val / 100.0f, (AudioAffect)(AudioAffect_Music | AudioAffect_SystemSetting));
+#endif
 	}
 	
 	//-------------------------------------------------------------------------------------------------
@@ -1221,6 +1263,7 @@ static void saveOptions( void )
 		//relative slider that gets applied to one of these values to lower that sound volume.
 		Real sound2DVolume = val / 100.0f;
 		Real sound3DVolume = val / 100.0f;
+#ifdef HAS_BINK
 		Real relative2DVolume = TheAudio->getAudioSettings()->m_relative2DVolume;
 		relative2DVolume = MIN( 1.0f, MAX( -1.0, relative2DVolume ) );
 		if( relative2DVolume < 0.0f )
@@ -1237,6 +1280,7 @@ static void saveOptions( void )
 		//Apply the sound volumes in the audio system now.
     TheAudio->setVolume( sound2DVolume, (AudioAffect) (AudioAffect_Sound | AudioAffect_SystemSetting) );
 		TheAudio->setVolume( sound3DVolume, (AudioAffect) (AudioAffect_Sound3D | AudioAffect_SystemSetting) );
+#endif
 
 		//Save the settings in the options.ini.
     TheWritableGlobalData->m_SFXVolumeFactor = val;
@@ -1256,7 +1300,9 @@ static void saveOptions( void )
     AsciiString prefString;
     prefString.format("%d", val);
     (*pref)["VoiceVolume"] = prefString;
+#ifdef HAS_BINK
     TheAudio->setVolume(val / 100.0f, (AudioAffect) (AudioAffect_Speech | AudioAffect_SystemSetting));
+#endif
 	}
 
  	//-------------------------------------------------------------------------------------------------
@@ -1341,7 +1387,7 @@ void OptionsMenuInit( WindowLayout *layout, void *userData )
 	OptionsLayout = layout;
 	if (!pref)
 	{
-		pref = NEW OptionPreferences;
+		pref = new OptionPreferences;
 	}
 
 	SignalUIInteraction(SHELL_SCRIPT_HOOK_OPTIONS_OPENED);
@@ -1500,7 +1546,7 @@ void OptionsMenuInit( WindowLayout *layout, void *userData )
 		count++;
 		str.translate(IPlist->getIPstring());
 		index = GadgetComboBoxAddEntry(comboBoxLANIP, str, color);
-		GadgetComboBoxSetItemData(comboBoxLANIP, index, (void *)(IPlist->getIP()));
+		GadgetComboBoxSetItemData(comboBoxLANIP, index, (void *)(intptr_t)(IPlist->getIP()));
 		if (selectedIP == IPlist->getIP())
 		{
 			selectedIndex = index;
@@ -1536,7 +1582,7 @@ void OptionsMenuInit( WindowLayout *layout, void *userData )
 			count++;
 			str.translate(IPlist->getIPstring());
 			index = GadgetComboBoxAddEntry(comboBoxOnlineIP, str, color);
-			GadgetComboBoxSetItemData(comboBoxOnlineIP, index, (void *)(IPlist->getIP()));
+			GadgetComboBoxSetItemData(comboBoxOnlineIP, index, (void *)(intptr_t)(IPlist->getIP()));
 			if (selectedIP == IPlist->getIP())
 			{
 				selectedIndex = index;
@@ -1585,7 +1631,8 @@ void OptionsMenuInit( WindowLayout *layout, void *userData )
 	AsciiString selectedAliasingMode = (*pref)["AntiAliasing"];
 	GadgetComboBoxReset(comboBoxAntiAliasing);
 	AsciiString temp;
-	for (Int i=0; i < NUM_ALIASING_MODES; ++i)
+	Int i = 0;
+	for (; i < NUM_ALIASING_MODES; ++i)
 	{
 		temp.format("GUI:AntiAliasing%d", i);
 		str = TheGameText->fetch( temp );
@@ -1883,7 +1930,7 @@ WindowMsgHandledType OptionsMenuInput( GameWindow *window, UnsignedInt msg,
 					// send a simulated selected event to the parent window of the
 					// back/exit button
 					//
-					if( BitTest( state, KEY_STATE_UP ) )
+					if( BitTestWW( state, KEY_STATE_UP ) )
 					{
 						AsciiString buttonName( "OptionsMenu.wnd:ButtonBack" );
 						NameKeyType buttonID = TheNameKeyGenerator->nameToKey( buttonName );

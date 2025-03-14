@@ -60,7 +60,7 @@
 //-------------------------------------------------------------------------------------------------
 typedef enum
 {
-	FILE_TYPE_UNKNOWN = 0,
+	FILE_TYPE_UNKNOWNWW = 0,
 	FILE_TYPE_W3D,
 	FILE_TYPE_TGA,
 	FILE_TYPE_DDS,
@@ -159,7 +159,7 @@ char const * GameFileClass::Set_Name( char const *filename )
 	name[j] = 0;
 
 	// test the extension to recognize a few key file types
-	GameFileType fileType = FILE_TYPE_UNKNOWN;
+	GameFileType fileType = FILE_TYPE_UNKNOWNWW;
 	if( stricmp( extension, ".w3d" ) == 0 )
 		fileType = FILE_TYPE_W3D;
 	else if( stricmp( extension, ".tga" ) == 0 )

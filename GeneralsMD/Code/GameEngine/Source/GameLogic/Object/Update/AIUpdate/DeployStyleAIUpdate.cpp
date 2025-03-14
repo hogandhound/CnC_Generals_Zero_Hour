@@ -313,6 +313,7 @@ void DeployStyleAIUpdate::setMyState( DeployStateTypes stateID, Bool reverseDepl
 			}
 
 			//Play deploy sound
+#ifdef HAS_BINK
 			const ThingTemplate *thing = self->getTemplate();
 			const AudioEventRTS* soundToPlayPtr = thing->getPerUnitSound( "Deploy" );
 			if( soundToPlayPtr )
@@ -321,6 +322,7 @@ void DeployStyleAIUpdate::setMyState( DeployStateTypes stateID, Bool reverseDepl
 				soundToPlay.setObjectID( self->getID() );
 				TheAudio->addAudioEvent( &soundToPlay );
 			}
+#endif
 			
 			break;
 		}
@@ -365,6 +367,7 @@ void DeployStyleAIUpdate::setMyState( DeployStateTypes stateID, Bool reverseDepl
 			}
 			
 			//Play undeploy sound
+#ifdef HAS_BINK
 			const ThingTemplate *thing = self->getTemplate();
 			const AudioEventRTS* soundToPlayPtr = thing->getPerUnitSound( "Undeploy" );
 			if( soundToPlayPtr )
@@ -373,6 +376,7 @@ void DeployStyleAIUpdate::setMyState( DeployStateTypes stateID, Bool reverseDepl
 				soundToPlay.setObjectID( self->getID() );
 				TheAudio->addAudioEvent( &soundToPlay );
 			}
+#endif
 
 			break;
 		}

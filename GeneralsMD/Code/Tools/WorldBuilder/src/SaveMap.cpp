@@ -135,7 +135,7 @@ void SaveMap::populateMapListbox( Bool systemMaps )
 		strcpy(dirBuf, ".\\Maps\\");
 	else
 		sprintf(dirBuf, "%sMaps\\", TheGlobalData->getPath_UserData().str());
-	int len = strlen(dirBuf);
+	int len = (int)strlen(dirBuf);
 
 	if (len > 0 && dirBuf[len - 1] != '\\') {
 		dirBuf[len++] = '\\';
@@ -176,7 +176,7 @@ void SaveMap::populateMapListbox( Bool systemMaps )
 	CEdit *pEdit = (CEdit*)GetDlgItem(IDC_SAVE_MAP_EDIT);
 	if (pEdit != NULL) {
 		strcpy(fileBuf, m_pInfo->filename);
-		Int len = strlen(fileBuf);
+		Int len = (int)strlen(fileBuf);
 		if (len>4 && stricmp(".map", fileBuf+(len-4)) == 0) {
 			// strip of the .map
 			fileBuf[len-4] = 0;

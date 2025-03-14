@@ -1795,7 +1795,7 @@ HRESULT  Cftp::FileRecoveryPosition( LPCSTR szLocalFileName, LPCSTR szRegistryRo
 //
 void Cftp::GetDownloadFilename(const char *localname, char *downloadname)
 {
-	char *name = strdup(localname);
+	char *name = _strdup(localname);
 	char *s = name;
 	while (*s)
 	{

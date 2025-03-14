@@ -169,7 +169,7 @@ inline Real deg2rad(Real rad) { return rad * (PI/180); }
 //-----------------------------------------------------------------------------
 // For twiddling bits
 //-----------------------------------------------------------------------------
-#define BitTest( x, i ) ( ( (x) & (i) ) != 0 )
+#define BitTestWW( x, i ) ( ( (x) & (i) ) != 0 )
 #define BitSet( x, i ) ( (x) |= (i) )
 #define BitClear( x, i ) ( (x ) &= ~(i) )
 #define BitToggle( x, i ) ( (x) ^= (i) )
@@ -179,15 +179,17 @@ inline Real deg2rad(Real rad) { return rad * (PI/180); }
 // note, this function depends on the cpu rounding mode, which we set to CHOP every frame, 
 // but apparently tends to be left in unpredictable modes by various system bits of
 // code, so use this function with caution -- it might not round in the way you want.
+#if 0
 __forceinline long fast_float2long_round(float f)
 {
 	long i;
 
-	__asm {
-		fld [f]
-		fistp [i]
-	}
+	//__asm {
+	//	fld [f]
+	//	fistp [i]
+	//}
 
+	i = (long)f;
 	return i;
 }
 
@@ -246,6 +248,26 @@ __forceinline float fast_float_ceil(float f)
 #define FAST_REAL_TRUNC(x)        fast_float_trunc(x)
 #define FAST_REAL_CEIL(x)         fast_float_ceil(x)
 #define FAST_REAL_FLOOR(x)        fast_float_floor(x)
+#else
+#define REAL_TO_INT(x)						((Int)(x))
+#define REAL_TO_UNSIGNEDINT(x)		((UnsignedInt)(x))
+#define REAL_TO_SHORT(x)					((Short)(x))
+#define REAL_TO_UNSIGNEDSHORT(x)	((UnsignedShort)(x))
+#define REAL_TO_BYTE(x)						((Byte)(x))
+#define REAL_TO_UNSIGNEDBYTE(x)		((UnsignedByte)(x))
+#define REAL_TO_CHAR(x)						((Char)(x))
+#define DOUBLE_TO_REAL(x)					((Real) (x))
+#define DOUBLE_TO_INT(x)					((Int) (x))
+#define INT_TO_REAL(x)						((Real) (x))
+
+// once we've ceiled/floored, trunc and round are identical, and currently, round is faster... (srj)
+#define REAL_TO_INT_CEIL(x)				((int)std::ceil(x))
+#define REAL_TO_INT_FLOOR(x)			((int)std::floor(x))
+//
+//#define FAST_REAL_TRUNC(x)        fast_float_trunc(x)
+//#define FAST_REAL_CEIL(x)         fast_float_ceil(x)
+//#define FAST_REAL_FLOOR(x)        fast_float_floor(x)
+#endif
 
 //--------------------------------------------------------------------
 // Derived type definitions

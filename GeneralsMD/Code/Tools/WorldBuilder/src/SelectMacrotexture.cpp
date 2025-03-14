@@ -78,7 +78,7 @@ BOOL SelectMacrotexture::OnInitDialog()
 		char				fileBuf[_MAX_PATH];
 
 		strcpy(dirBuf, "..\\TestArt");
-		int len = strlen(dirBuf);
+		int len = (int)strlen(dirBuf);
 
 		if (len > 0 && dirBuf[len - 1] != '\\') {
 			dirBuf[len++] = '\\';

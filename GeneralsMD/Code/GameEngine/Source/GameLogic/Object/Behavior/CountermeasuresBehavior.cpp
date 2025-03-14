@@ -165,11 +165,10 @@ ObjectID CountermeasuresBehavior::calculateCountermeasureToDivertTo( const Objec
 	Object *closestFlare = NULL;
 
 	//Start at the end of the list and go towards the beginning.
-	CountermeasuresVec::iterator it = m_counterMeasures.end();
+	CountermeasuresVec::reverse_iterator it = m_counterMeasures.rbegin();
 	//end is actually the end so advance the iterator.
-	if( it )
+	if( it != m_counterMeasures.rend() )
 	{
-		--it;
 		while( iteratorMax-- )
 		{
 			Object *obj = TheGameLogic->findObjectByID( *it );
@@ -184,7 +183,7 @@ ObjectID CountermeasuresBehavior::calculateCountermeasureToDivertTo( const Objec
 			}
 			else
 			{
-				--it;
+				++it;
 			}
 		}
 	}
@@ -300,7 +299,7 @@ void CountermeasuresBehavior::launchVolley()
 	Object *obj = getObject();
 
 	Real volleySize = (Real)data->m_volleySize;
-	for( int i = 0; i < data->m_volleySize; i++ )
+	for( int i = 0; i < (int)data->m_volleySize; i++ )
 	{
 		//Each flare in a volley will calculate a different vector to fly out. We have a +/- angle to 
 		//spread out equally. With only one flare, it'll come straight out the back. Two flares will

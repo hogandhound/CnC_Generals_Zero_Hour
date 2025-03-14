@@ -67,7 +67,7 @@ void Win32BIGFileSystem::init() {
 #ifndef _INTERNAL
     // had to make this non-internal only, otherwise we can't autobuild
     // GeneralsZH...
-    DEBUG_ASSERTCRASH(installPath != "", ("Be 1337! Go install Generals!"));
+    //DEBUG_ASSERTCRASH(installPath != "", ("Be 1337! Go install Generals!"));
 #endif
     if (installPath!="")
       loadBigFilesFromDirectory(installPath, "*.big");
@@ -90,7 +90,7 @@ ArchiveFile * Win32BIGFileSystem::openArchiveFile(const Char *filename) {
 	Int archiveFileSize = 0;
 	Int numLittleFiles = 0;
 
-	ArchiveFile *archiveFile = NEW Win32BIGFile;
+	ArchiveFile *archiveFile = new Win32BIGFile;
 
 	DEBUG_LOG(("Win32BIGFileSystem::openArchiveFile - opening BIG file %s\n", filename));
 
@@ -132,7 +132,7 @@ ArchiveFile * Win32BIGFileSystem::openArchiveFile(const Char *filename) {
 	// seek to the beginning of the directory listing.
 	fp->seek(0x10, File::START);
 	// read in each directory listing.
-	ArchivedFileInfo *fileInfo = NEW ArchivedFileInfo;
+	ArchivedFileInfo *fileInfo = new ArchivedFileInfo;
 
 	for (Int i = 0; i < numLittleFiles; ++i) {
 		Int filesize = 0;
@@ -191,13 +191,15 @@ void Win32BIGFileSystem::closeArchiveFile(const Char *filename) {
 		return;
 	}
 
-	if (stricmp(filename, MUSIC_BIG) == 0) {
+#ifdef HAS_BINK
+	if (_stricmp(filename, MUSIC_BIG) == 0) {
 		// Stop the current audio
 		TheAudio->stopAudio(AudioAffect_Music);
 
 		// No need to turn off other audio, as the lookups will just fail.
 	}
-	DEBUG_ASSERTCRASH(stricmp(filename, MUSIC_BIG) == 0, ("Attempting to close Archive file '%s', need to add code to handle its shutdown correctly.", filename));
+	DEBUG_ASSERTCRASH(_stricmp(filename, MUSIC_BIG) == 0, ("Attempting to close Archive file '%s', need to add code to handle its shutdown correctly.", filename));
+#endif
 
 	// may need to do some other processing here first.
 	

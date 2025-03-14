@@ -49,7 +49,7 @@ DDSFileClass::DDSFileClass(const char* name,unsigned reduction_factor)
 {
 	strncpy(Name,name,sizeof(Name));
 	// The name could be given in .tga or .dds format, so ensure we're opening .dds...
-	int len=strlen(Name);
+	int len=(int)(int)strlen(Name);
 	Name[len-3]='d';
 	Name[len-2]='d';
 	Name[len-1]='s';
@@ -79,7 +79,13 @@ DDSFileClass::DDSFileClass(const char* name,unsigned reduction_factor)
 	// Now, we read DDSURFACEDESC2 defining the compressed data
 	read_bytes=file->Read(&SurfaceDesc,sizeof(LegacyDDSURFACEDESC2));
 	// Verify the structure size matches the read size
-	if (read_bytes==0 || read_bytes!=SurfaceDesc.Size) 
+	if (read_bytes==0 || 
+#if INTPTR_MAX == INT32_MAX
+		read_bytes != SurfaceDesc.Size
+#else
+		read_bytes!=SurfaceDesc.Size + 4
+#endif	
+		) 
 	{
 		StringClass tmp(0,true);
 		tmp.Format("File %s loading failed.\nTried to read %d bytes, got %d. (SurfDesc.size=%d)\n",name,sizeof(LegacyDDSURFACEDESC2),read_bytes,SurfaceDesc.Size);
@@ -144,8 +150,8 @@ DDSFileClass::DDSFileClass(const char* name,unsigned reduction_factor)
 
 	LevelSizes=W3DNEWARRAY unsigned[MipLevels];
 	LevelOffsets=W3DNEWARRAY unsigned[MipLevels];
-	for (unsigned level=0;level<ReductionFactor;++level) 
-	{
+	unsigned level = 0;
+	for (;level<ReductionFactor;++level) {
 		if (level_size>16) 
 		{	// If surface is bigger than one block (8 or 16 bytes)...
 			level_size/=level_mip_dec;
@@ -333,7 +339,7 @@ WWINLINE static unsigned short ARGB8888_To_RGB565(unsigned argb_)
 //
 // ----------------------------------------------------------------------------
 
-void DDSFileClass::Copy_Level_To_Surface(unsigned level,IDirect3DSurface8* d3d_surface,const Vector3& hsv_shift)
+void DDSFileClass::Copy_Level_To_Surface(unsigned level,IDirect3DSurface9* d3d_surface,const Vector3& hsv_shift)
 {
 	WWASSERT(d3d_surface);
 	// Verify that the destination surface size matches the source surface size

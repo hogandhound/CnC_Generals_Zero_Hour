@@ -366,7 +366,7 @@ bit8 Wstring::insert(char *instring, uint32 pos)
   memset(newstr,0,strlen(str)+strlen(instring)+1);
   strcpy(newstr,str);
   // move the old data out of the way
-  int bytes=strlen(str)+1-pos;
+  int bytes=(int)strlen(str)+1-pos;
   memmove(newstr+pos+strlen(instring),newstr+pos,bytes);
   // move the new data into place
   memmove(newstr+pos,instring,strlen(instring));

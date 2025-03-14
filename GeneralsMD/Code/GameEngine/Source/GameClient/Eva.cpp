@@ -322,8 +322,8 @@ void Eva::update()
 EvaMessage Eva::nameToMessage(const AsciiString& name)
 {
   DEBUG_ASSERTCRASH( ELEMENTS_OF( TheEvaMessageNames ) == EVA_COUNT + 1, ("TheEvaMessageNames out of sync" ) );
-  DEBUG_ASSERTCRASH( stricmp( TheEvaMessageNames[ EVA_COUNT ], "EVA_INVALID" ) == 0, ("TheEvaMessageNames out of sync" ) );
-  DEBUG_ASSERTCRASH( stricmp( TheEvaMessageNames[ EVA_COUNT - 1], "EVA_INVALID" ) != 0, ("TheEvaMessageNames out of sync" ) );
+  DEBUG_ASSERTCRASH( _stricmp( TheEvaMessageNames[ EVA_COUNT ], "EVA_INVALID" ) == 0, ("TheEvaMessageNames out of sync" ) );
+  DEBUG_ASSERTCRASH( _stricmp( TheEvaMessageNames[ EVA_COUNT - 1], "EVA_INVALID" ) != 0, ("TheEvaMessageNames out of sync" ) );
 
 	for (Int i = EVA_FIRST; i < EVA_COUNT; ++i) {
 		if (name.compareNoCase(TheEvaMessageNames[i]) == 0) {
@@ -339,8 +339,8 @@ EvaMessage Eva::nameToMessage(const AsciiString& name)
 AsciiString Eva::messageToName(EvaMessage message)
 {
   DEBUG_ASSERTCRASH( ELEMENTS_OF( TheEvaMessageNames ) == EVA_COUNT + 1, ("TheEvaMessageNames out of sync" ) );
-  DEBUG_ASSERTCRASH( stricmp( TheEvaMessageNames[ EVA_COUNT ], "EVA_INVALID" ) == 0, ("TheEvaMessageNames out of sync" ) );
-  DEBUG_ASSERTCRASH( stricmp( TheEvaMessageNames[ EVA_COUNT - 1], "EVA_INVALID" ) != 0, ("TheEvaMessageNames out of sync" ) );
+  DEBUG_ASSERTCRASH( _stricmp( TheEvaMessageNames[ EVA_COUNT ], "EVA_INVALID" ) == 0, ("TheEvaMessageNames out of sync" ) );
+  DEBUG_ASSERTCRASH( _stricmp( TheEvaMessageNames[ EVA_COUNT - 1], "EVA_INVALID" ) != 0, ("TheEvaMessageNames out of sync" ) );
 
   if (message >= EVA_FIRST && message < EVA_COUNT)
 		return TheEvaMessageNames[message];
@@ -521,7 +521,7 @@ void Eva::processPlayingMessages(UnsignedInt currentFrame)
 
 	// We've got a winner!
 	AsciiString side = ThePlayerList->getLocalPlayer()->getSide();
-	Int numSides = storedIt->m_evaInfo->m_evaSideSounds.size();
+	Int numSides = (int)storedIt->m_evaInfo->m_evaSideSounds.size();
 
   // clear it. If we can't find the side we want, don't play anything
   m_evaSpeech.setEventName(AsciiString::TheEmptyString);
@@ -530,7 +530,7 @@ void Eva::processPlayingMessages(UnsignedInt currentFrame)
 		if (side.compareNoCase(storedIt->m_evaInfo->m_evaSideSounds[i].m_side) == 0) {
 			// Its this one.
 			if (storedIt->m_evaInfo->m_evaSideSounds[i].m_soundNames.size() > 0) {
-				Int soundToPlay = GameClientRandomValue(0, storedIt->m_evaInfo->m_evaSideSounds[i].m_soundNames.size() - 1);
+				Int soundToPlay = (int)GameClientRandomValue(0, (int)storedIt->m_evaInfo->m_evaSideSounds[i].m_soundNames.size() - 1);
 				m_evaSpeech.setEventName(storedIt->m_evaInfo->m_evaSideSounds[i].m_soundNames[soundToPlay]);
 			}
       break;
@@ -545,7 +545,9 @@ void Eva::processPlayingMessages(UnsignedInt currentFrame)
 	// sound to the local player.
 	m_evaSpeech.setPlayerIndex(m_localPlayer->getPlayerIndex());
 
+#ifdef HAS_BINK
 	m_evaSpeech.setPlayingHandle(TheAudio->addAudioEvent(&m_evaSpeech));
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -236,7 +236,7 @@ Compare_EXE_Version (int app_instance, const char *filename)
 	//
 	IMAGE_FILE_HEADER header1 = { 0 };
 	IMAGE_FILE_HEADER header2 = { 0 };	
-	if	(	::Get_Image_File_Header ((HINSTANCE)app_instance, &header1) && 
+	if	(	::Get_Image_File_Header ((HINSTANCE)(intptr_t)app_instance, &header1) && 
 			::Get_Image_File_Header (filename, &header2))
 	{
 		retval = int(header1.TimeDateStamp - header2.TimeDateStamp);

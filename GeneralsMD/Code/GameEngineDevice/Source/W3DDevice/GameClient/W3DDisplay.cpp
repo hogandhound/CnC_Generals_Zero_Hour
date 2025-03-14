@@ -323,11 +323,13 @@ void StatDumpClass::dumpStats( Bool brief, Bool flagSpikes )
 	fprintf( m_fp, "\n" );
 
 #if defined(_DEBUG) || defined(_INTERNAL)
+#ifdef HAS_BINK
   if ( ! beBrief )
   {
     TheAudio->audioDebugDisplay( NULL, NULL, m_fp );
 	  fprintf( m_fp, "\n" );
   }
+#endif
 #endif
 	
 #ifdef MEMORYPOOL_DEBUG
@@ -670,7 +672,7 @@ void W3DDisplay::init( void )
 
 	}  // end if
 	// Override the W3D File system
-	TheW3DFileSystem = NEW W3DFileSystem;
+	TheW3DFileSystem = new W3DFileSystem;
 
 	// init the Westwood math library
 	WWMath::Init();
@@ -720,7 +722,7 @@ void W3DDisplay::init( void )
 #endif
 
 	// create a new asset manager
-	m_assetManager = NEW W3DAssetManager;	
+	m_assetManager = new W3DAssetManager;	
 	m_assetManager->Register_Prototype_Loader(&_ParticleEmitterLoader );
 	m_assetManager->Register_Prototype_Loader(&_AggregateLoader);
 	m_assetManager->Set_WW3D_Load_On_Demand( true );
@@ -743,7 +745,7 @@ void W3DDisplay::init( void )
 	setWindowed( TheGlobalData->m_windowed );
 
 	// create a 2D renderer helper
-	m_2DRender = NEW Render2DClass;
+	m_2DRender = new Render2DClass;
 	DEBUG_ASSERTCRASH( m_2DRender, ("Cannot create Render2DClass") );
 
 	// set our default width and height and bit depth
@@ -802,7 +804,7 @@ void W3DDisplay::init( void )
 	W3DShaderManager::init();
 
 	// Create and initialize the debug display
-	m_nativeDebugDisplay = NEW W3DDebugDisplay();
+	m_nativeDebugDisplay = new W3DDebugDisplay();
 	m_debugDisplay = m_nativeDebugDisplay;
 	if ( m_nativeDebugDisplay )
 	{
@@ -1461,7 +1463,7 @@ void W3DDisplay::gatherDebugStats( void )
 
 			unibuffer.concat( L"\nModelStates: " );
 			ModelConditionFlags mcFlags = draw->getModelConditionFlags();
-			const numEntriesPerLine = 4;
+			const int numEntriesPerLine = 4;
 			int lineCount = 0;
 
 			for( int i = 0; i < MODELCONDITION_COUNT; i++ )
@@ -1557,7 +1559,7 @@ void W3DDisplay::drawCurrentDebugDisplay( void )
 		if ( m_debugDisplay && m_debugDisplayCallback )
 		{
 			m_debugDisplay->reset();
-			m_debugDisplayCallback( m_debugDisplay, m_debugDisplayUserData );
+			m_debugDisplayCallback( m_debugDisplay, m_debugDisplayUserData, 0 );
 		}
 	}
 }  // end drawCurrentDebugDisplay
@@ -1910,7 +1912,9 @@ AGAIN:
 
 				if ( m_videoStream && m_videoBuffer )
 				{
+#ifdef HAS_BINK
 					drawVideoBuffer( m_videoBuffer, 0, 0, getWidth(), getHeight() );
+#endif
 				}
 				if( m_copyrightDisplayString )
 				{
@@ -1943,7 +1947,7 @@ AGAIN:
 					Int height = TheDisplay->getHeight() * .9;
 
 					Int width;
-					if( displayString->getWidth() > TheDisplay->getWidth() )
+					if( displayString->getWidth() > (int)TheDisplay->getWidth() )
 						width = 20;
 					else
 						width = ( TheDisplay->getWidth() - displayString->getWidth() ) / 2;
@@ -2666,7 +2670,7 @@ void W3DDisplay::drawImage( const Image *image, Int startX, Int startY,
 	}
 
 	// if we have raw texture data we will use it, otherwise we are referencing filenames
-	if( BitTest( image->getStatus(), IMAGE_STATUS_RAW_TEXTURE ) )
+	if( BitTestWW( image->getStatus(), IMAGE_STATUS_RAW_TEXTURE ) )
 		m_2DRender->Set_Texture( (TextureClass *)(image->getRawTextureData()) );
 	else
 		m_2DRender->Set_Texture( image->getFilename().str() );
@@ -2688,7 +2692,7 @@ void W3DDisplay::drawImage( const Image *image, Int startX, Int startY,
 			RectClass clipped_rect;
 			RectClass clipped_uv_rect;
 
-			if( BitTest( image->getStatus(), IMAGE_STATUS_ROTATED_90_CLOCKWISE ) )
+			if( BitTestWW( image->getStatus(), IMAGE_STATUS_ROTATED_90_CLOCKWISE ) )
 			{
 
 	
@@ -2756,7 +2760,7 @@ void W3DDisplay::drawImage( const Image *image, Int startX, Int startY,
 	}
 
 	// if rotated 90 degrees clockwise we have to adjust the uv coords
-	if( BitTest( image->getStatus(), IMAGE_STATUS_ROTATED_90_CLOCKWISE ) )
+	if( BitTestWW( image->getStatus(), IMAGE_STATUS_ROTATED_90_CLOCKWISE ) )
 	{
 
 		m_2DRender->Add_Tri( Vector2( screen_rect.Left, screen_rect.Top ), 
@@ -2796,7 +2800,7 @@ void W3DDisplay::drawImage( const Image *image, Int startX, Int startY,
 //============================================================================
 // W3DDisplay::createVideoBuffer
 //============================================================================
-
+#ifdef HAS_BINK
 VideoBuffer*	W3DDisplay::createVideoBuffer( void )
 {
 	VideoBuffer::Type format = VideoBuffer::TYPE_UNKNOWN;
@@ -2840,7 +2844,7 @@ VideoBuffer*	W3DDisplay::createVideoBuffer( void )
 	if(!TheGlobalData->m_playIntro )//&& TheGameLODManager && (!TheGameLODManager->didMemPass() || W3DShaderManager::getChipset() == DC_GEFORCE2))
 		format = VideoBuffer::TYPE_R5G6B5;
 
-	W3DVideoBuffer *buffer = NEW W3DVideoBuffer( format );
+	W3DVideoBuffer *buffer = new W3DVideoBuffer( format );
 
 	return buffer;
 }
@@ -2862,6 +2866,7 @@ void W3DDisplay::drawVideoBuffer( VideoBuffer *buffer, Int startX, Int startY, I
 	m_2DRender->Render();
 
 }
+#endif
 
 // W3DDisplay::setClipRegion ============================================
 /** Set the clipping region for images.
@@ -3013,7 +3018,7 @@ void W3DDisplay::takeScreenShot(void)
 
 	// Lock front buffer and copy
 
-	IDirect3DSurface8 *fb;
+	IDirect3DSurface9 *fb;
 	fb=DX8Wrapper::_Get_DX8_Front_Buffer();
 	D3DSURFACE_DESC desc;
 	fb->GetDesc(&desc);
@@ -3038,7 +3043,7 @@ void W3DDisplay::takeScreenShot(void)
 	width=bounds.right-bounds.left;
 	height=bounds.bottom-bounds.top;
 
-	char *image=NEW char[3*width*height];
+	char *image=new char[3*width*height];
 #ifdef CAPTURE_TO_TARGA
 	//bytes are mixed in targa files, not rgb order.
 	for (y=0; y<height; y++)
@@ -3147,7 +3152,7 @@ void dumpMeshAssets(MeshClass *mesh)
 					{
 						if ((texture=model->Peek_Texture(i,pass,stage)) != NULL)
 						{
-							fprintf(AssetDumpFile,"\t%s\n",texture->Get_Texture_Name());
+							fprintf(AssetDumpFile,"\t%s\n",texture->Get_Texture_Name().Peek_Buffer());
 						}
 					}
 				}
@@ -3155,7 +3160,7 @@ void dumpMeshAssets(MeshClass *mesh)
 				{
 					if ((texture=model->Peek_Single_Texture(pass,stage)) != NULL)
 					{
-						fprintf(AssetDumpFile,"\t%s\n",texture->Get_Texture_Name());
+						fprintf(AssetDumpFile,"\t%s\n",texture->Get_Texture_Name().Peek_Buffer());
 					}
 				}
 			}

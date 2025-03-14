@@ -254,7 +254,7 @@ UpdateSleepTime SpawnBehavior::update( void )
 		{
 			Int replacementTime = *iterator;
 			UnsignedInt currentTime = TheGameLogic->getFrame();
-			if( currentTime > replacementTime )
+			if( (int)currentTime > replacementTime )
 			{
 				//If you create one, you pop the number off the list
 				if( createSpawn() )	

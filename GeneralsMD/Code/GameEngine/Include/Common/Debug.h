@@ -182,7 +182,16 @@ class AsciiString;
 			} \
 		} while (0)
 
+#include "windows.h"
+	#define DEBUG_WARNING(...) \
+	do { \
+		char temp[2048]; \
+		sprintf(temp, __VA_ARGS__); \
+		OutputDebugStringA(temp); \
+		} while(0)
+
 	#define DEBUG_ASSERTCRASH(c, m)		do { { if (!(c)) DEBUG_CRASH(m); } } while (0)
+#define DEBUG_CONDWARNING(c, m)		do { { if (!(c)) DEBUG_WARNING(m); } } while (0)
 
 	//Note: RELEASE_CRASH(m) is now always defined.
 	//#define RELEASE_CRASH(m)					DEBUG_CRASH((m))
@@ -191,6 +200,7 @@ class AsciiString;
 
 	#define DEBUG_CRASH(m)					((void)0)
 	#define DEBUG_ASSERTCRASH(c, m)	((void)0)
+	#define DEBUG_WARNING(...)
 
 //	DEBUG_EXTERN_C void ReleaseCrash(const char* reason);
 

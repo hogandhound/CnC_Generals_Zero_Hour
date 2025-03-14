@@ -107,7 +107,7 @@ RailroadBehavior::RailroadBehavior( Thing *thing, const ModuleData *moduleData )
 {
 	const RailroadBehaviorModuleData *modData = getRailroadBehaviorModuleData();
 
-	m_carriageTemplateNameIterator = 0;
+	m_carriageTemplateNameIterator = {};
 
 	m_nextStationTask = DO_NOTHING;
 	m_trailerID = INVALID_ID;
@@ -176,8 +176,9 @@ RailroadBehavior::RailroadBehavior( Thing *thing, const ModuleData *moduleData )
 RailroadBehavior::~RailroadBehavior( void )
 {
 
+#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( m_runningSound.getPlayingHandle() );// no more chugchug when I'm dead
-
+#endif
 	if( m_track != NULL )
 	{
 		if (m_track->releaseReference())
@@ -323,9 +324,10 @@ void RailroadBehavior::onCollide( Object *other, const Coord3D *loc, const Coord
 	dlt.z = theirLoc->z - myLoc->z;
 
 	//Alert all the players of recent disaster 
+#ifdef HAS_BINK
 	if ( ! m_whistleSound.isCurrentlyPlaying())
 		m_whistleSound.setPlayingHandle(TheAudio->addAudioEvent( &m_whistleSound ));
-
+#endif
 
 	Real dist = (Real)sqrtf( dlt.x*dlt.x + dlt.y*dlt.y + dlt.z*dlt.z);
 	Real usRadius = obj->getGeometryInfo().getMajorRadius();
@@ -493,7 +495,9 @@ void RailroadBehavior::playImpactSound(Object *victim, const Coord3D *impactPosi
 	// Therefore, set the player index of the sound to be the player index of the victim object.
 	impact.setPlayerIndex( victim->getControllingPlayer()->getPlayerIndex() );
 
+#ifdef HAS_BINK
 	TheAudio->addAudioEvent( &impact );
+#endif
 }
 
 
@@ -734,15 +738,18 @@ UpdateSleepTime RailroadBehavior::update( void )
 				m_conductorState = ACCELERATE;
 				conductorPullInfo.speed = 0.05f * conductorPullInfo.m_direction;
 
+#ifdef HAS_BINK
 				m_runningSound.setPlayingHandle(TheAudio->addAudioEvent( &m_runningSound ));
-
+#endif
         makeAWallOutOfThisTrain( FALSE );
 
 
 			}
 			else if ( m_waitAtStationTimer == (modData->m_waitAtStationTime/4) )
 			{
+#ifdef HAS_BINK
 				m_whistleSound.setPlayingHandle(TheAudio->addAudioEvent( &m_whistleSound ));
+#endif
 			}
 
 		}
@@ -759,10 +766,11 @@ UpdateSleepTime RailroadBehavior::update( void )
 				conductorPullInfo.speed = -modData->m_speedMax;
 			}
 
-			
+
+#ifdef HAS_BINK
 			if ( ! m_runningSound.isCurrentlyPlaying() )
 				m_runningSound.setPlayingHandle(TheAudio->addAudioEvent( &m_runningSound ));
-
+#endif
 
 		}
 
@@ -787,7 +795,9 @@ UpdateSleepTime RailroadBehavior::update( void )
 		if ( m_conductorState == COAST )
 		{
 			conductorPullInfo.speed *= modData->m_friction;
+#ifdef HAS_BINK
 			TheAudio->removeAudioEvent( m_runningSound.getPlayingHandle() );
+#endif
 		}
 		
 		conductorPullInfo.trackDistance += conductorPullInfo.speed ;
@@ -1427,13 +1437,18 @@ void RailroadBehavior::FindPosByPathDistance( Coord3D *pos, const Real dist, con
 	{
 		const TrackPoint *thisPoint = &(*pointIter);
 		++pointIter;// next pointIter in this list, so then...
-		const TrackPoint *nextPoint = &(*pointIter);
 
 
 		if (thisPoint && thisPoint->m_distanceFromFirst < actualDistance)// I am after this point, and
 		{
 			Coord3D thisPointPos = thisPoint->m_position;
-			
+			if (pointIter == pointList->end())
+			{
+				*pos = thisPointPos;//copy out
+				continue;
+			}
+
+			const TrackPoint* nextPoint = &(*pointIter);
 			if (nextPoint && nextPoint->m_distanceFromFirst > actualDistance)
 			{
 				//I am between this point and the next
@@ -1453,20 +1468,26 @@ void RailroadBehavior::FindPosByPathDistance( Coord3D *pos, const Real dist, con
 							{
 								m_conductorState = APPLY_BRAKES;
 								m_disembark = FALSE;
+#ifdef HAS_BINK
 								TheAudio->removeAudioEvent(m_runningSound.getPlayingHandle());
+#endif
 							}
 							else if ( thisPoint->m_isDisembark )
 							{
 								m_conductorState = APPLY_BRAKES;
 								m_disembark = TRUE;
+#ifdef HAS_BINK
 								TheAudio->removeAudioEvent(m_runningSound.getPlayingHandle());
+#endif
 							}
 							else if ( thisPoint->m_isPingPong && conductorPullInfo.m_mostRecentSpecialPointHandle != handleFound )
 							{
 								conductorPullInfo.m_mostRecentSpecialPointHandle = handleFound;
 								m_conductorState = APPLY_BRAKES;
 								m_disembark = FALSE;
+#ifdef HAS_BINK
 								TheAudio->removeAudioEvent(m_runningSound.getPlayingHandle());
+#endif
 								conductorPullInfo.m_direction = -conductorPullInfo.m_direction;
 							}
 						}
@@ -1474,7 +1495,9 @@ void RailroadBehavior::FindPosByPathDistance( Coord3D *pos, const Real dist, con
 
 					if ( edge && ! m_inTunnel )
 					{//play my clickety clack sound, `cause I just rode over a join IN the tracks
+#ifdef HAS_BINK
 						TheAudio->addAudioEvent( &m_clicketyClackSound );
+#endif
 						m_clicketyClackSound.setPosition( getObject()->getPosition() );
 						m_clicketyClackSound.setVolume( (Real)conductorPullInfo.speed / 10.0f );//assumed max speed
 					}

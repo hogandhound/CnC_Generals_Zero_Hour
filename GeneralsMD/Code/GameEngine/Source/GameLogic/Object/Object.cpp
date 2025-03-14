@@ -311,7 +311,7 @@ Object::Object( const ThingTemplate *tt, const ObjectStatusMaskType &objectStatu
 
 	// allocate the publicModule arrays
 // pool[]ify
-	m_behaviors = MSGNEW("ModulePtrs") BehaviorModule*[totalModules + 1];
+	m_behaviors = new BehaviorModule*[totalModules + 1];
 	BehaviorModule** curB = m_behaviors;
 	const ModuleInfo& mi = tt->getBehaviorModuleInfo();
 
@@ -1872,7 +1872,7 @@ void Object::attemptDamage( DamageInfo *damageInfo )
 			damageInfo->in.m_damageType != DAMAGE_PENALTY &&
 			damageInfo->in.m_damageType != DAMAGE_HEALING &&
 			getControllingPlayer() &&
-			!BitTest(damageInfo->in.m_sourcePlayerMask, getControllingPlayer()->getPlayerMask()) && 
+			!BitTestWW(damageInfo->in.m_sourcePlayerMask, getControllingPlayer()->getPlayerMask()) && 
 			m_radarData != NULL &&
 			getControllingPlayer() == ThePlayerList->getLocalPlayer() )
 		TheRadar->tryUnderAttackEvent( this );
@@ -2086,9 +2086,11 @@ void Object::setDisabledUntil( DisabledType type, UnsignedInt frame )
 	if( type == DISABLED_UNMANNED && !isKindOf( KINDOF_DRONE ) )
 	{
 		//We've been sniped! Play a splatter sound for the pilot losing his face.
+#ifdef HAS_BINK
 		sound = TheAudio->getMiscAudio()->m_splatterVehiclePilotsBrain;
 		sound.setPosition( getPosition() );
 		TheAudio->addAudioEvent( &sound );
+#endif
 	}
 	else if( type == DISABLED_UNDERPOWERED || type == DISABLED_EMP || type == DISABLED_SUBDUED || type == DISABLED_HACKED )
 	{
@@ -2099,6 +2101,7 @@ void Object::setDisabledUntil( DisabledType type, UnsignedInt frame )
 				!isDisabledByType( DISABLED_SUBDUED ) &&
 				!isDisabledByType( DISABLED_HACKED ) )
 		{
+#ifdef HAS_BINK
 			if( isKindOf( KINDOF_STRUCTURE ) )
 			{
 				sound = TheAudio->getMiscAudio()->m_buildingDisabled;
@@ -2111,6 +2114,7 @@ void Object::setDisabledUntil( DisabledType type, UnsignedInt frame )
 				sound.setPosition( getPosition() );
 				TheAudio->addAudioEvent( &sound );
 			}
+#endif
 		}
 	}
 
@@ -2258,6 +2262,7 @@ Bool Object::clearDisabled( DisabledType type )
 				(!isDisabledByType( DISABLED_SUBDUED ) || type == DISABLED_SUBDUED ) &&
 				(!isDisabledByType( DISABLED_HACKED ) || type == DISABLED_HACKED ) )
 		{
+#ifdef HAS_BINK
 			if( isKindOf( KINDOF_STRUCTURE ) )
 			{
 				sound = TheAudio->getMiscAudio()->m_buildingReenabled;
@@ -2270,6 +2275,7 @@ Bool Object::clearDisabled( DisabledType type )
 				sound.setPosition( getPosition() );
 				TheAudio->addAudioEvent( &sound );
 			}
+#endif
 		}
 	}
 
@@ -3163,9 +3169,11 @@ void Object::onVeterancyLevelChanged( VeterancyLevel oldLevel, VeterancyLevel ne
 																			TheGlobalData->m_levelGainAnimationZRisePerSecond);
 		}
 
+#ifdef HAS_BINK
 		AudioEventRTS soundToPlay = TheAudio->getMiscAudio()->m_unitPromoted;	
 		soundToPlay.setObjectID( getID() );
 		TheAudio->addAudioEvent( &soundToPlay );
+#endif
 	}
 
 }
@@ -3649,6 +3657,7 @@ void Object::updateObjValuesFromMapProperties(Dict* properties)
       }
       else
       {
+#ifdef HAS_BINK
         const AudioEventInfo * baseInfo = TheAudio->findAudioEventInfo( valStr );
         DEBUG_ASSERTCRASH( baseInfo != NULL, ("Cannot find customized ambient sound '%s'", valStr.str() ) );
         if ( baseInfo != NULL )
@@ -3656,6 +3665,7 @@ void Object::updateObjValuesFromMapProperties(Dict* properties)
           audioToModify = newInstance( DynamicAudioEventInfo )( *baseInfo );
           infoModified = true;
         }
+#endif
       }
     }
 
@@ -3668,7 +3678,8 @@ void Object::updateObjValuesFromMapProperties(Dict* properties)
         if ( audioToModify == NULL )
         {
           const AudioEventInfo * baseInfo = drawable->getBaseSoundAmbientInfo( );
-          DEBUG_ASSERTCRASH( baseInfo != NULL, ("getBaseSoundAmbientInfo() return NULL" ) );
+		  if (baseInfo == NULL)
+			DEBUG_WARNING( ("getBaseSoundAmbientInfo() return NULL" ) );
           if ( baseInfo != NULL )
           {
             audioToModify = newInstance( DynamicAudioEventInfo )( *baseInfo );
@@ -3685,7 +3696,7 @@ void Object::updateObjValuesFromMapProperties(Dict* properties)
           }
 
           valInt = properties->getInt( TheKey_objectSoundAmbientLoopCount, &exists );
-          if ( exists && BitTest( audioToModify->m_control, AC_LOOP ) )
+          if ( exists && BitTestWW( audioToModify->m_control, AC_LOOP ) )
           {
             audioToModify->overrideLoopCount( valInt );
             infoModified = true;
@@ -3761,6 +3772,7 @@ void Object::updateObjValuesFromMapProperties(Dict* properties)
     
     if ( infoModified && audioToModify != NULL )
     {
+#ifdef HAS_BINK
       // Give a custom, level-specific name
       drawable->mangleCustomAudioName( audioToModify );
 
@@ -3769,6 +3781,7 @@ void Object::updateObjValuesFromMapProperties(Dict* properties)
 
       drawable->setCustomSoundAmbientInfo( audioToModify );
       audioToModify = NULL; // Belongs to TheAudio now
+#endif
     }
 
     if ( audioToModify != NULL )
@@ -4615,6 +4628,8 @@ void Object::onDie( DamageInfo *damageInfo )
 	handlePartitionCellMaintenance();
 	if(m_team)
 		m_team->notifyTeamOfObjectDeath();
+#ifdef HAS_BINK
+#endif
 
 	if (isLocallyControlled() && !selfInflicted) // wasLocallyControlled? :-)
 	{
@@ -5453,7 +5468,7 @@ void Object::doCommandButton( const CommandButton *commandButton, CommandSourceT
 			case GUI_COMMAND_FIRE_WEAPON:
 				if( ai )
 				{
-					if( !BitTest( commandButton->getOptions(), COMMAND_OPTION_NEED_OBJECT_TARGET ) && !BitTest( commandButton->getOptions(), NEED_TARGET_POS ) )
+					if( !BitTestWW( commandButton->getOptions(), COMMAND_OPTION_NEED_OBJECT_TARGET ) && !BitTestWW( commandButton->getOptions(), NEED_TARGET_POS ) )
 					{
 						setWeaponLock( commandButton->getWeaponSlot(), LOCKED_TEMPORARILY );
 						//LOCATION BASED FIRE WEAPON
@@ -5461,7 +5476,7 @@ void Object::doCommandButton( const CommandButton *commandButton, CommandSourceT
 					}
 					else
 					{
-						DEBUG_CRASH( ("WARNING: Script doCommandButton for button %s cannot fire weapon with NO POSITION. Skipping.", commandButton->getName().str()) );
+						DEBUG_WARNING( ("WARNING: Script doCommandButton for button %s cannot fire weapon with NO POSITION. Skipping.", commandButton->getName().str()) );
 					}
 					return;
 				}
@@ -5581,7 +5596,7 @@ void Object::doCommandButtonAtObject( const CommandButton *commandButton, Object
 			case GUI_COMMAND_FIRE_WEAPON:
 				if( ai )
 				{
-					if( BitTest( commandButton->getOptions(), COMMAND_OPTION_NEED_OBJECT_TARGET ) )
+					if( BitTestWW( commandButton->getOptions(), COMMAND_OPTION_NEED_OBJECT_TARGET ) )
 					{
 						//OBJECT BASED FIRE WEAPON
 						if( !obj )
@@ -5596,7 +5611,7 @@ void Object::doCommandButtonAtObject( const CommandButton *commandButton, Object
 
 						setWeaponLock( commandButton->getWeaponSlot(), LOCKED_TEMPORARILY );
 
-						if( BitTest( commandButton->getOptions(), ATTACK_OBJECTS_POSITION ) )
+						if( BitTestWW( commandButton->getOptions(), ATTACK_OBJECTS_POSITION ) )
 						{
 							//Actually, you know what.... we want to attack the object's location instead.
 							ai->aiAttackPosition( obj->getPosition(), commandButton->getMaxShotsToFire(), cmdSource );
@@ -5702,7 +5717,7 @@ void Object::doCommandButtonAtPosition( const CommandButton *commandButton, cons
 			case GUI_COMMAND_FIRE_WEAPON:
 				if( ai )
 				{
-					if( BitTest( commandButton->getOptions(), NEED_TARGET_POS ) )
+					if( BitTestWW( commandButton->getOptions(), NEED_TARGET_POS ) )
 					{
 						//LOCATION BASED FIRE WEAPON
 						if( !pos )
@@ -5765,7 +5780,7 @@ void Object::doCommandButtonUsingWaypoints( const CommandButton *commandButton, 
 	
 	if( commandButton )
 	{
-		if( !BitTest( commandButton->getOptions(), CAN_USE_WAYPOINTS ) )
+		if( !BitTestWW( commandButton->getOptions(), CAN_USE_WAYPOINTS ) )
 		{
 			//Our button doesn't support waypoints.
 			DEBUG_CRASH( ("WARNING: Script doCommandButtonUsingWaypoints for button %s lacks CAN_USE_WAYPOINTS option. Doing nothing.", commandButton->getName().str()) );
@@ -6194,18 +6209,22 @@ void Object::defect( Team* newTeam, UnsignedInt detectionTime )
 	}
 
 	// Play our sound indicating we've been defected. (weird verbage, but true.)
+#ifdef HAS_BINK
 	AudioEventRTS voiceDefect = *getTemplate()->getVoiceDefect();
 	voiceDefect.setObjectID(getID());
 	TheAudio->addAudioEvent(&voiceDefect);
+#endif
 
 	//make the new recruit the only selected thing, awaiting new command to move, attack, etc...
 	Drawable *dr = getDrawable();
 	if (dr)
 	{
 		dr->flashAsSelected(); //This is the first of several flashes which get cue'd by doDefectorUpdateStuff()
+#ifdef HAS_BINK
 		AudioEventRTS defectorTimerSound = TheAudio->getMiscAudio()->m_defectorTimerTickSound;
 		defectorTimerSound.setObjectID( getID() );
 		TheAudio->addAudioEvent(&defectorTimerSound);
+#endif
 	}
 	
 	ContainModuleInterface *ct = getContain();

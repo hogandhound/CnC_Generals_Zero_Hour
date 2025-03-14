@@ -36,7 +36,7 @@
  * Functions:                                                                                  *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#include <d3dx8math.h>
+#include <d3dx9math.h>
 #include "dx8fvf.h"
 #include "dx8wrapper.h"
 #include "assetmgr.h"
@@ -199,8 +199,8 @@ Shd6GlossMaskClass::Shd6GlossMaskClass(const ShdDefClass* def)
 	const Vector3& s=Definition->Get_Specular();
 	Specular.Set(s.X,s.Y,s.Z,1.0f);
 
-	Material=new D3DMATERIAL8;
-	memset(Material,0,sizeof(D3DMATERIAL8));
+	Material=new D3DMATERIAL9;
+	memset(Material,0,sizeof(D3DMATERIAL9));
 	Material->Ambient.r=a.X; Material->Ambient.g=a.Y; Material->Ambient.b=a.Z; 
 	Material->Diffuse.r=d.X; Material->Diffuse.g=d.Y; Material->Diffuse.b=d.Z; 
 	Material->Specular.r=s.X; Material->Specular.g=s.Y; Material->Specular.b=s.Z;

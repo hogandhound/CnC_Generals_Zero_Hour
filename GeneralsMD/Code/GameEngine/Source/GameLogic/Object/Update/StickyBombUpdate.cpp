@@ -155,10 +155,11 @@ void StickyBombUpdate::initStickyBomb( Object *target, const Object *bomber, con
 			target->setStatus( MAKE_OBJECT_STATUS_MASK(OBJECT_STATUS_BOOBY_TRAPPED) );
 		}
 
+#ifdef HAS_BINK
 		AudioEventRTS soundCreateBomb = *(getObject()->getTemplate()->getPerUnitSound("StickyBombCreated"));
 		soundCreateBomb.setPosition( getObject()->getPosition() );
 		TheAudio->addAudioEvent(&soundCreateBomb);
-		
+#endif
 	}	
 }
 
@@ -207,9 +208,11 @@ UpdateSleepTime StickyBombUpdate::update( void )
 		m_nextPingFrame += LOGICFRAMES_PER_SECOND;
 
 		//Play the "ping" sound.
+#ifdef HAS_BINK
 		AudioEventRTS sound = *self->getTemplate()->getPerUnitSound( "UnitBombPing" );
 		sound.setObjectID( self->getID() );
 		TheAudio->addAudioEvent( &sound );
+#endif
 	}
 
 	return UPDATE_SLEEP_NONE;

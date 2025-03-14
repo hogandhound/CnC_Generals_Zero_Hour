@@ -95,6 +95,7 @@ void Shd7BumpDiffClass::Init()
 	// Create vertex shader
 	DWORD vertex_shader_declaration[]=
 	{
+#if 0
 		D3DVSD_STREAM(0),
 		(D3DVSD_REG(0, D3DVSDT_FLOAT3)), // vertex position
 		(D3DVSD_REG(1, D3DVSDT_FLOAT3)), // vertex normal
@@ -104,6 +105,9 @@ void Shd7BumpDiffClass::Init()
 		(D3DVSD_REG(5, D3DVSDT_FLOAT3)), // vertex T basis
 		(D3DVSD_REG(6, D3DVSDT_FLOAT3)), // vertex SxT basis
 		D3DVSD_END()
+#else
+		0
+#endif
 	};
 
 	Pass_0_Vertex_Shader.Create
@@ -133,7 +137,7 @@ void Shd7BumpDiffClass::Shutdown()
 void Shd7BumpDiffClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 {
 	// vertex processing behavior
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_SOFTWAREVERTEXPROCESSING,!Pass_0_Vertex_Shader.Is_Using_Hardware());
+	DX8Wrapper::_Get_D3D_Device8()->SetSoftwareVertexProcessing(!Pass_0_Vertex_Shader.Is_Using_Hardware());
 
 	// fixed function uses pass through by default
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_PASSTHRU);

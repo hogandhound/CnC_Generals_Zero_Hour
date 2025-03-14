@@ -34,9 +34,11 @@
 #include "GameClient/DebugDisplay.h"
 #include "GameClient/Display.h"
 #include "GameClient/GraphDraw.h"
+#include <chrono>
 
 __forceinline void ProfileGetTime(__int64 &t)
 {
+#if 0
   _asm
   {
     mov ecx,[t]
@@ -48,6 +50,9 @@ __forceinline void ProfileGetTime(__int64 &t)
     pop edx
     pop eax
   };
+#else
+	t = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+#endif
 }
 
 #ifdef _INTERNAL

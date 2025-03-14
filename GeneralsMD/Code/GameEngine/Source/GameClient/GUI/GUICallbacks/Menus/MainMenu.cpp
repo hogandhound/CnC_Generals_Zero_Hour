@@ -30,7 +30,7 @@
 // INCLUDES ///////////////////////////////////////////////////////////////////////////////////////
 #include "PreRTS.h"	// This must go first in EVERY cpp file int the GameEngine
 
-#include "GameSpy/ghttp/ghttp.h"
+#include "ghttp/ghttp.h"
 
 #include "Lib/BaseType.h"
 #include "Common/GameEngine.h"
@@ -197,7 +197,7 @@ enum
 	SHOW_FRAMES_LIMIT = 20
 };
 
-static showFade = FALSE;
+static Bool showFade = FALSE;
 static Int dropDown = DROPDOWN_NONE;
 static Int pendingDropDown = DROPDOWN_NONE;
 static AnimateWindowManager *localAnimateWindowManager = NULL;
@@ -214,7 +214,7 @@ static Bool launchChallengeMenu = FALSE;
 static Bool dontAllowTransitions = FALSE;
 
 //Added by Saad
-const /*Int TIME_OUT = 15,*/ CORNER = 10;
+const /*Int TIME_OUT = 15,*/int CORNER = 10;
 void AcceptResolution();
 void DeclineResolution();
 GameWindow *resAcceptMenu = NULL;
@@ -322,7 +322,7 @@ static MessageBoxReturnType checkCDCallback( void *userData )
 	}
 	else
 	{
-		prepareCampaignGame((GameDifficulty)(Int)(Int *)userData);
+		prepareCampaignGame((GameDifficulty)(Int)(intptr_t)(Int *)userData);
 		return MB_RETURN_CLOSE;
 	}
 }
@@ -462,7 +462,8 @@ void MainMenuInit( WindowLayout *layout, void *userData )
 	startGame = FALSE;
 	dropDown = DROPDOWN_NONE;
 	pendingDropDown = DROPDOWN_NONE;
-	for(Int i = 0; i < DROPDOWN_COUNT; ++i)
+	Int i = 0;
+	for(; i < DROPDOWN_COUNT; ++i)
 		dropDownWindows[i] = NULL;
 
 	// get ids for our windows
@@ -765,7 +766,7 @@ void DeclineResolution()
 		TheShell = NULL;
 
 		// create the shell
-		TheShell = MSGNEW("GameClientSubsystem") Shell;
+		TheShell = new Shell;
 		if( TheShell )
 			TheShell->init();
 		

@@ -295,9 +295,11 @@ StateReturnType UnpackingState::onEnter()
 	
 	owner->setModelConditionState( MODELCONDITION_UNPACKING );
 
+#ifdef HAS_BINK
 	AudioEventRTS sound = *owner->getTemplate()->getPerUnitSound( "UnitUnpack" );
 	sound.setObjectID( owner->getID() );
 	TheAudio->addAudioEvent( &sound );
+#endif
 	
 	Real variationFactor = ai->getPackUnpackVariationFactor();
 	Real variation = GameLogicRandomValueReal( 1.0f - variationFactor, 1.0f + variationFactor );
@@ -383,9 +385,11 @@ StateReturnType PackingState::onEnter()
 	owner->clearAndSetModelConditionFlags( MAKE_MODELCONDITION_MASK( MODELCONDITION_FIRING_A ), 
 																				 MAKE_MODELCONDITION_MASK( MODELCONDITION_PACKING ) );
 
+#ifdef HAS_BINK
 	AudioEventRTS sound = *owner->getTemplate()->getPerUnitSound( "UnitPack" );
 	sound.setObjectID( owner->getID() );
 	TheAudio->addAudioEvent( &sound );
+#endif
 	
 	Real variationFactor = ai->getPackUnpackVariationFactor();
 	Real variation = GameLogicRandomValueReal( 1.0f - variationFactor, 1.0f + variationFactor );
@@ -581,9 +585,11 @@ StateReturnType HackInternetState::update()
 					TheInGameUI->addFloatingText( moneyString, &pos, GameMakeColor( 0, 255, 0, 255 ) );
 				}
 
+#ifdef HAS_BINK
 				AudioEventRTS sound = *(owner->getTemplate()->getPerUnitSound( "UnitCashPing" ));
 				sound.setObjectID( owner->getID() );
 				TheAudio->addAudioEvent( &sound );
+#endif
 			}
 		}
 

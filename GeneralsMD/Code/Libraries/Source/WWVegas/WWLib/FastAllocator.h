@@ -363,7 +363,7 @@ class FastAllocatorGeneral
 	};
 public:
 	FastAllocatorGeneral();
-	void* Alloc(unsigned int n);
+	void* Alloc(size_t n);
 	void  Free(void* pAlloc);
   	void* Realloc(void* pAlloc, unsigned int n);
 
@@ -376,7 +376,7 @@ public:
 
 protected:
    FastFixedAllocator allocators[MAX_ALLOC_SIZE/ALLOC_STEP];
-	FastCriticalSectionClass CriticalSections[MAX_ALLOC_SIZE/ALLOC_STEP];
+   CriticalSectionClass CriticalSections[MAX_ALLOC_SIZE/ALLOC_STEP];
 	bool MemoryLeakLogEnabled;
 
 	unsigned AllocatedWithMalloc;
@@ -389,7 +389,7 @@ WWINLINE unsigned FastAllocatorGeneral::Get_Total_Heap_Size()
 {
 	int size=AllocatedWithMalloc;
 	for (int i=0;i<MAX_ALLOC_SIZE/ALLOC_STEP;++i) {
-		FastCriticalSectionClass::LockClass lock(CriticalSections[i]);
+		CriticalSectionClass::LockClass lock(CriticalSections[i]);
 		size+=allocators[i].Get_Heap_Size();
 	}
 	return size;
@@ -399,7 +399,7 @@ WWINLINE unsigned FastAllocatorGeneral::Get_Total_Allocated_Size()
 {
 	int size=AllocatedWithMalloc;
 	for (int i=0;i<MAX_ALLOC_SIZE/ALLOC_STEP;++i) {
-		FastCriticalSectionClass::LockClass lock(CriticalSections[i]);
+		CriticalSectionClass::LockClass lock(CriticalSections[i]);
 		size+=allocators[i].Get_Allocated_Size();
 	}
 	return size;
@@ -409,7 +409,7 @@ WWINLINE unsigned FastAllocatorGeneral::Get_Total_Allocation_Count()
 {
 	int count=AllocatedWithMallocCount;
 	for (int i=0;i<MAX_ALLOC_SIZE/ALLOC_STEP;++i) {
-		FastCriticalSectionClass::LockClass lock(CriticalSections[i]);
+		CriticalSectionClass::LockClass lock(CriticalSections[i]);
 		count+=allocators[i].Get_Allocation_Count();
 	}
 	return count;
@@ -421,7 +421,7 @@ WWINLINE unsigned FastAllocatorGeneral::Get_Total_Allocation_Count()
 //
 // ----------------------------------------------------------------------------
 
-WWINLINE void* FastAllocatorGeneral::Alloc(unsigned int n)
+WWINLINE void* FastAllocatorGeneral::Alloc(size_t n)
 {
    void* pMemory;
 	static int re_entrancy=0;
@@ -436,18 +436,18 @@ WWINLINE void* FastAllocatorGeneral::Alloc(unsigned int n)
 #endif
 
 	if (re_entrancy==1) {
-		ActualMemoryUsage+=n;
+		ActualMemoryUsage+=(uint32_t)n;
 	}
 	if (n<MAX_ALLOC_SIZE) {
-		int index=(n)/ALLOC_STEP;
+		int index=(int)((n)/ALLOC_STEP);
 		{
-			FastCriticalSectionClass::LockClass lock(CriticalSections[index]);
+			CriticalSectionClass::LockClass lock(CriticalSections[index]);
 			pMemory = allocators[index].Alloc();
 		}
 	}
    else {
 		if (re_entrancy==1) {
-			AllocatedWithMalloc+=n;
+			AllocatedWithMalloc+=(uint32_t)n;
 			AllocatedWithMallocCount++;
 		}
       pMemory = ::malloc(n);
@@ -457,7 +457,7 @@ WWINLINE void* FastAllocatorGeneral::Alloc(unsigned int n)
 #endif
 
 	re_entrancy--;
-   *((unsigned int*)pMemory) = n;     //Write modified (augmented by 4) count into first four bytes.
+   *((unsigned int*)pMemory) = (uint32_t)n;     //Write modified (augmented by 4) count into first four bytes.
    return ((unsigned int*)pMemory)+1; //return ptr to bytes after it back to user.
 }
 
@@ -481,7 +481,7 @@ WWINLINE void FastAllocatorGeneral::Free(void* pAlloc)
 
 		if (size<MAX_ALLOC_SIZE) {
 			int index=size/ALLOC_STEP;
-			FastCriticalSectionClass::LockClass lock(CriticalSections[index]);
+			CriticalSectionClass::LockClass lock(CriticalSections[index]);
          allocators[index].Free(n);
 		}
       else {

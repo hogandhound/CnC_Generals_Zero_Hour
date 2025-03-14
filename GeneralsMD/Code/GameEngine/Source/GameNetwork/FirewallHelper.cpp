@@ -55,6 +55,7 @@
 #include "GameNetwork/udp.h"
 #include "GameNetwork/NetworkDefs.h"
 #include "GameNetwork/GameSpy/GSConfig.h"
+#include <ws2tcpip.h>
 
 #ifdef _INTERNAL
 // for occasional debugging...
@@ -102,7 +103,8 @@ FirewallHelperClass::FirewallHelperClass(void)
 	m_lastBehavior = FIREWALL_TYPE_UNKNOWN;
 	m_sourcePortAllocationDelta = 0;
 	m_lastSourcePortAllocationDelta = 0;
-	for (Int i = 0; i < MAX_SPARE_SOCKETS; ++i) {
+	Int i = 0;
+	for (; i < MAX_SPARE_SOCKETS; ++i) {
 		m_spareSockets[i].port = 0;
 		m_messages[i].length = 0;
 		m_mangledPorts[i] = 0;
@@ -446,7 +448,8 @@ UnsignedShort FirewallHelperClass::getManglerResponse(UnsignedShort packetID, In
 
 	sockaddr_in addr;
 
-	for (Int i = 0; i < MAX_SPARE_SOCKETS; ++i) {
+	Int i = 0;
+	for (; i < MAX_SPARE_SOCKETS; ++i) {
 		if (m_spareSockets[i].udp != NULL) {
 			ManglerMessage *message = findEmptyMessage();
 			if (message == NULL) {
@@ -520,14 +523,14 @@ void FirewallHelperClass::writeFirewallBehavior(void)
 
 	char num[16];
 	num[0] = 0;
-	itoa(TheGlobalData->m_firewallBehavior, num, 10);
+	_itoa(TheGlobalData->m_firewallBehavior, num, 10);
 	AsciiString numstr;
 	numstr = num;
 	(pref)["FirewallBehavior"] = numstr;
 
 	TheWritableGlobalData->m_firewallPortAllocationDelta = TheFirewallHelper->getSourcePortAllocationDelta();
 	num[0] = 0;
-	itoa(TheGlobalData->m_firewallPortAllocationDelta, num, 10);
+	_itoa(TheGlobalData->m_firewallPortAllocationDelta, num, 10);
 	numstr = num;
 	(pref)["FirewallPortAllocationDelta"] = numstr;
 
@@ -687,7 +690,10 @@ Bool FirewallHelperClass::detectionBeginUpdate() {
 		*/
 		char temp_name[256];
 		strcpy(temp_name, mangler_name_ptr);
-		struct hostent *host_info = gethostbyname(temp_name);
+		//struct hostent *host_info2 = gethostbyname(temp_name);
+		PADDRINFOA host_info = 0;
+		getaddrinfo(temp_name, 0, 0, &host_info);
+
 
 		if (!host_info) {
 			DEBUG_LOG(("gethostbyname failed! Error code %d\n", WSAGetLastError()));
@@ -699,7 +705,7 @@ Bool FirewallHelperClass::detectionBeginUpdate() {
 		*/
 		Bool found = FALSE;
 		for (Int i=0 ; i<m_numManglers; i++) {
-			if (memcmp(mangler_addresses[i], &host_info->h_addr_list[0][0], 4) == 0) {
+			if (memcmp(mangler_addresses[i], &host_info->ai_addr[0], 4) == 0) {
 				found = TRUE;
 				break;
 			}
@@ -709,11 +715,11 @@ Bool FirewallHelperClass::detectionBeginUpdate() {
 		*/
 		if (!found) {
 			Int m = m_numManglers++;
-			memcpy(&mangler_addresses[m][0], &host_info->h_addr_list[0][0], 4);
-			ntohl((UnsignedInt)mangler_addresses[m]);
+			memcpy(&mangler_addresses[m][0], &host_info->ai_addr[0], 4);
+			ntohl((UnsignedInt)(uintptr_t)mangler_addresses[m]);
 			DEBUG_LOG(("Found mangler address at %d.%d.%d.%d\n", mangler_addresses[m][0], mangler_addresses[m][1], mangler_addresses[m][2], mangler_addresses[m][3]));
 		}
-
+		freeaddrinfo(host_info);
 	} while ((m_numManglers < MAX_NUM_MANGLERS) && ((timeGetTime() - m_timeoutStart) < m_timeoutLength));
 
 
@@ -909,7 +915,8 @@ Bool FirewallHelperClass::detectionTest3Update() {
 		** We should use a non-linear set of source ports so we can detect the NAT32 relative offset
 		** case.
 		*/
-		for (Int i=0 ; i<NUM_TEST_PORTS ; i++) {
+		Int i = 0;
+		for ( ; i<NUM_TEST_PORTS ; i++) {
 			m_sparePorts[i] = getNextTemporarySourcePort(i);
 			if (!openSpareSocket(m_sparePorts[i])) {
 
@@ -956,7 +963,8 @@ Bool FirewallHelperClass::detectionTest3Update() {
 }
 
 Bool FirewallHelperClass::detectionTest3WaitForResponsesUpdate() {
-	for (Int i = 0; i < NUM_TEST_PORTS; ++i) {
+	Int i = 0;
+	for (; i < NUM_TEST_PORTS; ++i) {
 		if (m_mangledPorts[i] == 0) {
 			m_mangledPorts[i] = getManglerResponse(m_packetID + i);
 			if (m_mangledPorts[i] != 0) {
@@ -1525,7 +1533,8 @@ Int FirewallHelperClass::getFirewallRetries(FirewallBehaviorType behavior)
  *  returns TRUE if successful, FALSE otherwise.
  */
 Bool FirewallHelperClass::openSpareSocket(UnsignedShort port) {
-	for (Int i = 0; i < MAX_SPARE_SOCKETS; ++i) {
+	Int i = 0;
+	for (; i < MAX_SPARE_SOCKETS; ++i) {
 		if (m_spareSockets[i].port == 0) {
 			break;
 		}

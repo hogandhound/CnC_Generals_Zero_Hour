@@ -46,7 +46,7 @@ static bool getNextLine(FILE *fp, char *line, int& frame, int& index) {
 	char buf[LINESIZE];
 	while (fgets(buf, LINESIZE-1, fp) != NULL)
 	{
-		int len = strlen(buf);
+		int len = (int)strlen(buf);
 		if (buf[len-1] == '\n')
 			buf[len-1] = '\0';
 		if (sscanf(buf, "%d:%d ", &frame, &index) == 2)
@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
 
 	if (argc != 7)
 	{
-		cout << "Usage: munkeeDiff top.html row.html bottom.html in1.txt in2.txt out.txt" << endl;
+		std::cout << "Usage: munkeeDiff top.html row.html bottom.html in1.txt in2.txt out.txt" << std::endl;
 		header = readInFile("top.html");
 		tableRow = readInFile("row.html");
 		footer = readInFile("bottom.html");
@@ -215,14 +215,14 @@ int main(int argc, char *argv[])
 	ifp[0] = fopen(inFname[0], "rt");
 	if (!ifp[0])
 	{
-		cout << "could not open " << inFname[0] << endl;
+		std::cout << "could not open " << inFname[0] << std::endl;
 		return 1;
 	}
 	ifp[1] = fopen(inFname[1], "rt");
 	if (!ifp[1])
 	{
 		fclose(ifp[0]);
-		cout << "could not open " << inFname[1] << endl;
+		std::cout << "could not open " << inFname[1] << std::endl;
 		return 1;
 	}
 	
@@ -288,7 +288,7 @@ int main(int argc, char *argv[])
 				if (res!=0)
 				{
 					if (!seenLeft || !seenRight)
-						cout << "Seen both on " << lastFrame[0] << ":" << lastIndex[0] << endl;
+						std::cout << "Seen both on " << lastFrame[0] << ":" << lastIndex[0] << std::endl;
 					seenLeft = seenRight = true;
 					outputLine(lastFrame[0], lastIndex[0], linkNum++,
 						"leftDiff", lastLine[0], "rightDiff", lastLine[1]);

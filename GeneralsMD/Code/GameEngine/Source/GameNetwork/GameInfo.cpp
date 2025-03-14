@@ -770,7 +770,8 @@ void GameInfo::adjustSlotsForMap()
 		Int numPlayerSlots = 0;
 
 		// first get the number of occupied slots.
-		for (Int i = 0; i < MAX_SLOTS; ++i)
+		Int i = 0;
+		for (; i < MAX_SLOTS; ++i)
 		{
 			GameSlot *tempSlot = getSlot(i);
 			if (tempSlot->isOccupied())
@@ -1006,7 +1007,7 @@ static Int grabHexInt(const char *s)
 Bool ParseAsciiStringToGameInfo(GameInfo *game, AsciiString options)
 {
 	// Parse game options
-	char *buf = strdup(options.str());
+	char *buf = _strdup(options.str());
 	char *bufPtr = buf;
 	char *strPos, *keyValPair;
 	GameSlot newSlot[MAX_SLOTS];
@@ -1127,7 +1128,7 @@ Bool ParseAsciiStringToGameInfo(GameInfo *game, AsciiString options)
 		{
 			sawSlotlist = true;
 			/// @TODO: Need to read in all the slot info... big mess right now.
-			char *rawSlotBuf = strdup(val.str());
+			char *rawSlotBuf = _strdup(val.str());
 			char *freeMe = NULL;
 			AsciiString rawSlot;
 //			Bool slotsOk = true;	//flag that lets us know whether or not the slot list is good.

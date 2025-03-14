@@ -86,7 +86,7 @@ BOOL MeshMoldOptions::OnInitDialog()
 		Int					i;
 
 		strcpy(dirBuf, ".\\data\\Editor\\Molds");
-		int len = strlen(dirBuf);
+		int len = (int)strlen(dirBuf);
 
 		if (len > 0 && dirBuf[len - 1] != '\\') {
 			dirBuf[len++] = '\\';

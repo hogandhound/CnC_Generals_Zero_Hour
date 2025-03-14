@@ -41,7 +41,7 @@ static void Create_Hash_Name(StringClass& name, const StringClass& thumb_name)
 {
 	name=thumb_name;
 	int len=name.Get_Length();
-	WWASSERT(!stricmp(&name[len-4],".tga") || !stricmp(&name[len-4],".dds"));
+	WWASSERT(!_stricmp(&name[len-4],".tga") || !_stricmp(&name[len-4],".dds"));
 	name[len-4]='\0';
 	_strlwr(name.Peek_Buffer());
 }
@@ -274,7 +274,7 @@ void ThumbnailManagerClass::Create_Thumbnails()
 		mix.Build_Filename_List(list);
 		for (int i=0;i<list.Count();++i) {
 			int len=list[i].Get_Length();
-			if (!stricmp(&list[i][len-4],".tga") || !stricmp(&list[i][len-4],".dds")) {
+			if (!_stricmp(&list[i][len-4],".tga") || !_stricmp(&list[i][len-4],".dds")) {
 				StringClass tex_name(list[i]);
 				if (!Peek_Thumbnail_Instance(tex_name)) {
 					new ThumbnailClass(this,tex_name);
@@ -447,7 +447,7 @@ void ThumbnailManagerClass::Save(bool force)
 	for (ite.First();!ite.Is_Done();ite.Next()) {
 		ThumbnailClass* thumb=ite.Peek_Value();
 		const char* name=thumb->Get_Name();
-		int name_len=strlen(name);
+		int name_len=(int)strlen(name);
 		int width=thumb->Get_Width();
 		int height=thumb->Get_Height();
 		int original_width=thumb->Get_Original_Texture_Width();
@@ -534,7 +534,7 @@ void ThumbnailManagerClass::Add_Thumbnail_Manager(const char* thumbnail_filename
 	// so we'll do pure string compares here...
 
 	// Must NOT add global manager with this function
-	WWASSERT(stricmp(thumbnail_filename,GLOBAL_THUMBNAIL_MANAGER_FILENAME));
+	WWASSERT(_stricmp(thumbnail_filename,GLOBAL_THUMBNAIL_MANAGER_FILENAME));
 
 	ThumbnailManagerClass* man=Peek_Thumbnail_Manager(thumbnail_filename);
 	if (man) return;

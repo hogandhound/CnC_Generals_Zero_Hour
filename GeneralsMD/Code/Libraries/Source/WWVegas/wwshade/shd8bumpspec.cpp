@@ -102,6 +102,7 @@ void Shd8BumpSpecClass::Init(void)
 	// Create vertex shader
 	DWORD vertex_shader_declaration[]=
 	{
+#if 0
 		D3DVSD_STREAM(0),
 		(D3DVSD_REG(0, D3DVSDT_FLOAT3)), // vertex position
 		(D3DVSD_REG(1, D3DVSDT_FLOAT3)), // vertex normal
@@ -111,6 +112,9 @@ void Shd8BumpSpecClass::Init(void)
 		(D3DVSD_REG(5, D3DVSDT_FLOAT3)), // vertex T basis
 		(D3DVSD_REG(6, D3DVSDT_FLOAT3)), // vertex SxT basis
 		D3DVSD_END()
+#else
+		0
+#endif
 	};
 
 	Pixel_Shader.Create

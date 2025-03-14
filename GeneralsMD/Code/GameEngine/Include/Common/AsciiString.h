@@ -363,7 +363,7 @@ inline AsciiString::AsciiString() : m_data(0)
 inline AsciiString::AsciiString(const char* s) : m_data(0)
 {
 	//DEBUG_ASSERTCRASH(isMemoryManagerOfficiallyInited(), ("Initializing AsciiStrings prior to main (ie, as static vars) can cause memory leak reporting problems. Are you sure you want to do this?\n"));
-	int len = (s)?strlen(s):0;
+	int len = (s)? (int)(int)strlen(s):0;
 	if (len)
 	{
 		ensureUniqueBufferOfSize(len + 1, false, s, NULL);
@@ -375,7 +375,7 @@ inline AsciiString::AsciiString(const char* s) : m_data(0)
 inline AsciiString::AsciiString(const AsciiString& stringSrc) : m_data(stringSrc.m_data)
 {
   // don't need this if we're using InterlockedIncrement
-  // FastCriticalSectionClass::LockClass lock(TheAsciiStringCriticalSection);
+  // CriticalSectionClass::LockClass lock(TheAsciiStringCriticalSection);
 	if (m_data)
 		// ++m_data->m_refCount;
     // yes, I know it's not a DWord but we're incrementing so we're safe
@@ -386,7 +386,7 @@ inline AsciiString::AsciiString(const AsciiString& stringSrc) : m_data(stringSrc
 // -----------------------------------------------------
 inline void AsciiString::releaseBuffer()
 {
-  // FastCriticalSectionClass::LockClass lock(TheAsciiStringCriticalSection);
+  // CriticalSectionClass::LockClass lock(TheAsciiStringCriticalSection);
 
 	validate();
 	if (m_data)
@@ -410,7 +410,7 @@ inline AsciiString::~AsciiString()
 inline int AsciiString::getLength() const
 {
 	validate();
-	return m_data ? strlen(peek()) : 0;
+	return m_data ? (int)strlen(peek()) : 0;
 }
 
 // -----------------------------------------------------
@@ -447,7 +447,7 @@ inline const char* AsciiString::str() const
 // -----------------------------------------------------
 inline void AsciiString::set(const AsciiString& stringSrc)
 {
-  //FastCriticalSectionClass::LockClass lock(TheAsciiStringCriticalSection);
+  //CriticalSectionClass::LockClass lock(TheAsciiStringCriticalSection);
 
 	validate();
 	if (&stringSrc != this)
@@ -474,7 +474,7 @@ inline void AsciiString::set(const char* s)
 	validate();
 	if (!m_data || s != peek())
 	{
-		int len = s ? strlen(s) : 0;
+		int len = s ? (int)(int)strlen(s) : 0;
 		if (len)
 		{
 			ensureUniqueBufferOfSize(len + 1, false, s, NULL);
@@ -509,7 +509,7 @@ inline AsciiString& AsciiString::operator=(const char* s)
 inline void AsciiString::concat(const char* s)
 {
 	validate();
-	int addlen = strlen(s);
+	int addlen = (int)(int)strlen(s);
 	if (addlen == 0)
 		return;	// my, that was easy
 

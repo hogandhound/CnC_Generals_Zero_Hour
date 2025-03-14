@@ -103,7 +103,8 @@ class TestSeismicFilter : public SeismicSimulationFilterBase
 
       for ( Real *t = workspace; t < workspaceEnd; ++t ) *t = 0.0f;// clear the workspace
 
-      for (Int x = 0; x < radius; ++x)
+	  Int x = 0;
+      for (; x < radius; ++x)
       {
         for (Int y = 0; y < radius; ++y)
         {
@@ -130,8 +131,8 @@ class TestSeismicFilter : public SeismicSimulationFilterBase
       }
 
       // stuff the values from the workspace into the heightmap's velocities
-      for (x = 0; x < workspaceWidth; ++x)
-        for (Int y = 0; y < workspaceWidth; ++y)
+      for (x = 0; x < (int)workspaceWidth; ++x)
+        for (Int y = 0; y < (int)workspaceWidth; ++y)
     			heightMap->setSeismicZVelocity( centerX - radius + x, centerY - radius + y,  workspace[  x + workspaceWidth * y ]  );
 
       delete [] workspace;
@@ -242,16 +243,16 @@ void W3DTerrainVisual::init( void )
 	TheTerrainRenderObject = m_terrainRenderObject;
 
 	// initialize track drawing system
-	TheTerrainTracksRenderObjClassSystem = NEW TerrainTracksRenderObjClassSystem;
+	TheTerrainTracksRenderObjClassSystem = new TerrainTracksRenderObjClassSystem;
 	TheTerrainTracksRenderObjClassSystem->init(W3DDisplay::m_3DScene);
 
 #ifdef	INCLUDE_GRANNY_IN_BUILD
 	// initialize Granny model drawing system
-	TheGrannyRenderObjSystem = NEW GrannyRenderObjSystem;
+	TheGrannyRenderObjSystem = new GrannyRenderObjSystem;
 #endif
 
 	// initialize object shadow drawing system
-	TheW3DShadowManager = NEW W3DShadowManager;
+	TheW3DShadowManager = new W3DShadowManager;
  	TheW3DShadowManager->init();
 	
 	// create a water plane render object
@@ -673,7 +674,7 @@ Bool W3DTerrainVisual::load( AsciiString filename )
 
 #if defined _DEBUG || defined _INTERNAL
 	// Icon drawing utility object for pathfinding.
-	W3DDebugIcons *icons = NEW W3DDebugIcons;
+	W3DDebugIcons *icons = new W3DDebugIcons;
  	W3DDisplay::m_3DScene->Add_Render_Object( icons );
 	icons->Release_Ref(); // belongs to scene.
 #endif

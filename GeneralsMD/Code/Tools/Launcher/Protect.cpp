@@ -251,7 +251,7 @@ void SendProtectMessage(HANDLE process, DWORD threadID)
 
 		// Decrypt protected data into the memory mapped file
 		BlowfishEngine blowfish;
-		int len = strlen(passKey);
+		int len = (int)strlen(passKey);
 		if (len > BlowfishEngine::MAX_KEY_LENGTH)
 			len = BlowfishEngine::MAX_KEY_LENGTH;
 		blowfish.Submit_Key(passKey, len);

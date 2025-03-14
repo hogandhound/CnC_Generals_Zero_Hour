@@ -405,9 +405,9 @@ void ScoreScreenShutdown( WindowLayout *layout, void *userData )
 
 	// our shutdown is complete
 	TheShell->shutdownComplete( layout );
-
+#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( AHSV_StopTheMusicFade );
-
+#endif
 }
 
 /** Update the ScoreScreen */
@@ -444,11 +444,13 @@ void ScoreScreenUpdate( WindowLayout * layout, void *userData)
 		AsciiString musicName = pt->getScoreScreenMusic();
 		if ( !musicName.isEmpty() )
 		{
+#ifdef HAS_BINK
 			TheAudio->removeAudioEvent( AHSV_StopTheMusicFade );
 			AudioEventRTS event( musicName );
 			event.setShouldFade( TRUE );
 			TheAudio->addAudioEvent( &event );
 			TheAudio->update();//Since GameEngine::update() is suspended until after I am gone... 
+#endif
 		}
 
 
@@ -481,7 +483,7 @@ WindowMsgHandledType ScoreScreenInput( GameWindow *window, UnsignedInt msg,
 					// send a simulated selected event to the parent window of the
 					// back/exit button
 					//
-					if( BitTest( state, KEY_STATE_UP ) )
+					if( BitTestWW( state, KEY_STATE_UP ) )
 					{
 
 						TheWindowManager->winSendSystemMsg( window, GBM_SELECTED, 
@@ -597,7 +599,7 @@ WindowMsgHandledType ScoreScreenSystem( GameWindow *window, UnsignedInt msg,
 				if( controlID == TheNameKeyGenerator->nameToKey(name))
 				{
 					Bool notBuddy = TRUE;
-					Int playerID = (Int)GadgetButtonGetData(TheWindowManager->winGetWindowFromId(NULL,controlID));
+					Int playerID = (Int)(intptr_t)GadgetButtonGetData(TheWindowManager->winGetWindowFromId(NULL,controlID));
 											// request to add a buddy
 					BuddyInfoMap *buddies = TheGameSpyInfo->getBuddyMap();
 					BuddyInfoMap::iterator bIt;
@@ -684,6 +686,7 @@ void initSkirmish( void )
 
 void PlayMovieAndBlock(AsciiString movieTitle)
 {
+#ifdef HAS_BINK
 	VideoStreamInterface *videoStream = TheVideoPlayer->open( movieTitle );
 	if ( videoStream == NULL )
 	{
@@ -749,6 +752,7 @@ void PlayMovieAndBlock(AsciiString movieTitle)
 		videoStream->close();
 		videoStream = NULL;
 	}
+#endif
 
 	setFPMode();
 }
@@ -803,9 +807,11 @@ void finishSinglePlayerInit( void )
 			strHeader.format( TheGameText->fetch("GUI:ChallengeWinText"), TheGameText->fetch(name).str() ) ;
 			displayChallengeWinLoss(imageGeneralDefeated, strHeader, strGeneralDefeated);
 
+#ifdef HAS_BINK
 			AudioEventRTS event( general->getWinSound() );
 			TheAudio->addAudioEvent( &event );
 			TheAudio->update();
+#endif
 		}
 
 		TheCampaignManager->gotoNextMission();
@@ -920,9 +926,11 @@ void finishSinglePlayerInit( void )
 			strHeader.format( TheGameText->fetch("GUI:ChallengeLossText"), TheGameText->fetch(name).str() ) ;
 			displayChallengeWinLoss(imageGeneralVictorious, strHeader, strGeneralVictorious);
 
+#ifdef HAS_BINK
 			AudioEventRTS event( general->getLossSound() );
 			TheAudio->addAudioEvent( &event );
 			TheAudio->update();
+#endif
 		}
 
 		GadgetButtonSetText(buttonContinue, TheGameText->fetch("GUI:Retry"));
@@ -1511,7 +1519,7 @@ void populatePlayerInfo( Player *player, Int pos)
 				AcademyAdviceInfo info;
 				if( player->getAcademyStats()->calculateAcademyAdvice( &info ) )
 				{
-					for( Int i = 0; i < info.numTips; i++ )
+					for( Int i = 0; i < (int)info.numTips; i++ )
 					{
 						GadgetListBoxAddEntryText( listboxAcademyWindowScoreScreen, info.advice[ i ],	GameSpyColor[GSCOLOR_DEFAULT], -1 );
 					}
@@ -1663,7 +1671,8 @@ winName.format("ScoreScreen.wnd:StaticTextScore%d", pos);
 					Bool sawAnyDisconnects = FALSE;
 					Bool anyNonAI = FALSE;
 					Bool anyAI = FALSE;
-					for (Int i=0; i<MAX_SLOTS; ++i)
+					Int i = 0;
+					for (; i<MAX_SLOTS; ++i)
 					{
 						const GameSlot *slot = TheGameInfo->getConstSlot(i);
 						if (slot->isOccupied() && i != localSlotNum )

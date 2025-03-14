@@ -71,7 +71,7 @@ void *DebugReAllocMemory(void *oldPtr, unsigned newSize)
     h=GlobalAlloc(GMEM_FIXED,newSize);
     if (!h)
       DCRASH_RELEASE("Debug mem realloc failed");
-    unsigned oldSize=GlobalSize((HGLOBAL)oldPtr);
+    unsigned oldSize= (unsigned)GlobalSize((HGLOBAL)oldPtr);
     memcpy((void *)h,oldPtr,oldSize<newSize?oldSize:newSize);
     GlobalFree((HGLOBAL)oldPtr);
   }

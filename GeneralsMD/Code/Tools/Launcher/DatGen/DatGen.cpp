@@ -24,12 +24,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "bfish.h"
+#ifdef COPY_PROTECTION
 #include "SafeDisk\CdaPfn.h"
+#endif
 #include <Debug\DebugPrint.h>
 
 void __cdecl doIt(void);
 
+#ifdef COPY_PROTECTION
 CDAPFN_DECLARE_GLOBAL(doIt, CDAPFN_OVERHEAD_L5, CDAPFN_CONSTRAINT_NONE);
+#endif
 
 static void doIt(void)
 {
@@ -143,14 +147,14 @@ static void doIt(void)
 	DebugPrint("Retrieved PassKey: %s\n", passKey);
 
 	const char *plainText = "Play the \"Command & Conquer: Generals\" Multiplayer Test.";
-	int textLen = strlen(plainText);
+	int textLen = (int)strlen(plainText);
 	char cypherText[128];
 
 	DebugPrint("Retrieved PassKey: %s\n", passKey);
 
 	// Decrypt protected data into the memory mapped file
 	BlowfishEngine blowfish;
-	int len = strlen(passKey);
+	int len = (int)strlen(passKey);
 	if (len > BlowfishEngine::MAX_KEY_LENGTH)
 		len = BlowfishEngine::MAX_KEY_LENGTH;
 	blowfish.Submit_Key(passKey, len);
@@ -176,7 +180,9 @@ static void doIt(void)
 		fclose(fp);
 	}
 
+#ifdef COPY_PROTECTION
 	CDAPFN_ENDMARK(doIt);
+#endif
 }
 
 int APIENTRY WinMain(HINSTANCE hInstance,

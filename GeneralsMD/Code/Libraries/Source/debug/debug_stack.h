@@ -32,6 +32,8 @@
 #ifndef DEBUG_STACK_H // Include guard
 #define DEBUG_STACK_H
 
+#include <stdint.h>
+
 /// \brief stack walker class (singleton)
 class DebugStackwalk
 {
@@ -113,7 +115,7 @@ public:
       \param buf return buffer
       \param bufSize size of return buffer, minimum is 64 bytes (256 recommended)
     */
-    static void GetSymbol(unsigned addr, char *buf, unsigned bufSize);
+    static void GetSymbol(uintptr_t addr, char *buf, unsigned bufSize);
     
     /**
       \brief Determines symbol for given address.
@@ -130,7 +132,7 @@ public:
       \param line line number, may be NULL
       \param relLine relative address within line, may be NULL
     */
-    static void GetSymbol(unsigned addr,
+    static void GetSymbol(uintptr_t addr,
                           char *bufMod, unsigned sizeMod, unsigned *relMod,
                           char *bufSym, unsigned sizeSym, unsigned *relSym,
                           char *bufFile, unsigned sizeFile, unsigned *line, unsigned *relLine);
@@ -157,7 +159,7 @@ public:
     \param ctx processor context, if NULL then use current address
     \return number of addresses found
   */
-  static int StackWalk(Signature &sig, struct _CONTEXT *ctx=0);
+  static int StackWalkWW(Signature &sig, struct _CONTEXT *ctx=0);
 };
 
 /**

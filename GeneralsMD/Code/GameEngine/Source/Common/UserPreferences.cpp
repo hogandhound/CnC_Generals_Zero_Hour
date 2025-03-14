@@ -565,7 +565,7 @@ Bool CustomMatchPreferences::usesSystemMapDir(void)
 	if (it == end())
 		return TRUE;
 
-	if (stricmp(it->second.str(), "1") == 0) {
+	if (_stricmp(it->second.str(), "1") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -585,7 +585,7 @@ Bool CustomMatchPreferences::usesLongGameList(void)
 	if (it == end())
 		return FALSE;
 
-	if (stricmp(it->second.str(), "1") == 0) {
+	if (_stricmp(it->second.str(), "1") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -604,7 +604,7 @@ Bool CustomMatchPreferences::allowsObservers(void)
 	if (it == end())
 		return TRUE;
 
-	if (stricmp(it->second.str(), "1") == 0) {
+	if (_stricmp(it->second.str(), "1") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -630,7 +630,7 @@ Bool CustomMatchPreferences::getDisallowAsianText( void )
 			return TRUE;
 	}
 
-	if (stricmp(it->second.str(), "1") == 0) {
+	if (_stricmp(it->second.str(), "1") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -650,7 +650,7 @@ Bool CustomMatchPreferences::getDisallowNonAsianText( void )
 	if (it == end())
 		return FALSE;
 
-	if (stricmp(it->second.str(), "1") == 0) {
+	if (_stricmp(it->second.str(), "1") == 0) {
 		return TRUE;
 	}
 	return FALSE;
@@ -904,7 +904,8 @@ Bool LadderPreferences::loadProfile( Int profileID )
 			continue;
 
 		p.port = atoi( ptr + 1 );
-		for (Int i=0; i<strlen(ptr); ++i)
+		Int i = 0;
+		for (; i<strlen(ptr); ++i)
 		{
 			ladName.removeLastChar();
 		}
@@ -915,7 +916,7 @@ Bool LadderPreferences::loadProfile( Int profileID )
 		if (!ptr)
 			continue;
 
-		p.lastPlayDate = atoi( ptr + 1 );
+		p.lastPlayDate = (time_t)atoi( ptr + 1 );
 		for (i=0; i<strlen(ptr); ++i)
 		{
 			ladData.removeLastChar();

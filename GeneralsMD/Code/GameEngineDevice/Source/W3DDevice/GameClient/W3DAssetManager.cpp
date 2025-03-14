@@ -153,7 +153,7 @@ RenderObjClass * W3DPrototypeClass::Create(void)
 W3DAssetManager::W3DAssetManager(void)
 {
 #ifdef	INCLUDE_GRANNY_IN_BUILD
-	m_GrannyAnimManager = NEW GrannyAnimManagerClass;
+	m_GrannyAnimManager = new GrannyAnimManagerClass;
 #endif
 }
 
@@ -440,7 +440,8 @@ static void remapTexture16Bit(Int dx, Int dy, Int pitch, SurfaceClass::SurfaceDe
 	Vector3 rgb,v_color((float)((color>>16)&0xff)/255.0f/255.0f,(float)((color>>8)&0xff)/255.0f/255.0f,(float)(color&0xff)/255.0f/255.0f);
 
 	//Generate a new color gradient palette based on reference color
-	for (Int y=0; y<TEAM_COLOR_PALETTE_SIZE; y++)
+	Int y = 0;
+	for (; y<TEAM_COLOR_PALETTE_SIZE; y++)
 	{	
 		rgb.X=(Real)houseColorScale[y]*v_color.X;
 		rgb.Y=(Real)houseColorScale[y]*v_color.Y;
@@ -543,7 +544,8 @@ static void remapTexture32Bit(Int dx, Int dy, Int pitch, SurfaceClass::SurfaceDe
 	Vector3 rgb,v_color((float)((color>>16)&0xff)/255.0f/255.0f,(float)((color>>8)&0xff)/255.0f/255.0f,(float)(color&0xff)/255.0f/255.0f);
 
 	//Generate a new color gradient palette based on reference color
-	for (Int y=0; y<TEAM_COLOR_PALETTE_SIZE; y++)
+	Int y = 0;
+	for (; y<TEAM_COLOR_PALETTE_SIZE; y++)
 	{	
 		rgb.X=(Real)houseColorScale[y]*v_color.X;
 		rgb.Y=(Real)houseColorScale[y]*v_color.Y;
@@ -733,7 +735,7 @@ RenderObjClass * W3DAssetManager::Create_Render_Obj(
 	Bool isGranny = false;
 	char *pext=strrchr(name,'.');	//find file extension
 	if (pext)
-		isGranny=(strnicmp(pext,".GR2",4) == 0);
+		isGranny=(_strnicmp(pext,".GR2",4) == 0);
 #endif
 	Bool reallyscale = (WWMath::Fabs(scale - ident_scale) > scale_epsilon);
 	Bool reallycolor = (color & 0xFFFFFF) != 0;	//black is not a valid color and assumes no custom coloring.
@@ -796,10 +798,10 @@ RenderObjClass * W3DAssetManager::Create_Render_Obj(
 	{	
 		// If we didn't find one, try to load on demand
 		char filename [MAX_PATH];
-		char *mesh_name = ::strchr (name, '.');
+		const char *mesh_name = ::strchr (name, '.');
 		if (mesh_name != NULL) 
 		{
-			::lstrcpyn(filename, name, ((int)mesh_name) - ((int)name) + 1);
+			::lstrcpyn(filename, name, ((intptr_t)mesh_name) - ((intptr_t)name) + 1);
 #ifdef	INCLUDE_GRANNY_IN_BUILD
 			if (isGranny)
 				::lstrcat(filename, ".gr2");
@@ -1005,7 +1007,7 @@ void W3DAssetManager::Recolor_Vertex_Material(VertexMaterialClass *vmat, const i
 
 #ifdef DUMP_PERF_STATS
 __int64 Total_Load_3D_Assets=0;
-static Load_3D_Asset_Recursions=0;
+static int64_t Load_3D_Asset_Recursions=0;
 #endif
 //---------------------------------------------------------------------
 bool W3DAssetManager::Load_3D_Assets( const char * filename )
@@ -1021,7 +1023,7 @@ bool W3DAssetManager::Load_3D_Assets( const char * filename )
 	Bool isGranny = false;
 	char *pext=strrchr(filename,'.');	//find file extension
 	if (pext)
-		isGranny=(strnicmp(pext,".GR2",4) == 0);
+		isGranny=(_strnicmp(pext,".GR2",4) == 0);
 	if (!isGranny)
 #endif
 
@@ -1107,7 +1109,7 @@ bool W3DAssetManager::Load_3D_Assets( const char * filename )
 
 #ifdef DUMP_PERF_STATS
 __int64 Total_Get_HAnim_Time=0;
-static HAnim_Recursions=0;
+static int HAnim_Recursions=0;
 #endif
 //---------------------------------------------------------------------
 HAnimClass *	W3DAssetManager::Get_HAnim(const char * name)
@@ -1124,7 +1126,7 @@ HAnimClass *	W3DAssetManager::Get_HAnim(const char * name)
 	Bool isGranny = false;
 	char *pext=strrchr(name,'.');	//find file extension
 	if (pext)
-		isGranny=(strnicmp(pext,".GR2",4) == 0);
+		isGranny=(_strnicmp(pext,".GR2",4) == 0);
 	if (!isGranny)
 #endif
 	{
@@ -1449,7 +1451,7 @@ RenderObjClass * W3DAssetManager::Create_Render_Obj(const char * name,float scal
 #ifdef	INCLUDE_GRANNY_IN_BUILD
 	char *pext=strrchr(name,'.');	//find file extension
 	if (pext)
-		isGranny=(strnicmp(pext,".GR2",4) == 0);
+		isGranny=(_strnicmp(pext,".GR2",4) == 0);
 #endif
 	Bool reallyscale = (WWMath::Fabs(scale - ident_scale) > scale_epsilon);
 	Bool reallyhsv_shift = (WWMath::Fabs(hsv_shift.X - ident_HSV.X) > H_epsilon ||
@@ -1539,7 +1541,7 @@ RenderObjClass * W3DAssetManager::Create_Render_Obj(const char * name,float scal
 		return rendobj;
 	}
 
-	W3DPrototypeClass *w3dproto=NEW W3DPrototypeClass(rendobj,newname);
+	W3DPrototypeClass *w3dproto=new W3DPrototypeClass(rendobj,newname);
 	rendobj->Release_Ref();
 	Add_Prototype(w3dproto);
 

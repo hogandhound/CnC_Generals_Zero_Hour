@@ -97,7 +97,7 @@ static UnsignedInt calcCRC( AsciiString dirName, AsciiString fname )
 	char	filenameBuf[_MAX_PATH];
 	int length = 0;
 	strcpy(tempBuf, fname.str());
-	length = strlen( tempBuf );
+	length = (int)strlen( tempBuf );
 	if( length >= 4 )
 	{
 		memset( filenameBuf, '\0', _MAX_PATH);
@@ -244,7 +244,7 @@ static Bool loadMap( AsciiString filename )
 
 	strcpy(tempBuf, filename.str());
 
-	length = strlen( tempBuf );
+	length = (int)strlen( tempBuf );
 	if( length >= 4 )
 	{
 		memset( filenameBuf, '\0', _MAX_PATH);
@@ -950,7 +950,7 @@ typedef MapDisplayToFileNameList::iterator MapDisplayToFileNameListIter;
 
 				if (numColumns > 1)
 				{
-					GadgetListBoxSetItemData( listbox, (void *)imageItemData, index, 1 );
+					GadgetListBoxSetItemData( listbox, (void *)(uintptr_t)imageItemData, index, 1 );
 				}
 			}
 			++tempit;
@@ -1243,7 +1243,7 @@ Image *getMapPreviewImage( AsciiString mapName )
 	mapPreviewImage->setStatus(IMAGE_STATUS_RAW_TEXTURE);
 // allocate our terrain texture
 	TextureClass * texture = new TextureClass( size.x, size.y, 
-																			 WW3D_FORMAT_X8R8G8B8, TextureClass::MIP_LEVELS_1 );
+																			 WW3D_FORMAT_X8R8G8B8, MipCountType::MIP_LEVELS_1 );
 	uv.lo.x = 0.0f;
 	uv.lo.y = 1.0f;
 	uv.hi.x = 1.0f;

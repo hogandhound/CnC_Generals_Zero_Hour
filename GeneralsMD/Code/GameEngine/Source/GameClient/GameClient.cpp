@@ -214,11 +214,13 @@ GameClient::~GameClient()
 	delete TheLanguageFilter;
 	TheLanguageFilter = NULL;
 
+#ifdef HAS_BINK
 	delete TheVideoPlayer;
 	TheVideoPlayer = NULL;
+#endif
 
 	// destroy all translators
-	for( Int i = 0; i < m_numTranslators; i++ )
+	for( uint32_t i = 0; i < m_numTranslators; i++ )
 		TheMessageStream->removeTranslator( m_translators[ i ] );	
 	m_numTranslators = 0;
 	m_commandTranslator = NULL;
@@ -276,11 +278,11 @@ void GameClient::init( void )
 	TheKeyboard->setName("TheKeyboard");
 
 	// allocate and load image collection for the GUI and just load the 256x256 ones for now
-	TheMappedImageCollection = MSGNEW("GameClientSubsystem") ImageCollection;
+	TheMappedImageCollection = new ImageCollection;
 	TheMappedImageCollection->load( 512 );
 
 	// now that we have all the images loaded ... load any animation definitions from those images
-	TheAnim2DCollection = MSGNEW("GameClientSubsystem") Anim2DCollection;
+	TheAnim2DCollection = new Anim2DCollection;
 	TheAnim2DCollection->init();
  	TheAnim2DCollection->setName("TheAnim2DCollection");
 
@@ -294,17 +296,17 @@ void GameClient::init( void )
 		//
 
 		// since we only allocate one of each, don't bother pooling 'em
-		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( MSGNEW("GameClientSubsystem") WindowTranslator,     10 );
-		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( MSGNEW("GameClientSubsystem") MetaEventTranslator,	20 );
-		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( MSGNEW("GameClientSubsystem") HotKeyTranslator,	25 );
-		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( MSGNEW("GameClientSubsystem") PlaceEventTranslator,	30 );
-		m_translators[ m_numTranslators++ ] = TheMessageStream->attachTranslator( MSGNEW("GameClientSubsystem") GUICommandTranslator, 40 );
-		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( MSGNEW("GameClientSubsystem") SelectionTranslator,	50 );
-		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( MSGNEW("GameClientSubsystem") LookAtTranslator,			60 );
-		m_translators[ m_numTranslators ] =	TheMessageStream->attachTranslator( MSGNEW("GameClientSubsystem") CommandTranslator,		70 );
+		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( new WindowTranslator,     10 );
+		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( new MetaEventTranslator,	20 );
+		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( new HotKeyTranslator,	25 );
+		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( new PlaceEventTranslator,	30 );
+		m_translators[ m_numTranslators++ ] = TheMessageStream->attachTranslator( new GUICommandTranslator, 40 );
+		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( new SelectionTranslator,	50 );
+		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( new LookAtTranslator,			60 );
+		m_translators[ m_numTranslators ] =	TheMessageStream->attachTranslator( new CommandTranslator,		70 );
 		// we keep a pointer to the command translator because it's useful
 		m_commandTranslator = (CommandTranslator *)TheMessageStream->findTranslator( m_translators[ m_numTranslators++ ] );
-		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( MSGNEW("GameClientSubsystem") HintSpyTranslator,		100 );
+		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( new HintSpyTranslator,		100 );
 
 		//
 		// the client message translator should probably remain as the last reaction of the
@@ -312,7 +314,7 @@ void GameClient::init( void )
 		// lets all systems in the client give events that can be processed by the
 		// client message translator
 		//
-		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( MSGNEW("GameClientSubsystem") GameClientMessageDispatcher, 999999999 );
+		m_translators[ m_numTranslators++ ] =	TheMessageStream->attachTranslator( new GameClientMessageDispatcher, 999999999 );
 
 	}  
 
@@ -334,7 +336,7 @@ void GameClient::init( void )
  		TheDisplay->setName("TheDisplay");
 	}
 	
-	TheHeaderTemplateManager = MSGNEW("GameClientSubsystem") HeaderTemplateManager;
+	TheHeaderTemplateManager = new HeaderTemplateManager;
 	if(TheHeaderTemplateManager){
 		TheHeaderTemplateManager->init();
 	}
@@ -359,7 +361,7 @@ void GameClient::init( void )
 	}
 
 	// create the shell
-	TheShell = MSGNEW("GameClientSubsystem") Shell;
+	TheShell = new Shell;
 	if( TheShell ) {
 		TheShell->init();
  		TheShell->setName("TheShell");
@@ -377,7 +379,7 @@ void GameClient::init( void )
  		TheChallengeGenerals->init();
  	}
 
-	TheHotKeyManager = MSGNEW("GameClientSubsystem") HotKeyManager;
+	TheHotKeyManager = new HotKeyManager;
 	if( TheHotKeyManager ) {
 		TheHotKeyManager->init();
  		TheHotKeyManager->setName("TheHotKeyManager");
@@ -391,7 +393,7 @@ void GameClient::init( void )
 	}
 
 	// allocate the ray effects manager
-	TheRayEffects = MSGNEW("GameClientSubsystem") RayEffectSystem;
+	TheRayEffects = new RayEffectSystem;
 	if( TheRayEffects )	{
 		TheRayEffects->init();
  		TheRayEffects->setName("TheRayEffects");
@@ -408,12 +410,14 @@ void GameClient::init( void )
 	}  // end if
 
 	// create the video player
+#ifdef HAS_BINK
 	TheVideoPlayer = createVideoPlayer();
 	if ( TheVideoPlayer )
 	{
 		TheVideoPlayer->init();
  		TheVideoPlayer->setName("TheVideoPlayer");
 	}
+#endif
 
 	// create the language filter.
 	TheLanguageFilter = createLanguageFilter();
@@ -423,10 +427,10 @@ void GameClient::init( void )
  		TheLanguageFilter->setName("TheLanguageFilter");
 	}
 
-	TheCampaignManager = MSGNEW("GameClientSubsystem") CampaignManager;
+	TheCampaignManager = new CampaignManager;
 	TheCampaignManager->init();
 
-	TheEva = MSGNEW("GameClientSubsystem") Eva;
+	TheEva = new Eva;
 	TheEva->init();
  	TheEva->setName("TheEva");
 
@@ -451,7 +455,7 @@ void GameClient::reset( void )
 {
 	Drawable *draw, *nextDraw;
 //	m_drawableHash.clear();
-//	m_drawableHash.resize(DRAWABLE_HASH_SIZE);
+	//m_drawableHash.resize(DRAWABLE_HASH_SIZE);
 
 	m_drawableVector.clear();
 	m_drawableVector.resize(DRAWABLE_HASH_SIZE, NULL);
@@ -470,7 +474,9 @@ void GameClient::reset( void )
 	TheDisplay->reset();
 	TheTerrainVisual->reset();
 	TheRayEffects->reset();
+#ifdef HAS_BINK
 	TheVideoPlayer->reset();
+#endif
 	TheEva->reset();
 	if (TheSnowManager)
 		TheSnowManager->reset();
@@ -555,7 +561,7 @@ void GameClient::update( void )
 				{				
 					legal->hide(FALSE);
 					legal->bringForward();
-					Int beginTime = timeGetTime();
+					uint32_t beginTime = timeGetTime();
 					while(beginTime + 4000 > timeGetTime() )
 					{
 						TheWindowManager->update();
@@ -637,10 +643,12 @@ void GameClient::update( void )
 		TheWindowManager->UPDATE();
 	}
 
+#ifdef HAS_BINK
 	// update the video player
 	{
 		TheVideoPlayer->UPDATE();
 	}
+#endif
 
 	Bool freezeTime = TheTacticalView->isTimeFrozen() && !TheTacticalView->isCameraMovementFinished();
 	freezeTime = freezeTime || TheScriptEngine->isTimeFrozenDebug();
@@ -1120,7 +1128,8 @@ void GameClient::preloadAssets( TimeOfDay timeOfDay )
 
 	GlobalMemoryStatus(&before);
 	extern std::vector<AsciiString>	debrisModelNamesGlobalHack;
-	for (Int i=0; i<debrisModelNamesGlobalHack.size(); ++i)
+	Int i = 0;
+	for (; i<debrisModelNamesGlobalHack.size(); ++i)
 	{
 		TheDisplay->preloadModelAssets(debrisModelNamesGlobalHack[i]);
 	}
@@ -1558,7 +1567,7 @@ void GameClient::xfer( Xfer *xfer )
 		if( xfer->getXferMode() == XFER_SAVE )
 		{
 			BriefingList *bList = GetBriefingTextList();
-			Int numEntries = bList->size();
+			Int numEntries = (int)bList->size();
 			xfer->xferInt(&numEntries);
 			DEBUG_LOG(("Saving %d briefing lines\n", numEntries));
 			for (BriefingList::const_iterator bIt = bList->begin(); bIt != bList->end(); ++bIt)

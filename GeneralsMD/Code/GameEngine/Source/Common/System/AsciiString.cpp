@@ -140,7 +140,7 @@ void AsciiString::ensureUniqueBufferOfSize(int numCharsNeeded, Bool preserveData
 	int actualBytes = TheDynamicMemoryAllocator->getActualAllocationSize(minBytes);
 	AsciiStringData* newData = (AsciiStringData*)TheDynamicMemoryAllocator->allocateBytesDoNotZero(actualBytes, "STR_AsciiString::ensureUniqueBufferOfSize");
 	newData->m_refCount = 1;
-	newData->m_numCharsAllocated = (actualBytes - sizeof(AsciiStringData))/sizeof(char);
+	newData->m_numCharsAllocated = (unsigned short)(actualBytes - sizeof(AsciiStringData))/sizeof(char);
 #if defined(_DEBUG) || defined(_INTERNAL)
 	newData->m_debugptr = newData->peek();	// just makes it easier to read in the debugger
 #endif
@@ -205,7 +205,7 @@ void AsciiString::trim()
 		if (m_data) // another check, because the previous set() could erase m_data
 		{
 			//	Clip trailing white space from the string.
-			int len = strlen(peek());
+			int len = (int)(int)strlen(peek());
 			for (int index = len-1; index >= 0; index--)
 			{
 				if (isspace(getCharAt(index)))
@@ -248,7 +248,7 @@ void AsciiString::removeLastChar()
 	validate();
 	if (m_data)
 	{
-		int len = strlen(peek());
+		int len = (int)(int)strlen(peek());
 		if (len > 0)
 		{
 			ensureUniqueBufferOfSize(len+1, true, NULL, NULL);
@@ -309,7 +309,7 @@ Bool AsciiString::startsWith(const char* p) const
 		return true;	// everything starts with the empty string
 
 	int lenThis = getLength();
-	int lenThat = strlen(p);
+	int lenThat = (int)(int)strlen(p);
 	if (lenThis < lenThat)
 		return false;	// that must be smaller than this
 
@@ -323,11 +323,11 @@ Bool AsciiString::startsWithNoCase(const char* p) const
 		return true;	// everything starts with the empty string
 
 	int lenThis = getLength();
-	int lenThat = strlen(p);
+	int lenThat = (int)(int)strlen(p);
 	if (lenThis < lenThat)
 		return false;	// that must be smaller than this
 
-	return strnicmp(peek(), p, lenThat) == 0;
+	return _strnicmp(peek(), p, lenThat) == 0;
 }
 
 // -----------------------------------------------------
@@ -337,7 +337,7 @@ Bool AsciiString::endsWith(const char* p) const
 		return true;	// everything ends with the empty string
 
 	int lenThis = getLength();
-	int lenThat = strlen(p);
+	int lenThat = (int)(int)strlen(p);
 	if (lenThis < lenThat)
 		return false;	// that must be smaller than this
 
@@ -351,17 +351,17 @@ Bool AsciiString::endsWithNoCase(const char* p) const
 		return true;	// everything ends with the empty string
 
 	int lenThis = getLength();
-	int lenThat = strlen(p);
+	int lenThat = (int)(int)strlen(p);
 	if (lenThis < lenThat)
 		return false;	// that must be smaller than this
 
-	return strnicmp(peek() + lenThis - lenThat, p, lenThat) == 0;
+	return _strnicmp(peek() + lenThis - lenThat, p, lenThat) == 0;
 }
 
 //-----------------------------------------------------------------------------
 Bool AsciiString::isNone() const
 {
-	return m_data && stricmp(peek(), "None") == 0;
+	return m_data && _stricmp(peek(), "None") == 0;
 }
 
 //-----------------------------------------------------------------------------

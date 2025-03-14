@@ -285,7 +285,7 @@ BOOL ObjectOptions::OnInitDialog()
 		Int					i;
 
 		strcpy(dirBuf, TEST_W3D_DIR_PATH);
-		int len = strlen(dirBuf);
+		int len = (int)strlen(dirBuf);
 
 		if (len > 0 && dirBuf[len - 1] != '\\' && dirBuf[len-1] != '/') {
 			dirBuf[len++] = '\\';

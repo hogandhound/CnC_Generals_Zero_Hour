@@ -513,7 +513,7 @@ Int PeerThreadClass::findServer( SBServer server )
 	return addServerToMap(server);
 }
 
-static enum CallbackType
+enum CallbackType
 {
 	CALLBACK_CONNECT,
 	CALLBACK_ERROR,
@@ -523,7 +523,16 @@ static enum CallbackType
 	CALLBACK_MAX
 };
 
-void connectCallbackWrapper( PEER peer, PEERBool success, void *param )
+/*
+typedef void (* peerConnectCallback)
+(
+	PEER peer,  // The peer object.
+	PEERBool success,  // PEERTrue if success, PEERFalse if failure.
+	int failureReason,  // If failure, the reason for it (PEER_DISCONNECTED, etc.)
+	void * param  // User-data.
+);
+*/
+void connectCallbackWrapper( PEER peer, PEERBool success, int failureReason, void *param )
 {
 #ifdef SERVER_DEBUGGING
 	DEBUG_LOG(("In connectCallbackWrapper()\n"));
@@ -534,8 +543,22 @@ void connectCallbackWrapper( PEER peer, PEERBool success, void *param )
 		((PeerThreadClass *)param)->connectCallback( peer, success );
 	}
 }
+/*typedef void (* peerNickErrorCallback)
+(
+	PEER peer,  // The peer object.
+	int type,  // The type of nick error (PEER_IN_USE, PEER_INVALID, etc.)
+	const gsi_char * nick,  // The bad nick.
+	int numSuggestedNicks,  // The number of suggested nicks.
+	const gsi_char ** suggestedNicks,  // The array of nicks.
+	void * param  // User-data.
+);
 
-void nickErrorCallbackWrapper( PEER peer, Int type, const char *nick, void *param )
+// This connects a peer object to a chat server.
+// Call peerDisconnect() to close the connection.
+// A title must be set with peerSetTitle before connecting.
+///////////////////////////////////////////////////////////
+*/
+void nickErrorCallbackWrapper( PEER peer, Int type, const char *nick, int numSuggestedNicks, const gsi_char** suggestedNicks, void *param )
 {
 	if (param != NULL)
 	{
@@ -662,7 +685,7 @@ static void playerFlagsChangedCallback(PEER peer, RoomType roomType, const char 
 static void listingGamesCallback(PEER peer, PEERBool success, const char * name, SBServer server, PEERBool staging, int msg, Int percentListed, void * param);
 static void roomUTMCallback(PEER peer, RoomType roomType, const char * nick, const char * command, const char * parameters, PEERBool authenticated, void * param);
 static void playerUTMCallback(PEER peer, const char * nick, const char * command, const char * parameters, PEERBool authenticated, void * param);
-static void gameStartedCallback(PEER peer, UnsignedInt IP, const char *message, void *param);
+static void gameStartedCallback(PEER peer, SBServer IP, const char *message, void *param);
 static void globalKeyChangedCallback(PEER peer, const char *nick, const char *key, const char *val, void *param);
 static void roomKeyChangedCallback(PEER peer, RoomType roomType, const char *nick, const char *key, const char *val, void *param);
 
@@ -1168,7 +1191,7 @@ static UnsignedInt localIP = 0;
 void PeerThreadClass::Thread_Function()
 {
 	try {
-	_set_se_translator( DumpExceptionInfo ); // Hook that allows stack trace.
+	//_set_se_translator( DumpExceptionInfo ); // Hook that allows stack trace.
 
 	PEER peer;
 
@@ -1335,7 +1358,8 @@ void PeerThreadClass::Thread_Function()
 		}
 		IPlist = IPlist->getNext();
 	}
-	chatSetLocalIP(preferredIP);
+	//TODO: Can't find this function
+	//chatSetLocalIP(preferredIP);
 
 	UnsignedInt preferredQRPort = 0;
 	AsciiString selectedQRPort = pref["GameSpyQRPort"];
@@ -1831,9 +1855,10 @@ void PeerThreadClass::handleQMMatch(PEER peer, Int mapIndex, Int seed,
 		m_qmStatus = QM_MATCHED;
 		peerLeaveRoom(peer, GroupRoom, "");
 
-		for (Int i=0; i<MAX_SLOTS; ++i)
+		Int i = 0;
+		for (; i<MAX_SLOTS; ++i)
 		{
-			if (playerName[i] && stricmp(playerName[i], m_loginName.c_str()))
+			if (playerName[i] && _stricmp(playerName[i], m_loginName.c_str()))
 			{
 				peerMessagePlayer( peer, playerName[i], "We're matched!", NormalMessage );
 			}
@@ -2232,7 +2257,7 @@ static void listGroupRoomsCallback(PEER peer, PEERBool success,
 		}
 		else
 		{
-			resp.groupRoomName.empty();
+			//resp.groupRoomName.empty();
 		}
 		TheGameSpyPeerMessageQueue->addResponse(resp);
 #ifdef SERVER_DEBUGGING
@@ -2266,7 +2291,9 @@ void PeerThreadClass::connectCallback( PEER peer, PEERBool success )
 	resp.player.profileID = m_profileID;
 	resp.nick = m_loginName;
 	GetLocalChatConnectionAddress("peerchat.gamespy.com", 6667, localIP);
-	chatSetLocalIP(localIP);
+
+	//TODO: Can't find this function
+	//chatSetLocalIP(localIP);
 	resp.player.internalIP = ntohl(localIP);
 	resp.player.externalIP = ntohl(peerGetLocalIP(peer));
 	TheGameSpyPeerMessageQueue->addResponse(resp);
@@ -2294,7 +2321,7 @@ void PeerThreadClass::nickErrorCallback( PEER peer, Int type, const char *nick )
 {
 	if(type == PEER_IN_USE)
 	{
-		Int len = strlen(nick);
+		Int len = (int)strlen(nick);
 		std::string nickStr = nick;
 		Int newVal = 0;
 		if (nick[len-1] == '}' && nick[len-3] == '{' && isdigit(nick[len-2]))
@@ -2421,7 +2448,20 @@ void roomMessageCallback(PEER peer, RoomType roomType, const char * nick, const 
 	}
 }
 
-void gameStartedCallback( PEER peer, UnsignedInt IP, const char *message, void *param )
+/*
+typedef void (* peerGameStartedCallback)
+(
+	PEER peer,  // The peer object.
+	SBServer server,  // A server object representing this host.
+	const gsi_char * message,  // A message that was passed into peerStartGame().
+	void * param  // User-data.
+);
+*/
+void gameStartedCallback(PEER peer,  // The peer object.
+	SBServer server,  // A server object representing this host.
+	const gsi_char* message,  // A message that was passed into peerStartGame().
+	void* param  // User-data. 
+)
 {
 	PeerResponse resp;
 	resp.peerResponseType = PeerResponse::PEERRESPONSE_GAMESTART;
@@ -2703,7 +2743,7 @@ void playerLeftCallback(PEER peer, RoomType roomType, const char * nick, const c
 //	DEBUG_ASSERTCRASH(t, ("No Peer thread!"));
 	if (t->getQMStatus() != QM_IDLE && t->getQMStatus() != QM_STOPPED)
 	{
-		if (!stricmp(t->getQMBotName().c_str(), nick))
+		if (!_stricmp(t->getQMBotName().c_str(), nick))
 		{
 			// matchbot left - bail
 			PeerResponse resp;

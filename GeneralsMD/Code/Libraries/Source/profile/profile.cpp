@@ -71,7 +71,7 @@ void *ProfileReAllocMemory(void *oldPtr, unsigned newSize)
     h=GlobalAlloc(GMEM_FIXED,newSize);
     if (!h)
       DCRASH_RELEASE("Debug mem realloc failed");
-    unsigned oldSize=GlobalSize((HGLOBAL)oldPtr);
+    unsigned oldSize= (uint32_t)GlobalSize((HGLOBAL)oldPtr);
     memcpy((void *)h,oldPtr,oldSize<newSize?oldSize:newSize);
     GlobalFree((HGLOBAL)oldPtr);
   }
@@ -165,14 +165,15 @@ void Profile::StartRange(const char *range)
     range="frame";
 
   // known name?
-  for (unsigned k=0;k<m_names;++k)
+  unsigned k = 0;
+  for (;k<m_names;++k)
     if (!strcmp(range,m_frameNames[k].name))
       break;
   if (k==m_names)
   {
     // no, must add to list
     m_frameNames=(FrameName *)ProfileReAllocMemory(m_frameNames,(++m_names)*sizeof(FrameName));
-    m_frameNames[k].name=(char *)ProfileAllocMemory(strlen(range)+1);
+    m_frameNames[k].name=(char *)ProfileAllocMemory((uint32_t)strlen(range)+1);
     strcpy(m_frameNames[k].name,range);
     m_frameNames[k].frames=0;
     m_frameNames[k].isRecording=false;
@@ -219,7 +220,8 @@ void Profile::AppendRange(const char *range)
     range="frame";
 
   // known name?
-  for (unsigned k=0;k<m_names;++k)
+  unsigned k = 0;
+  for (;k<m_names;++k)
     if (!strcmp(range,m_frameNames[k].name))
       break;
   if (k==m_names)
@@ -269,7 +271,8 @@ void Profile::StopRange(const char *range)
     range="frame";
 
   // known name?
-  for (unsigned k=0;k<m_names;++k)
+  unsigned k = 0;
+  for (;k<m_names;++k)
     if (!strcmp(range,m_frameNames[k].name))
       break;
   DFAIL_IF(k==m_names) return;
@@ -292,7 +295,7 @@ void Profile::StopRange(const char *range)
       atIndex=-1;
       m_frameNames[k].lastGlobalIndex=m_rec;
       m_recNames=(char **)ProfileReAllocMemory(m_recNames,(m_rec+1)*sizeof(char *));
-      m_recNames[m_rec]=(char *)ProfileAllocMemory(strlen(range)+1+6);
+      m_recNames[m_rec]=(char *)ProfileAllocMemory((uint32_t)strlen(range)+1+6);
       wsprintf(m_recNames[m_rec++],"%s:%i",range,++m_frameNames[k].frames);
     }
     else

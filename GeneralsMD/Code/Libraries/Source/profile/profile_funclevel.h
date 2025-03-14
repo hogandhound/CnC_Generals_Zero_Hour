@@ -183,9 +183,9 @@ public:
 
       \return profile thread ID
     */
-    unsigned GetId(void) const
+    uintptr_t GetId(void) const
     {
-      return unsigned(m_threadID);
+      return (uintptr_t)m_threadID;
     }
 
   private:

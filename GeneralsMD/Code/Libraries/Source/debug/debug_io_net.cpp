@@ -65,12 +65,12 @@ void DebugIONet::Write(StringType type, const char *src, const char *str)
   WriteFile(m_pipe,&type,1,&dummy,NULL);
 
   unsigned len; 
-  len=src?strlen(src):0;
+  len=src?(unsigned int)strlen(src):0;
   WriteFile(m_pipe,&len,4,&dummy,NULL);
   if (len)
     WriteFile(m_pipe,src,len,&dummy,NULL);
 
-  len=strlen(str);
+  len=(unsigned)strlen(str);
   WriteFile(m_pipe,&len,4,&dummy,NULL);
   if (len)
     WriteFile(m_pipe,str,len,&dummy,NULL);

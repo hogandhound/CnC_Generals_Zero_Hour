@@ -1148,7 +1148,9 @@ void PhysicsBehavior::doBounceSound(const Coord3D& prevPos)
 	collisionSound.setVolume(volAdjust);
 #endif
 	collisionSound.setObjectID(getObject()->getID());
+#ifdef HAS_BINK
 	TheAudio->addAudioEvent(&collisionSound);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -51,7 +51,7 @@ void parseFactionObjectCreationList( INI *ini, void *instance, void *store, cons
 
 	const char *token = ini->getNextToken( ini->getSepsColon() );
 
-	if ( stricmp(token, "Faction") == 0 )
+	if ( _stricmp(token, "Faction") == 0 )
 	{
 		token = ini->getNextTokenOrNull( ini->getSepsColon() );
 		if (!token)	throw INI_INVALID_DATA;
@@ -63,7 +63,7 @@ void parseFactionObjectCreationList( INI *ini, void *instance, void *store, cons
 
 
 	token = ini->getNextTokenOrNull( ini->getSepsColon() );
-	if ( stricmp(token, "OCL") == 0 )
+	if ( _stricmp(token, "OCL") == 0 )
 		ini->parseObjectCreationList( ini, instance, &info.m_ocl, NULL );
 	else
 		throw INI_INVALID_DATA;

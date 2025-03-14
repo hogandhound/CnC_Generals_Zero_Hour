@@ -310,7 +310,7 @@ TurretAI::TurretAI(Object* owner, const TurretAIData* data, WhichTurretType tur)
 
 #ifdef _DEBUG
 	char smbuf[256];
-	sprintf(smbuf, "TurretStateMachine for tur %08lx slot %d",this,tur);
+	sprintf(smbuf, "TurretStateMachine for tur %p slot %d",this,tur);
 	const char* smname = smbuf;
 #else
 	const char* smname = "TurretStateMachine";
@@ -690,7 +690,7 @@ UpdateSleepTime TurretAI::updateTurretAI()
 	USE_PERF_TIMER(TurretAI)
 
 #if defined(_DEBUG) || defined(_INTERNAL)
-	DEBUG_ASSERTCRASH(!m_enabled ||
+		DEBUG_CONDWARNING(!m_enabled ||
 							m_turretStateMachine->peekSleepTill() == 0 || 
 							m_turretStateMachine->peekSleepTill() >= m_sleepUntil, ("Turret Machine is less sleepy than turret"));
 #endif
@@ -721,7 +721,7 @@ UpdateSleepTime TurretAI::updateTurretAI()
 		if (m_didFire)
 		{
 			// if we fired, enable sweeping for a few frames.
-			const ENABLE_SWEEP_FRAME_COUNT = 3;
+			const uint32_t ENABLE_SWEEP_FRAME_COUNT = 3;
 			m_enableSweepUntil = now + ENABLE_SWEEP_FRAME_COUNT;
 			m_continuousFireExpirationFrame = now + ENABLE_SWEEP_FRAME_COUNT;// so the recent firing will not interrupt the moving sound
 		}
@@ -777,7 +777,9 @@ void TurretAI::startRotOrPitchSound()
 	if (!m_turretRotOrPitchSound.isCurrentlyPlaying()) 
 	{
 		m_turretRotOrPitchSound.setObjectID(m_owner->getID());
+#ifdef HAS_BINK
 		m_turretRotOrPitchSound.setPlayingHandle(TheAudio->addAudioEvent(&m_turretRotOrPitchSound));
+#endif
 	}
 }
 
@@ -789,7 +791,9 @@ void TurretAI::stopRotOrPitchSound()
 {
 	if (m_turretRotOrPitchSound.isCurrentlyPlaying()) 
 	{
+#ifdef HAS_BINK
 		TheAudio->removeAudioEvent(m_turretRotOrPitchSound.getPlayingHandle());
+#endif
 	}
 }
 

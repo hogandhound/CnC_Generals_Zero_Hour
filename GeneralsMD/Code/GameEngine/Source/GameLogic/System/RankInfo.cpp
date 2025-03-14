@@ -98,7 +98,7 @@ void RankInfoStore::reset()
 //-----------------------------------------------------------------------------
 Int RankInfoStore::getRankLevelCount() const
 { 
-	return m_rankInfos.size(); 
+	return (int)m_rankInfos.size(); 
 }
 
 //-----------------------------------------------------------------------------

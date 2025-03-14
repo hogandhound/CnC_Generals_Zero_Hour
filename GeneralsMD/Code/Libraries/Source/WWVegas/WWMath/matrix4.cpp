@@ -194,4 +194,3 @@ int operator != (const Matrix4x4 & a, const Matrix4x4 & b)
 {
 	return (!(a == b));
 }
-

@@ -61,7 +61,7 @@
 #include <coltest.h>
 #include <rinfo.h>
 #include <camera.h>
-#include <d3dx8core.h>
+#include <D3dx9core.h>
 #include "Common/GlobalData.h"
 #include "Common/PerfTimer.h"
 
@@ -961,7 +961,7 @@ void HeightMapRenderObjClass::doPartialUpdate(const IRegion2D &partialRange, Wor
 
 	if (!m_extraBlendTilePositions)
 	{	//Need to allocate memory
-		m_extraBlendTilePositions = NEW Int[DEFAULT_MAX_MAP_EXTRABLEND_TILES];
+		m_extraBlendTilePositions = new Int[DEFAULT_MAX_MAP_EXTRABLEND_TILES];
 		m_extraBlendTilePositionsSize = DEFAULT_MAX_MAP_EXTRABLEND_TILES;
 	}
 	
@@ -992,7 +992,7 @@ void HeightMapRenderObjClass::doPartialUpdate(const IRegion2D &partialRange, Wor
 			if (htMap->getExtraAlphaUVData(i,j,U,V,alpha,&flipState, &cliffState))
 			{	if (m_numExtraBlendTiles >= m_extraBlendTilePositionsSize)
 				{	//no more room to store extra blend tiles so enlarge the buffer.
-					Int *tempPositions=NEW Int[m_extraBlendTilePositionsSize+512];
+					Int *tempPositions= new Int[m_extraBlendTilePositionsSize+512];
 					memcpy(tempPositions, m_extraBlendTilePositions, m_extraBlendTilePositionsSize*sizeof(Int));
 					delete [] m_extraBlendTilePositions;
 					//enlarge by more tiles to reduce memory trashing
@@ -1257,6 +1257,7 @@ void HeightMapRenderObjClass::oversizeTerrain(Int tilesToOversize)
 
 
 
+
 //=============================================================================
 // HeightMapRenderObjClass::initHeightData
 //=============================================================================
@@ -1286,7 +1287,7 @@ Int HeightMapRenderObjClass::initHeightData(Int x, Int y, WorldHeightMap *pMap, 
 			Int m_mapDY=pMap->getYExtent();
 			if (!m_extraBlendTilePositions)
 			{	//Need to allocate memory
-				m_extraBlendTilePositions = NEW Int[DEFAULT_MAX_MAP_EXTRABLEND_TILES];
+				m_extraBlendTilePositions = new Int[DEFAULT_MAX_MAP_EXTRABLEND_TILES];
 				m_extraBlendTilePositionsSize = DEFAULT_MAX_MAP_EXTRABLEND_TILES;
 			}
 			
@@ -1301,7 +1302,7 @@ Int HeightMapRenderObjClass::initHeightData(Int x, Int y, WorldHeightMap *pMap, 
 					if (pMap->getExtraAlphaUVData(i,j,U,V,alpha,&flipState, &cliffState))
 					{	if (m_numExtraBlendTiles >= m_extraBlendTilePositionsSize)
 						{	//no more room to store extra blend tiles so enlarge the buffer.
-							Int *tempPositions=NEW Int[m_extraBlendTilePositionsSize+512];
+							Int *tempPositions=new Int[m_extraBlendTilePositionsSize+512];
 							memcpy(tempPositions, m_extraBlendTilePositions, m_extraBlendTilePositionsSize*sizeof(Int));
 							delete [] m_extraBlendTilePositions;
 							//enlarge by more tiles to reduce memory trashing
@@ -1372,8 +1373,8 @@ Int HeightMapRenderObjClass::initHeightData(Int x, Int y, WorldHeightMap *pMap, 
 		m_numVertexBufferTiles=m_numVBTilesX*m_numVBTilesY;
 		m_x=x;
 		m_y=y;
-		m_vertexBufferTiles = NEW DX8VertexBufferClass*[m_numVertexBufferTiles];
-		m_vertexBufferBackup = NEW char *[m_numVertexBufferTiles];
+		m_vertexBufferTiles = new DX8VertexBufferClass*[m_numVertexBufferTiles];
+		m_vertexBufferBackup = new char *[m_numVertexBufferTiles];
 
 		Int numVertex = VERTEX_BUFFER_TILE_LENGTH*2*VERTEX_BUFFER_TILE_LENGTH*2;
 
@@ -1383,7 +1384,7 @@ Int HeightMapRenderObjClass::initHeightData(Int x, Int y, WorldHeightMap *pMap, 
 #else
 			m_vertexBufferTiles[i]=NEW_REF(DX8VertexBufferClass,(DX8_VERTEX_FORMAT,numVertex,DX8VertexBufferClass::USAGE_DEFAULT));
 #endif
-			m_vertexBufferBackup[i] = NEW char[numVertex*sizeof(VERTEX_FORMAT)];
+			m_vertexBufferBackup[i] = new char[numVertex*sizeof(VERTEX_FORMAT)];
 		} 
 
 		//go with a preset material for now.
@@ -2093,7 +2094,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 						0,
 						m_xformedVertexBuffer[j*m_numVBTilesX+i],
 						D3DXGetFVFVertexSize(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2));
-					DX8Wrapper::_Get_D3D_Device8()->SetVertexShader(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2);
+					DX8Wrapper::_Get_D3D_Device8()->SetFVF(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2);
 				}
 #endif				
 				if (Is_Hidden() == 0) {
@@ -2231,7 +2232,7 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 					0,
 					m_xformedVertexBuffer[j*m_numVBTilesX+i],
 					D3DXGetFVFVertexSize(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2));
-				DX8Wrapper::_Get_D3D_Device8()->SetVertexShader(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2);
+				DX8Wrapper::_Get_D3D_Device8()->SetFVF(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2);
 			}
 #endif				
 			if (Is_Hidden() == 0) {

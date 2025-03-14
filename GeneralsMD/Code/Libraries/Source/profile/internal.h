@@ -38,6 +38,7 @@
 #include "internal_cmd.h"
 #include "internal_result.h"
 
+#if 0
 class ProfileFastCS
 {
   ProfileFastCS(const ProfileFastCS&);
@@ -102,13 +103,73 @@ public:
 
 	friend class Lock;
 };
+#endif
 
+
+class ProfileFastCS
+{
+	CRITICAL_SECTION m_windowsCriticalSection;
+
+public:
+	ProfileFastCS()
+	{
+#ifdef PERF_TIMERS
+		AutoPerfGather a(TheCritSecPerfGather);
+#endif
+		InitializeCriticalSection(&m_windowsCriticalSection);
+	}
+
+	virtual ~ProfileFastCS()
+	{
+#ifdef PERF_TIMERS
+		AutoPerfGather a(TheCritSecPerfGather);
+#endif
+		DeleteCriticalSection(&m_windowsCriticalSection);
+	}
+
+public:	// Use these when entering/exiting a critical section.
+	void enter(void)
+	{
+#ifdef PERF_TIMERS
+		AutoPerfGather a(TheCritSecPerfGather);
+#endif
+		EnterCriticalSection(&m_windowsCriticalSection);
+	}
+
+	void exit(void)
+	{
+#ifdef PERF_TIMERS
+		AutoPerfGather a(TheCritSecPerfGather);
+#endif
+		LeaveCriticalSection(&m_windowsCriticalSection);
+	}
+	class Lock
+	{
+	private:
+		ProfileFastCS* m_cs;
+
+	public:
+		Lock(ProfileFastCS& cs) : m_cs(&cs)
+		{
+			if (m_cs)
+				m_cs->enter();
+		}
+
+		virtual ~Lock()
+		{
+			if (m_cs)
+				m_cs->exit();
+		}
+	};
+};
 void *ProfileAllocMemory(unsigned numBytes);
 void *ProfileReAllocMemory(void *oldPtr, unsigned newSize);
 void ProfileFreeMemory(void *ptr);
 
+#include <chrono>
 __forceinline void ProfileGetTime(__int64 &t)
 {
+#if 0
   _asm
   {
     mov ecx,[t]
@@ -120,6 +181,8 @@ __forceinline void ProfileGetTime(__int64 &t)
     pop edx
     pop eax
   };
+#endif
+  t = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 }
 
 #endif // INTERNAL_H

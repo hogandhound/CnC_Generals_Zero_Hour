@@ -211,7 +211,8 @@ bool DebugCmdInterfaceDebug::Execute(class Debug& dbg, const char *cmd,
         dbg << (argn?"Possible:\n":"Active:\n");
 
       bool hadItem=false;
-      for (Debug::IOFactoryListEntry *cur=dbg.firstIOFactory;cur;cur=cur->next)
+      Debug::IOFactoryListEntry* cur = dbg.firstIOFactory;
+      for (;cur;cur=cur->next)
       {
         if (!argn&&!cur->io)
           continue;
@@ -227,7 +228,8 @@ bool DebugCmdInterfaceDebug::Execute(class Debug& dbg, const char *cmd,
       // regular I/O command
 
       // find I/O class
-      for (Debug::IOFactoryListEntry *cur=dbg.firstIOFactory;cur;cur=cur->next)
+        Debug::IOFactoryListEntry* cur = dbg.firstIOFactory;
+      for (;cur;cur=cur->next)
         if (!strcmp(argv[0],cur->ioID))
           break;
       if (!cur)
@@ -357,7 +359,8 @@ bool DebugCmdInterfaceDebug::Execute(class Debug& dbg, const char *cmd,
       // must fixup lastPatternEntry now
       if (dbg.firstPatternEntry)
       {
-        for (Debug::PatternListEntry *cur=dbg.firstPatternEntry;cur->next;cur=cur->next);
+          Debug::PatternListEntry* cur = dbg.firstPatternEntry;
+        for (;cur->next;cur=cur->next);
         dbg.lastPatternEntry=cur;
       }
       else

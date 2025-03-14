@@ -424,7 +424,7 @@ void WorldHeightMapEdit::loadDirectoryOfImages(char *pFilePath)
 	char				fileBuf[_MAX_PATH];
 
 	strcpy(dirBuf, pFilePath);
-	int len = strlen(dirBuf);
+	int len = (int)strlen(dirBuf);
 
 	if (len > 0 && dirBuf[len - 1] != '\\') {
 		dirBuf[len++] = '\\';

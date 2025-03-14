@@ -63,7 +63,9 @@ MissileLauncherBuildingUpdate::~MissileLauncherBuildingUpdate( void )
 {
 	if (m_openIdleAudio.isCurrentlyPlaying()) 
 	{
+#ifdef HAS_BINK
 		TheAudio->removeAudioEvent(m_openIdleAudio.getPlayingHandle());
+#endif
 	}
 } 
 
@@ -94,7 +96,9 @@ void MissileLauncherBuildingUpdate::switchToState(DoorStateType dst)
 			}
 			if (m_openIdleAudio.isCurrentlyPlaying()) 
 			{
+#ifdef HAS_BINK
 				TheAudio->removeAudioEvent(m_openIdleAudio.getPlayingHandle());
+#endif
 			}
 			break;
 
@@ -116,7 +120,9 @@ void MissileLauncherBuildingUpdate::switchToState(DoorStateType dst)
 			}
 			if (m_openIdleAudio.isCurrentlyPlaying()) 
 			{
+#ifdef HAS_BINK
 				TheAudio->removeAudioEvent(m_openIdleAudio.getPlayingHandle());
+#endif
 			}
 			break;
 
@@ -136,7 +142,9 @@ void MissileLauncherBuildingUpdate::switchToState(DoorStateType dst)
 			}
 			if (!m_openIdleAudio.isCurrentlyPlaying())
 			{
+#ifdef HAS_BINK
 				m_openIdleAudio.setPlayingHandle(TheAudio->addAudioEvent(&m_openIdleAudio));
+#endif
 			}
 			break;
 
@@ -156,7 +164,9 @@ void MissileLauncherBuildingUpdate::switchToState(DoorStateType dst)
 			}
 			if (m_openIdleAudio.isCurrentlyPlaying()) 
 			{
+#ifdef HAS_BINK
 				TheAudio->removeAudioEvent(m_openIdleAudio.getPlayingHandle());
+#endif
 			}
 			break;
 
@@ -183,7 +193,9 @@ void MissileLauncherBuildingUpdate::switchToState(DoorStateType dst)
 			}
 			if (m_openIdleAudio.isCurrentlyPlaying()) 
 			{
+#ifdef HAS_BINK
 				TheAudio->removeAudioEvent(m_openIdleAudio.getPlayingHandle());
+#endif
 			}
 			break;
 #ifdef _DEBUG

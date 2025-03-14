@@ -188,7 +188,7 @@ private:
 	static unsigned ReservedMask;
 	static char m_TempStrings[];
 
-	static FastCriticalSectionClass m_Mutex;
+	static CriticalSectionClass m_Mutex;
 
 	static TCHAR	m_NullChar;
 	static TCHAR *	m_EmptyString;
@@ -217,7 +217,7 @@ StringClass::operator= (const TCHAR *string)
 {
 	if (string != 0) {
 
-		int len = _tcslen (string);
+		int len = (int)_tcslen (string);
 		Uninitialised_Grow (len+1);
 		Store_Length (len);
 
@@ -317,7 +317,7 @@ inline
 StringClass::StringClass (const TCHAR *string, bool hint_temporary)
 	:	m_Buffer (m_EmptyString)
 {
-	int len=string ? _tcsclen(string) : 0;
+	int len=string ? (int)_tcsclen(string) : 0;
 	if (hint_temporary || len>0) {
 		Get_String (len+1, hint_temporary);
 	}
@@ -333,7 +333,7 @@ inline
 StringClass::StringClass (const WCHAR *string, bool hint_temporary)
 	:	m_Buffer (m_EmptyString)
 {
-	int len = string ? wcslen (string) : 0;
+	int len = string ? (int)wcslen (string) : 0;
 	if (hint_temporary || len > 0) {
 		Get_String (len + 1, hint_temporary);
 	}
@@ -507,7 +507,7 @@ StringClass::operator+= (const TCHAR *string)
 	WWASSERT (string != NULL);
 
 	int cur_len = Get_Length ();
-	int src_len = _tcslen (string);
+	int src_len = (int)_tcslen (string);
 	int new_len = cur_len + src_len;
 
 	//
@@ -678,7 +678,7 @@ StringClass::Get_Length (void) const
 		// we better manually get the string length.
 		//
 		if (length == 0) {
-			length = _tcslen (m_Buffer);
+			length = (int)_tcslen (m_Buffer);
 			((StringClass *)this)->Store_Length (length);
 		}
 	}

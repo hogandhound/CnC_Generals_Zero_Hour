@@ -181,7 +181,9 @@ Bool SupplyTruckAIUpdate::gainOneBox( Int remainingStock )
 		if (playDepleted && m_suppliesDepletedVoice.getEventName().isEmpty() == false)
 		{
 			m_suppliesDepletedVoice.setObjectID(getObject()->getID());
+#ifdef HAS_BINK
 			m_suppliesDepletedVoice.setPlayingHandle(TheAudio->addAudioEvent(&m_suppliesDepletedVoice));
+#endif
 		}
 	}
 

@@ -35,6 +35,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #if noWWAUDIO //(gth) removing dependency on wwaudio
+//#ifdef HAS_BINK
 
 #include "soundrobj.h"
 #include "audiblesound.h"
@@ -768,4 +769,5 @@ SoundRenderObjLoaderClass::Load_W3D (ChunkLoadClass &cload)
 
 #endif // noWWAUDIO
 
+//#endif
 

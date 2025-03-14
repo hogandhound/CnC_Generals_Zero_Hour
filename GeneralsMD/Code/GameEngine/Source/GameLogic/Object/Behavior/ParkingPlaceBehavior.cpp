@@ -928,7 +928,7 @@ void ParkingPlaceBehavior::xfer( Xfer *xfer )
 	}
 
 	// spaces info count and data
-	UnsignedByte spacesCount = m_spaces.size();
+	UnsignedByte spacesCount = (uint8_t)m_spaces.size();
 	xfer->xferUnsignedByte( &spacesCount );
 	if( xfer->getXferMode() == XFER_SAVE )
 	{
@@ -979,7 +979,7 @@ void ParkingPlaceBehavior::xfer( Xfer *xfer )
 	}  // end else, load
 
 	// runways cound and info
-	UnsignedByte runwaysCount = m_runways.size();
+	UnsignedByte runwaysCount = (uint8_t)m_runways.size();
 	xfer->xferUnsignedByte( &runwaysCount );
 	if( xfer->getXferMode() == XFER_SAVE )
 	{
@@ -1030,7 +1030,7 @@ void ParkingPlaceBehavior::xfer( Xfer *xfer )
 	}  // end else, load
 
 	// healees
-	UnsignedByte healCount = m_healing.size();
+	UnsignedByte healCount = (uint8_t)m_healing.size();
 	xfer->xferUnsignedByte( &healCount );
 	if( xfer->getXferMode() == XFER_SAVE )
 	{

@@ -42,6 +42,7 @@
 #define __SOUNDROBJ_H
 
 #if noWWAUDIO // (gth) removing dependency on WWAUDIO
+//#ifdef HAS_BINK
 
 #include "rendobj.h"
 #include "wwstring.h"

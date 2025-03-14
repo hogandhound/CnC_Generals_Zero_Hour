@@ -60,8 +60,8 @@ class StringClass;
 class WideStringClass;
 class FileFactoryClass;
 
-struct INISection;
-struct INIEntry;
+class INISection;
+class INIEntry;
 
 template<class T> class TPoint3D;
 template<class T> class TPoint2D;

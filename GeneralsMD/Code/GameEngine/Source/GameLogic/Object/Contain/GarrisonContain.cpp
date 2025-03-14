@@ -695,8 +695,8 @@ void GarrisonContain::trackTargets( void )
 
 	for( ContainedItemsList::const_iterator it = containList.begin(); it != containList.end(); ++it )
 	{
-
-		DEBUG_ASSERTCRASH(m_garrisonPointsInitialized, ("garrisonPoints are not inited"));
+		if (!m_garrisonPointsInitialized)
+		DEBUG_WARNING(("garrisonPoints are not inited"));
 
 		// get the object
 		obj = *it;
@@ -2013,7 +2013,8 @@ void GarrisonContain::loadStationGarrisonPoints( void )
 
 
     Coord3D tempBuffer[MAX_GARRISON_POINTS];
-  	for( int t = 0; t < MAX_GARRISON_POINTS; ++t )
+	int t = 0;
+  	for( ; t < MAX_GARRISON_POINTS; ++t )
 		  tempBuffer[ t ] = *(structure->getPosition());
 
 		count = structure->getMultiLogicalBonePosition("STATION", modData->m_containMax, tempBuffer, NULL);

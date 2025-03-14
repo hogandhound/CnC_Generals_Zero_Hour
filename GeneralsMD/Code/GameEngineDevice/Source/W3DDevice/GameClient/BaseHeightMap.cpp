@@ -56,7 +56,7 @@
 #include <coltest.h>
 #include <rinfo.h>
 #include <camera.h>
-#include <d3dx8core.h>
+#include <d3dx9core.h>
 #include "Common/GlobalData.h"
 #include "Common/PerfTimer.h"
 
@@ -290,22 +290,22 @@ BaseHeightMapRenderObjClass::BaseHeightMapRenderObjClass(void)
 	TheTerrainRenderObject = this;
 	m_treeBuffer = NULL; 
 
-	m_treeBuffer = NEW W3DTreeBuffer;
+	m_treeBuffer = new W3DTreeBuffer;
 
 	m_propBuffer = NULL; 
 
-	m_propBuffer = NEW W3DPropBuffer;
+	m_propBuffer = new W3DPropBuffer;
 
 
 	m_bibBuffer = NULL;
-	m_bibBuffer = NEW W3DBibBuffer;
+	m_bibBuffer = new W3DBibBuffer;
 	m_curImpassableSlope = 45.0f;	// default to 45 degrees.
 	m_bridgeBuffer = NULL;
-	m_bridgeBuffer = NEW W3DBridgeBuffer;
-	m_waypointBuffer = NEW W3DWaypointBuffer;
+	m_bridgeBuffer = new W3DBridgeBuffer;
+	m_waypointBuffer = new W3DWaypointBuffer;
 #ifdef DO_ROADS
 	m_roadBuffer = NULL;
-	m_roadBuffer = NEW W3DRoadBuffer;
+	m_roadBuffer = new W3DRoadBuffer;
 #endif
 #ifdef DO_SCORCH
 	m_vertexScorch = NULL;
@@ -315,11 +315,11 @@ BaseHeightMapRenderObjClass::BaseHeightMapRenderObjClass(void)
 #endif
 #if defined(_DEBUG) || defined(_INTERNAL)
 	if (TheGlobalData->m_shroudOn)
-		m_shroud = NEW W3DShroud;
+		m_shroud = new W3DShroud;
 	else
 		m_shroud = NULL;
 #else
-	m_shroud = NEW W3DShroud;
+	m_shroud = new W3DShroud;
 #endif
 	DX8Wrapper::SetCleanupHook(this);
 }
@@ -631,7 +631,7 @@ void BaseHeightMapRenderObjClass::updateMacroTexture(AsciiString textureName)
 	// Release texture.
 	REF_PTR_RELEASE(m_stageThreeTexture);
 	// Reallocate texture.
-	m_stageThreeTexture=NEW LightMapTerrainTextureClass(m_macroTextureName);	
+	m_stageThreeTexture=new LightMapTerrainTextureClass(m_macroTextureName);	
 }
 
 //=============================================================================
@@ -899,15 +899,15 @@ Real BaseHeightMapRenderObjClass::getHeightMapHeight(Real x, Real y, Coord3D* no
 	float xdiv = x * MAP_XY_FACTOR_INV;
 	float ydiv = y * MAP_XY_FACTOR_INV;
 
-	float ixf = FAST_REAL_FLOOR(xdiv);
-	float iyf = FAST_REAL_FLOOR(ydiv);
+	float ixf = floor(xdiv);
+	float iyf = floor(ydiv);
 
 	float fx = xdiv - ixf; //get fraction
 	float fy = ydiv - iyf; //get fraction
 
 	// since ixf & iyf are already floor'ed, we can use the fastest f->i conversion we have...
-	Int	ix = fast_float2long_round(ixf) + logicHeightMap->getBorderSizeInline();
-	Int	iy = fast_float2long_round(iyf) + logicHeightMap->getBorderSizeInline();
+	Int	ix = REAL_TO_INT_FLOOR(ixf) + logicHeightMap->getBorderSizeInline();
+	Int	iy = REAL_TO_INT_FLOOR(iyf) + logicHeightMap->getBorderSizeInline();
 	Int xExtent = logicHeightMap->getXExtent();
 
 	// Check for extent-3, not extent-1: we go into the next row/column of data for smoothed triangle points, so extent-1
@@ -1520,7 +1520,7 @@ void BaseHeightMapRenderObjClass::recordShoreLineSortInfos(void)
 		//Find the major map axis (having the most tiles).
 		m_shoreLineSortInfosSize = shoreLineSortInfosSize;
 
-		m_shoreLineSortInfos = NEW shoreLineTileSortInfo[m_shoreLineSortInfosSize];
+		m_shoreLineSortInfos = new shoreLineTileSortInfo[m_shoreLineSortInfosSize];
 	}
 
 	//Clear the sort infos
@@ -1625,7 +1625,7 @@ void BaseHeightMapRenderObjClass::updateShorelineTile(Int i, Int j, Int border, 
 	{	//add tile to set that needs shoreline blending.
 		if (m_numShoreLineTiles >= m_shoreLineTilePositionsSize)
 		{	//no more room to store extra blend tiles so enlarge the buffer.
-			shoreLineTileInfo *tempPositions=NEW shoreLineTileInfo[m_shoreLineTilePositionsSize+512];
+			shoreLineTileInfo *tempPositions=new shoreLineTileInfo[m_shoreLineTilePositionsSize+512];
 			memcpy(tempPositions, m_shoreLineTilePositions, m_shoreLineTilePositionsSize*sizeof(shoreLineTileInfo));
 			delete [] m_shoreLineTilePositions;
 			//enlarge by more tiles to reduce memory trashing
@@ -1666,12 +1666,13 @@ void BaseHeightMapRenderObjClass::updateShorelineTiles(Int minX, Int minY, Int m
 
 	if (!m_shoreLineTilePositions)
 	{	//Need to allocate memory
-		m_shoreLineTilePositions = NEW shoreLineTileInfo[DEFAULT_MAX_MAP_SHORELINE_TILES];
+		m_shoreLineTilePositions = new shoreLineTileInfo[DEFAULT_MAX_MAP_SHORELINE_TILES];
 		m_shoreLineTilePositionsSize = DEFAULT_MAX_MAP_SHORELINE_TILES;
 	}
 	
 	//First remove any existing extra blend tiles within this partial region
-	for (Int j=0; j<m_numShoreLineTiles; j++)
+	Int j = 0;
+	for (; j<m_numShoreLineTiles; j++)
 	{	Int x = m_shoreLineTilePositions[j].m_xy & 0xffff;
 		Int y = m_shoreLineTilePositions[j].m_xy >> 16;
 		if (x >= minX && x < maxX &&
@@ -1853,9 +1854,9 @@ Int BaseHeightMapRenderObjClass::initHeightData(Int x, Int y, WorldHeightMap *pM
 		//allocate a new one.
 		freeMapResources();	//free old data and ib/vb
 		REF_PTR_SET(m_map,pMap);	//update our heightmap pointer in case it changed since last call.
-		m_stageTwoTexture=NEW CloudMapTerrainTextureClass;
-		m_stageThreeTexture=NEW LightMapTerrainTextureClass(m_macroTextureName);
-		m_destAlphaTexture=MSGNEW("TextureClass") TextureClass(256,1,WW3D_FORMAT_A8R8G8B8,MIP_LEVELS_1);
+		m_stageTwoTexture=new CloudMapTerrainTextureClass;
+		m_stageThreeTexture=new LightMapTerrainTextureClass(m_macroTextureName);
+		m_destAlphaTexture=new TextureClass(256,1,WW3D_FORMAT_A8R8G8B8,MIP_LEVELS_1);
 		initDestAlphaLUT();
 #ifdef DO_SCORCH
 		allocateScorchBuffers();
@@ -1891,7 +1892,7 @@ void BaseHeightMapRenderObjClass::allocateScorchBuffers(void)
 {
 	m_vertexScorch=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV1,MAX_SCORCH_VERTEX,DX8VertexBufferClass::USAGE_DEFAULT));
 	m_indexScorch=NEW_REF(DX8IndexBufferClass,(MAX_SCORCH_INDEX));
-	m_scorchTexture=NEW ScorchTextureClass;
+	m_scorchTexture=new ScorchTextureClass;
 	m_scorchesInBuffer = 0; // If we just allocated the buffers, we got no scorches in the buffer.
 	m_curNumScorchVertices=0;
 	m_curNumScorchIndices=0;
@@ -2699,7 +2700,8 @@ void BaseHeightMapRenderObjClass::renderShoreLinesSorted(CameraClass *pCamera)
 			//Loop over visible terrain and extract all the tiles that need shoreline blend
 			if (m_shoreLineSortInfosXMajor)	//map is wider than taller.
 			{	
-				for (Int x=drawStartX; x<drawEdgeX; x++)
+				Int x = drawStartX;
+				for (; x<drawEdgeX; x++)
 				{	//figure out how many tiles are available in this column
 					shoreLineTileSortInfo *sortInfo=&m_shoreLineSortInfos[x];
 
@@ -2819,7 +2821,8 @@ flushVertexBuffer0:
 			}
 			else
 			{
-				for (Int y=drawStartY; y<drawEdgeY; y++)
+				Int y = drawStartY;
+				for (; y<drawEdgeY; y++)
 				{	//figure out how many tiles are available in this row
 					shoreLineTileSortInfo *sortInfo=&m_shoreLineSortInfos[y];
 

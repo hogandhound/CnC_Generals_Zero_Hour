@@ -139,7 +139,7 @@ protected:
 
 	static Matrix4x4				View_Projection_Matrix;
 
-	D3DMATERIAL8*					Material;
+	D3DMATERIAL9*					Material;
 
 	TextureClass*					Texture;
 

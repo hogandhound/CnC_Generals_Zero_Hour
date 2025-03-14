@@ -63,7 +63,7 @@
 // it should also NEVER be called directly; it's only for use by ModuleFactory!
 /*static*/ ModuleData* Module::friend_newModuleData(INI* ini) 
 { 
-	ModuleData* data = MSGNEW("Module::friend_newModuleData") ModuleData;	// no need to memorypool these since we never allocate more than one of each
+	ModuleData* data = new ModuleData;	// no need to memorypool these since we never allocate more than one of each
 	if (ini)
 		ini->initFromINI(data, 0);	// this is just so that an "end" token is required
 	return data;
@@ -275,7 +275,7 @@ Bool UpgradeMuxData::isTriggeredBy(const std::string &upgrade) const
 	for( it = m_triggerUpgradeNames.begin(); it != m_triggerUpgradeNames.end();	++it)
 	{
 		AsciiString trigger = *it;
-		if (stricmp(trigger.str(), upgrade.c_str()) == 0)
+		if (_stricmp(trigger.str(), upgrade.c_str()) == 0)
 		{
 			return TRUE;
 		}

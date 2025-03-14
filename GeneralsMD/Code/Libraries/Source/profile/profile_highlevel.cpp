@@ -96,13 +96,13 @@ ProfileHighLevel::Block::Block(const char *name)
   strcat(help,".c");
   AddProfile(help,NULL,"calls",6,0).Increment();
 
-  ProfileGetTime(m_start);
+  //ProfileGetTime(m_start);
 }
 
 ProfileHighLevel::Block::~Block()
 {
-  _int64 end;
-  ProfileGetTime(end);
+  _int64 end=0;
+  //ProfileGetTime(end);
   end-=m_start;
 
   m_idTime.Increment(double(end)/(double)Profile::GetClockCyclesPerSecond());
@@ -121,18 +121,18 @@ unsigned ProfileId::stringBufUnused;
 ProfileId::ProfileId(const char *name, const char *descr, const char *unit, int precision, int exp10)
 {
   m_next=first; first=this;
-  m_name=(char *)ProfileAllocMemory(strlen(name)+1);
+  m_name=(char *)ProfileAllocMemory((unsigned int)strlen(name)+1);
   strcpy(m_name,name);
   if (descr)
   {
-    m_descr=(char *)ProfileAllocMemory(strlen(descr)+1);
+    m_descr=(char *)ProfileAllocMemory((unsigned int)strlen(descr)+1);
     strcpy(m_descr,descr);
   }
   else
     m_descr=NULL;
   if (unit)
   {
-    m_unit=(char *)ProfileAllocMemory(strlen(unit)+1);
+    m_unit=(char *)ProfileAllocMemory((uint32_t)strlen(unit)+1);
     strcpy(m_unit,unit);
   }
   else
@@ -217,7 +217,8 @@ int ProfileId::FrameStart(void)
 {
   ProfileFastCS::Lock lock(cs);
 
-  for (unsigned i=0;i<MAX_FRAME_RECORDS;i++)
+  unsigned i = 0;
+  for (;i<MAX_FRAME_RECORDS;i++)
     if (!(frameRecordMask&(1<<i)))
       break;
   if (i==MAX_FRAME_RECORDS)
@@ -311,7 +312,8 @@ ProfileHighLevel::Id ProfileHighLevel::AddProfile(const char *name, const char *
 bool ProfileHighLevel::EnumProfile(unsigned index, Id &id)
 {
   ProfileFastCS::Lock lock(cs);
-  for (ProfileId *cur=ProfileId::GetFirst();cur&&index--;cur=cur->GetNext());
+  ProfileId* cur = ProfileId::GetFirst();
+  for (;cur&&index--;cur=cur->GetNext());
   id.m_idPtr=cur;
   return cur!=NULL;
 }

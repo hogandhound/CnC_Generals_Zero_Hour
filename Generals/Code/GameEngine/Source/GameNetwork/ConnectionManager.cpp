@@ -675,10 +675,8 @@ void ConnectionManager::processChat(NetChatCommandMsg *msg)
 		TheInGameUI->messageColor(&rgb, UnicodeString(L"%ls"), unitext.str());
 
 		// feedback for received chat messages in-game
-#ifdef HAS_BINK
 		AudioEventRTS audioEvent("GUICommunicatorIncoming");
 		TheAudio->addAudioEvent(&audioEvent);
-#endif
 	}
 }
 
@@ -1726,10 +1724,8 @@ PlayerLeaveCode ConnectionManager::disconnectPlayer(Int slot) {
 		TheInGameUI->message("Network:PlayerLeftGame", unicodeName.str());
 
 		// People are boneheads. Also play a sound
-#ifdef HAS_BINK
 		static AudioEventRTS leftGameSound("GUIMessageReceived");
 		TheAudio->addAudioEvent(&leftGameSound);
-#endif
 	}
 
 	if ((m_frameData[slot] != NULL) && (m_frameData[slot]->getIsQuitting() == FALSE)) {

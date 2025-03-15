@@ -348,12 +348,10 @@ void ScriptActions::doDebugMessage(const AsciiString& msg, Bool pause )
 //-------------------------------------------------------------------------------------------------
 void ScriptActions::doPlaySoundEffect(const AsciiString& sound)
 {
-#ifdef HAS_BINK
 	AudioEventRTS audioEvent(sound);
 	audioEvent.setIsLogicalAudio(true);
 	audioEvent.setPlayerIndex(ThePlayerList->getLocalPlayer()->getPlayerIndex());
 	TheAudio->addAudioEvent( &audioEvent );
-#endif
 }  
 
 
@@ -367,12 +365,10 @@ void ScriptActions::doPlaySoundEffectAt(const AsciiString& sound, const AsciiStr
 		return;
 	}
 
-#ifdef HAS_BINK
 	AudioEventRTS audioEvent(sound, way->getLocation());
 	audioEvent.setIsLogicalAudio(true);
 	audioEvent.setPlayerIndex(ThePlayerList->getLocalPlayer()->getPlayerIndex());
 	TheAudio->addAudioEvent( &audioEvent );
-#endif
 }  
 
 //-------------------------------------------------------------------------------------------------
@@ -2679,11 +2675,9 @@ void ScriptActions::doSoundPlayFromNamed(const AsciiString& soundName, const Asc
 		return;
 	}
 
-#ifdef HAS_BINK
 	AudioEventRTS sfx(soundName, pUnit->getID());
 	sfx.setIsLogicalAudio(true);
 	TheAudio->addAudioEvent(&sfx);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2691,13 +2685,11 @@ void ScriptActions::doSoundPlayFromNamed(const AsciiString& soundName, const Asc
 //-------------------------------------------------------------------------------------------------
 void ScriptActions::doSpeechPlay(const AsciiString& speechName, Bool allowOverlap)
 {
-#ifdef HAS_BINK
 	AudioEventRTS speech(speechName);
 	speech.setIsLogicalAudio(true);
 	speech.setPlayerIndex(ThePlayerList->getLocalPlayer()->getPlayerIndex());
 	speech.setUninterruptable(!allowOverlap);
 	TheAudio->addAudioEvent(&speech);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3198,9 +3190,7 @@ void ScriptActions::doResumeSupplyTruckingForIdleUnits(const AsciiString& player
 //-------------------------------------------------------------------------------------------------
 void ScriptActions::doAmbientSoundsPause(Bool pausing)	// if true, then pause, if false then resume.
 {
-#ifdef HAS_BINK
 	TheAudio->pauseAmbient(pausing);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3208,7 +3198,6 @@ void ScriptActions::doAmbientSoundsPause(Bool pausing)	// if true, then pause, i
 //-------------------------------------------------------------------------------------------------
 void ScriptActions::doMusicTrackChange(const AsciiString& newTrackName, Bool fadeout, Bool fadein)
 {
-#ifdef HAS_BINK
 	// Stop playing the music
 	if (fadeout) {
 		TheAudio->removeAudioEvent(AHSV_StopTheMusicFade);
@@ -3220,7 +3209,6 @@ void ScriptActions::doMusicTrackChange(const AsciiString& newTrackName, Bool fad
 	event.setShouldFade(fadein);
 	event.setPlayerIndex(ThePlayerList->getLocalPlayer()->getPlayerIndex());
 	TheAudio->addAudioEvent(&event);
-#endif
 
 	TheScriptEngine->setCurrentTrackName(newTrackName);
 }
@@ -3726,9 +3714,7 @@ void ScriptActions::doAudioSetVolume(AudioAffect whichToAffect, Real newVolumeLe
 		newVolumeLevel = 1.0f;
 	}
 
-#ifdef HAS_BINK
 	TheAudio->setVolume(newVolumeLevel, whichToAffect);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -4678,11 +4664,9 @@ void ScriptActions::doForceObjectSelection(const AsciiString& teamName, const As
 	TheInGameUI->deselectAllDrawables();
 	TheInGameUI->selectDrawable(bestGuess->getDrawable());
 	// play the sound
-#ifdef HAS_BINK
 	AudioEventRTS audioEvent(audioToPlay);
 	audioEvent.setPlayerIndex(ThePlayerList->getLocalPlayer()->getPlayerIndex());
 	TheAudio->addAudioEvent(&audioEvent);
-#endif
 
 	if (centerInView) {
 		Coord3D pos = *bestGuess->getPosition();
@@ -4811,25 +4795,19 @@ void ScriptActions::doSetWarehouseValue( const AsciiString& warehouseName, Int c
 //-------------------------------------------------------------------------------------------------
 void ScriptActions::doSoundEnableType( const AsciiString& soundEventName, Bool enable )
 {
-#ifdef HAS_BINK
 	TheAudio->setAudioEventEnabled(soundEventName, enable);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
 void ScriptActions::doSoundRemoveAllDisabled()
 {
-#ifdef HAS_BINK
 	TheAudio->removeDisabledEvents(); 
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
 void ScriptActions::doSoundRemoveType( const AsciiString& soundEventName )
 {
-#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( soundEventName );
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -4837,9 +4815,7 @@ void ScriptActions::doSoundRemoveType( const AsciiString& soundEventName )
 //-------------------------------------------------------------------------------------------------
 void ScriptActions::doSoundOverrideVolume( const AsciiString& soundEventName, Real newVolume )
 {
-#ifdef HAS_BINK
 	TheAudio->setAudioEventVolumeOverride(soundEventName, newVolume / 100.0f);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -4847,9 +4823,7 @@ void ScriptActions::doSoundOverrideVolume( const AsciiString& soundEventName, Re
 //-------------------------------------------------------------------------------------------------
 void ScriptActions::doSetToppleDirection( const AsciiString& unitName, const Coord3D *dir )
 {
-#ifdef HAS_BINK
 	TheScriptEngine->setToppleDirection(unitName, dir);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -6056,14 +6030,10 @@ void ScriptActions::executeAction( ScriptAction *pAction )
 			TheTacticalView->setTimeMultiplier(pAction->getParameter(0)->getInt());
 			return;
 		case ScriptAction::SUSPEND_BACKGROUND_SOUNDS:
-#ifdef HAS_BINK
 			TheAudio->pauseAudio(AudioAffect_Sound);
-#endif
 			return;
 		case ScriptAction::RESUME_BACKGROUND_SOUNDS:
-#ifdef HAS_BINK
 			TheAudio->resumeAudio(AudioAffect_Sound);
-#endif
 			return;
 		case ScriptAction::PLAY_SOUND_EFFECT_AT: 
 			doPlaySoundEffectAt(pAction->getParameter(0)->getString(), pAction->getParameter(1)->getString());

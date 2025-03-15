@@ -474,11 +474,9 @@ UpdateSleepTime StealthUpdate::update( void )
 		//if ( ( self->getStatusBits() && OBJECT_STATUS_STEALTHED ) == 0 )
 		if ( ( self->getStatusBits() & OBJECT_STATUS_STEALTHED ) == 0 )
 		{
-#ifdef HAS_BINK
 			AudioEventRTS soundEvent = *self->getTemplate()->getSoundStealthOn();
 			soundEvent.setObjectID(self->getID());
 			TheAudio->addAudioEvent( &soundEvent );
-#endif
 		}
 
 		// The timer is zero, so if we aren't stealthed, do so now!
@@ -491,11 +489,9 @@ UpdateSleepTime StealthUpdate::update( void )
 		// if you are destealthing on your own free will, play sound for all to hear
 		if ( ( self->getStatusBits() & OBJECT_STATUS_STEALTHED ) != 0 )
 		{
-#ifdef HAS_BINK
 			AudioEventRTS soundEvent = *self->getTemplate()->getSoundStealthOn();
 			soundEvent.setObjectID(self->getID());
 			TheAudio->addAudioEvent( &soundEvent );
-#endif
 		}
 
 		self->clearStatus( OBJECT_STATUS_STEALTHED );
@@ -513,11 +509,9 @@ UpdateSleepTime StealthUpdate::update( void )
 		if( !(self->getStatusBits() & OBJECT_STATUS_DETECTED) )
 		{
 			detectedStatusChangedThisFrame = TRUE;
-#ifdef HAS_BINK
 			AudioEventRTS soundEvent = *self->getTemplate()->getSoundStealthOff();
 			soundEvent.setObjectID(self->getID());
 			TheAudio->addAudioEvent( &soundEvent );
-#endif
 		}
 
 		self->setStatus( OBJECT_STATUS_DETECTED );
@@ -531,11 +525,9 @@ UpdateSleepTime StealthUpdate::update( void )
 			//Only play sound effect if the selected object is controllable.
 			if( self->isLocallyControlled() )
 			{
-#ifdef HAS_BINK
 				AudioEventRTS soundEvent = *self->getTemplate()->getSoundStealthOn();
 				soundEvent.setObjectID(self->getID());
 				TheAudio->addAudioEvent( &soundEvent );
-#endif
 			}
 		}
 
@@ -746,11 +738,9 @@ void StealthUpdate::changeVisualDisguise()
 		}
 
 		//Play a disguise sound!
-#ifdef HAS_BINK
 		AudioEventRTS sound = *self->getTemplate()->getPerUnitSound( "DisguiseStarted" );
 		sound.setObjectID( self->getID() );
 		TheAudio->addAudioEvent( &sound );
-#endif
 
 		FXList::doFXPos( data->m_disguiseFX, self->getPosition() );
 
@@ -814,9 +804,7 @@ void StealthUpdate::changeVisualDisguise()
 			sound = *self->getTemplate()->getPerUnitSound( "DisguiseRevealedFailure" );
 		}
 		sound.setObjectID( self->getID() );
-#ifdef HAS_BINK
 		TheAudio->addAudioEvent( &sound );
-#endif
 
 		FXList::doFXPos( data->m_disguiseRevealFX, self->getPosition() );
 		m_disguised = false;

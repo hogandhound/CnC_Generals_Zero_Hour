@@ -60,14 +60,12 @@ UnsignedInt Money::withdraw(UnsignedInt amountToWithdraw, Bool playSound)
 		return amountToWithdraw;
 
 	//@todo: Do we do this frequently enough that it is a performance hit?
-#ifdef HAS_BINK
 	AudioEventRTS event = TheAudio->getMiscAudio()->m_moneyWithdrawSound;
 	event.setPlayerIndex(m_playerIndex);
 
 	// Play a sound
 	if (playSound)
 		TheAudio->addAudioEvent(&event);
-#endif
 
 	m_money -= amountToWithdraw;
 
@@ -81,14 +79,12 @@ void Money::deposit(UnsignedInt amountToDeposit, Bool playSound)
 		return;
 
 	//@todo: Do we do this frequently enough that it is a performance hit?
-#ifdef HAS_BINK
 	AudioEventRTS event = TheAudio->getMiscAudio()->m_moneyDepositSound;
 	event.setPlayerIndex(m_playerIndex);
 
 	// Play a sound
 	if (playSound)
 		TheAudio->addAudioEvent(&event);
-#endif
 	
 	m_money += amountToDeposit;
 }

@@ -503,9 +503,7 @@ void SpecialAbilityUpdate::onExit( Bool cleanup )
 		MAKE_MODELCONDITION_MASK4( MODELCONDITION_UNPACKING, MODELCONDITION_PACKING, MODELCONDITION_FIRING_A, MODELCONDITION_RAISING_FLAG ) );
 	getObject()->clearStatus( OBJECT_STATUS_IS_USING_ABILITY );
 
-#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( m_prepSoundLoop.getPlayingHandle() );
-#endif
 	endPreparation();
 
 	if( !data->m_specialObjectsPersistent || cleanup && !data->m_specialObjectsPersistWhenOwnerDies )
@@ -650,9 +648,7 @@ void SpecialAbilityUpdate::startPacking(Bool success)
 
 	AudioEventRTS sound = data->m_packSound;
 	sound.setObjectID( getObject()->getID() );
-#ifdef HAS_BINK
 	TheAudio->addAudioEvent( &sound );
-#endif
 
 	//Sync the animation length to the time it'll take to pack.
 	Drawable* draw = getObject()->getDrawable();
@@ -685,9 +681,7 @@ void SpecialAbilityUpdate::startPacking(Bool success)
 		}
 
 		event.setObjectID(getObject()->getID());
-#ifdef HAS_BINK		
 		TheAudio->addAudioEvent(&event);
-#endif
 	}
 
 }
@@ -706,11 +700,9 @@ void SpecialAbilityUpdate::startUnpacking()
 				MAKE_MODELCONDITION_MASK( MODELCONDITION_UNPACKING ) );
 
 
-#ifdef HAS_BINK
 	AudioEventRTS sound = data->m_unpackSound;
 	sound.setObjectID( getObject()->getID() );
 	TheAudio->addAudioEvent( &sound );
-#endif
 
 	//Sync the animation length to the time it'll take to unpack.
 	Drawable* draw = getObject()->getDrawable();
@@ -990,9 +982,7 @@ void SpecialAbilityUpdate::startPreparation()
 
 	m_prepSoundLoop = data->m_prepSoundLoop;
 	m_prepSoundLoop.setObjectID( getObject()->getID() );
-#ifdef HAS_BINK
 	m_prepSoundLoop.setPlayingHandle( TheAudio->addAudioEvent( &m_prepSoundLoop ) );
-#endif
 
 }
 
@@ -1135,11 +1125,9 @@ Bool SpecialAbilityUpdate::continuePreparation()
 
 						targetDraw->flashAsSelected( &myHouseColor ); //In MY house color, not his!
 
-#ifdef HAS_BINK
 						AudioEventRTS defectorTimerSound = TheAudio->getMiscAudio()->m_defectorTimerTickSound;
 						defectorTimerSound.setObjectID( m_targetID );
 						TheAudio->addAudioEvent(&defectorTimerSound);
-#endif
 
 					}
 				}
@@ -1186,11 +1174,9 @@ void SpecialAbilityUpdate::triggerAbilityEffect()
 	}
 
 
-#ifdef HAS_BINK
 	AudioEventRTS sound = data->m_triggerSound;
 	sound.setObjectID( object->getID() );
 	TheAudio->addAudioEvent( &sound );
-#endif
 	
 
 	Bool okToLoseStealth = TRUE;
@@ -1799,9 +1785,7 @@ Object* SpecialAbilityUpdate::findSpecialObjectWithProducerID( const Object *tar
 void SpecialAbilityUpdate::endPreparation()
 {
 	getObject()->clearStatus( OBJECT_STATUS_IS_USING_ABILITY );
-#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( m_prepSoundLoop.getPlayingHandle() );
-#endif
 
 	// Based on the special that we just finished preparing (either by failure or success),
 	// do we want to keep the "special objects" created? Some specials will -- others won't.

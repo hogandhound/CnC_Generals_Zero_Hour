@@ -1285,7 +1285,6 @@ protected:
 				doStuffToObj( debris, m_names[pick], pos, mtx, orientation, sourceObj, lifetimeFrames );
 			}
 
-#ifdef HAS_BINK
 			if (m_fadeIn) 
 			{
 				AudioEventRTS fadeAudioEvent(m_fadeSoundName);
@@ -1301,7 +1300,6 @@ protected:
 				TheAudio->addAudioEvent(&fadeAudioEvent);
 				debris->getDrawable()->fadeOut(m_fadeFrames);
 			}
-#endif
 		}
 
 		if (container)

@@ -1668,9 +1668,7 @@ void InGameUI::update( void )
 
 					// lets make a sound
 					static AudioEventRTS click("MilitarySubtitlesTyping");
-#ifdef HAS_BINK
 					TheAudio->addAudioEvent(&click);
-#endif
 					if(TheGlobalLanguageData)
 						m_militarySubtitle->incrementOnFrame = currLogicFrame + TheGlobalLanguageData->m_militaryCaptionSpeed;
 					else

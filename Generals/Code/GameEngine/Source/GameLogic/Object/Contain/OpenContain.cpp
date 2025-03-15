@@ -421,11 +421,9 @@ void OpenContain::doLoadSound()
 		{
 			if (getOpenContainModuleData())
 			{
-#ifdef HAS_BINK
 				AudioEventRTS enterSound(getOpenContainModuleData()->m_enterSound);
 				enterSound.setObjectID(getObject()->getID());
 				TheAudio->addAudioEvent(&enterSound);
-#endif
 			}
 			// save this frame as the last time we did this sound
 			m_lastLoadSoundFrame = now;
@@ -446,12 +444,10 @@ void OpenContain::doUnloadSound()
 	{
 		if (getOpenContainModuleData())
 		{
-#ifdef HAS_BINK
 			AudioEventRTS exitSound(getOpenContainModuleData()->m_exitSound);
 			exitSound.setObjectID(getObject()->getID());
 
 			TheAudio->addAudioEvent(&exitSound);
-#endif
 		}
 		// save this frame as the last time we did this sound
 		m_lastUnloadSoundFrame = now;
@@ -628,11 +624,9 @@ void OpenContain::onContaining( Object * /*rider*/ )
 	// Play audio
 	if( m_loadSoundsEnabled )
 	{
-#ifdef HAS_BINK
 		AudioEventRTS enterSound = *getObject()->getTemplate()->getSoundEnter();
 		enterSound.setObjectID(getObject()->getID());
 		TheAudio->addAudioEvent(&enterSound);
-#endif
 	}
 }
 
@@ -642,7 +636,6 @@ void OpenContain::onRemoving( Object *rider)
 	// Play audio
 	AudioEventRTS exitSound = *getObject()->getTemplate()->getSoundExit();
 	exitSound.setObjectID(getObject()->getID());
-#ifdef HAS_BINK
 	TheAudio->addAudioEvent(&exitSound);
 
 	if (rider) {
@@ -651,7 +644,6 @@ void OpenContain::onRemoving( Object *rider)
 		fallingSound.setObjectID(rider->getID());
 		TheAudio->addAudioEvent(&fallingSound);
 	}
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------

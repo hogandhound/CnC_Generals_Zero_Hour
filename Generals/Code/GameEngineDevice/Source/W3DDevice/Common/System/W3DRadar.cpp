@@ -583,10 +583,8 @@ void W3DRadar::drawEvents( Int pixelX, Int pixelY, Int width, Int height )
 			// if we haven't played the sound for this event, do it now that we can see it
 			if( m_event[ i ].soundPlayed == FALSE && m_event[i].type != RADAR_EVENT_BEACON_PULSE )
 			{
-#ifdef HAS_BINK
 				static AudioEventRTS eventSound("RadarEvent");
 				TheAudio->addAudioEvent( &eventSound );
-#endif
 			}  // end if
 
 			m_event[ i ].soundPlayed = TRUE;

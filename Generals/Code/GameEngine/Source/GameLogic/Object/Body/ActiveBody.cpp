@@ -497,17 +497,13 @@ void ActiveBody::attemptDamage( DamageInfo *damageInfo )
 			{
 				AudioEventRTS damaged = *obj->getTemplate()->getSoundOnDamaged();
 				damaged.setObjectID(obj->getID());
-#ifdef HAS_BINK
 				TheAudio->addAudioEvent(&damaged);
-#endif
 			}
 			else if (m_curDamageState == BODY_REALLYDAMAGED)
 			{
 				AudioEventRTS reallyDamaged = *obj->getTemplate()->getSoundOnReallyDamaged();
 				reallyDamaged.setObjectID(obj->getID());
-#ifdef HAS_BINK
 				TheAudio->addAudioEvent(&reallyDamaged);
-#endif
 			}
 
 		}
@@ -523,9 +519,7 @@ void ActiveBody::attemptDamage( DamageInfo *damageInfo )
 				AudioEventRTS fearSound = *obj->getTemplate()->getVoiceFear();
 				fearSound.setPosition( obj->getPosition() );
 				fearSound.setPlayerIndex( obj->getControllingPlayer()->getPlayerIndex() );
-#ifdef HAS_BINK
 				TheAudio->addAudioEvent(&fearSound);
-#endif
 			}
 		}
 
@@ -1101,9 +1095,7 @@ void ActiveBody::onVeterancyLevelChanged( VeterancyLevel oldLevel, VeterancyLeve
 		}
 
 		veterancyChanged.setObjectID(getObject()->getID());
-#ifdef HAS_BINK
 		TheAudio->addAudioEvent(&veterancyChanged);
-#endif
 
 		//Also mark the UI dirty -- incase the object is selected or contained.
 		Object *obj = getObject();

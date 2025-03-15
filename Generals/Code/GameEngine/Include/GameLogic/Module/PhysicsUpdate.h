@@ -184,11 +184,7 @@ public:
 
 	void setBounceSound(const AudioEventRTS* bounceSound);
 	const AudioEventRTS* getBounceSound() {
-#ifdef HAS_BINK
 		return m_bounceSound ? &m_bounceSound->m_event : TheAudio->getValidSilentAudioEvent(); 
-#else
-		return nullptr;
-#endif
 	}
 	
 	/**

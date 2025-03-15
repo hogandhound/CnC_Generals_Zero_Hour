@@ -178,7 +178,6 @@ void Win32BIGFileSystem::closeArchiveFile(const Char *filename) {
 		return;
 	}
 
-#ifdef HAS_BINK
 	if (stricmp(filename, MUSIC_BIG) == 0) {
 		// Stop the current audio
 		TheAudio->stopAudio(AudioAffect_Music);
@@ -186,7 +185,6 @@ void Win32BIGFileSystem::closeArchiveFile(const Char *filename) {
 		// No need to turn off other audio, as the lookups will just fail.
 	}
 	DEBUG_ASSERTCRASH(stricmp(filename, MUSIC_BIG) == 0, ("Attempting to close Archive file '%s', need to add code to handle its shutdown correctly.", filename));
-#endif
 
 	// may need to do some other processing here first.
 	

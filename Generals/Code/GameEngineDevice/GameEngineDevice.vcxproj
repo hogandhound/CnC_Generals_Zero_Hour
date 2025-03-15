@@ -354,6 +354,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\MilesAudioDevice\MilesAudioManager.cpp" />
+    <ClCompile Include="Source\MilesAudioDevice\SoLoudAudioManager.cpp" />
     <ClCompile Include="Source\VideoDevice\Bink\BinkVideoPlayer.cpp" />
     <ClCompile Include="Source\W3DDevice\Common\System\W3DFunctionLexicon.cpp" />
     <ClCompile Include="Source\W3DDevice\Common\System\W3DRadar.cpp" />
@@ -641,6 +642,7 @@ if ERRORLEVEL 7 ECHO Warning: Output File Read Only! </Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\MilesAudioDevice\MilesAudioManager.h" />
+    <ClInclude Include="Include\MilesAudioDevice\SoLoudAudioManager.h" />
     <ClInclude Include="Include\VideoDevice\Bink\BINK.H" />
     <ClInclude Include="Include\VideoDevice\Bink\BinkVideoPlayer.h" />
     <ClInclude Include="Include\VideoDevice\Bink\RAD.H" />

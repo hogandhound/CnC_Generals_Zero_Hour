@@ -248,12 +248,10 @@ void GameSpyInfo::addChat( PlayerInfo p, UnicodeString msg, Bool isPublic, Bool 
 		{
 			AudioEventRTS privMsgAudio("GUIMessageReceived");
 
-#ifdef HAS_BINK
 			if( TheAudio )
 			{
 				TheAudio->addAudioEvent( &privMsgAudio );
 			}  // end if
-#endif
 		}
 	}
 
@@ -309,10 +307,8 @@ Int GameSpyInfo::addText( UnicodeString message, Color c, GameWindow *win )
 {
 	if (TheGameSpyGame && TheGameSpyGame->isInGame() && TheGameSpyGame->isGameInProgress())
 	{
-#ifdef HAS_BINK
 		static AudioEventRTS messageFromChatSound("GUIMessageReceived");
 		TheAudio->addAudioEvent(&messageFromChatSound);
-#endif
 
 		TheInGameUI->message(message);
 	}

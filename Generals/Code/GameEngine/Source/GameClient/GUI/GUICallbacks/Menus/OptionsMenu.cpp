@@ -461,11 +461,7 @@ AsciiString OptionPreferences::getPreferred3DProvider(void)
 {
 	OptionPreferences::const_iterator it = find("3DAudioProvider");
 	if (it == end())
-#ifdef HAS_BINK
 		return TheAudio->getAudioSettings()->m_preferred3DProvider[MAX_HW_PROVIDERS];
-#else
-		return "";
-#endif
 	return it->second;
 }
 
@@ -473,11 +469,7 @@ AsciiString OptionPreferences::getSpeakerType(void)
 {
 	OptionPreferences::const_iterator it = find("SpeakerType");
 	if (it == end())
-#ifdef HAS_BINK
 		return TheAudio->translateUnsignedIntToSpeakerType(TheAudio->getAudioSettings()->m_defaultSpeakerType2D);
-#else
-		return "";
-#endif
 	return it->second;
 }
 
@@ -486,7 +478,6 @@ Real OptionPreferences::getSoundVolume(void)
 	OptionPreferences::const_iterator it = find("SFXVolume");
 	if (it == end())
 	{
-#ifdef HAS_BINK
 		Real relative = TheAudio->getAudioSettings()->m_relative2DVolume;
 		if( relative < 0 )
 		{
@@ -494,9 +485,6 @@ Real OptionPreferences::getSoundVolume(void)
 			return TheAudio->getAudioSettings()->m_defaultSoundVolume * 100.0f * scale;
 		}
 		return TheAudio->getAudioSettings()->m_defaultSoundVolume * 100.0f;
-#else
-		return 0.f;
-#endif
 	}
 
 	Real volume = (Real) atof(it->second.str());
@@ -512,7 +500,6 @@ Real OptionPreferences::get3DSoundVolume(void)
 	OptionPreferences::const_iterator it = find("SFX3DVolume");
 	if (it == end())
 	{
-#ifdef HAS_BINK
 		Real relative = TheAudio->getAudioSettings()->m_relative2DVolume;
 		if( relative > 0 )
 		{
@@ -520,9 +507,6 @@ Real OptionPreferences::get3DSoundVolume(void)
 			return TheAudio->getAudioSettings()->m_default3DSoundVolume * 100.0f * scale;
 		}
 		return TheAudio->getAudioSettings()->m_default3DSoundVolume * 100.0f;
-#else
-		return 0.f;
-#endif
 	}
 
 	Real volume = (Real) atof(it->second.str());
@@ -537,11 +521,7 @@ Real OptionPreferences::getSpeechVolume(void)
 {
 	OptionPreferences::const_iterator it = find("VoiceVolume");
 	if (it == end())
-#ifdef HAS_BINK
 		return TheAudio->getAudioSettings()->m_defaultSpeechVolume * 100.0f;
-#else
-		return 0.f;
-#endif
 
 	Real volume = (Real) atof(it->second.str());
 	if (volume < 0.0f)
@@ -727,11 +707,7 @@ Real OptionPreferences::getMusicVolume(void)
 {
 	OptionPreferences::const_iterator it = find("MusicVolume");
 	if (it == end())
-#ifdef HAS_BINK
 		return TheAudio->getAudioSettings()->m_defaultMusicVolume * 100.0f;
-#else
-		return 0.f;
-#endif
 
 	Real volume = (Real) atof(it->second.str());
 	if (volume < 0.0f)
@@ -818,32 +794,20 @@ static void setDefaults( void )
 	// slider music volume
 	GadgetSliderGetMinMax(sliderMusicVolume,&valMin, &valMax);
 	GadgetSliderSetPosition(sliderMusicVolume,
-#ifdef HAS_BINK
 		REAL_TO_INT(TheAudio->getAudioSettings()->m_defaultMusicVolume * 100.0f)
-#else
-		0
-#endif
 	);
 
 	//-------------------------------------------------------------------------------------------------
 	// slider SFX volume
 	GadgetSliderGetMinMax(sliderSFXVolume,&valMin, &valMax);
-#ifdef HAS_BINK
 	Real maxVolume = MAX( TheAudio->getAudioSettings()->m_defaultSoundVolume, TheAudio->getAudioSettings()->m_default3DSoundVolume );
-#else
-	Real maxVolume = 0.f;
-#endif
 	GadgetSliderSetPosition( sliderSFXVolume, REAL_TO_INT( maxVolume * 100.0f ) );
 
 	//-------------------------------------------------------------------------------------------------
 	// slider Voice volume
 	GadgetSliderGetMinMax(sliderVoiceVolume,&valMin, &valMax);
 	GadgetSliderSetPosition(sliderVoiceVolume,
-#ifdef HAS_BINK
 		REAL_TO_INT(TheAudio->getAudioSettings()->m_defaultSpeechVolume * 100.0f)
-#else
-		0
-#endif
 	);
 
 	//-------------------------------------------------------------------------------------------------
@@ -1187,9 +1151,7 @@ static void saveOptions( void )
 		AsciiString prefString;
 		prefString.format("%d", val);
 		(*pref)["MusicVolume"] = prefString;
-#ifdef HAS_BINK
 		TheAudio->setVolume(val / 100.0f, (AudioAffect)(AudioAffect_Music | AudioAffect_SystemSetting));
-#endif
 	}
 	
 	//-------------------------------------------------------------------------------------------------
@@ -1201,7 +1163,6 @@ static void saveOptions( void )
 		//relative slider that gets applied to one of these values to lower that sound volume.
 		Real sound2DVolume = val / 100.0f;
 		Real sound3DVolume = val / 100.0f;
-#ifdef HAS_BINK
 		Real relative2DVolume = TheAudio->getAudioSettings()->m_relative2DVolume;
 		relative2DVolume = MIN( 1.0f, MAX( -1.0, relative2DVolume ) );
 		if( relative2DVolume < 0.0f )
@@ -1218,7 +1179,6 @@ static void saveOptions( void )
 		//Apply the sound volumes in the audio system now.
     TheAudio->setVolume( sound2DVolume, (AudioAffect) (AudioAffect_Sound | AudioAffect_SystemSetting) );
 		TheAudio->setVolume( sound3DVolume, (AudioAffect) (AudioAffect_Sound3D | AudioAffect_SystemSetting) );
-#endif
 
 		//Save the settings in the options.ini.
     TheWritableGlobalData->m_SFXVolumeFactor = val;
@@ -1238,9 +1198,7 @@ static void saveOptions( void )
     AsciiString prefString;
     prefString.format("%d", val);
     (*pref)["VoiceVolume"] = prefString;
-#ifdef HAS_BINK
     TheAudio->setVolume(val / 100.0f, (AudioAffect) (AudioAffect_Speech | AudioAffect_SystemSetting));
-#endif
 	}
 
  	//-------------------------------------------------------------------------------------------------

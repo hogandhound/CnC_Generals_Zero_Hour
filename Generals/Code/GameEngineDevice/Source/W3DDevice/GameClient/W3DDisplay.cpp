@@ -1793,12 +1793,12 @@ AGAIN:
 				if( TheMouse )
 					TheMouse->DRAW();
 
+#ifdef HAS_BINK
 				if ( m_videoStream && m_videoBuffer )
 				{
-#ifdef HAS_BINK
 					drawVideoBuffer( m_videoBuffer, 0, 0, getWidth(), getHeight() );
-#endif
 				}
+#endif
 				if( m_copyrightDisplayString )
 				{
 					Int x, y, dX, dY;

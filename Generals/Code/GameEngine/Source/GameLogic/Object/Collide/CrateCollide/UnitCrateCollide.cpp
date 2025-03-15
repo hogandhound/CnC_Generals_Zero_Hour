@@ -84,11 +84,9 @@ Bool UnitCrateCollide::executeCrateBehavior( Object *other )
 	}
 
 	//Play a crate pickup sound.
-#ifdef HAS_BINK
 	AudioEventRTS soundToPlay = TheAudio->getMiscAudio()->m_crateFreeUnit;
 	soundToPlay.setObjectID( other->getID() );
 	TheAudio->addAudioEvent(&soundToPlay);
-#endif
 
 	return TRUE;
 }

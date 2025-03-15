@@ -378,6 +378,9 @@
     <ClCompile Include="Source\MilesAudioDevice\MilesAudioManager.cpp">
       <Filter>Source\MilesAudioDevice</Filter>
     </ClCompile>
+    <ClCompile Include="Source\MilesAudioDevice\SoLoudAudioManager.cpp">
+      <Filter>Source\MilesAudioDevice</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\W3DDevice\GameLogic\W3DGameLogic.h">
@@ -627,6 +630,9 @@
       <Filter>Include\VideoDevice H\Bink H</Filter>
     </ClInclude>
     <ClInclude Include="Include\MilesAudioDevice\MilesAudioManager.h">
+      <Filter>Include\MilesAudioDevice H</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\MilesAudioDevice\SoLoudAudioManager.h">
       <Filter>Include\MilesAudioDevice H</Filter>
     </ClInclude>
   </ItemGroup>

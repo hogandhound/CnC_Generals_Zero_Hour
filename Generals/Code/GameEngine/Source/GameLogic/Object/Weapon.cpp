@@ -1519,12 +1519,10 @@ void WeaponStore::postProcessLoad()
 		weapon->m_projectileName.clear();
 
 #if defined(_DEBUG) || defined(_INTERNAL)
-#ifdef HAS_BINK
 	if (!weapon->getFireSound().getEventName().isEmpty() && weapon->getFireSound().getEventName().compareNoCase("NoSound") != 0) 
 	{ 
 		DEBUG_ASSERTCRASH(TheAudio->isValidAudioEvent(&weapon->getFireSound()), ("Invalid FireSound %s in Weapon '%s'.", weapon->getFireSound().getEventName().str(), weapon->getName().str())); 
 	}
-#endif
 #endif
 
 }

@@ -192,9 +192,7 @@ UpdateSleepTime DeliverPayloadAIUpdate::update( void )
 				if( soundDive.getEventName().isNotEmpty() ) 
 				{
 					soundDive.setPosition( getObject()->getPosition() );
-#ifdef HAS_BINK
 					TheAudio->addAudioEvent( &soundDive );
-#endif
 				}
 			}
 		}

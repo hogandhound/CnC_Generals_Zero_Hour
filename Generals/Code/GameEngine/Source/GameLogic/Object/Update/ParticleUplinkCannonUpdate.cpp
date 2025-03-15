@@ -222,12 +222,10 @@ void ParticleUplinkCannonUpdate::killEverything()
 		m_orbitToTargetBeamID = INVALID_DRAWABLE_ID;
 	}
 
-#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( m_powerupSound.getPlayingHandle() );
 	TheAudio->removeAudioEvent( m_unpackToReadySound.getPlayingHandle() );
 	TheAudio->removeAudioEvent( m_firingToIdleSound.getPlayingHandle() );
 	TheAudio->removeAudioEvent( m_annihilationSound.getPlayingHandle() );
-#endif
 
 }
 
@@ -263,12 +261,10 @@ void ParticleUplinkCannonUpdate::onObjectCreated()
 	m_unpackToReadySound.setEventName( data->m_unpackToReadySoundName );
 	m_firingToIdleSound.setEventName( data->m_firingToIdleSoundName );
 	m_annihilationSound.setEventName( data->m_annihilationSoundName );
-#ifdef HAS_BINK
 	TheAudio->getInfoForAudioEvent( &m_powerupSound );
 	TheAudio->getInfoForAudioEvent( &m_unpackToReadySound );
 	TheAudio->getInfoForAudioEvent( &m_firingToIdleSound );
 	TheAudio->getInfoForAudioEvent( &m_annihilationSound );
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -436,9 +432,7 @@ UpdateSleepTime ParticleUplinkCannonUpdate::update()
 				if( beam )
 				{
 					//m_annihilationSound.setPosition( beam->getPosition() );
-#ifdef HAS_BINK
 					TheAudio->removeAudioEvent( m_annihilationSound.getPlayingHandle() );
-#endif
 					if( orbitalDeathFrame <= now )
 					{
 						TheGameClient->destroyDrawable( beam );
@@ -911,9 +905,7 @@ void ParticleUplinkCannonUpdate::createOrbitToTargetLaser( UnsignedInt growthFra
 	Drawable *beam = TheGameClient->findDrawableByID( m_orbitToTargetBeamID );
 	if( beam )
 	{
-#ifdef HAS_BINK
 		TheAudio->removeAudioEvent( m_annihilationSound.getPlayingHandle() );
-#endif
 		TheGameClient->destroyDrawable( beam );
 		m_orbitToTargetBeamID = INVALID_DRAWABLE_ID;
 	}
@@ -942,9 +934,7 @@ void ParticleUplinkCannonUpdate::createOrbitToTargetLaser( UnsignedInt growthFra
 		{
 			m_annihilationSound.setDrawableID( m_orbitToTargetBeamID );
 			//m_annihilationSound.setPosition( &m_initialTargetPosition );
-#ifdef HAS_BINK
 			m_annihilationSound.setPlayingHandle( TheAudio->addAudioEvent( &m_annihilationSound ) );
-#endif
 		}
 	}
 }
@@ -1066,24 +1056,20 @@ void ParticleUplinkCannonUpdate::setLogicalStatus( PUCStatus newStatus )
 		{
 			//Set unpacked animation
 			obj->clearModelConditionFlags( MAKE_MODELCONDITION_MASK3( MODELCONDITION_PACKING, MODELCONDITION_UNPACKING, MODELCONDITION_DEPLOYED ) );
-#ifdef HAS_BINK
 			TheAudio->removeAudioEvent( m_powerupSound.getPlayingHandle() );
 			TheAudio->removeAudioEvent( m_unpackToReadySound.getPlayingHandle() );
 			TheAudio->removeAudioEvent( m_firingToIdleSound.getPlayingHandle() );
 			TheAudio->removeAudioEvent( m_annihilationSound.getPlayingHandle() );
-#endif
 			break;
 		}
 		case STATUS_CHARGING:
 		{
 			m_laserStatus = LASERSTATUS_NONE;
 			m_powerupSound.setObjectID( obj->getID() );
-#ifdef HAS_BINK
 			m_powerupSound.setPlayingHandle( TheAudio->addAudioEvent( &m_powerupSound ) );
 			TheAudio->removeAudioEvent( m_unpackToReadySound.getPlayingHandle() );
 			TheAudio->removeAudioEvent( m_firingToIdleSound.getPlayingHandle() );
 			TheAudio->removeAudioEvent( m_annihilationSound.getPlayingHandle() );
-#endif
 			break;
 		}
 		case STATUS_PREPARING:
@@ -1091,7 +1077,7 @@ void ParticleUplinkCannonUpdate::setLogicalStatus( PUCStatus newStatus )
 			//Set unpacking animation
 			obj->clearAndSetModelConditionFlags( MAKE_MODELCONDITION_MASK2( MODELCONDITION_PACKING, MODELCONDITION_DEPLOYED ),
 																					MAKE_MODELCONDITION_MASK( MODELCONDITION_UNPACKING ) );
-#ifdef HAS_BINK
+
 			if( m_unpackToReadySound.getEventName().isNotEmpty() )
 			{
 				m_unpackToReadySound.setObjectID( obj->getID() );
@@ -1099,7 +1085,6 @@ void ParticleUplinkCannonUpdate::setLogicalStatus( PUCStatus newStatus )
 			}
 			TheAudio->removeAudioEvent( m_firingToIdleSound.getPlayingHandle() );
 			TheAudio->removeAudioEvent( m_annihilationSound.getPlayingHandle() );
-#endif
 			
 			m_laserStatus = LASERSTATUS_NONE;
 			break;
@@ -1116,11 +1101,9 @@ void ParticleUplinkCannonUpdate::setLogicalStatus( PUCStatus newStatus )
 		{
 			obj->clearAndSetModelConditionFlags( MAKE_MODELCONDITION_MASK2( MODELCONDITION_PACKING, MODELCONDITION_UNPACKING ),
 																					 MAKE_MODELCONDITION_MASK( MODELCONDITION_DEPLOYED ) );
-#ifdef HAS_BINK
 			TheAudio->removeAudioEvent( m_powerupSound.getPlayingHandle() );
 			TheAudio->removeAudioEvent( m_firingToIdleSound.getPlayingHandle() );
 			TheAudio->removeAudioEvent( m_annihilationSound.getPlayingHandle() );
-#endif
 			m_laserStatus = LASERSTATUS_NONE;
 			break;
 		}
@@ -1132,7 +1115,7 @@ void ParticleUplinkCannonUpdate::setLogicalStatus( PUCStatus newStatus )
 		{
 			obj->clearAndSetModelConditionFlags( MAKE_MODELCONDITION_MASK2( MODELCONDITION_PACKING, MODELCONDITION_UNPACKING ),
 																					 MAKE_MODELCONDITION_MASK( MODELCONDITION_DEPLOYED ) );
-#ifdef HAS_BINK
+
 			if( m_firingToIdleSound.getEventName().isNotEmpty() )
 			{
 				m_firingToIdleSound.setObjectID( obj->getID() );
@@ -1141,7 +1124,7 @@ void ParticleUplinkCannonUpdate::setLogicalStatus( PUCStatus newStatus )
 			TheAudio->removeAudioEvent( m_powerupSound.getPlayingHandle() );
 			TheAudio->removeAudioEvent( m_unpackToReadySound.getPlayingHandle() );
 			TheAudio->removeAudioEvent( m_annihilationSound.getPlayingHandle() );
-#endif
+
 			m_nextLaunchFXFrame = 0;
 			break;
 		}

@@ -668,9 +668,7 @@ void BridgeBehavior::onBodyDamageStateChange( const DamageInfo* damageInfo,
 	{
 
 		// play the sound
-#ifdef HAS_BINK
 		TheAudio->addAudioEvent( &m_repairToSound[ newState ] );
-#endif
 
 		for( Int i = 0; i < MAX_BRIDGE_BODY_FX; i++ )
 			doAreaEffects( bridgeTemplate, bridge, m_repairToOCL[ newState ][ i ], m_repairToFX[ newState ][ i ] );
@@ -680,9 +678,7 @@ void BridgeBehavior::onBodyDamageStateChange( const DamageInfo* damageInfo,
 	{
 
 		// play the sound
-#ifdef HAS_BINK
 		TheAudio->addAudioEvent( &m_damageToSound[ newState ] );
-#endif
 
 		for( Int i = 0; i < MAX_BRIDGE_BODY_FX; i++ )
 			doAreaEffects( bridgeTemplate, bridge, m_damageToOCL[ newState ][ i ], m_damageToFX[ newState ][ i ] );

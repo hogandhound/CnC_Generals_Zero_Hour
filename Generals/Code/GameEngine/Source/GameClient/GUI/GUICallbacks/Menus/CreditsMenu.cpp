@@ -103,12 +103,10 @@ void CreditsMenuInit( WindowLayout *layout, void *userData )
 
 
 
-#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( AHSV_StopTheMusicFade );
 	AudioEventRTS event( AsciiString( "Credits" ) );
 	event.setShouldFade( TRUE );
 	TheAudio->addAudioEvent( &event );
-#endif
 
 }  // end CreditsMenuInit
 
@@ -128,9 +126,7 @@ void CreditsMenuShutdown( WindowLayout *layout, void *userData )
 	// our shutdown is complete
 	TheShell->shutdownComplete( layout );
 
-#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( AHSV_StopTheMusicFade );
-#endif
 
 }  // end CreditsMenuShutdown
 

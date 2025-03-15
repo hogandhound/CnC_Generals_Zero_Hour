@@ -3888,7 +3888,6 @@ void Drawable::startAmbientSound(BodyDamageType dt, TimeOfDay tod)
 		}
 	}
 	
-#ifdef HAS_BINK
 	if( trySound && m_ambientSound )
 	{
 		const AudioEventInfo *info = m_ambientSound->m_event.getAudioEventInfo();
@@ -3922,7 +3921,6 @@ void Drawable::startAmbientSound(BodyDamageType dt, TimeOfDay tod)
 			m_ambientSound = NULL;
 		}
 	}
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3945,10 +3943,8 @@ void Drawable::startAmbientSound()
 //-------------------------------------------------------------------------------------------------
 void	Drawable::stopAmbientSound( void )
 {
-#ifdef HAS_BINK
 	if (m_ambientSound)
 		TheAudio->removeAudioEvent(m_ambientSound->m_event.getPlayingHandle());
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -4281,11 +4277,9 @@ void Drawable::xfer( Xfer *xfer )
 	//and restore it in loadPostProcess().
 	if( xfer->getXferMode() == XFER_LOAD && m_ambientSound )
 	{
-#ifdef HAS_BINK
 		TheAudio->killAudioEventImmediately( m_ambientSound->m_event.getPlayingHandle() );
 		m_ambientSound->deleteInstance();
 		m_ambientSound = NULL;
-#endif
 	}
 
 	// drawable id

@@ -1413,13 +1413,11 @@ GameWindow *GameWindow::winPointInChild( Int x, Int y, Bool ignoreEnableCheck, B
 				}
 				else if( playDisabledSound )
 				{
-#ifdef HAS_BINK
 					AudioEventRTS disabledClick( "GUIClickDisabled" );
 					if( TheAudio )
 					{
 						TheAudio->addAudioEvent( &disabledClick );
 					}
-#endif
 				}
 			}
 		}

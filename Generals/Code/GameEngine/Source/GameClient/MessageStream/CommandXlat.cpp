@@ -399,7 +399,6 @@ void pickAndPlayUnitVoiceResponse( const DrawableList *list, GameMessage::Type m
 					}
 					if (msgType == GameMessage::MSG_DO_SALVAGE) 
 					{
-#ifdef HAS_BINK
 						const AudioEventRTS *tempSound = templ->getPerUnitSound( "VoiceSalvage" );
 						if (TheAudio->isValidAudioEvent(tempSound))
 						{
@@ -407,9 +406,6 @@ void pickAndPlayUnitVoiceResponse( const DrawableList *list, GameMessage::Type m
 							objectWithSound = obj;
 							skip = true;
 						}
-#else
-						skip = true;
-#endif
 					}
 				}
 				break;
@@ -432,11 +428,9 @@ void pickAndPlayUnitVoiceResponse( const DrawableList *list, GameMessage::Type m
 				objectWithSound = obj;
 				skip = true;
 
-#ifdef HAS_BINK
 				if (TheAudio->isValidAudioEvent(soundToPlayPtr)) {
 					break;
 				} else 
-#endif
 				{
 					// clear out the sound to play, and drop into the attack object logic.
 					soundToPlayPtr = NULL;
@@ -653,7 +647,6 @@ void pickAndPlayUnitVoiceResponse( const DrawableList *list, GameMessage::Type m
 	if( objectWithSound )
 	{
 		soundToPlay.setObjectID( objectWithSound->getID() );
-#ifdef HAS_BINK
 		TheAudio->addAudioEvent(&soundToPlay);
 
 		// This seems really hacky, and MarkL admits that it is. However, we do this so that we 
@@ -700,7 +693,6 @@ void pickAndPlayUnitVoiceResponse( const DrawableList *list, GameMessage::Type m
 					break;
 			}
 		}
-#endif
 	}
 }
 
@@ -2495,9 +2487,7 @@ GameMessageDisposition CommandTranslator::translateGameMessage(const GameMessage
 						// play the units sound
 						AudioEventRTS soundEvent = *temp->getTemplate()->getVoiceSelect();
 						soundEvent.setObjectID(object->getID());
-#ifdef HAS_BINK
 						TheAudio->addAudioEvent( &soundEvent );
-#endif
 
 						// center on the unit
 						TheTacticalView->lookAt(temp->getPosition());
@@ -3128,9 +3118,7 @@ GameMessageDisposition CommandTranslator::translateGameMessage(const GameMessage
 		{
 			if ( TheGameLogic->isInMultiplayerGame() )
 			{
-#ifdef HAS_BINK
 				TheAudio->addAudioEvent(&TheAudio->getMiscAudio()->m_allCheerSound);
-#endif
 				disp = DESTROY_MESSAGE;
 				TheMessageStream->appendMessage( GameMessage::MSG_DO_CHEER );
 			}
@@ -3962,7 +3950,6 @@ GameMessageDisposition CommandTranslator::translateGameMessage(const GameMessage
 		//-----------------------------------------------------------------------------------------
 		case GameMessage::MSG_META_DEMO_TOGGLE_SOUND:
 		{
-#ifdef HAS_BINK
 			if (TheAudio->isOn(AudioAffect_Sound))
 			{
 				TheDisplay->stopMovie();
@@ -3973,7 +3960,6 @@ GameMessageDisposition CommandTranslator::translateGameMessage(const GameMessage
 			{
 				TheAudio->setOn(true, AudioAffect_All);
 			}
-#endif
 			disp = DESTROY_MESSAGE;
 			break;
 		}  
@@ -4157,7 +4143,6 @@ GameMessageDisposition CommandTranslator::translateGameMessage(const GameMessage
 		//-----------------------------------------------------------------------------------------
 		case GameMessage::MSG_META_DEMO_TOGGLE_MUSIC:
 		{
-#ifdef HAS_BINK
 			if (TheAudio->isMusicPlaying()) {
 				TheAudio->stopAudio(AudioAffect_Music);
 				TheInGameUI->message( UnicodeString( L"Stopping Music" ));
@@ -4165,7 +4150,6 @@ GameMessageDisposition CommandTranslator::translateGameMessage(const GameMessage
 				TheAudio->resumeAudio(AudioAffect_Music);
 				TheInGameUI->message( UnicodeString( L"Resuming Music" ));
 			}
-#endif
 
 			disp = DESTROY_MESSAGE;
 			break;
@@ -4175,12 +4159,10 @@ GameMessageDisposition CommandTranslator::translateGameMessage(const GameMessage
 		//-----------------------------------------------------------------------------------------
 		case GameMessage::MSG_META_DEMO_MUSIC_NEXT_TRACK:
 		{
-#ifdef HAS_BINK
 			TheAudio->nextMusicTrack();
 			UnicodeString ustr;
 			ustr.format(L"Playing Track: %hs", TheAudio->getMusicTrackName().str());
 			TheInGameUI->message( ustr );
-#endif
 			disp = DESTROY_MESSAGE;
 			break;
 		} 
@@ -4189,12 +4171,10 @@ GameMessageDisposition CommandTranslator::translateGameMessage(const GameMessage
 		//-----------------------------------------------------------------------------------------
 		case GameMessage::MSG_META_DEMO_MUSIC_PREV_TRACK:
 		{
-#ifdef HAS_BINK
 			TheAudio->prevMusicTrack();
 			UnicodeString ustr;
 			ustr.format(L"Playing Track: %hs", TheAudio->getMusicTrackName().str());
 			TheInGameUI->message( ustr );
-#endif
 			disp = DESTROY_MESSAGE;
 			break;
 		} 
@@ -4506,9 +4486,7 @@ GameMessageDisposition CommandTranslator::translateGameMessage(const GameMessage
 		// --------------------------------------------------------------------------------------------
 		case GameMessage::MSG_META_DEMO_BATTLE_CRY:
 		{
-#ifdef HAS_BINK
 			TheAudio->addAudioEvent(&TheAudio->getMiscAudio()->m_battleCrySound);
-#endif
 
 			disp = DESTROY_MESSAGE;
 			break;

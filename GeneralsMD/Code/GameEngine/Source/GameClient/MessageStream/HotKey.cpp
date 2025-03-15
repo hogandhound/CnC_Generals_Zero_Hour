@@ -181,22 +181,19 @@ Bool HotKeyManager::executeHotKey( const AsciiString& keyIn )
  			// here we make the same click sound that the GUI uses when you click a button
  			AudioEventRTS buttonClick("GUIClick");
 
-#ifdef HAS_BINK
  			if( TheAudio )
  			{
  				TheAudio->addAudioEvent( &buttonClick );
  			}  // end if
-#endif
+
 			return TRUE;
  		}
 
 		AudioEventRTS disabledClick( "GUIClickDisabled" );
-#ifdef HAS_BINK
 		if( TheAudio )
 		{
 			TheAudio->addAudioEvent( &disabledClick );
 		}
-#endif
 	}
 	return FALSE;
 }

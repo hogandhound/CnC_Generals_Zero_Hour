@@ -155,12 +155,10 @@ WindowMsgHandledType GadgetComboBoxInput( GameWindow *window, UnsignedInt msg,
 				comboData->dontHide = FALSE;
 				AudioEventRTS buttonClick("GUIClick");
 
-#ifdef HAS_BINK
 				if( TheAudio )
 				{
 					TheAudio->addAudioEvent( &buttonClick );
 				}  // end if
-#endif
 
 				GameWindow *listBox = GadgetComboBoxGetListBox(window);
 				if (listBox)

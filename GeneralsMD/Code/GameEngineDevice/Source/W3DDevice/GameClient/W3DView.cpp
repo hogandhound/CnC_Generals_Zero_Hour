@@ -963,12 +963,10 @@ static void drawAudioRadii( const Drawable * drawable )
     {
       // I don't think that's right...
       OutputDebugString( ("Playing sound has NULL AudioEventInfo?\n" ) );
-#ifdef HAS_BINK
       if ( TheAudio != NULL )
       {
         ambientInfo = TheAudio->findAudioEventInfo( ambientSound->getEventName() );
       }
-#endif
     }
     
     if ( ambientInfo != NULL )

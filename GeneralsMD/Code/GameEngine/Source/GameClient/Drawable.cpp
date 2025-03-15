@@ -1325,14 +1325,12 @@ void Drawable::updateDrawable( void )
   {
     const AudioEventInfo * eventInfo = m_ambientSound->m_event.getAudioEventInfo();
 
-#if HAS_BINK
     if ( eventInfo == NULL && TheAudio != NULL )
     {
       // We'll need this in a second anyway so cache it
       TheAudio->getInfoForAudioEvent( &m_ambientSound->m_event );
       eventInfo = m_ambientSound->m_event.getAudioEventInfo();
     }
-#endif
 
     if ( eventInfo == NULL || ( eventInfo->isPermanentSound() ) )
     {
@@ -4510,7 +4508,6 @@ void Drawable::startAmbientSound(BodyDamageType dt, TimeOfDay tod, Bool onlyIfPe
   }
   
 	
-#ifdef HAS_BINK
 	if( trySound && m_ambientSound )
 	{
 		const AudioEventInfo *info = m_ambientSound->m_event.getAudioEventInfo();
@@ -4547,7 +4544,6 @@ void Drawable::startAmbientSound(BodyDamageType dt, TimeOfDay tod, Bool onlyIfPe
 			m_ambientSound = NULL;
 		}
 	}
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -4574,12 +4570,10 @@ void Drawable::startAmbientSound( Bool onlyIfPermanent )
 //-------------------------------------------------------------------------------------------------
 void	Drawable::stopAmbientSound( void )
 {
-#ifdef HAS_BINK
 	if (m_ambientSound)
   {
 		TheAudio->removeAudioEvent(m_ambientSound->m_event.getPlayingHandle());
   }
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -4940,11 +4934,9 @@ void Drawable::xfer( Xfer *xfer )
 	//and restore it in loadPostProcess().
 	if( xfer->getXferMode() == XFER_LOAD && m_ambientSound )
 	{
-#ifdef HAS_BINK
 		TheAudio->killAudioEventImmediately( m_ambientSound->m_event.getPlayingHandle() );
 		m_ambientSound->deleteInstance();
 		m_ambientSound = NULL;
-#endif
 	}
 
 	// drawable id
@@ -5356,7 +5348,6 @@ void Drawable::xfer( Xfer *xfer )
         }
         else
         {
-#ifdef HAS_BINK
           AsciiString baseInfoName;
           xfer->xferAsciiString( &baseInfoName );
           const AudioEventInfo * baseInfo = TheAudio->findAudioEventInfo( baseInfoName );
@@ -5407,7 +5398,6 @@ void Drawable::xfer( Xfer *xfer )
 
             throw; //rethrow
           }
-#endif
         }
       }
       else // else we are saving...

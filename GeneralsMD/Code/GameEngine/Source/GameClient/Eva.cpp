@@ -545,9 +545,7 @@ void Eva::processPlayingMessages(UnsignedInt currentFrame)
 	// sound to the local player.
 	m_evaSpeech.setPlayerIndex(m_localPlayer->getPlayerIndex());
 
-#ifdef HAS_BINK
 	m_evaSpeech.setPlayingHandle(TheAudio->addAudioEvent(&m_evaSpeech));
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------

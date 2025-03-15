@@ -424,7 +424,6 @@ void GameEngine::init( int argc, char *argv[] )
 		initSubsystem(TheTerrainRoads,"TheTerrainRoads", new TerrainRoadCollection(), &xferCRC, "Data\\INI\\Default\\Roads.ini", "Data\\INI\\Roads.ini");
 		initSubsystem(TheGlobalLanguageData,"TheGlobalLanguageData", new  GlobalLanguage, NULL); // must be before the game text
 		initSubsystem(TheCDManager,"TheCDManager", CreateCDManager(), NULL);
-#ifdef HAS_BINK
 	#ifdef DUMP_PERF_STATS///////////////////////////////////////////////////////////////////////////
 	GetPrecisionTimer(&endTime64);//////////////////////////////////////////////////////////////////
 	sprintf(Buf,"----------------------------------------------------------------------------After TheCDManager = %f seconds \n",((double)(endTime64-startTime64)/(double)(freq64)));
@@ -440,7 +439,6 @@ void GameEngine::init( int argc, char *argv[] )
   startTime64 = endTime64;//Reset the clock ////////////////////////////////////////////////////////
 	DEBUG_LOG(("%s", Buf));////////////////////////////////////////////////////////////////////////////
 	#endif/////////////////////////////////////////////////////////////////////////////////////////////
-#endif
 
 		initSubsystem(TheFunctionLexicon,"TheFunctionLexicon", createFunctionLexicon(), NULL);
 		initSubsystem(TheModuleFactory,"TheModuleFactory", createModuleFactory(), NULL);
@@ -557,12 +555,10 @@ void GameEngine::init( int argc, char *argv[] )
 
 		setFramesPerSecondLimit(TheGlobalData->m_framesPerSecondLimit);
 
-#ifdef HAS_BINK
 		TheAudio->setOn(TheGlobalData->m_audioOn && TheGlobalData->m_musicOn, AudioAffect_Music);
 		TheAudio->setOn(TheGlobalData->m_audioOn && TheGlobalData->m_soundsOn, AudioAffect_Sound);
 		TheAudio->setOn(TheGlobalData->m_audioOn && TheGlobalData->m_sounds3DOn, AudioAffect_Sound3D);
 		TheAudio->setOn(TheGlobalData->m_audioOn && TheGlobalData->m_speechOn, AudioAffect_Speech);
-#endif
 			
 		// We're not in a network game yet, so set the network singleton to NULL.
 		TheNetwork = NULL;
@@ -758,9 +754,7 @@ void GameEngine::update( void )
 
 			/// @todo Move audio init, update, etc, into GameClient update
 
-#ifdef HAS_BINK
 			TheAudio->UPDATE();
-#endif
 			TheGameClient->UPDATE();
 			TheMessageStream->propagateMessages();
 

@@ -1697,9 +1697,7 @@ void AIInternalMoveToState::startMoveSound(void)
 		if (!soundEventMoveDamaged.getEventName().isEmpty()) 
 		{
 			soundEventMoveDamaged.setObjectID(obj->getID());
-#ifdef HAS_BINK
 			TheAudio->addAudioEvent( &soundEventMoveDamaged );
-#endif
 		} 
 		else 
 		{
@@ -1707,9 +1705,7 @@ void AIInternalMoveToState::startMoveSound(void)
 			if (!soundEventMoveDamaged.getEventName().isEmpty())
 			{
 				soundEventMoveDamaged.setObjectID(obj->getID());
-#ifdef HAS_BINK
 				m_ambientPlayingHandle = TheAudio->addAudioEvent( &soundEventMoveDamaged );
-#endif
 			}
 		}
 	} 
@@ -1717,8 +1713,7 @@ void AIInternalMoveToState::startMoveSound(void)
 	{
 		AudioEventRTS soundEventMove = *obj->getTemplate()->getSoundMoveStart();
 		soundEventMove.setObjectID(obj->getID());
-
-#ifdef HAS_BINK
+		\
 		if (!soundEventMove.getEventName().isEmpty()) 
 		{
 			TheAudio->addAudioEvent( &soundEventMove );
@@ -1732,7 +1727,6 @@ void AIInternalMoveToState::startMoveSound(void)
 				m_ambientPlayingHandle = TheAudio->addAudioEvent( &soundEventMove );
 			}
 		}
-#endif
 	}
 
 }
@@ -1746,9 +1740,7 @@ void AIInternalMoveToState::onExit( StateExitType status )
 	AIUpdateInterface *ai = obj->getAI();
 
 	// stop ambient sound associated with movement
-#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( m_ambientPlayingHandle );
-#endif
 
  	// If this onExit is the result of the state machine being deleted, then there is no AI.
 	// (This is why destructors should not do game logic)

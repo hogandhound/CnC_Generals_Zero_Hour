@@ -427,6 +427,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="Source\MilesAudioDevice\SoLoudAudioManager.cpp" />
     <ClCompile Include="Source\VideoDevice\Bink\BinkVideoPlayer.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
@@ -1152,6 +1153,7 @@ if ERRORLEVEL 7 ECHO Warning: Output File Read Only! </Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\MilesAudioDevice\MilesAudioManager.h" />
+    <ClInclude Include="Include\MilesAudioDevice\SoLoudAudioManager.h" />
     <ClInclude Include="Include\VideoDevice\Bink\BINK.H" />
     <ClInclude Include="Include\VideoDevice\Bink\BinkVideoPlayer.h" />
     <ClInclude Include="Include\VideoDevice\Bink\RAD.H" />

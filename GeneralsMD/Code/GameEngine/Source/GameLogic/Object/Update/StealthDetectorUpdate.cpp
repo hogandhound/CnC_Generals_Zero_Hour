@@ -248,11 +248,9 @@ UpdateSleepTime StealthDetectorUpdate::update( void )
 					if( doFeedback )
 					{
  						// audio msg
-#ifdef HAS_BINK
  						static AudioEventRTS discoveredSound = TheAudio->getMiscAudio()->m_stealthDiscoveredSound;
  						discoveredSound.setPlayerIndex( self->getControllingPlayer()->getPlayerIndex() );
  						TheAudio->addAudioEvent( &discoveredSound );
-#endif
  						// ui msg
  						TheInGameUI->message( TheGameText->fetch( "MESSAGE:StealthDiscovered" ) );
 
@@ -286,11 +284,10 @@ UpdateSleepTime StealthDetectorUpdate::update( void )
 					{
 
  						// audio msg
-#ifdef HAS_BINK
  						static AudioEventRTS neutralizedSound = TheAudio->getMiscAudio()->m_stealthNeutralizedSound;
  						neutralizedSound.setPlayerIndex( them->getControllingPlayer()->getPlayerIndex() );
  						TheAudio->addAudioEvent( &neutralizedSound );
-#endif
+
  						// ui msg
  						TheInGameUI->message( TheGameText->fetch( "MESSAGE:StealthNeutralized" ) );
 
@@ -418,9 +415,7 @@ UpdateSleepTime StealthDetectorUpdate::update( void )
 			  IRPingSound = data->m_pingSound;
 
 		  IRPingSound.setObjectID( self->getID() );
-#ifdef HAS_BINK
 		  TheAudio->addAudioEvent(&IRPingSound);
-#endif
     }
 
 	} // end if doIRFX

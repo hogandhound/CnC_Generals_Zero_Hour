@@ -419,12 +419,10 @@ Object *BuildAssistant::buildObjectNow( Object *constructorObject, const ThingTe
 		{
 			owningPlayer->onUnitCreated( constructorObject, obj );
 
-#ifdef HAS_BINK
 			//Call the voice created for the 1st object -- because it's possible to create multiple objects like redguards!
-			AudioEventRTS sound = *obj->getTemplate()->getPerUnitSound( "VoiceCreated" );
-			sound.setObjectID( obj->getID() );
-			TheAudio->addAudioEvent( &sound );
-#endif
+			AudioEventRTS sound = *obj->getTemplate()->getPerUnitSound("VoiceCreated");
+			sound.setObjectID(obj->getID());
+			TheAudio->addAudioEvent(&sound);
 		}
 
 		// Now onCreates were called at the constructor.  This magically created

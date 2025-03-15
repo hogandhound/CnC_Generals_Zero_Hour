@@ -2086,11 +2086,9 @@ void Object::setDisabledUntil( DisabledType type, UnsignedInt frame )
 	if( type == DISABLED_UNMANNED && !isKindOf( KINDOF_DRONE ) )
 	{
 		//We've been sniped! Play a splatter sound for the pilot losing his face.
-#ifdef HAS_BINK
 		sound = TheAudio->getMiscAudio()->m_splatterVehiclePilotsBrain;
 		sound.setPosition( getPosition() );
 		TheAudio->addAudioEvent( &sound );
-#endif
 	}
 	else if( type == DISABLED_UNDERPOWERED || type == DISABLED_EMP || type == DISABLED_SUBDUED || type == DISABLED_HACKED )
 	{
@@ -2101,7 +2099,6 @@ void Object::setDisabledUntil( DisabledType type, UnsignedInt frame )
 				!isDisabledByType( DISABLED_SUBDUED ) &&
 				!isDisabledByType( DISABLED_HACKED ) )
 		{
-#ifdef HAS_BINK
 			if( isKindOf( KINDOF_STRUCTURE ) )
 			{
 				sound = TheAudio->getMiscAudio()->m_buildingDisabled;
@@ -2114,7 +2111,6 @@ void Object::setDisabledUntil( DisabledType type, UnsignedInt frame )
 				sound.setPosition( getPosition() );
 				TheAudio->addAudioEvent( &sound );
 			}
-#endif
 		}
 	}
 
@@ -2262,7 +2258,6 @@ Bool Object::clearDisabled( DisabledType type )
 				(!isDisabledByType( DISABLED_SUBDUED ) || type == DISABLED_SUBDUED ) &&
 				(!isDisabledByType( DISABLED_HACKED ) || type == DISABLED_HACKED ) )
 		{
-#ifdef HAS_BINK
 			if( isKindOf( KINDOF_STRUCTURE ) )
 			{
 				sound = TheAudio->getMiscAudio()->m_buildingReenabled;
@@ -2275,7 +2270,6 @@ Bool Object::clearDisabled( DisabledType type )
 				sound.setPosition( getPosition() );
 				TheAudio->addAudioEvent( &sound );
 			}
-#endif
 		}
 	}
 
@@ -3169,11 +3163,9 @@ void Object::onVeterancyLevelChanged( VeterancyLevel oldLevel, VeterancyLevel ne
 																			TheGlobalData->m_levelGainAnimationZRisePerSecond);
 		}
 
-#ifdef HAS_BINK
 		AudioEventRTS soundToPlay = TheAudio->getMiscAudio()->m_unitPromoted;	
 		soundToPlay.setObjectID( getID() );
 		TheAudio->addAudioEvent( &soundToPlay );
-#endif
 	}
 
 }
@@ -3657,7 +3649,6 @@ void Object::updateObjValuesFromMapProperties(Dict* properties)
       }
       else
       {
-#ifdef HAS_BINK
         const AudioEventInfo * baseInfo = TheAudio->findAudioEventInfo( valStr );
         DEBUG_ASSERTCRASH( baseInfo != NULL, ("Cannot find customized ambient sound '%s'", valStr.str() ) );
         if ( baseInfo != NULL )
@@ -3665,7 +3656,6 @@ void Object::updateObjValuesFromMapProperties(Dict* properties)
           audioToModify = newInstance( DynamicAudioEventInfo )( *baseInfo );
           infoModified = true;
         }
-#endif
       }
     }
 
@@ -3772,7 +3762,6 @@ void Object::updateObjValuesFromMapProperties(Dict* properties)
     
     if ( infoModified && audioToModify != NULL )
     {
-#ifdef HAS_BINK
       // Give a custom, level-specific name
       drawable->mangleCustomAudioName( audioToModify );
 
@@ -3781,7 +3770,6 @@ void Object::updateObjValuesFromMapProperties(Dict* properties)
 
       drawable->setCustomSoundAmbientInfo( audioToModify );
       audioToModify = NULL; // Belongs to TheAudio now
-#endif
     }
 
     if ( audioToModify != NULL )
@@ -4628,8 +4616,6 @@ void Object::onDie( DamageInfo *damageInfo )
 	handlePartitionCellMaintenance();
 	if(m_team)
 		m_team->notifyTeamOfObjectDeath();
-#ifdef HAS_BINK
-#endif
 
 	if (isLocallyControlled() && !selfInflicted) // wasLocallyControlled? :-)
 	{
@@ -6209,22 +6195,18 @@ void Object::defect( Team* newTeam, UnsignedInt detectionTime )
 	}
 
 	// Play our sound indicating we've been defected. (weird verbage, but true.)
-#ifdef HAS_BINK
 	AudioEventRTS voiceDefect = *getTemplate()->getVoiceDefect();
 	voiceDefect.setObjectID(getID());
 	TheAudio->addAudioEvent(&voiceDefect);
-#endif
 
 	//make the new recruit the only selected thing, awaiting new command to move, attack, etc...
 	Drawable *dr = getDrawable();
 	if (dr)
 	{
 		dr->flashAsSelected(); //This is the first of several flashes which get cue'd by doDefectorUpdateStuff()
-#ifdef HAS_BINK
 		AudioEventRTS defectorTimerSound = TheAudio->getMiscAudio()->m_defectorTimerTickSound;
 		defectorTimerSound.setObjectID( getID() );
 		TheAudio->addAudioEvent(&defectorTimerSound);
-#endif
 	}
 	
 	ContainModuleInterface *ct = getContain();

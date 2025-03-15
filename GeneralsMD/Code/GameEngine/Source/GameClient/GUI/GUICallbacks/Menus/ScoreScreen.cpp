@@ -405,9 +405,7 @@ void ScoreScreenShutdown( WindowLayout *layout, void *userData )
 
 	// our shutdown is complete
 	TheShell->shutdownComplete( layout );
-#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( AHSV_StopTheMusicFade );
-#endif
 }
 
 /** Update the ScoreScreen */
@@ -444,13 +442,11 @@ void ScoreScreenUpdate( WindowLayout * layout, void *userData)
 		AsciiString musicName = pt->getScoreScreenMusic();
 		if ( !musicName.isEmpty() )
 		{
-#ifdef HAS_BINK
 			TheAudio->removeAudioEvent( AHSV_StopTheMusicFade );
 			AudioEventRTS event( musicName );
 			event.setShouldFade( TRUE );
 			TheAudio->addAudioEvent( &event );
 			TheAudio->update();//Since GameEngine::update() is suspended until after I am gone... 
-#endif
 		}
 
 
@@ -753,7 +749,6 @@ void PlayMovieAndBlock(AsciiString movieTitle)
 		videoStream = NULL;
 	}
 #endif
-
 	setFPMode();
 }
 
@@ -807,11 +802,9 @@ void finishSinglePlayerInit( void )
 			strHeader.format( TheGameText->fetch("GUI:ChallengeWinText"), TheGameText->fetch(name).str() ) ;
 			displayChallengeWinLoss(imageGeneralDefeated, strHeader, strGeneralDefeated);
 
-#ifdef HAS_BINK
 			AudioEventRTS event( general->getWinSound() );
 			TheAudio->addAudioEvent( &event );
 			TheAudio->update();
-#endif
 		}
 
 		TheCampaignManager->gotoNextMission();
@@ -926,11 +919,9 @@ void finishSinglePlayerInit( void )
 			strHeader.format( TheGameText->fetch("GUI:ChallengeLossText"), TheGameText->fetch(name).str() ) ;
 			displayChallengeWinLoss(imageGeneralVictorious, strHeader, strGeneralVictorious);
 
-#ifdef HAS_BINK
 			AudioEventRTS event( general->getLossSound() );
 			TheAudio->addAudioEvent( &event );
 			TheAudio->update();
-#endif
 		}
 
 		GadgetButtonSetText(buttonContinue, TheGameText->fetch("GUI:Retry"));

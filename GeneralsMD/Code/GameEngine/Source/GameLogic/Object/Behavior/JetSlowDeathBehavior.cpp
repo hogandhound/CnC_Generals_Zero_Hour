@@ -205,9 +205,7 @@ void JetSlowDeathBehavior::beginSlowDeath( const DamageInfo *damageInfo )
 	{
 
 		m_deathLoopSound.setObjectID( us->getID() );
-#ifdef HAS_BINK
 		m_deathLoopSound.setPlayingHandle( TheAudio->addAudioEvent( &m_deathLoopSound ) );
-#endif
 
 	}  // end if
 
@@ -294,9 +292,7 @@ UpdateSleepTime JetSlowDeathBehavior::update( void )
 		{
 
 			// stop the death looping sound at the right time
-#ifdef HAS_BINK
 			TheAudio->removeAudioEvent( m_deathLoopSound.getPlayingHandle() );
-#endif
 
 			// do some effects
 			FXList::doFXObj( modData->m_fxHitGround, us );

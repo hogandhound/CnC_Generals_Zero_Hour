@@ -114,10 +114,8 @@ void Win32GameEngine::update( void )
     
     // When we are alt-tabbed out... the MilesAudioManager seems to go into a coma sometimes
     // and not regain focus properly when we come back. This seems to wake it up nicely.
-#ifdef HAS_BINK
     AudioAffect aa = (AudioAffect)0x10;
 		TheAudio->setVolume(TheAudio->getVolume( aa ), aa );
-#endif
 
 	}
 

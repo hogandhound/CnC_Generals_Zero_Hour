@@ -4204,9 +4204,7 @@ void GameLogic::setGamePaused( Bool paused, Bool pauseMusic )
 
 	m_gamePaused = paused; 
 
-#ifdef HAS_BINK
 	AudioAffect audToAffect = (AudioAffect)(pauseMusic ? AudioAffect_All : (AudioAffect_All & ~AudioAffect_Music));
-#endif
 	
 	if(paused)
 	{
@@ -4223,9 +4221,7 @@ void GameLogic::setGamePaused( Bool paused, Bool pauseMusic )
 		{
 			TheInGameUI->setInputEnabled(FALSE);
 		}
-#ifdef HAS_BINK
 		TheAudio->pauseAudio(audToAffect);
-#endif
 
 #if 0 // Kris added this code some time ago. I'm not sure why -- the pauseAudio should stop the 
       // ambients by itself. Everything seems to work fine without it and it's messing up my 
@@ -4247,9 +4243,7 @@ void GameLogic::setGamePaused( Bool paused, Bool pauseMusic )
 		TheMouse->setVisibility(m_mouseVisibleMemory);
 		if(m_inputEnabledMemory)
 			TheInGameUI->setInputEnabled(TRUE);
-#ifdef HAS_BINK
 		TheAudio->resumeAudio(audToAffect);
-#endif
 
 #if 0
 		//Start all ambient sounds!
@@ -4257,9 +4251,7 @@ void GameLogic::setGamePaused( Bool paused, Bool pauseMusic )
 		while( drawable )
 		{
 			drawable->startAmbientSound();
-#ifdef HAS_BINK
 			TheAudio->stopAllAmbientsBy( drawable );
-#endif
 			drawable = drawable->getNextDrawable();
 		}
 #endif

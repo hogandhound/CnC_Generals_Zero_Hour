@@ -323,13 +323,11 @@ void StatDumpClass::dumpStats( Bool brief, Bool flagSpikes )
 	fprintf( m_fp, "\n" );
 
 #if defined(_DEBUG) || defined(_INTERNAL)
-#ifdef HAS_BINK
   if ( ! beBrief )
   {
     TheAudio->audioDebugDisplay( NULL, NULL, m_fp );
 	  fprintf( m_fp, "\n" );
   }
-#endif
 #endif
 	
 #ifdef MEMORYPOOL_DEBUG

@@ -140,9 +140,7 @@ static const FieldParse audioSettingsFieldParseTable[] =
 };
 
 // Singleton TheAudio /////////////////////////////////////////////////////////////////////////////
-#ifdef HAS_BINK
 AudioManager *TheAudio = NULL;
-#endif
 
 
 // AudioManager Device Independent functions //////////////////////////////////////////////////////
@@ -322,13 +320,8 @@ void AudioManager::update()
 	Vector3 forward( 0, 1, 0 );
 	rot.mulVector3( forward );
 
-#ifdef HAS_BINK
 	Real desiredHeight = TheAudio->getAudioSettings()->m_microphoneDesiredHeightAboveTerrain;
 	Real maxPercentage = TheAudio->getAudioSettings()->m_microphoneMaxPercentageBetweenGroundAndCamera;
-#else
-	Real desiredHeight = 0.f;
-	Real maxPercentage = 0.f;
-#endif
 
 	Coord3D lookTo;
 	lookTo.set(forward.X, forward.Y, forward.Z);
@@ -370,15 +363,9 @@ void AudioManager::update()
 
 
 	//Now determine if we would like to boost the volume based on the camera being close to the microphone!
-#ifdef HAS_BINK
 	Real maxBoostScalar = TheAudio->getAudioSettings()->m_zoomSoundVolumePercentageAmount;
 	Real minDist = TheAudio->getAudioSettings()->m_zoomMinDistance;
 	Real maxDist = TheAudio->getAudioSettings()->m_zoomMaxDistance;
-#else
-	Real maxBoostScalar = 1.f;
-	Real minDist = 0.f;
-	Real maxDist = 1.f;
-#endif
 
 	//We can't boost a sound above 100%, instead reduce the normal sound level.
 	m_zoomVolume = 1.0f - maxBoostScalar;
@@ -485,7 +472,6 @@ AudioHandle AudioManager::addAudioEvent(const AudioEventRTS *eventToAdd)
 	}
 
 	// cull muted audio
-#ifdef HAS_BINK
 	if (audioEvent->getVolume() < TheAudio->getAudioSettings()->m_minVolume) {
 #ifdef INTENSIVE_AUDIO_DEBUG
 		DEBUG_LOG((" - culled due to muting (%d).\n", audioEvent->getVolume()));
@@ -493,7 +479,6 @@ AudioHandle AudioManager::addAudioEvent(const AudioEventRTS *eventToAdd)
 		releaseAudioEventRTS(audioEvent);
 		return AHSV_Muted;
 	}
-#endif
 
 	AudioType type = eventToAdd->getAudioEventInfo()->m_soundType;
 	if (type == AT_Music) 
@@ -1030,11 +1015,7 @@ Bool AudioManager::isCurrentProviderHardwareAccelerated()
 //-------------------------------------------------------------------------------------------------
 Bool AudioManager::isCurrentSpeakerTypeSurroundSound()
 {
-#ifdef HAS_BINK
 	return (getSpeakerType() == TheAudio->getAudioSettings()->m_defaultSpeakerType3D);
-#else
-	return false;
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1132,7 +1113,7 @@ void AudioManager::loseFocus( void )
 	m_savedValues[3] = m_systemSpeechVolume;
 
 	// Now, set them all to 0.
-	setVolume(0.0f, (AudioAffect) (AudioAffect_All | AudioAffect_SystemSetting));
+	//setVolume(0.0f, (AudioAffect) (AudioAffect_All | AudioAffect_SystemSetting));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1158,7 +1139,6 @@ void AudioManager::regainFocus( void )
 //-------------------------------------------------------------------------------------------------
 void INI::parseAudioSettingsDefinition( INI *ini )
 {
-#ifdef HAS_BINK
 	ini->initFromINI(TheAudio->friend_getAudioSettings(), TheAudio->getFieldParseTable());
 
 	// time to override the volume settings, default 3-D provider, and speaker setup with the
@@ -1175,7 +1155,6 @@ void INI::parseAudioSettingsDefinition( INI *ini )
 	TheAudio->friend_getAudioSettings()->m_preferred3DSoundVolume	= prefs.get3DSoundVolume() / 100.0f;
 	TheAudio->friend_getAudioSettings()->m_preferredSpeechVolume	= prefs.getSpeechVolume() / 100.0f;
 	TheAudio->friend_getAudioSettings()->m_preferredMusicVolume		= prefs.getMusicVolume() / 100.0f;
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1188,8 +1167,6 @@ void parseSpeakerType( INI *ini, void *instance, void *store, const void* userDa
 	AsciiString str;
 	ini->parseAsciiString( ini, instance, &str, userData );
 
-#ifdef HAS_BINK
 	(*(UnsignedInt*)store) = TheAudio->translateSpeakerTypeToUnsignedInt(str);
-#endif
 }
 

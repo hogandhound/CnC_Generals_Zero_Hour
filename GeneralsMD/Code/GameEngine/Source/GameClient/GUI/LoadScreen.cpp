@@ -212,9 +212,9 @@ SinglePlayerLoadScreen::~SinglePlayerLoadScreen( void )
 	if ( m_videoStream )
 		m_videoStream->close();
 	m_videoStream = NULL;
+#endif
 	
 	TheAudio->removeAudioEvent( m_ambientLoopHandle );
-#endif
 	m_ambientLoopHandle = NULL;
 	
 }
@@ -243,9 +243,7 @@ void SinglePlayerLoadScreen::moveWindows( Int frame )
 	if( frame == STATE_BEGIN_BREIFING)
 	{
 		// add sound support here
-#ifdef HAS_BINK
 		TheAudio->friend_forcePlayAudioEventRTS(&TheCampaignManager->getCurrentMission()->m_briefingVoice);
-#endif
 	}
 
 	if( frame == STATE_BEGIN_ANIMATING_TEXT)
@@ -619,9 +617,7 @@ void SinglePlayerLoadScreen::init( GameInfo *game )
 	}
 	setFPMode();
 	m_percent->winHide(TRUE);
-#ifdef HAS_BINK
 	m_ambientLoopHandle = TheAudio->addAudioEvent(&m_ambientLoop);
-#endif
 }
 
 void SinglePlayerLoadScreen::reset( void )
@@ -738,10 +734,8 @@ ChallengeLoadScreen::~ChallengeLoadScreen( void )
 		delete m_wndVideoManager;
 	m_wndVideoManager = NULL;
 
-#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( m_ambientLoopHandle );
 	m_ambientLoopHandle = NULL;
-#endif
 }
 
 // accepts the number of chars to advance, the window we're concerned with, the total text for final display, and the current position of the readout
@@ -836,9 +830,7 @@ void ChallengeLoadScreen::activatePieces( Int frame, const GeneralPersona *gener
 			m_portraitMovieLeft->winHide(FALSE);
 			m_portraitMovieRight->winHide(FALSE);
 
-#ifdef HAS_BINK
 			TheAudio->addAudioEvent( &eventLeftGeneral );
-#endif
 			
 			break;
 		case FRAME_OUTER_CIRCLE_LINE_SHOW:
@@ -870,15 +862,11 @@ void ChallengeLoadScreen::activatePieces( Int frame, const GeneralPersona *gener
 			m_wndVideoManager->playMovie( m_overlayVs, AsciiString("VSSmall"), WINDOW_PLAY_MOVIE_SHOW_LAST_FRAME);
 
 			// "Verses"
-#ifdef HAS_BINK
 			TheAudio->addAudioEvent( &eventVS );
-#endif
 
 			break;
 		case FRAME_RIGHT_VOICE:
-#ifdef HAS_BINK
 			TheAudio->addAudioEvent( &eventRightGeneral );
-#endif
 
 			break;
 	}
@@ -1153,13 +1141,11 @@ void ChallengeLoadScreen::init( GameInfo *game )
 	}
 	setFPMode();
 
-#ifdef HAS_BINK
 	AudioEventRTS event( generalOpponent->getRandomTauntSound() );
 	TheAudio->addAudioEvent( &event );
 
 	m_ambientLoopHandle = TheAudio->addAudioEvent(&m_ambientLoop);
 	TheAudio->update();
-#endif
 }
 
 void ChallengeLoadScreen::reset( void )
@@ -1343,10 +1329,8 @@ MultiPlayerLoadScreen::~MultiPlayerLoadScreen( void )
 	m_featuresLocalGeneral = NULL;
 	m_nameLocalGeneral = NULL;
 
-#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( AHSV_StopTheMusicFade );
 //	TheAudio->stopAudio( AudioAffect_Music );
-#endif
 }
 
 void MultiPlayerLoadScreen::init( GameInfo *game )
@@ -1400,14 +1384,12 @@ void MultiPlayerLoadScreen::init( GameInfo *game )
 	AsciiString musicName = pt->getLoadScreenMusic();
 	if ( ! musicName.isEmpty() )
 	{
-#ifdef HAS_BINK
 		TheAudio->removeAudioEvent( AHSV_StopTheMusicFade );
 		AudioEventRTS event( musicName );
 		event.setShouldFade( TRUE );
 
 		TheAudio->addAudioEvent( &event );
 		TheAudio->update();//Since GameEngine::update() is suspended until after I am gone... 
-#endif
 
 	}
 

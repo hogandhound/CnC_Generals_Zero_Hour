@@ -134,14 +134,12 @@ void FlashTransition::update( Int frame )
 	case FLASHTRANSITION_FADE_IN_1:
 		if(m_isForward)
 		{
-#ifdef HAS_BINK
 			AudioEventRTS buttonClick("GUIBoarderFadeIn");
 
 			if( TheAudio )
 			{
 				TheAudio->addAudioEvent( &buttonClick );
 			}  // end if
-#endif
 		}
 	case FLASHTRANSITION_FADE_IN_2:
 	case FLASHTRANSITION_FADE_IN_3:
@@ -293,14 +291,12 @@ void ButtonFlashTransition::update( Int frame )
 				m_win->winHide(TRUE);
 				if(m_isForward)
 				{
-#ifdef HAS_BINK
 					AudioEventRTS buttonClick("GUIButtonsFadeIn");
 	
 					if( TheAudio )
 					{
 						TheAudio->addAudioEvent( &buttonClick );
 					}  // end if
-#endif
 
 					m_drawState = frame;
 				}
@@ -804,14 +800,12 @@ void ScaleUpTransition::update( Int frame )
 	case SCALEUPTRANSITION_1:
 		if(m_isForward)
 		{
-#ifdef HAS_BINK
 			AudioEventRTS buttonClick("GUILogoMouseOver");
 
 			if( TheAudio )
 			{
 				TheAudio->addAudioEvent( &buttonClick );
 			}  // end if
-#endif
 			
 		}
 
@@ -928,14 +922,12 @@ void ScoreScaleUpTransition::update( Int frame )
 	case SCORESCALEUPTRANSITION_1:
 		if(m_isForward)
 		{
-#ifdef HAS_BINK
 			AudioEventRTS buttonClick("GUIScoreScreenPictures");
 
 			if( TheAudio )
 			{
 				TheAudio->addAudioEvent( &buttonClick );
 			}  // end if
-#endif
 			
 		}
 
@@ -1070,14 +1062,12 @@ void MainMenuScaleUpTransition::update( Int frame )
 	}	
 	if(frame == 1)
 	{
-#ifdef HAS_BINK
 		AudioEventRTS buttonClick("GUILogoSelect");
 
 		if( TheAudio )
 		{
 			TheAudio->addAudioEvent( &buttonClick );
-		}  // end if			
-#endif
+		}  // end if	
 	}
 	if(frame > MAINMENUSCALEUPTRANSITION_START && frame < MAINMENUSCALEUPTRANSITION_END)
 	{
@@ -1193,14 +1183,12 @@ void MainMenuMediumScaleUpTransition::update( Int frame )
 	{
 		if(frame == 1 && m_isForward)
 		{
-#ifdef HAS_BINK
 			AudioEventRTS buttonClick("GUILogoMouseOver");
 
 			if( TheAudio )
 			{
 				TheAudio->addAudioEvent( &buttonClick );
-			}  // end if			
-#endif
+			}  // end if		
 		}
 		if(m_win)
 			m_win->winHide(TRUE);
@@ -1424,12 +1412,10 @@ void TextTypeTransition::update( Int frame )
 		m_drawState = frame;
 		AudioEventRTS buttonClick("GUITypeText");
 
-#ifdef HAS_BINK
 		if( TheAudio )
 		{
 			TheAudio->addAudioEvent( &buttonClick );
 		}  // end if
-#endif
 		if(m_isForward)
 		{
 			m_partialText.concat(m_fullText.getCharAt(frame - 1));
@@ -1568,14 +1554,12 @@ void CountUpTransition::update( Int frame )
 	{
 		m_win->winHide(FALSE);
 		m_drawState = frame;
-#ifdef HAS_BINK
 		AudioEventRTS buttonClick("GUIScoreScreenTick");
 
 		if( TheAudio )
 		{
 			TheAudio->addAudioEvent( &buttonClick );
 		}  // end if
-#endif
 		m_currentValue +=m_countState;
 		if(m_currentValue > m_intValue)
 			m_currentValue = m_intValue;
@@ -2032,14 +2016,12 @@ void ReverseSoundTransition::update( Int frame )
 		
 	case REVERSESOUNDTRANSITION_FIRESOUND:
 		{
-#ifdef HAS_BINK
 			AudioEventRTS buttonClick("GUITransitionFade");
 
 			if( TheAudio )
 			{
 				TheAudio->addAudioEvent( &buttonClick );
 			}  // end if		
-#endif
 		}
 	case REVERSESOUNDTRANSITION_END:
 		{

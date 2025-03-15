@@ -138,7 +138,6 @@ Real SoundManager::getCameraAudibleDistance( void )
 //-------------------------------------------------------------------------------------------------
 void SoundManager::addAudioEvent(AudioEventRTS *eventToAdd)
 {
-#ifdef HAS_BINK
 	if (m_num2DSamples == 0 && m_num3DSamples == 0) {
 		m_num2DSamples = TheAudio->getNum2DSamples();
 		m_num3DSamples = TheAudio->getNum3DSamples();
@@ -155,7 +154,6 @@ void SoundManager::addAudioEvent(AudioEventRTS *eventToAdd)
 	} else {
 		TheAudio->releaseAudioEventRTS(eventToAdd);
 	}
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -207,7 +205,6 @@ AsciiString SoundManager::getFilenameForPlayFromAudioEvent( const AudioEventRTS 
 //-------------------------------------------------------------------------------------------------
 Bool SoundManager::canPlayNow( AudioEventRTS *event )
 {
-#ifdef HAS_BINK
 	Bool retVal = false;
 	// 1) Are we muted because we're beyond our maximum distance?
 	// 2) Are we shrouded and this is a shroud sound?
@@ -317,18 +314,15 @@ Bool SoundManager::canPlayNow( AudioEventRTS *event )
 #ifdef INTENSIVE_AUDIO_DEBUG
 	DEBUG_LOG(("culled due to unavailable channels"));
 #endif
-#endif
 	return false;
 }
 
 //-------------------------------------------------------------------------------------------------
 Bool SoundManager::violatesVoice( AudioEventRTS *event )
 {
-#ifdef HAS_BINK
 	if (event->getAudioEventInfo()->m_type & ST_VOICE) {
 		return (event->getObjectID() && TheAudio->isObjectPlayingVoice(event->getObjectID()));
 	}
-#endif
 	return false;
 }
 

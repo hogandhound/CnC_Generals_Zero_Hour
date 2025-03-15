@@ -360,11 +360,9 @@ public:
 		m_checkAirfield = HOW_OFTEN_TO_CHECK;
 
 		//Play the "low fuel" voice whenever the craft is circling above the airfield.
-#ifdef HAS_BINK
 		AudioEventRTS soundToPlay = *jet->getTemplate()->getPerUnitSound( "VoiceLowFuel" );
 		soundToPlay.setObjectID( jet->getID() );
 		TheAudio->addAudioEvent( &soundToPlay );
-#endif
 
 		return STATE_CONTINUE;
 	}
@@ -856,11 +854,9 @@ public:
 				if( zPos - zSlop <= groundZ )
 				{
 					m_landingSoundPlayed = TRUE;
-#ifdef HAS_BINK
 					AudioEventRTS soundToPlay = TheAudio->getMiscAudio()->m_aircraftWheelScreech;	
 					soundToPlay.setPosition( jet->getPosition() );
 					TheAudio->addAudioEvent( &soundToPlay );
-#endif
 				}
 			}
 		}
@@ -2168,11 +2164,10 @@ void JetAIUpdate::positionLockon()
 
 	if (lastPhase && (!thisPhase)) 
 	{
-#ifdef HAS_BINK
 		AudioEventRTS lockonSound = TheAudio->getMiscAudio()->m_lockonTickSound;
 		lockonSound.setObjectID(getObject()->getID());
 		TheAudio->addAudioEvent(&lockonSound);
-#endif
+
 		if (d->m_lockonBlinky)
 			m_lockonDrawable->setDrawableHidden(false);
 	}
@@ -2504,23 +2499,19 @@ void JetAIUpdate::friend_enableAfterburners(Bool v)
 	if (v)
 	{
 		jet->setModelConditionState(MODELCONDITION_JETAFTERBURNER);
-#ifdef HAS_BINK
 		if (!m_afterburnerSound.isCurrentlyPlaying())
 		{
 			m_afterburnerSound.setObjectID(jet->getID());
 			m_afterburnerSound.setPlayingHandle(TheAudio->addAudioEvent(&m_afterburnerSound));
 		}
-#endif
 	}
 	else
 	{
 		jet->clearModelConditionState(MODELCONDITION_JETAFTERBURNER);
-#ifdef HAS_BINK
 		if (m_afterburnerSound.isCurrentlyPlaying())
 		{
 			TheAudio->removeAudioEvent(m_afterburnerSound.getPlayingHandle());
 		}
-#endif
 	}
 }
 

@@ -575,10 +575,8 @@ void W3DTruckDraw::doDrawModule(const Matrix3D* transformMtx)
 		}
 	}
 
-#ifdef HAS_BINK
 	Bool wasPowersliding = m_isPowersliding;
 	m_isPowersliding = false;
-#endif
 	if (physics->isMotive() && !obj->isSignificantlyAboveTerrain()) {
 		enableEmitters(true);
 		Coord3D accel = *physics->getAcceleration();
@@ -605,9 +603,7 @@ void W3DTruckDraw::doDrawModule(const Matrix3D* transformMtx)
 				m_dustEffect->setSizeMultiplier(factor*SIZE_CAP);
 				m_dustEffect->trigger();
 				m_landingSound.setObjectID(obj->getID());
-#ifdef HAS_BINK
 				TheAudio->addAudioEvent(&m_landingSound);
-#endif
 			} else {
 				if (!accelerating || speed>2.0f) {
 					m_dirtEffect->stop();
@@ -618,9 +614,7 @@ void W3DTruckDraw::doDrawModule(const Matrix3D* transformMtx)
 			if (physics->getTurning() == TURN_NONE) {
 				m_powerslideEffect->stop();
 			}	else {
-#ifdef HAS_BINK
 				m_isPowersliding = true;
-#endif
 				m_powerslideEffect->start();
 			}
 		}
@@ -635,7 +629,6 @@ void W3DTruckDraw::doDrawModule(const Matrix3D* transformMtx)
 
 	m_wasAirborne = obj->isSignificantlyAboveTerrain();
 
-#ifdef HAS_BINK
 	if(!wasPowersliding && m_isPowersliding) {
 		// start sound
 		m_powerslideSound.setObjectID(obj->getID());
@@ -643,7 +636,6 @@ void W3DTruckDraw::doDrawModule(const Matrix3D* transformMtx)
 	}	else if (wasPowersliding && !m_isPowersliding) {
 		TheAudio->removeAudioEvent(m_powerslideSound.getPlayingHandle());
 	}
-#endif
 
 }
 

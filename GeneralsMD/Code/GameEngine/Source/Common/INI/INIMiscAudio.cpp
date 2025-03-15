@@ -74,7 +74,5 @@ const FieldParse MiscAudio::m_fieldParseTable[] =
 //-------------------------------------------------------------------------------------------------
 void INI::parseMiscAudio( INI *ini )
 {
-#ifdef HAS_BINK
 	ini->initFromINI(TheAudio->friend_getMiscAudio(), MiscAudio::m_fieldParseTable);
-#endif
 }

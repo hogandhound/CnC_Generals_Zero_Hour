@@ -636,11 +636,9 @@ StateReturnType DozerActionDoActionState::update( void )
 						msg.format( format.str(), objectName.str() );
 						TheInGameUI->message( msg );
 
-#ifdef HAS_BINK
 						AudioEventRTS audio = *dozer->getTemplate()->getVoiceTaskComplete();
 						audio.setObjectID(dozer->getID());
 						TheAudio->addAudioEvent(&audio);
-#endif
 
 						/// make radar neat-o attention grabber event at build location
 						TheRadar->createEvent( goalObject->getPosition(), RADAR_EVENT_CONSTRUCTION );
@@ -2431,17 +2429,13 @@ void DozerAIUpdate::startBuildingSound( const AudioEventRTS *sound, ObjectID con
 {
 	m_buildingSound = *sound;
 	m_buildingSound.setObjectID( constructionSiteID );
-#ifdef HAS_BINK
 	m_buildingSound.setPlayingHandle( TheAudio->addAudioEvent( &m_buildingSound ) );
-#endif
 }
 
 //------------------------------------------------------------------------------------------------
 void DozerAIUpdate::finishBuildingSound()
 {
-#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( m_buildingSound.getPlayingHandle() );
-#endif
 }
 
 

@@ -1202,9 +1202,7 @@ void Radar::tryUnderAttackEvent( const Object *obj )
 				TheInGameUI->message( "RADAR:HarvesterUnderAttack" );
 
 				// play special audio event
-#ifdef HAS_BINK
 				unitAttackSound = TheAudio->getMiscAudio()->m_radarHarvesterUnderAttackSound;
-#endif
 			}
 			else
 			{
@@ -1212,14 +1210,10 @@ void Radar::tryUnderAttackEvent( const Object *obj )
 				TheInGameUI->message( "RADAR:UnitUnderAttack" );
 				
 				// play audio event
-#ifdef HAS_BINK
 				unitAttackSound = TheAudio->getMiscAudio()->m_radarStructureUnderAttackSound;
-#endif
 			}
 			unitAttackSound.setPlayerIndex(player->getPlayerIndex());
-#ifdef HAS_BINK
-			TheAudio->addAudioEvent( &unitAttackSound );
-#endif
+			TheAudio->addAudioEvent(&unitAttackSound);
 
 		}  // end if
 		else if( obj->isKindOf( KINDOF_STRUCTURE ) && obj->isKindOf( KINDOF_MP_COUNT_FOR_VICTORY ) )
@@ -1234,11 +1228,9 @@ void Radar::tryUnderAttackEvent( const Object *obj )
 			TheInGameUI->message( "RADAR:StructureUnderAttack" );
 
 			// play audio event
-#ifdef HAS_BINK
 			static AudioEventRTS structureAttackSound = TheAudio->getMiscAudio()->m_radarStructureUnderAttackSound;
 			structureAttackSound.setPlayerIndex(player->getPlayerIndex());
-			TheAudio->addAudioEvent( &structureAttackSound );
-#endif
+			TheAudio->addAudioEvent(&structureAttackSound);
 		}  // end else if
 		else
 		{
@@ -1247,11 +1239,9 @@ void Radar::tryUnderAttackEvent( const Object *obj )
 			TheInGameUI->message( "RADAR:UnderAttack" );
 
 			// play audio event
-#ifdef HAS_BINK
 			static AudioEventRTS underAttackSound = TheAudio->getMiscAudio()->m_radarStructureUnderAttackSound;
 			underAttackSound.setPlayerIndex(player->getPlayerIndex());
-			TheAudio->addAudioEvent( &underAttackSound );
-#endif
+			TheAudio->addAudioEvent(&underAttackSound);
 		}  // end else
 
 	}  // end if
@@ -1283,7 +1273,6 @@ void Radar::tryInfiltrationEvent( const Object *obj )
 	TheInGameUI->message( "RADAR:Infiltration" );
 
 	// play audio event
-#ifdef HAS_BINK
 
 	//
 	///@todo Should make an INI data driven table for radar event strings, and audio events
@@ -1295,8 +1284,6 @@ void Radar::tryInfiltrationEvent( const Object *obj )
 	static AudioEventRTS infiltrationWarningSound = TheAudio->getMiscAudio()->m_radarInfiltrationSound;
 	infiltrationWarningSound.setPlayerIndex(player->getPlayerIndex());
 	TheAudio->addAudioEvent( &infiltrationWarningSound );
-#endif
-
 }  // end tryInfiltrationEvent
 
 // ------------------------------------------------------------------------------------------------

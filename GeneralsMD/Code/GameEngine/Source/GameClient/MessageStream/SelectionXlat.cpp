@@ -843,9 +843,7 @@ GameMessageDisposition SelectionTranslator::translateGameMessage(const GameMessa
 						Object* obj = draw->getObject();
 						if (obj)
 						{
-#ifdef HAS_BINK
 							TheAudio->addAudioEvent(&TheAudio->getMiscAudio()->m_noCanDoSound);
-#endif
 							GameMessage* msg = TheMessageStream->appendMessage( GameMessage::MSG_DEBUG_KILL_OBJECT );
 							msg->appendObjectIDArgument(obj->getID());
 						}
@@ -859,9 +857,7 @@ GameMessageDisposition SelectionTranslator::translateGameMessage(const GameMessa
 						Object* obj = draw->getObject();
 						if (obj)
 						{
-#ifdef HAS_BINK
 							TheAudio->addAudioEvent(&TheAudio->getMiscAudio()->m_noCanDoSound);
-#endif
 							GameMessage* msg = TheMessageStream->appendMessage( GameMessage::MSG_DEBUG_HURT_OBJECT );
 							msg->appendObjectIDArgument(obj->getID());
 						}

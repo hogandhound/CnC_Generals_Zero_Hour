@@ -1096,9 +1096,7 @@ Bool WorkerAIUpdate::gainOneBox( Int remainingStock )
 		if (playDepleted && m_suppliesDepletedVoice.getEventName().isEmpty() == false)
 		{
 			m_suppliesDepletedVoice.setObjectID(getObject()->getID());
-#ifdef HAS_BINK
 			m_suppliesDepletedVoice.setPlayingHandle(TheAudio->addAudioEvent(&m_suppliesDepletedVoice));
-#endif
 		}
 	}
 
@@ -1389,17 +1387,13 @@ void WorkerAIUpdate::startBuildingSound( const AudioEventRTS *sound, ObjectID co
 {
 	m_buildingSound = *sound;
 	m_buildingSound.setObjectID( constructionSiteID );
-#ifdef HAS_BINK
 	m_buildingSound.setPlayingHandle( TheAudio->addAudioEvent( &m_buildingSound ) );
-#endif
 }
 
 //------------------------------------------------------------------------------------------------
 void WorkerAIUpdate::finishBuildingSound()
 {
-#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( m_buildingSound.getPlayingHandle() );
-#endif
 }
 
 //------------------------------------------------------------------------------------------------

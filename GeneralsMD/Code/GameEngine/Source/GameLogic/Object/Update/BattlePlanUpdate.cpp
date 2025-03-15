@@ -172,7 +172,6 @@ BattlePlanUpdate::BattlePlanUpdate( Thing *thing, const ModuleData* moduleData )
 //-------------------------------------------------------------------------------------------------
 BattlePlanUpdate::~BattlePlanUpdate( void )
 {
-#ifdef HAS_BINK
 	TheAudio->removeAudioEvent( m_bombardmentUnpack.getPlayingHandle() );
 	TheAudio->removeAudioEvent( m_bombardmentPack.getPlayingHandle() );
 	TheAudio->removeAudioEvent( m_searchAndDestroyUnpack.getPlayingHandle() );
@@ -180,7 +179,6 @@ BattlePlanUpdate::~BattlePlanUpdate( void )
 	TheAudio->removeAudioEvent( m_searchAndDestroyPack.getPlayingHandle() );
 	TheAudio->removeAudioEvent( m_holdTheLineUnpack.getPlayingHandle() );
 	TheAudio->removeAudioEvent( m_holdTheLinePack.getPlayingHandle() );
-#endif
 
 }
 
@@ -244,7 +242,6 @@ void BattlePlanUpdate::onObjectCreated()
 	m_holdTheLineUnpack.setEventName( data->m_holdTheLineUnpackName );
 	m_holdTheLinePack.setEventName(	data->m_holdTheLinePackName );
 	m_holdTheLineAnnouncement.setEventName( data->m_holdTheLineAnnouncementName );
-#ifdef HAS_BINK
 	TheAudio->getInfoForAudioEvent( &m_bombardmentUnpack );
 	TheAudio->getInfoForAudioEvent( &m_bombardmentPack );
 	TheAudio->getInfoForAudioEvent( &m_bombardmentAnnouncement );
@@ -255,7 +252,6 @@ void BattlePlanUpdate::onObjectCreated()
 	TheAudio->getInfoForAudioEvent( &m_holdTheLineUnpack );
 	TheAudio->getInfoForAudioEvent( &m_holdTheLinePack );
 	TheAudio->getInfoForAudioEvent( &m_holdTheLineAnnouncement );
-#endif
 
 	getObject()->setWeaponSetFlag( WEAPONSET_VETERAN );
 	AIUpdateInterface *ai = obj->getAI();
@@ -474,21 +470,15 @@ void BattlePlanUpdate::setStatus( TransitionStatus newStatus )
 			{
 				case PLANSTATUS_BOMBARDMENT:
 					obj->clearModelConditionState( MODELCONDITION_DOOR_1_OPENING );
-#ifdef HAS_BINK
 					TheAudio->removeAudioEvent( m_bombardmentUnpack.getPlayingHandle() );
-#endif
 					break;
 				case PLANSTATUS_HOLDTHELINE:
 					obj->clearModelConditionState( MODELCONDITION_DOOR_2_OPENING );
-#ifdef HAS_BINK
 					TheAudio->removeAudioEvent( m_holdTheLineUnpack.getPlayingHandle() );
-#endif
 					break;
 				case PLANSTATUS_SEARCHANDDESTROY:
 					obj->clearModelConditionState( MODELCONDITION_DOOR_3_OPENING );
-#ifdef HAS_BINK
 					TheAudio->removeAudioEvent( m_searchAndDestroyUnpack.getPlayingHandle() );
-#endif
 					break;
 			}
 			break;
@@ -504,9 +494,7 @@ void BattlePlanUpdate::setStatus( TransitionStatus newStatus )
 					break;
 				case PLANSTATUS_SEARCHANDDESTROY:
 					obj->clearModelConditionState( MODELCONDITION_DOOR_3_WAITING_TO_CLOSE );
-#ifdef HAS_BINK
 					TheAudio->removeAudioEvent( m_searchAndDestroyIdle.getPlayingHandle() );
-#endif
 					break;
 			}
 			break;
@@ -516,21 +504,15 @@ void BattlePlanUpdate::setStatus( TransitionStatus newStatus )
 			{
 				case PLANSTATUS_BOMBARDMENT:
 					obj->clearModelConditionState( MODELCONDITION_DOOR_1_CLOSING );
-#ifdef HAS_BINK
 					TheAudio->removeAudioEvent( m_bombardmentPack.getPlayingHandle() );
-#endif
 					break;
 				case PLANSTATUS_HOLDTHELINE:
 					obj->clearModelConditionState( MODELCONDITION_DOOR_2_CLOSING );
-#ifdef HAS_BINK
 					TheAudio->removeAudioEvent( m_holdTheLinePack.getPlayingHandle() );
-#endif
 					break;
 				case PLANSTATUS_SEARCHANDDESTROY:
 					obj->clearModelConditionState( MODELCONDITION_DOOR_3_CLOSING );
-#ifdef HAS_BINK
 					TheAudio->removeAudioEvent( m_searchAndDestroyPack.getPlayingHandle() );
-#endif
 					break;
 			}
 			break;
@@ -568,9 +550,7 @@ void BattlePlanUpdate::setStatus( TransitionStatus newStatus )
 					if( m_bombardmentUnpack.getEventName().isNotEmpty() )
 					{
 						m_bombardmentUnpack.setObjectID( obj->getID() );
-#ifdef HAS_BINK
 						m_bombardmentUnpack.setPlayingHandle( TheAudio->addAudioEvent( &m_bombardmentUnpack ) );
-#endif
 					}
 
 					// display a message to *all* users
@@ -578,9 +558,7 @@ void BattlePlanUpdate::setStatus( TransitionStatus newStatus )
 					if( m_bombardmentAnnouncement.getEventName().isEmpty() == FALSE )
 					{
 						m_bombardmentAnnouncement.setPosition( obj->getPosition() );
-#ifdef HAS_BINK
 						TheAudio->addAudioEvent( &m_bombardmentAnnouncement );
-#endif
 					}
 					break;
 
@@ -591,9 +569,7 @@ void BattlePlanUpdate::setStatus( TransitionStatus newStatus )
 					if( m_holdTheLineUnpack.getEventName().isNotEmpty() )
 					{
 						m_holdTheLineUnpack.setObjectID( obj->getID() );
-#ifdef HAS_BINK
 						m_holdTheLineUnpack.setPlayingHandle( TheAudio->addAudioEvent( &m_holdTheLineUnpack ) );
-#endif
 					}
 
 					// display a message to *all* users
@@ -601,9 +577,7 @@ void BattlePlanUpdate::setStatus( TransitionStatus newStatus )
 					if( m_holdTheLineAnnouncement.getEventName().isEmpty() == FALSE )
 					{
 						m_holdTheLineAnnouncement.setPosition( obj->getPosition() );
-#ifdef HAS_BINK
 						TheAudio->addAudioEvent( &m_holdTheLineAnnouncement );
-#endif
 					}
 					break;
 
@@ -614,9 +588,7 @@ void BattlePlanUpdate::setStatus( TransitionStatus newStatus )
 					if( m_searchAndDestroyUnpack.getEventName().isNotEmpty() )
 					{
 						m_searchAndDestroyUnpack.setObjectID( obj->getID() );
-#ifdef HAS_BINK
 						m_searchAndDestroyUnpack.setPlayingHandle( TheAudio->addAudioEvent( &m_searchAndDestroyUnpack ) );
-#endif
 					}
 
 					// display a message to *all* users
@@ -624,9 +596,7 @@ void BattlePlanUpdate::setStatus( TransitionStatus newStatus )
 					if( m_searchAndDestroyAnnouncement.getEventName().isEmpty() == FALSE )
 					{
 						m_searchAndDestroyAnnouncement.setPosition( obj->getPosition() );
-#ifdef HAS_BINK
 						TheAudio->addAudioEvent( &m_searchAndDestroyAnnouncement );
-#endif
 					}
 					break;
 
@@ -653,9 +623,7 @@ void BattlePlanUpdate::setStatus( TransitionStatus newStatus )
 					if( m_searchAndDestroyIdle.getEventName().isNotEmpty() )
 					{
 						m_searchAndDestroyIdle.setObjectID( obj->getID() );
-#ifdef HAS_BINK
 						m_searchAndDestroyIdle.setPlayingHandle( TheAudio->addAudioEvent( &m_searchAndDestroyIdle ) );
-#endif
 					}
 					break;
 			}
@@ -674,9 +642,7 @@ void BattlePlanUpdate::setStatus( TransitionStatus newStatus )
 					if( m_bombardmentUnpack.getEventName().isNotEmpty() )
 					{
 						m_bombardmentPack.setObjectID( obj->getID() );
-#ifdef HAS_BINK
 						m_bombardmentPack.setPlayingHandle( TheAudio->addAudioEvent( &m_bombardmentPack ) );
-#endif
 					}
 					break;
 				case PLANSTATUS_HOLDTHELINE:
@@ -686,9 +652,7 @@ void BattlePlanUpdate::setStatus( TransitionStatus newStatus )
 					if( m_holdTheLineUnpack.getEventName().isNotEmpty() )
 					{
 						m_holdTheLinePack.setObjectID( obj->getID() );
-#ifdef HAS_BINK
 						m_holdTheLinePack.setPlayingHandle( TheAudio->addAudioEvent( &m_holdTheLinePack ) );
-#endif
 					}
 					break;
 				case PLANSTATUS_SEARCHANDDESTROY:
@@ -698,9 +662,7 @@ void BattlePlanUpdate::setStatus( TransitionStatus newStatus )
 					if( m_searchAndDestroyUnpack.getEventName().isNotEmpty() )
 					{
 						m_searchAndDestroyPack.setObjectID( obj->getID() );
-#ifdef HAS_BINK
 						m_searchAndDestroyPack.setPlayingHandle( TheAudio->addAudioEvent( &m_searchAndDestroyPack ) );
-#endif
 					}
 					break;
 			}

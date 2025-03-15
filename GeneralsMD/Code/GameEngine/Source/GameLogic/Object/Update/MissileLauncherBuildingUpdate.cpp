@@ -222,7 +222,7 @@ Bool MissileLauncherBuildingUpdate::initiateIntentToDoSpecialPower( const Specia
 	{
 		return FALSE;
 	}
-	DEBUG_ASSERTCRASH(!TheGlobalData->m_specialPowerUsesDelay || m_doorState == DOOR_OPEN, ("door is not fully open when specialpower is fired!"));
+	DEBUG_CONDWARNING(!TheGlobalData->m_specialPowerUsesDelay || m_doorState == DOOR_OPEN, ("door is not fully open when specialpower is fired!"));
 	switchToState(DOOR_WAITING_TO_CLOSE);
 //	getObject()->getControllingPlayer()->getAcademyStats()->recordSpecialPowerUsed( specialPowerTemplate );
 	return TRUE;

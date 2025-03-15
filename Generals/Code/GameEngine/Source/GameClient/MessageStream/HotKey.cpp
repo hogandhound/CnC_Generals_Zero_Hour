@@ -100,7 +100,8 @@ GameMessageDisposition HotKeyTranslator::translateGameMessage(const GameMessage 
 			return disp;
 		WideChar key = TheKeyboard->getPrintableKey(msg->getArgument(0)->integer, 0);
 		UnicodeString uKey;
-		uKey.set(&key);
+		WideChar keyArr[] = { key, 0 };
+		uKey.set(keyArr);
 		AsciiString aKey;
 		aKey.translate(uKey);
 		if(TheHotKeyManager && TheHotKeyManager->executeHotKey(aKey))

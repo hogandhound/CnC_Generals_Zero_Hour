@@ -1,6 +1,7 @@
 
 # Ignore RUNable folder
 [Rr]un
+[Rr]unData
 
 # Build output folders
 [Rr]elease*

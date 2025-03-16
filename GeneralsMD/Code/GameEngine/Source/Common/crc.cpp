@@ -28,7 +28,7 @@
 #include "Common/CRC.h"
 #include "Common/Debug.h"
 
-#ifdef _DEBUG
+#if 1
 
 void CRC::addCRC( UnsignedByte val )
 {

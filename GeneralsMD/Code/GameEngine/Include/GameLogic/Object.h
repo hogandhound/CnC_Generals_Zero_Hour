@@ -765,7 +765,7 @@ private:
 	Coord3D												m_healthBoxOffset; ///< generally zero, except for special amorphous ones like angry mob
 	
 	/// @todo srj -- convert to non-DLINK list, after it is once again possible to test the change
-#if 0
+#if 1
 	MAKE_DLINK(Object, TeamMemberList)			///< other Things that are members of the same team
 #else
 	public: Object* dlink_prev_TeamMemberList() const {

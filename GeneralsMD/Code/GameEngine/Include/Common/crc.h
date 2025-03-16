@@ -34,7 +34,7 @@
 #include "Lib/BaseType.h"
 #include "winsock2.h" // for htonl
 
-#ifdef _DEBUG
+#if 1
 
 class CRC
 {

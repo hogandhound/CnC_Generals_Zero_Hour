@@ -307,8 +307,8 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;_RELEASE;WIN32;_LIB;Z_PREFIX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_RELEASE;WIN32;_LIB;Z_PREFIX;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release\Compression.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\Release\</ObjectFileName>
@@ -336,12 +336,17 @@
     <ClCompile Include="EAC\huffdecode.cpp" />
     <ClCompile Include="EAC\huffencode.cpp" />
     <ClCompile Include="EAC\refabout.cpp" />
-    <ClCompile Include="EAC\refdecode.cpp" />
+    <ClCompile Include="EAC\refdecode.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="EAC\refencode.cpp" />
     <ClCompile Include="LZHCompress\CompLibSource\Huff.cpp" />
     <ClCompile Include="LZHCompress\CompLibSource\Lz.cpp" />
     <ClCompile Include="LZHCompress\CompLibSource\Lzhl.cpp" />
-    <ClCompile Include="LZHCompress\CompLibSource\Lzhl_tcp.cpp" />
+    <ClCompile Include="LZHCompress\CompLibSource\Lzhl_tcp.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="LZHCompress\NoxCompress.cpp" />
     <ClCompile Include="ZLib\adler32.c" />
     <ClCompile Include="ZLib\compress.c" />

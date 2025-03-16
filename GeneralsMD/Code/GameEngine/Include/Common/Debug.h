@@ -200,7 +200,8 @@ class AsciiString;
 
 	#define DEBUG_CRASH(m)					((void)0)
 	#define DEBUG_ASSERTCRASH(c, m)	((void)0)
-	#define DEBUG_WARNING(...)
+	#define DEBUG_WARNING(...) ((void)0)
+	#define DEBUG_CONDWARNING(c, m)		((void)0)
 
 //	DEBUG_EXTERN_C void ReleaseCrash(const char* reason);
 

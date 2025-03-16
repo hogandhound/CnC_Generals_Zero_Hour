@@ -149,7 +149,7 @@ void DisconnectMenu::setPlayerTimeoutTime(Int playerNum, time_t newTime) {
 	GameWindow *control = TheWindowManager->winGetWindowFromId(NULL, id);
 
 	char str[33]; // itoa uses a max of 33 bytes.
-	itoa(newTime, str, 10);
+	_itoa(newTime, str, 10);
 	AsciiString asciiNum;
 	asciiNum.set(str);
 	UnicodeString uninum;
@@ -267,7 +267,7 @@ void DisconnectMenu::setPacketRouterTimeoutTime(time_t newTime) {
 	GameWindow *control = TheWindowManager->winGetWindowFromId(NULL, id);
 
 	char str[33]; // itoa uses a max of 33 bytes.
-	itoa(newTime, str, 10);
+	_itoa(newTime, str, 10);
 	AsciiString asciiNum;
 	asciiNum.set(str);
 	UnicodeString uninum;
@@ -321,7 +321,7 @@ void DisconnectMenu::updateVotes(Int slot, Int votes) {
 
 	if (control != NULL) {
 		char votestr[16];
-		itoa(votes, votestr, 10);
+		_itoa(votes, votestr, 10);
 		AsciiString asciivotes;
 		asciivotes.set(votestr);
 		UnicodeString unistr;

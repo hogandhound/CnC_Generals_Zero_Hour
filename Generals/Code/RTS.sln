@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.35026.282
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "Benchmark", "LIBRARIES\SOURCE\Benchmark\Benchmark.dsp", "{604DC575-4F65-4388-BAC6-192193E03E81}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Compress", "Tools\Compress\Compress.vcxproj", "{2E541543-4916-4274-AD4B-4F0C24A64BD2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Compression", "Libraries\Source\Compression\Compression.vcxproj", "{511970A4-3D09-4A98-8E3D-823A57AB68FE}"
@@ -20,16 +18,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameEngine", "GameEngine\GameEngine.vcxproj", "{B3812FCD-2F41-4EB3-87A6-7D1CBE986339}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameEngineDevice", "GameEngineDevice\GameEngineDevice.vcxproj", "{F25125B3-880D-4FDB-A4E1-382EE79BC71D}"
-EndProject
-Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "GameSpyHTTP", "Libraries\Source\GameSpy\GameSpy\ghttp\GameSpyHTTP.dsp", "{21C811DE-CE12-4BA7-8323-EBBFE7FBAD99}"
-EndProject
-Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "GameSpyPatching", "Libraries\Source\GameSpy\GameSpy\pt\GameSpyPatching.dsp", "{06DC91F2-20B9-47E6-B0A8-081F086D18B4}"
-EndProject
-Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "GameSpyPeer", "Libraries\Source\GameSpy\GameSpy\peer\GameSpyPeer.dsp", "{ADD47165-3B65-4163-9192-A859131F142E}"
-EndProject
-Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "GameSpyPresence", "Libraries\Source\GameSpy\GameSpy\gp\GameSpyPresence.dsp", "{5ADB4A9B-6F7B-4B91-9069-DCC776C253E9}"
-EndProject
-Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "GameSpyStats", "Libraries\Source\GameSpy\GameSpy\gstats\GameSpyStats.dsp", "{4C7F4264-9CD8-4A17-BFF3-8EFF13681461}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImagePacker", "Tools\ImagePacker\ImagePacker.vcxproj", "{A550002A-9F7A-4FA9-8106-AFDC8317CD7D}"
 EndProject

@@ -3327,7 +3327,7 @@ void* operator new(size_t size, const char * fname, int)
 #ifdef MEMORYPOOL_DEBUG
 	return TheDynamicMemoryAllocator->allocateBytesImplementation((int)size, fname);
 #else
-	return TheDynamicMemoryAllocator->allocateBytesImplementation(size);
+	return TheDynamicMemoryAllocator->allocateBytesImplementation((int)size);
 #endif
 }
 
@@ -3355,7 +3355,7 @@ void* operator new[](size_t size, const char * fname, int)
 #ifdef MEMORYPOOL_DEBUG
 	return TheDynamicMemoryAllocator->allocateBytesImplementation((int)size, fname);
 #else
-	return TheDynamicMemoryAllocator->allocateBytesImplementation(size);
+	return TheDynamicMemoryAllocator->allocateBytesImplementation((int)size);
 #endif
 }
 

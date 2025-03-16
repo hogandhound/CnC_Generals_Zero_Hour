@@ -222,7 +222,7 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WWLib;Include/Precompiled;../Libraries/Source/WWVegas;../Libraries/Source/WWVegas\WWLib;Include;../Libraries/Include;../Libraries/Source/GameSpy;../Libraries/Source/Compression;$(SolutionDir)\Libraries\Source\UniSpySDK-master;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WWLib;Include/Precompiled;../Libraries/Source/WWVegas;../Libraries/Source/WWVegas\WWLib;Include;../Libraries/Include;../Libraries/Source/GameSpy;../Libraries/Source/Compression;$(SolutionDir)\Libraries\Source\GameSpy-master\src\GameSpy;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;BROWSER_DEBUG;_LIB;_WINDOWS;WIN32;Z_PREFIX;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Debug\GameEngine.pch</PrecompiledHeaderOutputFile>

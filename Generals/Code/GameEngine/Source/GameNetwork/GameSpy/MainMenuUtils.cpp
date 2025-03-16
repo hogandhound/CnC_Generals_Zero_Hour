@@ -316,7 +316,7 @@ static void queuePatch(Bool mandatory, AsciiString downloadURL)
 ///////////////////////////////////////////////////////////////////////////////////////
 
 static GHTTPBool motdCallback( GHTTPRequest request, GHTTPResult result,
-															char * buffer, GHTTPByteCount bufferLen, char* headers, void * param )
+															char * buffer, GHTTPByteCount bufferLen, void * param )
 {
 	Int run = (Int)(intptr_t)param;
 	if (run != timeThroughOnline)
@@ -365,7 +365,7 @@ typedef GHTTPBool (* ghttpCompletedCallback)(
 );
 */
 static GHTTPBool configCallback( GHTTPRequest request, GHTTPResult result,
-	char* buffer, GHTTPByteCount bufferLen, char* headers, void* param)
+	char* buffer, GHTTPByteCount bufferLen, void* param)
 {
 	Int run = (Int)(intptr_t)param;
 	if (run != timeThroughOnline)
@@ -430,7 +430,7 @@ static GHTTPBool configCallback( GHTTPRequest request, GHTTPResult result,
 ///////////////////////////////////////////////////////////////////////////////////////
 
 static GHTTPBool configHeadCallback( GHTTPRequest request, GHTTPResult result,
-																		char * buffer, GHTTPByteCount bufferLen, char* headers, void * param )
+																		char * buffer, GHTTPByteCount bufferLen, void * param )
 {
 	Int run = (Int)(intptr_t)param;
 	if (run != timeThroughOnline)
@@ -517,7 +517,7 @@ static GHTTPBool configHeadCallback( GHTTPRequest request, GHTTPResult result,
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-static GHTTPBool gamePatchCheckCallback( GHTTPRequest request, GHTTPResult result, char * buffer, GHTTPByteCount bufferLen, char* headers, void * param )
+static GHTTPBool gamePatchCheckCallback( GHTTPRequest request, GHTTPResult result, char * buffer, GHTTPByteCount bufferLen, void * param )
 {
 	Int run = (Int)(intptr_t)param;
 	if (run != timeThroughOnline)
@@ -608,7 +608,7 @@ void CancelPatchCheckCallback( void )
 ///////////////////////////////////////////////////////////////////////////////////////
 
 static GHTTPBool overallStatsCallback( GHTTPRequest request, GHTTPResult result, char * buffer, GHTTPByteCount bufferLen,
-	char* headers, void * param )
+	void * param )
 {
 	DEBUG_LOG(("overallStatsCallback() - Result=%d, len=%d\n", result, bufferLen));
 	if (result != GHTTPSuccess)
@@ -700,7 +700,7 @@ typedef GHTTPBool (* ghttpCompletedCallback)(
 	void			* param      // User-data.
 );
 */
-static GHTTPBool numPlayersOnlineCallback( GHTTPRequest request, GHTTPResult result, char * buffer, GHTTPByteCount bufferLen, char* headers, void * param )
+static GHTTPBool numPlayersOnlineCallback( GHTTPRequest request, GHTTPResult result, char * buffer, GHTTPByteCount bufferLen, void * param )
 {
 	DEBUG_LOG(("numPlayersOnlineCallback() - Result=%d, buffer=[%s], len=%d\n", result, buffer, bufferLen));
 	if (result != GHTTPSuccess)

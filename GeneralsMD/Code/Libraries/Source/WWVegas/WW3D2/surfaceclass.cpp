@@ -485,14 +485,14 @@ void SurfaceClass::Copy(
 	if (src.right>int(osd.Width)) src.right=int(osd.Width);
 	if (src.bottom>int(osd.Height)) src.bottom=int(osd.Height);	
 
-	if (sd.Format==osd.Format && sd.Width==osd.Width && sd.Height==osd.Height)
-	{
-		POINT dst;
-		dst.x=dstx;
-		dst.y=dsty;	
-		DX8Wrapper::_Copy_DX8_Rects(other->D3DSurface,&src,1,D3DSurface,&dst);
-	}
-	else
+	//if (sd.Format==osd.Format && sd.Width==osd.Width && sd.Height==osd.Height)
+	//{
+	//	POINT dst;
+	//	dst.x=dstx;
+	//	dst.y=dsty;	
+	//	DX8Wrapper::_Copy_DX8_Rects(other->D3DSurface,&src,1,D3DSurface,&dst);
+	//}
+	//else
 	{
 		RECT dest;
 		dest.left=dstx;

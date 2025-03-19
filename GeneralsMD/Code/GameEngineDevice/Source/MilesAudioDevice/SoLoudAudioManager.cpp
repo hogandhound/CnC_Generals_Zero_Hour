@@ -2341,7 +2341,7 @@ void SoLoudAudioManager::processPlayingList(void)
 			continue;
 		}
 
-		if (playing->m_status == PS_Stopped)
+		if (playing->m_status == PS_Stopped || !m_digitalHandle.isValidVoiceHandle(playing->m_handle))
 		{
 			//m_stoppedAudio.push_back(playing);
 			releasePlayingAudio(playing);
@@ -2366,7 +2366,7 @@ void SoLoudAudioManager::processPlayingList(void)
 			continue;
 		}
 
-		if (playing->m_status == PS_Stopped)
+		if (playing->m_status == PS_Stopped || !m_digitalHandle.isValidVoiceHandle(playing->m_handle))
 		{
 			//m_stoppedAudio.push_back(playing);			
 			releasePlayingAudio(playing);
@@ -2433,7 +2433,7 @@ void SoLoudAudioManager::processPlayingList(void)
 			continue;
 		}
 
-		if (playing->m_status == PS_Stopped)
+		if (playing->m_status == PS_Stopped || !m_digitalHandle.isValidVoiceHandle(playing->m_handle))
 		{
 			//m_stoppedAudio.push_back(playing);			
 			releasePlayingAudio(playing);
@@ -2881,9 +2881,13 @@ SoLoud::handle SoLoudAudioManager::playSample(AudioEventRTS* event, std::shared_
 	//AIL_register_EOS_callback(sample, setSampleCompleted);
 
 	sample = loadFileForRead(event);
-	SoLoud::handle handle = m_digitalHandle.play(*sample);
+	SoLoud::handle handle = -1;
+	if (sample)
+	{
+		m_digitalHandle.play(*sample);
 
-	initFilters(handle, event);
+		initFilters(handle, event);
+	}
 
 	// Load the file in
 	//void* fileBuffer = NULL;

@@ -562,7 +562,13 @@ void GameClient::update( void )
 					legal->hide(FALSE);
 					legal->bringForward();
 					uint32_t beginTime = timeGetTime();
-					while(beginTime + 4000 > timeGetTime() )
+					while(beginTime + 
+#ifdef HAS_BINK
+						4000 
+#else
+						50
+#endif
+						> timeGetTime() )
 					{
 						TheWindowManager->update();
 						// redraw all views, update the GUI

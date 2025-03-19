@@ -182,8 +182,11 @@ TextureClass *	W3DAssetManager::Get_Texture
 	//Just call the base implementation after adjusting reduction to deal
 	//with our special types.
 
-	if (filename && *filename && _strnicmp(filename,"ZHC",3) == 0)
+	if (filename && *filename && _strnicmp(filename, "ZHC", 3) == 0)
+	{
 		allow_reduction = false;	//don't allow reduction on our infantry textures.
+		mip_level_count = MIP_LEVELS_1;
+	}
 
 	return WW3DAssetManager::Get_Texture(	filename, 
 		mip_level_count,

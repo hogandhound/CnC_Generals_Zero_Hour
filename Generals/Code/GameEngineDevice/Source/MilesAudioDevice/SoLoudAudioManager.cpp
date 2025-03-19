@@ -2349,7 +2349,7 @@ void SoLoudAudioManager::processPlayingList(void)
 			continue;
 		}
 
-		if (playing->m_status == PS_Stopped)
+		if (playing->m_status == PS_Stopped || !m_digitalHandle.isValidVoiceHandle(playing->m_handle))
 		{
 			//m_stoppedAudio.push_back(playing);
 			releasePlayingAudio(playing);
@@ -2374,7 +2374,7 @@ void SoLoudAudioManager::processPlayingList(void)
 			continue;
 		}
 
-		if (playing->m_status == PS_Stopped)
+		if (playing->m_status == PS_Stopped || !m_digitalHandle.isValidVoiceHandle(playing->m_handle))
 		{
 			//m_stoppedAudio.push_back(playing);			
 			releasePlayingAudio(playing);
@@ -2441,7 +2441,7 @@ void SoLoudAudioManager::processPlayingList(void)
 			continue;
 		}
 
-		if (playing->m_status == PS_Stopped)
+		if (playing->m_status == PS_Stopped || !m_digitalHandle.isValidVoiceHandle(playing->m_handle))
 		{
 			//m_stoppedAudio.push_back(playing);			
 			releasePlayingAudio(playing);

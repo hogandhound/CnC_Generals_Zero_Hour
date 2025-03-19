@@ -1884,7 +1884,7 @@ void PartitionData::doSmallFill(
 	Real halfCellSize = ThePartitionManager->getCellSize() * 0.5f;
 	if (radius > halfCellSize)
 	{
-		DEBUG_CRASH(("object is too large to use a 'small' geometry, truncating size to cellsize\n"));
+		DEBUG_WARNING(("object is too large to use a 'small' geometry, truncating size to cellsize\n"));
 		radius = halfCellSize;
 	}
 

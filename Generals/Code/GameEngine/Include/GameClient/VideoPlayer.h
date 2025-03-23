@@ -44,7 +44,6 @@
 #ifndef __GAMECLIENT_VIDEOPLAYER_H_
 #define __GAMECLIENT_VIDEOPLAYER_H_
 
-#ifdef HAS_BINK
 
 //----------------------------------------------------------------------------
 //           Includes                                                      
@@ -315,6 +314,5 @@ extern VideoPlayerInterface *TheVideoPlayer;
 //           Inlining                                                       
 //----------------------------------------------------------------------------
 
-#endif
 
 #endif // __GAMECLIENT_VIDEOPLAYER_H_

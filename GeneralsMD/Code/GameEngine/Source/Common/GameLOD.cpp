@@ -50,7 +50,7 @@
 #define PROFILE_ERROR_LIMIT	0.94f	//fraction of profiled result needed to get a match.  Allows some room for error/fluctuation.
 
 //Hack to get access to a static method on the W3DDevice side. -MW
-extern Bool testMinimumRequirements(ChipsetType *videoChipType, CpuType *cpuType, Int *cpuFreq, Int *numRAM, Real *intBenchIndex, Real *floatBenchIndex, Real *memBenchIndex);
+extern Bool testMinimumRequirements(ChipsetType *videoChipType, CpuType *cpuType, int64_t*cpuFreq, int64_t*numRAM, Real *intBenchIndex, Real *floatBenchIndex, Real *memBenchIndex);
 
 GameLODManager *TheGameLODManager=NULL;
 
@@ -303,7 +303,7 @@ void GameLODManager::init(void)
 				FILE *fp=fopen("Benchmark.txt","w");
 				if (fp)
 				{
-					fprintf(fp,"BenchProfile = %s %d %f %f %f", CPUNames[m_cpuType], m_cpuFreq, m_intBenchIndex, m_floatBenchIndex, m_memBenchIndex);
+					fprintf(fp,"BenchProfile = %s %lld %f %f %f", CPUNames[m_cpuType], m_cpuFreq, m_intBenchIndex, m_floatBenchIndex, m_memBenchIndex);
 					fclose(fp);
 				}
 			}
@@ -448,13 +448,14 @@ StaticGameLODLevel GameLODManager::findStaticLODLevel(void)
 	if (m_idealDetailLevel == STATIC_GAME_LOD_UNKNOWN)
 	{
 		//search all our presets for matching hardware
-		m_idealDetailLevel = STATIC_GAME_LOD_LOW;
+		m_idealDetailLevel = STATIC_GAME_LOD_HIGH;
 
 		//get system configuration - only need vide chip type, got rest in ::init().
 		testMinimumRequirements(&m_videoChipType,NULL,NULL,NULL,NULL,NULL,NULL);
 		if (m_videoChipType == DC_UNKNOWN)
 			m_videoChipType = DC_TNT2;	//presume it's at least TNT2 level
 
+#if 0
 		Int numMBRam=m_numRAM/(1024*1024);
 
 		for (Int i=STATIC_GAME_LOD_HIGH; i >= STATIC_GAME_LOD_LOW; i--)
@@ -478,6 +479,7 @@ StaticGameLODLevel GameLODManager::findStaticLODLevel(void)
 				if (m_idealDetailLevel >= i)
 					break;	//we already found a higher level than the remaining presets so no need to keep searching.
 		}
+#endif
 		//Save ideal detail level for future usage
 		OptionPreferences optionPref;
 		optionPref["IdealStaticGameLOD"] = getStaticGameLODLevelName(m_idealDetailLevel);
@@ -583,9 +585,11 @@ void GameLODManager::applyStaticLODLevel(StaticGameLODLevel level)
 		TheWritableGlobalData->m_useFpsLimit = lodInfo->m_useFpsLimit;
 		TheWritableGlobalData->m_useTrees = requestedTrees;
 	}
+#if 0
 	if (!m_memPassed || isReallyLowMHz()) {
 		TheWritableGlobalData->m_shellMapOn = false;
 	}
+#endif
 	if (TheTerrainVisual)
 		TheTerrainVisual->setTerrainTracksDetail();
 

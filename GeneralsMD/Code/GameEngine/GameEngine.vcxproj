@@ -46,6 +46,7 @@
     <SccProjectName>"$/RTS/Code/GameEngine", FAAAAAAA</SccProjectName>
     <SccLocalPath>.</SccLocalPath>
     <ProjectGuid>{9CAF03BB-274B-4288-86A0-ADB1D653FF60}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">
@@ -103,6 +104,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -222,8 +224,8 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WWLib;Include/Precompiled;../Libraries/Source/WWVegas;../Libraries/Source/WWVegas\WWLib;Include;../Libraries/Include;../Libraries/Source/GameSpy;../Libraries/Source/Compression;$(SolutionDir)\Libraries\Source\GameSpy-master\src\GameSpy;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;BROWSER_DEBUG;_LIB;_WINDOWS;WIN32;Z_PREFIX;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WWLib;Include/Precompiled;../Libraries/Source/WWVegas;../Libraries/Source/WWVegas\WWLib;Include;../Libraries/Include;../Libraries/Source/GameSpy;../Libraries/Source/Compression;$(SolutionDir)\Libraries\Source\GameSpy-master\src\GameSpy;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\include\FFMPEG</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;BROWSER_DEBUG;_LIB;_WINDOWS;WIN32;Z_PREFIX;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_DISABLE_VECTOR_ANNOTATION;_DISABLE_STRING_ANNOTATION</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Debug\GameEngine.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -288,7 +290,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>Include/Precompiled;../Libraries/Source/WWVegas;../Libraries/Source/WWVegas\WWLib;Include;../Libraries/Include;../Libraries/Source/GameSpy;../Libraries/Source/Compression;$(SolutionDir)\Libraries\Source\GameSpy-master\src\GameSpy;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Include/Precompiled;../Libraries/Source/WWVegas;../Libraries/Source/WWVegas\WWLib;Include;../Libraries/Include;../Libraries/Source/GameSpy;../Libraries/Source/Compression;$(SolutionDir)\Libraries\Source\GameSpy-master\src\GameSpy;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\include\FFMPEG</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>IG_DEBUG_STACKTRACE;NDEBUG;_RELEASE;_LIB;_WINDOWS;WIN32;Z_PREFIX;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release\GameEngine.pch</PrecompiledHeaderOutputFile>
@@ -351,7 +353,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>../Libraries/Source/Compression;Include/Precompiled;../Libraries/Source/WWVegas;../Libraries/Source/WWVegas\WWLib;Include;../Libraries/Include;../Libraries/Source/GameSpy;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Libraries/Source/Compression;Include/Precompiled;../Libraries/Source/WWVegas;../Libraries/Source/WWVegas\WWLib;Include;../Libraries/Include;../Libraries/Source/GameSpy;%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\include\FFMPEG</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_INTERNAL;_LIB;_WINDOWS;WIN32;Z_PREFIX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Internal\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Internal\GameEngine.pch</PrecompiledHeaderOutputFile>
@@ -416,7 +418,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>Include/Precompiled;../Libraries/Source/WWVegas;../Libraries/Source/WWVegas\WWLib;Include;../Libraries/Include;../Libraries/Source/GameSpy;../Libraries/Source/Compression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Include/Precompiled;../Libraries/Source/WWVegas;../Libraries/Source/WWVegas\WWLib;Include;../Libraries/Include;../Libraries/Source/GameSpy;../Libraries/Source/Compression;%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\include\FFMPEG</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>IG_DEBUG_STACKTRACE;NDEBUG;_RELEASE;_LIB;_WINDOWS;WIN32;Z_PREFIX;_PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Profile\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Profile\GameEngine.pch</PrecompiledHeaderOutputFile>
@@ -438,6 +440,11 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>Lib/GameEngineProfile.lib</OutputFile>
     </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>;$(SolutionDir)\Libraries\include\FFMPEG</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Common\Audio\AudioEventRTS.cpp">

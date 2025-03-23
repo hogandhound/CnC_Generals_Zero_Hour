@@ -20,7 +20,6 @@
 // MilesAudioManager implementation
 // Author: John K. McDonald, July 2002
 
-#if HAS_BINK
 #include "Common/AsciiString.h"
 #include "Common/GameAudio.h"
 #include "MSS/MSS.h"
@@ -330,5 +329,4 @@ class MilesAudioManager : public AudioManager
 #endif
 
 };
-#endif
 

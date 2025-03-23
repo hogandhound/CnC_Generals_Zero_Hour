@@ -78,7 +78,6 @@
 //         Public Data                                                      
 //----------------------------------------------------------------------------
 
-#ifdef HAS_BINK
 VideoPlayerInterface *TheVideoPlayer = NULL;
 
 //----------------------------------------------------------------------------
@@ -510,6 +509,3 @@ const FieldParse VideoPlayer::m_videoFieldParseTable[] =
 	{ "Comment",								INI::parseAsciiString,							NULL, offsetof( Video, m_commentForWB) },
 	{ NULL,											NULL,																NULL, 0 },
 };
-
-
-#endif

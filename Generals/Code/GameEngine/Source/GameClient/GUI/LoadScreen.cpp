@@ -188,7 +188,6 @@ SinglePlayerLoadScreen::~SinglePlayerLoadScreen( void )
 	m_objectiveWin = NULL;
 	for(Int i = 0; i < MAX_OBJECTIVE_LINES; ++i)
 		m_objectiveLines[i] = NULL;
-#ifdef HAS_BINK
 	if(m_videoBuffer)
 		delete m_videoBuffer;
 	m_videoBuffer = NULL;
@@ -198,7 +197,6 @@ SinglePlayerLoadScreen::~SinglePlayerLoadScreen( void )
 	m_videoStream = NULL;
 	
 	TheAudio->removeAudioEvent( m_ambientLoopHandle );
-#endif
 	m_ambientLoopHandle = NULL;
 	
 }
@@ -468,7 +466,6 @@ void SinglePlayerLoadScreen::init( GameInfo *game )
 */
 	m_ambientLoop.setEventName("LoadScreenAmbient");
 	// create the new stream
-#ifdef HAS_BINK
 	m_videoStream = TheVideoPlayer->open( TheCampaignManager->getCurrentMission()->m_movieLabel );
 	if ( m_videoStream == NULL )
 	{
@@ -586,7 +583,6 @@ void SinglePlayerLoadScreen::init( GameInfo *game )
 		TheDisplay->draw();
 
 	}
-#endif
 	setFPMode();
 	m_percent->winHide(TRUE);
 	m_ambientLoopHandle = TheAudio->addAudioEvent(&m_ambientLoop);

@@ -60,32 +60,32 @@ int CPUDetectClass::ProcessorSpeed;
 __int64 CPUDetectClass::ProcessorTicksPerSecond;	// Ticks per second
 double CPUDetectClass::InvProcessorTicksPerSecond;	// 1.0 / Ticks per second
 
-unsigned CPUDetectClass::FeatureBits;
-unsigned CPUDetectClass::ExtendedFeatureBits;
+uint64_t CPUDetectClass::FeatureBits;
+uint64_t CPUDetectClass::ExtendedFeatureBits;
 
-unsigned CPUDetectClass::L2CacheSize;
-unsigned CPUDetectClass::L2CacheLineSize;
-unsigned CPUDetectClass::L2CacheSetAssociative;
-unsigned CPUDetectClass::L1DataCacheSize;
-unsigned CPUDetectClass::L1DataCacheLineSize;
-unsigned CPUDetectClass::L1DataCacheSetAssociative;
-unsigned CPUDetectClass::L1InstructionCacheSize;
-unsigned CPUDetectClass::L1InstructionCacheLineSize;
-unsigned CPUDetectClass::L1InstructionCacheSetAssociative;
-unsigned CPUDetectClass::L1InstructionTraceCacheSize;
-unsigned CPUDetectClass::L1InstructionTraceCacheSetAssociative;
+uint64_t CPUDetectClass::L2CacheSize;
+uint64_t CPUDetectClass::L2CacheLineSize;
+uint64_t CPUDetectClass::L2CacheSetAssociative;
+uint64_t CPUDetectClass::L1DataCacheSize;
+uint64_t CPUDetectClass::L1DataCacheLineSize;
+uint64_t CPUDetectClass::L1DataCacheSetAssociative;
+uint64_t CPUDetectClass::L1InstructionCacheSize;
+uint64_t CPUDetectClass::L1InstructionCacheLineSize;
+uint64_t CPUDetectClass::L1InstructionCacheSetAssociative;
+uint64_t CPUDetectClass::L1InstructionTraceCacheSize;
+uint64_t CPUDetectClass::L1InstructionTraceCacheSetAssociative;
 
-unsigned CPUDetectClass::TotalPhysicalMemory;
-unsigned CPUDetectClass::AvailablePhysicalMemory;
-unsigned CPUDetectClass::TotalPageMemory;
-unsigned CPUDetectClass::AvailablePageMemory;
-unsigned CPUDetectClass::TotalVirtualMemory;
-unsigned CPUDetectClass::AvailableVirtualMemory;
+uint64_t CPUDetectClass::TotalPhysicalMemory;
+uint64_t CPUDetectClass::AvailablePhysicalMemory;
+uint64_t CPUDetectClass::TotalPageMemory;
+uint64_t CPUDetectClass::AvailablePageMemory;
+uint64_t CPUDetectClass::TotalVirtualMemory;
+uint64_t CPUDetectClass::AvailableVirtualMemory;
 
-unsigned CPUDetectClass::OSVersionNumberMajor;
-unsigned CPUDetectClass::OSVersionNumberMinor;
-unsigned CPUDetectClass::OSVersionBuildNumber;
-unsigned CPUDetectClass::OSVersionPlatformId;
+uint64_t CPUDetectClass::OSVersionNumberMajor;
+uint64_t CPUDetectClass::OSVersionNumberMinor;
+uint64_t CPUDetectClass::OSVersionBuildNumber;
+uint64_t CPUDetectClass::OSVersionPlatformId;
 StringClass CPUDetectClass::OSVersionExtraInfo;
 
 bool CPUDetectClass::HasCPUIDInstruction=false;
@@ -870,6 +870,8 @@ void CPUDetectClass::Init_CPUID_Instruction()
      __asm__(" popfd");
      __asm__(" pop %ebx");
 #endif
+#else
+	cpuid_available = 1;
 #endif
 	HasCPUIDInstruction=!!cpuid_available;
 }
@@ -1116,7 +1118,7 @@ void CPUDetectClass::Init_Compact_Log()
    COMPACTLOG(("%d\t", timezone));
 #endif
 
-	OSInfoStruct os_info;
+   OSInfoStruct os_info = {};
 	Get_OS_Info(os_info,OSVersionPlatformId,OSVersionNumberMajor,OSVersionNumberMinor,OSVersionBuildNumber);
 	COMPACTLOG(("%s\t",os_info.Code));
 
@@ -1336,5 +1338,6 @@ void Get_OS_Info(
 			os_info.Code="WINXX";
 			return;
 		}
+		os_info.Code = "WINXX";
 	}
 }

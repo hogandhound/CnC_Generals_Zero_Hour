@@ -218,9 +218,7 @@ public:
   static void parseMultiplayerStartingMoneyChoiceDefinition( INI* ini );
 	static void parseOnlineChatColorDefinition( INI* ini );
 	static void parseMapCacheDefinition( INI* ini );
-#ifdef HAS_BINK
 	static void parseVideoDefinition( INI* ini );
-#endif
 	static void parseCommandButtonDefinition( INI *ini );
 	static void parseCommandSetDefinition( INI *ini );
 	static void parseUpgradeDefinition( INI *ini );

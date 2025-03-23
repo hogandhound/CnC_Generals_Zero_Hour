@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -46,6 +46,7 @@
     <SccProjectName>"$/RTS/Code/GameEngineDevice", TNAAAAAA</SccProjectName>
     <SccLocalPath>.</SccLocalPath>
     <ProjectGuid>{0DC0E8C4-3BD6-4E05-AE4F-3DD2BB1A85BC}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">
@@ -79,6 +80,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -218,7 +220,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\Libraries\Include\MSS;../Libraries/Source/Benchmark;..\Main;Include;..\GameEngine\Include;..\Libraries\Include;..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WW3D2;..\Libraries\Source\WWVegas\WWLib;..\Libraries\Source\WWVegas\WWDebug;..\Libraries\Source\WWVegas\WWMath;..\Libraries\Source\WWVegas\WWSaveLoad;..\Libraries\Include\Granny;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Libraries\Include\MSS;../Libraries/Source/Benchmark;..\Main;Include;..\GameEngine\Include;..\Libraries\Include;..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WW3D2;..\Libraries\Source\WWVegas\WWLib;..\Libraries\Source\WWVegas\WWDebug;..\Libraries\Source\WWVegas\WWMath;..\Libraries\Source\WWVegas\WWSaveLoad;..\Libraries\Include\Granny;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\include\FFMPEG</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_LIB;_WINDOWS;IG_DEBUG_STACKTRACE;WIN32;NDEBUG;_RELEASE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release\GameEngineDevice.pch</PrecompiledHeaderOutputFile>
@@ -280,7 +282,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>../Libraries/Source/Benchmark;..\Main;Include;..\GameEngine\Include;..\Libraries\Include;..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WW3D2;..\Libraries\Source\WWVegas\WWLib;..\Libraries\Source\WWVegas\WWDebug;..\Libraries\Source\WWVegas\WWMath;..\Libraries\Source\WWVegas\WWSaveLoad;..\Libraries\Include\Granny;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Libraries/Source/Benchmark;..\Main;Include;..\GameEngine\Include;..\Libraries\Include;..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WW3D2;..\Libraries\Source\WWVegas\WWLib;..\Libraries\Source\WWVegas\WWDebug;..\Libraries\Source\WWVegas\WWMath;..\Libraries\Source\WWVegas\WWSaveLoad;..\Libraries\Include\Granny;%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\include\FFMPEG</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_LIB;_WINDOWS;IG_DEBUG_STACKTRACE;WIN32;NDEBUG;_RELEASE;_PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Profile\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Profile\GameEngineDevice.pch</PrecompiledHeaderOutputFile>
@@ -343,8 +345,8 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\Libraries\Include\MSS;../Libraries/Source/Benchmark;..\Main;Include;..\GameEngine\Include;..\Libraries\Include;..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WW3D2;..\Libraries\Source\WWVegas\WWLib;..\Libraries\Source\WWVegas\WWDebug;..\Libraries\Source\WWVegas\WWMath;..\Libraries\Source\WWVegas\WWSaveLoad;..\Libraries\Include\Granny;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;_LIB;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Libraries\Include\MSS;../Libraries/Source/Benchmark;..\Main;Include;..\GameEngine\Include;..\Libraries\Include;..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WW3D2;..\Libraries\Source\WWVegas\WWLib;..\Libraries\Source\WWVegas\WWDebug;..\Libraries\Source\WWVegas\WWMath;..\Libraries\Source\WWVegas\WWSaveLoad;..\Libraries\Include\Granny;$(SolutionDir)\Libraries\Source\DX90SDK\include;$(SolutionDir)Libraries\Include\FFMPEG;%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\include\FFMPEG</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_LIB;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_DISABLE_VECTOR_ANNOTATION;_DISABLE_STRING_ANNOTATION</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Debug\GameEngineDevice.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\Debug\</ObjectFileName>
@@ -403,7 +405,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>../Libraries/Source/Benchmark;..\Main;Include;..\GameEngine\Include;..\Libraries\Include;..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WW3D2;..\Libraries\Source\WWVegas\WWLib;..\Libraries\Source\WWVegas\WWDebug;..\Libraries\Source\WWVegas\WWMath;..\Libraries\Source\WWVegas\WWSaveLoad;..\Libraries\Include\Granny;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Libraries/Source/Benchmark;..\Main;Include;..\GameEngine\Include;..\Libraries\Include;..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WW3D2;..\Libraries\Source\WWVegas\WWLib;..\Libraries\Source\WWVegas\WWDebug;..\Libraries\Source\WWVegas\WWMath;..\Libraries\Source\WWVegas\WWSaveLoad;..\Libraries\Include\Granny;%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\include\FFMPEG</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN32;_LIB;_WINDOWS;_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Internal\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Internal\GameEngineDevice.pch</PrecompiledHeaderOutputFile>
@@ -423,6 +425,11 @@
       <OutputFile>Lib\GameEngineDeviceInternal.lib</OutputFile>
     </Lib>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>;$(SolutionDir)\Libraries\include\FFMPEG</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\MilesAudioDevice\MilesAudioManager.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
@@ -433,6 +440,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="Source\VideoDevice\Bink\oink.cpp" />
     <ClCompile Include="Source\W3DDevice\Common\System\W3DFunctionLexicon.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
@@ -1157,6 +1165,7 @@ if ERRORLEVEL 7 ECHO Warning: Output File Read Only! </Command>
     <ClInclude Include="Include\MilesAudioDevice\SoLoudAudioManager.h" />
     <ClInclude Include="Include\VideoDevice\Bink\BINK.H" />
     <ClInclude Include="Include\VideoDevice\Bink\BinkVideoPlayer.h" />
+    <ClInclude Include="Include\VideoDevice\Bink\oink.h" />
     <ClInclude Include="Include\VideoDevice\Bink\RAD.H" />
     <ClInclude Include="Include\VideoDevice\Bink\radbase.h" />
     <ClInclude Include="Include\W3DDevice\Common\W3DConvert.h" />

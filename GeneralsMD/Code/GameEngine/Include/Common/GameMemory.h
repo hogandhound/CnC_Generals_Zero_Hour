@@ -390,12 +390,12 @@ class DynamicMemoryAllocator
 #endif
 {
 private:
-	MemoryPoolFactory					*m_factory;						///< the factory that created us
-	DynamicMemoryAllocator		*m_nextDmaInFactory;	///< linked list node, managed by factory
-	Int												m_numPools;						///< number of subpools (up to MAX_DYNAMICMEMORYALLOCATOR_SUBPOOLS)
-	Int												m_usedBlocksInDma;		///< total number of blocks allocated, from subpools and "raw"
-	MemoryPool								*m_pools[MAX_DYNAMICMEMORYALLOCATOR_SUBPOOLS];	///< the subpools
-	MemoryPoolSingleBlock			*m_rawBlocks;					///< linked list of "raw" blocks allocated directly from system
+	MemoryPoolFactory					*m_factory = 0;						///< the factory that created us
+	DynamicMemoryAllocator		*m_nextDmaInFactory = 0;	///< linked list node, managed by factory
+	Int												m_numPools = 0;						///< number of subpools (up to MAX_DYNAMICMEMORYALLOCATOR_SUBPOOLS)
+	Int												m_usedBlocksInDma = 0;		///< total number of blocks allocated, from subpools and "raw"
+	MemoryPool* m_pools[MAX_DYNAMICMEMORYALLOCATOR_SUBPOOLS] = {};	///< the subpools
+	MemoryPoolSingleBlock			*m_rawBlocks = 0;					///< linked list of "raw" blocks allocated directly from system
 
 	/// return the best pool for the given allocSize, or null if none are suitable
 	MemoryPool *findPoolForSize(Int allocSize);

@@ -110,9 +110,8 @@ public:
 	virtual void drawViews( void );																///< Render all views of the world
 	virtual void updateViews ( void );															///< Updates state of world views
 
-#ifdef HAS_BINK
 	virtual VideoBuffer*	createVideoBuffer( void ) = 0;							///< Create a video buffer that can be used for this display
-#endif
+
 	//---------------------------------------------------------------------------------------
 	// Drawing management
 	virtual void setClipRegion( IRegion2D *region ) = 0;	///< Set clip rectangle for 2D draw operations.
@@ -147,10 +146,8 @@ public:
 													Int endX, Int endY, Color color = 0xFFFFFFFF, DrawImageMode mode=DRAW_IMAGE_ALPHA) = 0;
 
 	/// draw a video buffer fit within the screen coordinates
-#ifdef HAS_BINK
 	virtual void drawVideoBuffer( VideoBuffer *buffer, Int startX, Int startY, 
 													Int endX, Int endY ) = 0;
-#endif
 
 	/// FullScreen video playback 
 	virtual void playLogoMovie( AsciiString movieName, Int minMovieLength, Int minCopyrightLength );

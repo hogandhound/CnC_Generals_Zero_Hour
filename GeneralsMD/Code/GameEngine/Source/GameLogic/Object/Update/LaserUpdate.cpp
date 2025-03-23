@@ -132,7 +132,7 @@ void LaserUpdate::updateStartPos()
 			//TheGameClient->destroyDrawable( getDrawable() );
 			
 			m_startPos.set( parentDrawable->getPosition() );
-			DEBUG_CRASH( ("LaserUpdate::updateStartPos() -- Drawable %s is expecting to find a bone %s but can't. Defaulting to position of drawable.", 
+			DEBUG_WARNING( ("LaserUpdate::updateStartPos() -- Drawable %s is expecting to find a bone %s but can't. Defaulting to position of drawable.", 
 				parentDrawable->getTemplate()->getName().str(), m_parentBoneName.str() ) );
 
 			return;

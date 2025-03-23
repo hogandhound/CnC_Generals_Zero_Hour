@@ -244,9 +244,7 @@ void W3DGadgetPushButtonDraw( GameWindow *window, WinInstanceData *instData )
 	// if we have a video buffer, draw the video buffer
 	if ( instData->m_videoBuffer )
 	{
-#ifdef HAS_BINK
 		TheDisplay->drawVideoBuffer( instData->m_videoBuffer, origin.x, origin.y, origin.x + size.x, origin.y + size.y );
-#endif
 	}
 	
 	PushButtonData *pData = (PushButtonData *)window->winGetUserData();
@@ -415,9 +413,7 @@ void W3DGadgetPushButtonImageDrawOne( GameWindow *window,
 	// if we have a video buffer, draw the video buffer
 	if ( instData->m_videoBuffer )
 	{
-#ifdef HAS_BINK
-		TheDisplay->drawVideoBuffer( instData->m_videoBuffer, start.x, start.y, start.x + size.x, start.y + size.y );
-#endif
+		TheDisplay->drawVideoBuffer(instData->m_videoBuffer, start.x, start.y, start.x + size.x, start.y + size.y);
 	}
 	PushButtonData *pData = (PushButtonData *)window->winGetUserData();
 
@@ -676,9 +672,7 @@ void W3DGadgetPushButtonImageDrawThree(GameWindow *window, WinInstanceData *inst
 	// if we have a video buffer, draw the video buffer
 	if ( instData->m_videoBuffer )
 	{
-#ifdef HAS_BINK
 		TheDisplay->drawVideoBuffer( instData->m_videoBuffer, start.x, start.y, start.x + size.x, start.y + size.y );
-#endif
 	}
 	PushButtonData *pData = (PushButtonData *)window->winGetUserData();
 

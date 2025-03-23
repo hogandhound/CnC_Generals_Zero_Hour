@@ -45,7 +45,6 @@
 //         Includes                                                      
 //----------------------------------------------------------------------------
 
-#ifdef HAS_BINK
 #include "Lib/BaseType.h"
 #include "VideoDevice/Bink/BinkVideoPlayer.h"
 #include "Common/AudioAffect.h"
@@ -185,7 +184,7 @@ void	BinkVideoPlayer::regainFocus( void )
 // BinkVideoPlayer::createStream
 //============================================================================
 
-VideoStreamInterface* BinkVideoPlayer::createStream( HBINK handle )
+VideoStreamInterface* BinkVideoPlayer::createStream( OINK* handle )
 {
 
 	if ( handle == NULL )
@@ -208,7 +207,7 @@ VideoStreamInterface* BinkVideoPlayer::createStream( HBINK handle )
 		Int volume = (32768*mod)/100;
 		DEBUG_LOG(("BinkVideoPlayer::createStream() - About to set volume (%g -> %d -> %d\n",
 			TheAudio->getVolume(AudioAffect_Speech), mod, volume));
-		BinkSetVolume( stream->m_handle,0, volume);
+		BinkSetVolume( stream->m_handle, volume);
 		DEBUG_LOG(("BinkVideoPlayer::createStream() - set volume\n"));
 	}
 
@@ -231,7 +230,7 @@ VideoStreamInterface*	BinkVideoPlayer::open( AsciiString movieTitle )
 		{
 			char filePath[ _MAX_PATH ];
 			sprintf( filePath, "%s%s\\%s.%s", TheGlobalData->m_modDir.str(), VIDEO_PATH, pVideo->m_filename.str(), VIDEO_EXT );
-			HBINK handle = BinkOpen(filePath , BINKPRELOADALL );
+			OINK* handle = BinkOpen(filePath , OINKPRELOADALL );
 			DEBUG_ASSERTLOG(!handle, ("opened bink file %s\n", filePath));
 			if (handle)
 			{
@@ -241,13 +240,13 @@ VideoStreamInterface*	BinkVideoPlayer::open( AsciiString movieTitle )
 
 		char localizedFilePath[ _MAX_PATH ];
 		sprintf( localizedFilePath, VIDEO_LANG_PATH_FORMAT, GetRegistryLanguage().str(), pVideo->m_filename.str(), VIDEO_EXT );
-		HBINK handle = BinkOpen(localizedFilePath , BINKPRELOADALL );
+		OINK* handle = BinkOpen(localizedFilePath , OINKPRELOADALL );
 		DEBUG_ASSERTLOG(!handle, ("opened localized bink file %s\n", localizedFilePath));
 		if (!handle)
 		{
 			char filePath[ _MAX_PATH ];
 			sprintf( filePath, "%s\\%s.%s", VIDEO_PATH, pVideo->m_filename.str(), VIDEO_EXT );
-			handle = BinkOpen(filePath , BINKPRELOADALL );
+			handle = BinkOpen(filePath , OINKPRELOADALL );
 			DEBUG_ASSERTLOG(!handle, ("opened bink file %s\n", localizedFilePath));
 		}
 
@@ -273,10 +272,16 @@ void BinkVideoPlayer::notifyVideoPlayerOfNewProvider( Bool nowHasValid )
 {
 	if (!nowHasValid) {
 		TheAudio->releaseHandleForBink();
-		BinkSetSoundTrack(0, 0);
+		BinkSetSoundTrack(0);
 	} else {
 		initializeBinkWithMiles();
 	}
+}
+
+void PassAudioFromBink(void* handle, uint8_t* data, size_t len, float sampleRate, int channels)
+{
+	AudioManager* manager = (AudioManager*)handle;
+	manager->playBinkStream(data, len, sampleRate, channels);
 }
 
 //============================================================================
@@ -285,14 +290,11 @@ void BinkVideoPlayer::initializeBinkWithMiles()
 {
 	Int retVal = 0;
 	void *driver = TheAudio->getHandleForBink();	
-	
-	if ( driver )
-	{
-		retVal = BinkSoundUseDirectSound(driver);
-	}
+
+	BinkSetAudioCallback(TheAudio, PassAudioFromBink);
 	if( !driver || retVal == 0)
 	{
-		BinkSetSoundTrack ( 0,0 );
+		BinkSetSoundTrack ( 0 );
 	}
 }
 
@@ -356,7 +358,7 @@ void BinkVideoStream::frameRender( VideoBuffer *buffer )
 	{
 		void *mem = buffer->lock();
 
-		u32 flags;
+		uint32_t flags;
 
 		switch ( buffer->format())
 		{
@@ -445,7 +447,3 @@ Int		BinkVideoStream::width( void )
 	return m_handle->Width;
 }
 
-
-
-
-#endif

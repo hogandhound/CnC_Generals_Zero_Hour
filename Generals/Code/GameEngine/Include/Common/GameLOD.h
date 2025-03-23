@@ -136,10 +136,10 @@ struct LODPresetInfo
 {
 	LODPresetInfo() : m_cpuType(XX),m_mhz(1),m_cpuPerfIndex(1.0f),m_videoType(DC_UNKNOWN),m_memory(1) {};
 	CpuType  m_cpuType;
-	Int	 m_mhz;
+	int64_t	 m_mhz;
 	Real m_cpuPerfIndex;	//used to select preset for unidentified cpu's
 	ChipsetType  m_videoType;
-	Int  m_memory;
+	int64_t  m_memory;
 };
 
 struct BenchProfile
@@ -147,7 +147,7 @@ struct BenchProfile
 	BenchProfile() : m_cpuType(XX),m_mhz(1),m_intBenchIndex(1.0f),m_floatBenchIndex(1.0f),m_memBenchIndex(1.0f) {};
 
 	CpuType  m_cpuType;
-	Int	 m_mhz;
+	int64_t	 m_mhz;
 	Real m_intBenchIndex;
 	Real m_floatBenchIndex;
 	Real m_memBenchIndex;
@@ -213,8 +213,8 @@ protected:
 	StaticGameLODLevel m_idealDetailLevel;
 	ChipsetType m_videoChipType;
 	CpuType m_cpuType;
-	Int m_numRAM;
-	Int m_cpuFreq;
+	int64_t m_numRAM;
+	int64_t m_cpuFreq;
 	Real m_intBenchIndex;
 	Real m_floatBenchIndex;
 	Real m_memBenchIndex;

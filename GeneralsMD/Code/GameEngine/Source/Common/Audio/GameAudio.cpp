@@ -456,7 +456,7 @@ AudioHandle AudioManager::addAudioEvent(const AudioEventRTS *eventToAdd)
 	((AudioEventRTS*)eventToAdd)->setPlayingAudioIndex( audioEvent->getPlayingAudioIndex() );
 	audioEvent->generatePlayInfo();	// generate pitch shift and volume shift now as well
 
-	std::list<std::pair<AsciiString, Real> >::iterator it;
+	std::vector<std::pair<AsciiString, Real> >::iterator it;
 	for (it = m_adjustedVolumes.begin(); it != m_adjustedVolumes.end(); ++it) {
 		if (it->first == audioEvent->getEventName()) {
 			audioEvent->setVolume(it->second);
@@ -614,7 +614,7 @@ void AudioManager::setAudioEventVolumeOverride( AsciiString eventToAffect, Real 
 		adjustVolumeOfPlayingAudio(eventToAffect, newVolume);
 	}
 
-	std::list<std::pair<AsciiString, Real> >::iterator it;
+	std::vector<std::pair<AsciiString, Real> >::iterator it;
 	for (it = m_adjustedVolumes.begin(); it != m_adjustedVolumes.end(); ++it) {
 		if (it->first == eventToAffect) {
 			if (newVolume == -1.0f) {
@@ -631,7 +631,7 @@ void AudioManager::setAudioEventVolumeOverride( AsciiString eventToAffect, Real 
 		std::pair<AsciiString, Real> newPair;
 		newPair.first = eventToAffect;
 		newPair.second = newVolume;
-		m_adjustedVolumes.push_front(newPair);
+		m_adjustedVolumes.insert(m_adjustedVolumes.begin(), newPair);
 	}
 }
 
@@ -825,7 +825,7 @@ void AudioManager::appendAudioRequest( AudioRequest *m_request )
 // Remove all pending audio requests
 void AudioManager::removeAllAudioRequests( void )
 {
-  std::list<AudioRequest*>::iterator it;
+  std::vector<AudioRequest*>::iterator it;
   for ( it = m_audioRequests.begin(); it != m_audioRequests.end(); it++ ) {
     releaseAudioRequest( *it );
   }
@@ -1001,13 +1001,11 @@ void AudioManager::findAllAudioEventsOfType( AudioType audioType, std::vector<Au
 //-------------------------------------------------------------------------------------------------
 Bool AudioManager::isCurrentProviderHardwareAccelerated()
 {
-#ifdef HAS_BINK
 	for (Int i = 0; i < MAX_HW_PROVIDERS; ++i) {
 		if (getProviderName(getSelectedProvider()) == TheAudio->getAudioSettings()->m_preferred3DProvider[i]) {
 			return TRUE;
 		}
 	}
-#endif
 
 	return FALSE;
 }

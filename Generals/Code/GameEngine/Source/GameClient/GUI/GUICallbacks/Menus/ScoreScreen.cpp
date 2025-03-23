@@ -600,7 +600,6 @@ void initSkirmish( void )
 
 void PlayMovieAndBlock(AsciiString movieTitle)
 {
-#ifdef HAS_BINK
 	VideoStreamInterface *videoStream = TheVideoPlayer->open( movieTitle );
 	if ( videoStream == NULL )
 	{
@@ -666,7 +665,6 @@ void PlayMovieAndBlock(AsciiString movieTitle)
 		videoStream->close();
 		videoStream = NULL;
 	}
-#endif
 
 	setFPMode();
 }

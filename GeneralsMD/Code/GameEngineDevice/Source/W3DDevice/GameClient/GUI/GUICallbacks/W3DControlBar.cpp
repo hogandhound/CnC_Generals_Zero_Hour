@@ -56,9 +56,7 @@ void W3DCameoMovieDraw( GameWindow *window, WinInstanceData *instData )
 		window->winGetScreenPosition( &pos.x, &pos.y );
 		window->winGetSize( &size.x, &size.y );
 
-#ifdef HAS_BINK
 		TheDisplay->drawVideoBuffer( video, pos.x, pos.y, pos.x + size.x, pos.y + size.y );
-#endif
 	}
 }  // end W3DLeftHUDDraw
 
@@ -77,9 +75,7 @@ void W3DLeftHUDDraw( GameWindow *window, WinInstanceData *instData )
 		window->winGetScreenPosition( &pos.x, &pos.y );
 		window->winGetSize( &size.x, &size.y );
 
-#ifdef HAS_BINK
 		TheDisplay->drawVideoBuffer( video, pos.x, pos.y, pos.x + size.x, pos.y + size.y );
-#endif
 	}
 	else if( TheRadar->isRadarForced() || ( TheRadar->isRadarHidden() == false && player->hasRadar() ) )
 	{

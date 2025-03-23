@@ -98,9 +98,7 @@ SoLoudAudioManager::SoLoudAudioManager() :
 	m_num3DSamples(0),
 	m_numStreams(0),
 	//m_delayFilter(NULL),
-#if HAS_BINK
 	m_binkHandle(NULL),
-#endif
 	m_pref3DProvider(AsciiString::TheEmptyString),
 	m_prefSpeaker(AsciiString::TheEmptyString)
 {
@@ -137,7 +135,7 @@ AudioHandle SoLoudAudioManager::addAudioEvent(const AudioEventRTS* eventToAdd)
 //-------------------------------------------------------------------------------------------------
 void SoLoudAudioManager::audioDebugDisplay(DebugDisplayInterface* dd, void*, FILE* fp)
 {
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 
 	static char buffer[128] = { 0 };
 	if (buffer[0] == 0) {
@@ -246,7 +244,7 @@ void SoLoudAudioManager::audioDebugDisplay(DebugDisplayInterface* dd, void*, FIL
 				continue;
 			}
 
-			playingArray[playing->m_playingIndex, 0] = playing;
+			//playingArray[playing->m_playingIndex, 0] = playing;
 		}
 
 		for (Int i = 1; i <= maxChannels && i <= channelCount; ++i) {
@@ -307,7 +305,7 @@ void SoLoudAudioManager::audioDebugDisplay(DebugDisplayInterface* dd, void*, FIL
 				continue;
 			}
 
-			playingArray[playing->m_playingIndex] = playing;
+			//playingArray[playing->m_playingIndex] = playing;
 		}
 
 		for (Int i = 1; i <= maxChannels && i <= channelCount; ++i)
@@ -508,7 +506,7 @@ void SoLoudAudioManager::stopAudio(AudioAffect which)
 	//		correctly clean up the sample.
 
 
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 
 	PlayingAudio* playing = NULL;
 	if (BitTestWW(which, AudioAffect_Sound)) {
@@ -555,7 +553,7 @@ void SoLoudAudioManager::stopAudio(AudioAffect which)
 //-------------------------------------------------------------------------------------------------
 void SoLoudAudioManager::pauseAudio(AudioAffect which)
 {
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 
 	PlayingAudio* playing = NULL;
 	if (BitTestWW(which, AudioAffect_Sound)) {
@@ -596,7 +594,7 @@ void SoLoudAudioManager::pauseAudio(AudioAffect which)
 	}
 
 	//Get rid of PLAY audio requests when pausing audio.
-	std::list<AudioRequest*>::iterator ait;
+	std::vector<AudioRequest*>::iterator ait;
 	for (ait = m_audioRequests.begin(); ait != m_audioRequests.end(); /* empty */)
 	{
 		AudioRequest* req = (*ait);
@@ -616,7 +614,7 @@ void SoLoudAudioManager::pauseAudio(AudioAffect which)
 //-------------------------------------------------------------------------------------------------
 void SoLoudAudioManager::resumeAudio(AudioAffect which)
 {
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 
 	PlayingAudio* playing = NULL;
 	if (BitTestWW(which, AudioAffect_Sound)) {
@@ -674,7 +672,7 @@ void SoLoudAudioManager::playAudioEvent(AudioEventRTS* event)
 		return;
 	}
 
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 	PlayingAudio* playing = NULL;
 
 	AudioHandle handleToKill = event->getHandleToKill();
@@ -748,7 +746,7 @@ void SoLoudAudioManager::playAudioEvent(AudioEventRTS* event)
 			//AIL_set_stream_volume_pan(stream, curVolume, 0.5f);
 			audio->m_handle = playStream(event, *stream);
 			m_digitalHandle.setPan(audio->m_handle, 0);
-			audio->m_playingIndex = (uint32_t)m_playingStreams.size();
+			//audio->m_playingIndex = (uint32_t)m_playingStreams.size();
 			m_playingStreams.push_back(audio);
 			audio = NULL;
 		}
@@ -811,7 +809,7 @@ void SoLoudAudioManager::playAudioEvent(AudioEventRTS* event)
 			audio->m_audioEventRTS = event;
 			audio->m_file = NULL;
 			audio->m_type = PAT_3DSample;
-			audio->m_playingIndex = (uint32_t)m_playing3DSounds.size();
+			//audio->m_playingIndex = (uint32_t)m_playing3DSounds.size();
 			m_playing3DSounds.push_back(audio);
 
 			if (sample3D) {
@@ -882,7 +880,7 @@ void SoLoudAudioManager::playAudioEvent(AudioEventRTS* event)
 			audio->m_audioEventRTS = event;
 			audio->m_file = NULL;
 			audio->m_type = PAT_Sample;
-			audio->m_playingIndex = (uint32_t)m_playingSounds.size();
+			//audio->m_playingIndex = (uint32_t)m_playingSounds.size();
 			m_playingSounds.push_back(audio);
 
 			if (sample) {
@@ -922,7 +920,7 @@ void SoLoudAudioManager::stopAudioEvent(AudioHandle handle)
 	DEBUG_LOG(("MILES (%d) - Processing stop request: %d\n", TheGameLogic->getFrame(), handle));
 #endif
 
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 	if (handle == AHSV_StopTheMusic || handle == AHSV_StopTheMusicFade) {
 		// for music, just find the currently playing music stream and kill it.
 		for (it = m_playingStreams.begin(); it != m_playingStreams.end(); ++it) {
@@ -994,7 +992,7 @@ void SoLoudAudioManager::stopAudioEvent(AudioHandle handle)
 void SoLoudAudioManager::killAudioEventImmediately(AudioHandle audioEvent)
 {
 	//First look for it in the request list.
-	std::list<AudioRequest*>::iterator ait;
+	std::vector<AudioRequest*>::iterator ait;
 	for (ait = m_audioRequests.begin(); ait != m_audioRequests.end(); ait++)
 	{
 		AudioRequest* req = (*ait);
@@ -1007,7 +1005,7 @@ void SoLoudAudioManager::killAudioEventImmediately(AudioHandle audioEvent)
 	}
 
 	//Look for matching 3D sound to kill
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 	for (it = m_playing3DSounds.begin(); it != m_playing3DSounds.end(); it++)
 	{
 		PlayingAudio* audio = (*it);
@@ -1159,7 +1157,7 @@ void SoLoudAudioManager::releasePlayingAudio(PlayingAudio* release)
 //-------------------------------------------------------------------------------------------------
 void SoLoudAudioManager::stopAllAudioImmediately(void)
 {
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 	PlayingAudio* playing;
 
 	for (it = m_playingSounds.begin(); it != m_playingSounds.end(); ) {
@@ -1202,7 +1200,7 @@ void SoLoudAudioManager::stopAllAudioImmediately(void)
 		it = m_fadingAudio.erase(it);
 	}
 
-	std::list<SoLoud::handle>::iterator hit;
+	std::vector<SoLoud::handle>::iterator hit;
 	for (hit = m_audioForcePlayed.begin(); hit != m_audioForcePlayed.end(); ++hit) {
 		if (*hit) {
 			m_digitalHandle.stop(*hit);
@@ -1220,7 +1218,7 @@ void SoLoudAudioManager::freeAllMilesHandles(void)
 	stopAllAudioImmediately();
 
 	// Walks through the available 2-D and 3-D handles and releases them
-	//std::list<HSAMPLE>::iterator it;
+	//std::vector<HSAMPLE>::iterator it;
 	//for (it = m_availableSamples.begin(); it != m_availableSamples.end(); /* empty */) {
 	//	HSAMPLE sample = *it;
 	//	AIL_release_sample_handle(sample);
@@ -1228,7 +1226,7 @@ void SoLoudAudioManager::freeAllMilesHandles(void)
 	//}
 	m_num2DSamples = 0;
 
-	//std::list<H3DSAMPLE>::iterator it3D;
+	//std::vector<H3DSAMPLE>::iterator it3D;
 	//for (it3D = m_available3DSamples.begin(); it3D != m_available3DSamples.end(); /* empty */) {
 	//	H3DSAMPLE sample3D = *it3D;
 	//	AIL_release_3D_sample_handle(sample3D);
@@ -1298,7 +1296,7 @@ void SoLoudAudioManager::adjustPlayingVolume(PlayingAudio* audio)
 //-------------------------------------------------------------------------------------------------
 void SoLoudAudioManager::stopAllSpeech(void)
 {
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 	PlayingAudio* playing;
 	for (it = m_playingStreams.begin(); it != m_playingStreams.end(); ) {
 		playing = (*it);
@@ -1390,7 +1388,7 @@ void SoLoudAudioManager::initFilters3D(SoLoud::handle sample, const AudioEventRT
 void SoLoudAudioManager::nextMusicTrack(void)
 {
 	AsciiString trackName;
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 	PlayingAudio* playing;
 	for (it = m_playingStreams.begin(); it != m_playingStreams.end(); ++it) {
 		playing = *it;
@@ -1411,7 +1409,7 @@ void SoLoudAudioManager::nextMusicTrack(void)
 void SoLoudAudioManager::prevMusicTrack(void)
 {
 	AsciiString trackName;
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 	PlayingAudio* playing;
 	for (it = m_playingStreams.begin(); it != m_playingStreams.end(); ++it) {
 		playing = *it;
@@ -1431,7 +1429,7 @@ void SoLoudAudioManager::prevMusicTrack(void)
 //-------------------------------------------------------------------------------------------------
 Bool SoLoudAudioManager::isMusicPlaying(void) const
 {
-	std::list<PlayingAudio*>::const_iterator it;
+	std::vector<PlayingAudio*>::const_iterator it;
 	PlayingAudio* playing;
 	for (it = m_playingStreams.begin(); it != m_playingStreams.end(); ++it) {
 		playing = *it;
@@ -1446,7 +1444,7 @@ Bool SoLoudAudioManager::isMusicPlaying(void) const
 //-------------------------------------------------------------------------------------------------
 Bool SoLoudAudioManager::hasMusicTrackCompleted(const AsciiString& trackName, Int numberOfTimes) const
 {
-	std::list<PlayingAudio*>::const_iterator it;
+	std::vector<PlayingAudio*>::const_iterator it;
 	PlayingAudio* playing;
 	for (it = m_playingStreams.begin(); it != m_playingStreams.end(); ++it) {
 		playing = *it;
@@ -1467,7 +1465,7 @@ Bool SoLoudAudioManager::hasMusicTrackCompleted(const AsciiString& trackName, In
 AsciiString SoLoudAudioManager::getMusicTrackName(void) const
 {
 	// First check the requests. If there's one there, then report that as the currently playing track.
-	std::list<AudioRequest*>::const_iterator ait;
+	std::vector<AudioRequest*>::const_iterator ait;
 	for (ait = m_audioRequests.begin(); ait != m_audioRequests.end(); ++ait) {
 		if ((*ait)->m_request != AR_Play) {
 			continue;
@@ -1482,7 +1480,7 @@ AsciiString SoLoudAudioManager::getMusicTrackName(void) const
 		}
 	}
 
-	std::list<PlayingAudio*>::const_iterator it;
+	std::vector<PlayingAudio*>::const_iterator it;
 	PlayingAudio* playing;
 	for (it = m_playingStreams.begin(); it != m_playingStreams.end(); ++it) {
 		playing = *it;
@@ -1546,7 +1544,7 @@ void SoLoudAudioManager::closeDevice(void)
 //-------------------------------------------------------------------------------------------------
 Bool SoLoudAudioManager::isCurrentlyPlaying(AudioHandle handle)
 {
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 	PlayingAudio* playing;
 
 	for (it = m_playingSounds.begin(); it != m_playingSounds.end(); ++it) {
@@ -1571,7 +1569,7 @@ Bool SoLoudAudioManager::isCurrentlyPlaying(AudioHandle handle)
 	}
 
 	// if something is requested, it is also considered playing
-	std::list<AudioRequest*>::iterator ait;
+	std::vector<AudioRequest*>::iterator ait;
 	AudioRequest* req = NULL;
 	for (ait = m_audioRequests.begin(); ait != m_audioRequests.end(); ++ait) {
 		req = *ait;
@@ -1649,7 +1647,7 @@ void SoLoudAudioManager::notifyOfAudioCompletion(SoLoud::handle audioCompleted, 
 //-------------------------------------------------------------------------------------------------
 PlayingAudio* SoLoudAudioManager::findPlayingAudioFrom(SoLoud::handle audioCompleted, UnsignedInt flags)
 {
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 	PlayingAudio* playing;
 
 	if (flags == PAT_Sample) {
@@ -1811,12 +1809,10 @@ void SoLoudAudioManager::selectProvider(UnsignedInt providerNdx)
 
 		createListener();
 		setSpeakerType(m_selectedSpeakerType);
-#ifdef HAS_BINK
 		if (TheVideoPlayer)
 		{
 			TheVideoPlayer->notifyVideoPlayerOfNewProvider(TRUE);
 		}
-#endif
 	}
 }
 
@@ -1827,11 +1823,9 @@ void SoLoudAudioManager::unselectProvider(void)
 		return;
 	}
 
-#ifdef HAS_BINK
 	if (TheVideoPlayer) {
 		TheVideoPlayer->notifyVideoPlayerOfNewProvider(FALSE);
 	}
-#endif
 	//AIL_close_3D_listener(m_listener);
 	//m_listener = NULL;
 
@@ -1897,7 +1891,7 @@ Bool SoLoudAudioManager::doesViolateLimit(AudioEventRTS* event) const
 	Int totalCount = 0;
 	Int totalRequestCount = 0;
 
-	std::list<PlayingAudio*>::const_iterator it;
+	std::vector<PlayingAudio*>::const_iterator it;
 	if (!event->isPositionalAudio()) {
 		// 2-D
 		for (it = m_playingSounds.begin(); it != m_playingSounds.end(); ++it) {
@@ -1924,7 +1918,7 @@ Bool SoLoudAudioManager::doesViolateLimit(AudioEventRTS* event) const
 	}
 
 	// Also check the request list in case we've requested to play this sound.
-	std::list<AudioRequest*>::const_iterator arIt;
+	std::vector<AudioRequest*>::const_iterator arIt;
 	for (arIt = m_audioRequests.begin(); arIt != m_audioRequests.end(); ++arIt) {
 		AudioRequest* req = (*arIt);
 		if (req == NULL) {
@@ -1974,7 +1968,7 @@ Bool SoLoudAudioManager::doesViolateLimit(AudioEventRTS* event) const
 //-------------------------------------------------------------------------------------------------
 Bool SoLoudAudioManager::isPlayingAlready(AudioEventRTS* event) const
 {
-	std::list<PlayingAudio*>::const_iterator it;
+	std::vector<PlayingAudio*>::const_iterator it;
 	if (!event->isPositionalAudio()) {
 		// 2-D
 		for (it = m_playingSounds.begin(); it != m_playingSounds.end(); ++it) {
@@ -2002,7 +1996,7 @@ Bool SoLoudAudioManager::isObjectPlayingVoice(UnsignedInt objID) const
 		return false;
 	}
 
-	std::list<PlayingAudio*>::const_iterator it;
+	std::vector<PlayingAudio*>::const_iterator it;
 	// 2-D
 	for (it = m_playingSounds.begin(); it != m_playingSounds.end(); ++it) {
 		if ((*it)->m_audioEventRTS->getObjectID() == objID && (*it)->m_audioEventRTS->getAudioEventInfo()->m_type & ST_VOICE) {
@@ -2033,7 +2027,7 @@ AudioEventRTS* SoLoudAudioManager::findLowestPrioritySound(AudioEventRTS* event)
 	AudioEventRTS* lowestPriorityEvent = NULL;
 	AudioPriority lowestPriority;
 
-	std::list<PlayingAudio*>::const_iterator it;
+	std::vector<PlayingAudio*>::const_iterator it;
 	if (event->isPositionalAudio())
 	{
 		//3D
@@ -2091,7 +2085,7 @@ Bool SoLoudAudioManager::isPlayingLowerPriority(AudioEventRTS* event) const
 		//there is nothing lower priority than lowest.
 		return false;
 	}
-	std::list<PlayingAudio*>::const_iterator it;
+	std::vector<PlayingAudio*>::const_iterator it;
 	if (!event->isPositionalAudio()) {
 		// 2-D
 		for (it = m_playingSounds.begin(); it != m_playingSounds.end(); ++it) {
@@ -2122,7 +2116,7 @@ Bool SoLoudAudioManager::killLowestPrioritySoundImmediately(AudioEventRTS* event
 	AudioEventRTS* lowestPriorityEvent = findLowestPrioritySound(event);
 	if (lowestPriorityEvent)
 	{
-		std::list<PlayingAudio*>::iterator it;
+		std::vector<PlayingAudio*>::iterator it;
 		if (event->isPositionalAudio())
 		{
 			for (it = m_playing3DSounds.begin(); it != m_playing3DSounds.end(); ++it)
@@ -2170,7 +2164,7 @@ Bool SoLoudAudioManager::killLowestPrioritySoundImmediately(AudioEventRTS* event
 void SoLoudAudioManager::adjustVolumeOfPlayingAudio(AsciiString eventName, Real newVolume)
 {
 	//Real pan;
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 
 	PlayingAudio* playing = NULL;
 	for (it = m_playingSounds.begin(); it != m_playingSounds.end(); ++it) {
@@ -2213,7 +2207,7 @@ void SoLoudAudioManager::adjustVolumeOfPlayingAudio(AsciiString eventName, Real 
 //-------------------------------------------------------------------------------------------------
 void SoLoudAudioManager::removePlayingAudio(AsciiString eventName)
 {
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 
 	PlayingAudio* playing = NULL;
 	for (it = m_playingSounds.begin(); it != m_playingSounds.end(); )
@@ -2262,7 +2256,7 @@ void SoLoudAudioManager::removePlayingAudio(AsciiString eventName)
 //-------------------------------------------------------------------------------------------------
 void SoLoudAudioManager::removeAllDisabledAudio()
 {
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 
 	PlayingAudio* playing = NULL;
 	for (it = m_playingSounds.begin(); it != m_playingSounds.end(); )
@@ -2311,7 +2305,7 @@ void SoLoudAudioManager::removeAllDisabledAudio()
 //-------------------------------------------------------------------------------------------------
 void SoLoudAudioManager::processRequestList(void)
 {
-	std::list<AudioRequest*>::iterator it;
+	std::vector<AudioRequest*>::iterator it;
 	for (it = m_audioRequests.begin(); it != m_audioRequests.end(); /* empty */) {
 		AudioRequest* req = (*it);
 		if (req == NULL) {
@@ -2338,7 +2332,7 @@ void SoLoudAudioManager::processPlayingList(void)
 	// There are two types of processing we have to do here. 
 	// 1. Move the item to the stopped list if it has become stopped.
 	// 2. Update the position of the audio if it is positional
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 	PlayingAudio* playing;
 
 	for (it = m_playingSounds.begin(); it != m_playingSounds.end(); /* empty */) {
@@ -2478,7 +2472,7 @@ Bool SoLoudAudioManager::has3DSensitiveStreamsPlaying(void) const
 	if (m_playingStreams.empty())
 		return FALSE;
 
-	for (std::list< PlayingAudio* >::const_iterator it = m_playingStreams.begin(); it != m_playingStreams.end(); ++it)
+	for (std::vector< PlayingAudio* >::const_iterator it = m_playingStreams.begin(); it != m_playingStreams.end(); ++it)
 	{
 		const PlayingAudio* playing = (*it);
 
@@ -2504,7 +2498,7 @@ Bool SoLoudAudioManager::has3DSensitiveStreamsPlaying(void) const
 //-------------------------------------------------------------------------------------------------
 void SoLoudAudioManager::processFadingList(void)
 {
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 	PlayingAudio* playing;
 
 	for (it = m_fadingAudio.begin(); it != m_fadingAudio.end(); /* emtpy */) {
@@ -2557,7 +2551,7 @@ void SoLoudAudioManager::processFadingList(void)
 //-------------------------------------------------------------------------------------------------
 void SoLoudAudioManager::processStoppedList(void)
 {
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 	PlayingAudio* playing;
 
 	for (it = m_stoppedAudio.begin(); it != m_stoppedAudio.end(); /* emtpy */) {
@@ -2692,7 +2686,7 @@ Real SoLoudAudioManager::getFileLengthMS(AsciiString strToLoad) const
 void SoLoudAudioManager::closeAnySamplesUsingFile(const void* vfileToClose)
 {
 	SoLoud::Wav* fileToClose = (SoLoud::Wav*)vfileToClose;
-	std::list<PlayingAudio*>::iterator it;
+	std::vector<PlayingAudio*>::iterator it;
 	PlayingAudio* playing;
 
 	for (it = m_playingSounds.begin(); it != m_playingSounds.end(); ) {
@@ -3071,38 +3065,49 @@ void SoLoudAudioManager::processRequest(AudioRequest* req)
 //-------------------------------------------------------------------------------------------------
 void* SoLoudAudioManager::getHandleForBink(void)
 {
-#if HAS_BINK
+	return nullptr;
+}
+void SoLoudAudioManager::playBinkStream(uint8_t* data, size_t len, float sampleRate, int channels)
+{
 	if (m_binkHandle == NULL) {
 		PlayingAudio* aud = allocatePlayingAudio();
 		aud->m_audioEventRTS = new AudioEventRTS("BinkHandle");	// poolify
 		getInfoForAudioEvent(aud->m_audioEventRTS);
-		aud->m_sample = getFirst2DSample(aud->m_audioEventRTS);
 		aud->m_type = PAT_Sample;
-
-		if (!aud->m_sample) {
-			releasePlayingAudio(aud);
-			return NULL;
-		}
 
 		m_binkHandle = aud;
 	}
 
-	AILLPDIRECTSOUND lpDS;
-	AIL_get_DirectSound_info(m_binkHandle->m_sample, &lpDS, NULL);
-	return lpDS;
-#endif
-	return nullptr;
+	SoLoud::Wav* wav = new SoLoud::Wav();
+	wav->loadRawWave((float*)data, (uint32_t)len, sampleRate, channels, true, false);
+	m_binkHandle->queue.play(*wav);
+	if (!m_digitalHandle.isValidVoiceHandle(m_binkHandle->m_handle))
+	{
+		m_binkHandle->m_handle = m_digitalHandle.play(m_binkHandle->queue);
+	}
+	for (int i = 0; i < playQueue_.size(); ++i)
+	{
+		if (!m_binkHandle->queue.isCurrentlyPlaying(*playQueue_[i]))
+		{
+			delete playQueue_[i];
+			playQueue_.erase(playQueue_.begin());
+			i--;
+		}
+		else
+		{
+			break;
+		}
+	}
+	playQueue_.push_back(wav);
 }
 
 //-------------------------------------------------------------------------------------------------
 void SoLoudAudioManager::releaseHandleForBink(void)
 {
-#if HAS_BINK
 	if (m_binkHandle) {
 		releasePlayingAudio(m_binkHandle);
 		m_binkHandle = NULL;
 	}
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3137,7 +3142,7 @@ void SoLoudAudioManager::friend_forcePlayAudioEventRTS(const AudioEventRTS* even
 	event.generateFilename();
 	event.generatePlayInfo();
 
-	std::list<std::pair<AsciiString, Real> >::iterator it;
+	std::vector<std::pair<AsciiString, Real> >::iterator it;
 	for (it = m_adjustedVolumes.begin(); it != m_adjustedVolumes.end(); ++it) {
 		if (it->first == event.getEventName()) {
 			event.setVolume(it->second);
@@ -3401,7 +3406,7 @@ Bool AudioFileCache::freeEnoughSpaceForSample(const OpenAudioFile& sampleThatNee
 	Int spaceRequired = m_currentlyUsedSize - m_maxSize;
 	Int runningTotal = 0;
 
-	std::list<AsciiString> filesToClose;
+	std::vector<AsciiString> filesToClose;
 	// First, search for any samples that have ref counts of 0. They are low-hanging fruit, and 
 	// should be considered immediately.
 	OpenFilesHashIt it;
@@ -3442,7 +3447,7 @@ Bool AudioFileCache::freeEnoughSpaceForSample(const OpenAudioFile& sampleThatNee
 		return FALSE;
 	}
 
-	std::list<AsciiString>::iterator ait;
+	std::vector<AsciiString>::iterator ait;
 	for (ait = filesToClose.begin(); ait != filesToClose.end(); ++ait) {
 		OpenFilesHashIt itToErase = m_openFiles.find(*ait);
 		if (itToErase != m_openFiles.end()) {
@@ -3469,10 +3474,10 @@ void SoLoudAudioManager::dumpAllAssetsUsed()
 	if (!logfile)
 		return;
 
-	std::list<AsciiString> missingEvents;
-	std::list<AsciiString> usedFiles;
+	std::vector<AsciiString> missingEvents;
+	std::vector<AsciiString> usedFiles;
 
-	std::list<AsciiString>::iterator lit;
+	std::vector<AsciiString>::iterator lit;
 
 	fprintf(logfile, "\nAudio Asset Report - BEGIN\n");
 	{

@@ -209,10 +209,8 @@ GameClient::~GameClient()
 	delete TheLanguageFilter;
 	TheLanguageFilter = NULL;
 
-#ifdef HAS_BINK
 	delete TheVideoPlayer;
 	TheVideoPlayer = NULL;
-#endif
 
 	// destroy all translators
 	for( uint32_t i = 0; i < m_numTranslators; i++ )
@@ -397,14 +395,12 @@ void GameClient::init( void )
 	}  // end if
 
 	// create the video player
-#ifdef HAS_BINK
 	TheVideoPlayer = createVideoPlayer();
 	if ( TheVideoPlayer )
 	{
 		TheVideoPlayer->init();
  		TheVideoPlayer->setName("TheVideoPlayer");
 	}
-#endif
 
 	// create the language filter.
 	TheLanguageFilter = createLanguageFilter();
@@ -451,9 +447,7 @@ void GameClient::reset( void )
 	TheDisplay->reset();
 	TheTerrainVisual->reset();
 	TheRayEffects->reset();
-#ifdef HAS_BINK
 	TheVideoPlayer->reset();
-#endif
 	TheEva->reset();
 
 	// clear any drawable TOC we might have
@@ -601,12 +595,10 @@ void GameClient::update( void )
 		TheWindowManager->UPDATE();
 	}
 
-#ifdef HAS_BINK
 	// update the video player
 	{
 		TheVideoPlayer->UPDATE();
 	}
-#endif
 
 	Bool freezeTime = TheTacticalView->isTimeFrozen() && !TheTacticalView->isCameraMovementFinished();
 	freezeTime = freezeTime || TheScriptEngine->isTimeFrozenDebug();

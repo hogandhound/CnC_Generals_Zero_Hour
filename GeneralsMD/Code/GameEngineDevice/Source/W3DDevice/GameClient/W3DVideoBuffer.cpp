@@ -49,7 +49,6 @@
 #include "WW3D2/texture.h"
 #include "WW3D2/textureloader.h"
 #include "W3DDevice/GameClient/W3DVideoBuffer.h"
-#ifdef HAS_BINK
 
 //----------------------------------------------------------------------------
 //         Externals                                                     
@@ -133,7 +132,7 @@ Bool W3DVideoBuffer::allocate( UnsignedInt width, UnsignedInt height )
 		return NULL;	
 	}
 
-	m_texture  = MSGNEW("TextureClass") TextureClass ( m_textureWidth, m_textureHeight, w3dFormat, MIP_LEVELS_1 );
+	m_texture  = new TextureClass ( m_textureWidth, m_textureHeight, w3dFormat, MIP_LEVELS_1 );
 
 	if ( m_texture == NULL )
 	{
@@ -281,5 +280,3 @@ VideoBuffer::Type W3DVideoBuffer::W3DFormatToType( WW3DFormat w3dFormat )
 
 	return format;
 }
-
-#endif

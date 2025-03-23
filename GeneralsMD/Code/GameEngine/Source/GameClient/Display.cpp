@@ -202,7 +202,6 @@ void Display::setHeight( UnsignedInt height )
 
 void Display::playLogoMovie( AsciiString movieName, Int minMovieLength, Int minCopyrightLength )
 {
-#ifdef HAS_BINK
 	stopMovie();
 
 	m_videoStream = TheVideoPlayer->open( movieName );
@@ -226,7 +225,6 @@ void Display::playLogoMovie( AsciiString movieName, Int minMovieLength, Int minC
 		stopMovie();
 		return;
 	}
-#endif
 }
 
 //============================================================================
@@ -235,7 +233,6 @@ void Display::playLogoMovie( AsciiString movieName, Int minMovieLength, Int minC
 
 void Display::playMovie( AsciiString movieName)
 {
-#ifdef HAS_BINK
 	stopMovie();
 
 
@@ -258,7 +255,6 @@ void Display::playMovie( AsciiString movieName)
 		stopMovie();
 		return;
 	}
-#endif	
 }
 
 //============================================================================
@@ -267,7 +263,6 @@ void Display::playMovie( AsciiString movieName)
 
 void Display::stopMovie( void )
 {
-#ifdef HAS_BINK
 	delete m_videoBuffer;
 	m_videoBuffer = NULL;
 
@@ -288,7 +283,6 @@ void Display::stopMovie( void )
 	}
 	m_copyrightHoldTime = -1;
 	m_movieHoldTime = -1;
-#endif
 }
 
 //============================================================================
@@ -297,7 +291,6 @@ void Display::stopMovie( void )
 
 void Display::update( void )
 {
-#ifdef HAS_BINK
 	if ( m_videoStream && m_videoBuffer )
 	{
 		if ( m_videoStream->isFrameReady())
@@ -341,7 +334,6 @@ void Display::update( void )
 			}
 		}
 	}
-#endif
 }
 
 //============================================================================

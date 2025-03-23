@@ -204,7 +204,6 @@ SinglePlayerLoadScreen::~SinglePlayerLoadScreen( void )
 	m_objectiveWin = NULL;
 	for(Int i = 0; i < MAX_OBJECTIVE_LINES; ++i)
 		m_objectiveLines[i] = NULL;
-#ifdef HAS_BINK
 	if(m_videoBuffer)
 		delete m_videoBuffer;
 	m_videoBuffer = NULL;
@@ -212,7 +211,6 @@ SinglePlayerLoadScreen::~SinglePlayerLoadScreen( void )
 	if ( m_videoStream )
 		m_videoStream->close();
 	m_videoStream = NULL;
-#endif
 	
 	TheAudio->removeAudioEvent( m_ambientLoopHandle );
 	m_ambientLoopHandle = NULL;
@@ -484,7 +482,6 @@ void SinglePlayerLoadScreen::init( GameInfo *game )
 */
 	m_ambientLoop.setEventName("LoadScreenAmbient");
 	// create the new stream
-#ifdef HAS_BINK
 	m_videoStream = TheVideoPlayer->open( TheCampaignManager->getCurrentMission()->m_movieLabel );
 	if ( m_videoStream == NULL )
 	{
@@ -508,7 +505,6 @@ void SinglePlayerLoadScreen::init( GameInfo *game )
 
 		return;
 	}
-#endif
 
 	// format the progress bar: USA to blue, GLA to green, China to red
 	// and set the background image
@@ -531,7 +527,6 @@ void SinglePlayerLoadScreen::init( GameInfo *game )
 	} 
 	// else leave the default background screen
 
-#ifdef HAS_BINK
 	if(TheGameLODManager && TheGameLODManager->didMemPass())
 	{
 		Int progressUpdateCount = m_videoStream->frameCount() / FRAME_FUDGE_ADD;
@@ -591,7 +586,6 @@ void SinglePlayerLoadScreen::init( GameInfo *game )
 		TheDisplay->draw();
 	}
 	else
-#endif
 	{
 		// if we're min spec'ed don't play a movie
 		
@@ -689,14 +683,12 @@ ChallengeLoadScreen::ChallengeLoadScreen( void )
 ChallengeLoadScreen::~ChallengeLoadScreen( void )
 {
 	m_progressBar = NULL;
-#ifdef HAS_BINK
 	if(m_videoBuffer)
 		delete m_videoBuffer;
 	m_videoBuffer = NULL;
 	if ( m_videoStream )
 		m_videoStream->close();
 	m_videoStream = NULL;
-#endif
 	
 	m_bioNameLeft = NULL;
 	m_bioAgeLeft = NULL;
@@ -956,7 +948,6 @@ void ChallengeLoadScreen::init( GameInfo *game )
 
 	m_ambientLoop.setEventName("LoadScreenAmbient");
 
-#ifdef HAS_BINK
 	// create the new background video stream
 	m_videoStream = TheVideoPlayer->open( TheCampaignManager->getCurrentMission()->m_movieLabel );
 
@@ -973,7 +964,6 @@ void ChallengeLoadScreen::init( GameInfo *game )
 
 		return;
 	}
-#endif
 
 	// init overlays
 	NameKeyType namekey = TheNameKeyGenerator->nameToKey( AsciiString("ChallengeLoadScreen.wnd:PortraitLeft"));
@@ -1052,7 +1042,6 @@ void ChallengeLoadScreen::init( GameInfo *game )
 	m_wndVideoManager = NEW WindowVideoManager;
 	m_wndVideoManager->init();
 
-#ifdef HAS_BINK
 	if(TheGameLODManager && TheGameLODManager->didMemPass())
 	{
 		Int progressUpdateCount = m_videoStream->frameCount() / FRAME_FUDGE_ADD;
@@ -1105,10 +1094,8 @@ void ChallengeLoadScreen::init( GameInfo *game )
 		}
 	}
 	else
-#endif
 	{
 		// if we're min speced
-#ifdef HAS_BINK
 		m_videoStream->frameGoto(m_videoStream->frameCount()); // zero based
 		while(!m_videoStream->isFrameReady())
 			Sleep(1);
@@ -1116,7 +1103,6 @@ void ChallengeLoadScreen::init( GameInfo *game )
 		m_videoStream->frameRender(m_videoBuffer);
 		if(m_videoBuffer)
 			m_loadScreen->winGetInstanceData()->setVideoBuffer(m_videoBuffer);
-#endif
 
 		activatePiecesMinSpec(generalPlayer, generalOpponent);
 

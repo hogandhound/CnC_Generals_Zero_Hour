@@ -71,7 +71,8 @@ char * strtrim(char * buffer)
 			source++;
 		}
 		if (source != buffer) {
-			strcpy(buffer, source);
+			size_t len = strlen(source);
+			memmove(buffer, source, len + 1);
 		}
 
 		/*

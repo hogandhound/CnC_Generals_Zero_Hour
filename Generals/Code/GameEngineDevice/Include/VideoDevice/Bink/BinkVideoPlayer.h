@@ -44,14 +44,13 @@
 #ifndef __VIDEODEVICE_BINKDEVICE_H_
 #define __VIDEODEVICE_BINKDEVICE_H_
 
-#ifdef HAS_BINK
 
 //----------------------------------------------------------------------------
 //           Includes                                                      
 //----------------------------------------------------------------------------
 
 #include "GameClient/VideoPlayer.h"
-#include "bink.h"
+#include "oink.h"
 
 //----------------------------------------------------------------------------
 //           Forward References
@@ -73,7 +72,7 @@ class BinkVideoStream : public VideoStream
 
 	protected:
 
-		HBINK					m_handle;														///< Bink streaming handle;
+		OINK*					m_handle;														///< Bink streaming handle;
 		Char					*m_memFile;													///< Pointer to memory resident file
 																											
 		BinkVideoStream();																///< only BinkVideoPlayer can create these
@@ -109,7 +108,7 @@ class BinkVideoPlayer : public VideoPlayer
 
 	protected:
 
-		VideoStreamInterface* createStream( HBINK handle );
+		VideoStreamInterface* createStream( OINK* handle );
 
 	public:
 
@@ -138,7 +137,6 @@ class BinkVideoPlayer : public VideoPlayer
 
 //----------------------------------------------------------------------------
 //           Inlining                                                       
-//----------------------------------------------------------------------------
-#endif
+//---------------------------------------------------------------------------- 
 
 #endif // __VIDEODEVICE_BINKDEVICE_H_

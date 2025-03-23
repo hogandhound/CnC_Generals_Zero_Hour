@@ -171,35 +171,35 @@ public:
 	inline static sint64 Get_Processor_Ticks_Per_Second() { return ProcessorTicksPerSecond; }	// Ticks per second
 	inline static double Get_Inv_Processor_Ticks_Per_Second() { return InvProcessorTicksPerSecond; }	// 1.0 / Ticks per second
 
-	static unsigned Get_Feature_Bits() { return FeatureBits; }
-	static unsigned Get_Extended_Feature_Bits() { return ExtendedFeatureBits; }
+	static uint64_t Get_Feature_Bits() { return FeatureBits; }
+	static uint64_t Get_Extended_Feature_Bits() { return ExtendedFeatureBits; }
 
 	// L2 cache
-	static unsigned Get_L2_Cache_Size() { return L2CacheSize; }
-	static unsigned Get_L2_Cache_Line_Size() { return L2CacheLineSize; }
-	static unsigned Get_L2_Cache_Set_Associative() { return L2CacheSetAssociative; }
+	static uint64_t Get_L2_Cache_Size() { return L2CacheSize; }
+	static uint64_t Get_L2_Cache_Line_Size() { return L2CacheLineSize; }
+	static uint64_t Get_L2_Cache_Set_Associative() { return L2CacheSetAssociative; }
 
 	// L1 data cache
-	static unsigned Get_L1_Data_Cache_Size() { return L1DataCacheSize; }
-	static unsigned Get_L1_Data_Cache_Line_Size() { return L1DataCacheLineSize; }
-	static unsigned Get_L1_Data_Cache_Set_Associative() { return L1DataCacheSetAssociative; }
+	static uint64_t Get_L1_Data_Cache_Size() { return L1DataCacheSize; }
+	static uint64_t Get_L1_Data_Cache_Line_Size() { return L1DataCacheLineSize; }
+	static uint64_t Get_L1_Data_Cache_Set_Associative() { return L1DataCacheSetAssociative; }
 
 	// L1 instruction cache
-	static unsigned Get_L1_Instruction_Cache_Size() { return L1InstructionCacheSize; }
-	static unsigned Get_L1_Instruction_Cache_Line_Size() { return L1InstructionCacheLineSize; }
-	static unsigned Get_L1_Instruction_Cache_Set_Associative() { return L1InstructionCacheSetAssociative; }
+	static uint64_t Get_L1_Instruction_Cache_Size() { return L1InstructionCacheSize; }
+	static uint64_t Get_L1_Instruction_Cache_Line_Size() { return L1InstructionCacheLineSize; }
+	static uint64_t Get_L1_Instruction_Cache_Set_Associative() { return L1InstructionCacheSetAssociative; }
 
 	// L1 instruction trace cache
-	static unsigned Get_L1_Instruction_Trace_Cache_Size() { return L1InstructionTraceCacheSize; }
-	static unsigned Get_L1_Instruction_Trace_Cache_Set_Associative() { return L1InstructionTraceCacheSetAssociative; }
+	static uint64_t Get_L1_Instruction_Trace_Cache_Size() { return L1InstructionTraceCacheSize; }
+	static uint64_t Get_L1_Instruction_Trace_Cache_Set_Associative() { return L1InstructionTraceCacheSetAssociative; }
 
 	// System memory
-	static unsigned Get_Total_Physical_Memory() { return TotalPhysicalMemory; }
-	static unsigned Get_Available_Physical_Memory() { return AvailablePhysicalMemory; }
-	static unsigned Get_Total_Page_File_Size() { return TotalPageMemory; }
-	static unsigned Get_Available_Page_File_Size() { return AvailablePageMemory; }
-	static unsigned Get_Total_Virtual_Memory() { return TotalVirtualMemory; }
-	static unsigned Get_Available_Virtual_Memory() { return AvailableVirtualMemory; }
+	static uint64_t Get_Total_Physical_Memory() { return TotalPhysicalMemory; }
+	static uint64_t Get_Available_Physical_Memory() { return AvailablePhysicalMemory; }
+	static uint64_t Get_Total_Page_File_Size() { return TotalPageMemory; }
+	static uint64_t Get_Available_Page_File_Size() { return AvailablePageMemory; }
+	static uint64_t Get_Total_Virtual_Memory() { return TotalVirtualMemory; }
+	static uint64_t Get_Available_Virtual_Memory() { return AvailableVirtualMemory; }
 
 	static unsigned Get_Processor_Type() { return ProcessorType; }
 
@@ -257,39 +257,39 @@ private:
 	static VIAProcessorType VIAProcessor;
 	static RiseProcessorType RiseProcessor;
 
-	static unsigned FeatureBits;
-	static unsigned ExtendedFeatureBits;
+	static uint64_t FeatureBits;
+	static uint64_t ExtendedFeatureBits;
 
 	// L2 cache information
-	static unsigned L2CacheSize;
-	static unsigned L2CacheLineSize;
-	static unsigned L2CacheSetAssociative;
+	static uint64_t L2CacheSize;
+	static uint64_t L2CacheLineSize;
+	static uint64_t L2CacheSetAssociative;
 
 	// L1 data cache information
-	static unsigned L1DataCacheSize;
-	static unsigned L1DataCacheLineSize;
-	static unsigned L1DataCacheSetAssociative;
+	static uint64_t L1DataCacheSize;
+	static uint64_t L1DataCacheLineSize;
+	static uint64_t L1DataCacheSetAssociative;
 
 	// L1 instruction cache information
-	static unsigned L1InstructionCacheSize;
-	static unsigned L1InstructionCacheLineSize;
-	static unsigned L1InstructionCacheSetAssociative;
+	static uint64_t L1InstructionCacheSize;
+	static uint64_t L1InstructionCacheLineSize;
+	static uint64_t L1InstructionCacheSetAssociative;
 
 	// L1 instruction trace cache information
-	static unsigned L1InstructionTraceCacheSize;
-	static unsigned L1InstructionTraceCacheSetAssociative;
+	static uint64_t L1InstructionTraceCacheSize;
+	static uint64_t L1InstructionTraceCacheSetAssociative;
 
-	static unsigned TotalPhysicalMemory;
-	static unsigned AvailablePhysicalMemory;
-	static unsigned TotalPageMemory;
-	static unsigned AvailablePageMemory;
-	static unsigned TotalVirtualMemory;
-	static unsigned AvailableVirtualMemory;
+	static uint64_t TotalPhysicalMemory;
+	static uint64_t AvailablePhysicalMemory;
+	static uint64_t TotalPageMemory;
+	static uint64_t AvailablePageMemory;
+	static uint64_t TotalVirtualMemory;
+	static uint64_t AvailableVirtualMemory;
 
-	static unsigned OSVersionNumberMajor;
-	static unsigned OSVersionNumberMinor;
-	static unsigned OSVersionBuildNumber;
-	static unsigned OSVersionPlatformId;
+	static uint64_t OSVersionNumberMajor;
+	static uint64_t OSVersionNumberMinor;
+	static uint64_t OSVersionBuildNumber;
+	static uint64_t OSVersionPlatformId;
 	static StringClass OSVersionExtraInfo;
 
 	static bool HasCPUIDInstruction;

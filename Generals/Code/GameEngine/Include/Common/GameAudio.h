@@ -242,6 +242,7 @@ class AudioManager : public SubsystemInterface
 
  		virtual void *getHandleForBink( void ) = 0;
  		virtual void releaseHandleForBink( void ) = 0;
+		virtual void playBinkStream(uint8_t* data, size_t len, float sampleRate, int channels) = 0;
 
 		// this function will play an audio event rts by loading it into memory. It should not be used
 		// by anything except for the load screens.
@@ -324,12 +325,12 @@ class AudioManager : public SubsystemInterface
 		SoundManager *m_sound;
 		Coord3D m_listenerPosition;
 		Coord3D m_listenerOrientation;
-		std::list<AudioRequest*> m_audioRequests;
+		std::vector<AudioRequest*> m_audioRequests;
 		std::vector<AsciiString> m_musicTracks;
 
 		AudioEventInfoHash m_allAudioEventInfo;
 		AudioHandle theAudioHandlePool;
-		std::list<std::pair<AsciiString, Real> > m_adjustedVolumes;
+		std::vector<std::pair<AsciiString, Real> > m_adjustedVolumes;
 
 		Real m_musicVolume;
 		Real m_soundVolume;

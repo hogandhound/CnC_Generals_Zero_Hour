@@ -823,7 +823,7 @@ void CPUDetectClass::Init_Processor_String()
 
 void CPUDetectClass::Init_CPUID_Instruction()
 {
-	unsigned long cpuid_available=0;
+	unsigned long cpuid_available=1;
 
    // The pushfd/popfd commands are done using emits
    // because CodeWarrior seems to have problems with
@@ -1332,8 +1332,8 @@ void Get_OS_Info(
 				os_info.Code="WINXP";
 				return;
 			}
-			os_info.Code="WINXX";
-			return;
 		}
+		os_info.Code = "WINXX";
+		return;
 	}
 }

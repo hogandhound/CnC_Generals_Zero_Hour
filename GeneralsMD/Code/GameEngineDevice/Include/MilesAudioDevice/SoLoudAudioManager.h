@@ -44,13 +44,13 @@ struct PlayingAudio
 	//HSTREAM m_stream;
 	SoLoud::handle m_handle;
 	std::shared_ptr<SoLoud::Wav> m_stream;
-	uint32_t m_playingIndex = -1;
 	//	};
 
 	PlayingAudioType m_type;
 	volatile PlayingStatus m_status;	// This member is adjusted by another running thread.
 	AudioEventRTS* m_audioEventRTS;
 	std::shared_ptr<SoLoud::Wav> m_file;
+	SoLoud::Queue queue;
 	Bool m_requestStop;
 	Bool m_cleanupAudioEventRTS;
 	Int m_framesFaded;
@@ -175,6 +175,7 @@ public:
 
 	virtual void* getHandleForBink(void);
 	virtual void releaseHandleForBink(void);
+	void playBinkStream(uint8_t* data, size_t len, float sampleRate, int channels);
 
 	virtual void friend_forcePlayAudioEventRTS(const AudioEventRTS* eventToPlay);
 
@@ -281,7 +282,7 @@ protected:
 	//HPROVIDER m_delayFilter;
 
 	// This is a list of all handles that are forcibly played. They always play as UI sounds.
-	std::list<SoLoud::handle> m_audioForcePlayed;
+	std::vector<SoLoud::handle> m_audioForcePlayed;
 
 	// Available handles for play. Note that there aren't handles open in advance for 
 	// streaming things, only 2-D and 3-D sounds.
@@ -291,27 +292,26 @@ protected:
 	// Currently Playing stuff. Useful if we have to preempt it. 
 	// This should rarely if ever happen, as we mirror this in Sounds, and attempt to 
 	// keep preemption from taking place here.
-	std::list<PlayingAudio*> m_playingSounds;
-	std::list<PlayingAudio*> m_playing3DSounds;
-	std::list<PlayingAudio*> m_playingStreams;
+	std::vector<PlayingAudio*> m_playingSounds;
+	std::vector<PlayingAudio*> m_playing3DSounds;
+	std::vector<PlayingAudio*> m_playingStreams;
 
 	// Currently fading stuff. At this point, we just want to let it finish fading, when it is
 	// done it should be added to the completed list, then "freed" and the counts should be updated
 	// on the next update
-	std::list<PlayingAudio*> m_fadingAudio;
+	std::vector<PlayingAudio*> m_fadingAudio;
 
 	// Stuff that is done playing (either because it has finished or because it was killed)
 	// This stuff should be cleaned up during the next update cycle. This includes updating counts
 	// in the sound engine
-	std::list<PlayingAudio*> m_stoppedAudio;
+	std::vector<PlayingAudio*> m_stoppedAudio;
 
 	AudioFileCache* m_audioCache;
-#if HAS_BINK
 	PlayingAudio* m_binkHandle;
-#endif
 	UnsignedInt m_num2DSamples;
 	UnsignedInt m_num3DSamples;
 	UnsignedInt m_numStreams;
+	std::vector<SoLoud::Wav*> playQueue_;
 
 #if defined(_DEBUG) || defined(_INTERNAL)
 	typedef std::set<AsciiString> SetAsciiString;

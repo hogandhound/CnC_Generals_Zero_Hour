@@ -115,7 +115,7 @@ private:
 
 static AsciiString obfuscate( AsciiString in )
 {
-	char *buf = NEW char[in.getLength() + 1];
+	char *buf = new char[in.getLength() + 1];
 	strcpy(buf, in.str());
 	static const char *xor = "1337Munkee";
 	char *c = buf;
@@ -432,7 +432,7 @@ void WOLLoginMenuInit( WindowLayout *layout, void *userData )
 
 	if (!loginPref)
 	{
-		loginPref = NEW GameSpyLoginPreferences;
+		loginPref = new GameSpyLoginPreferences;
 		loginPref->load(PREF_FILENAME);
 	}
 	

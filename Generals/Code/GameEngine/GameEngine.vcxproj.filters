@@ -237,7 +237,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Common\Thing\DrawModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Thing\DrawModule.cpp">
       <Filter>Source Files\Common\Thing</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\Thing\Module.cpp">
@@ -246,7 +246,7 @@
     <ClCompile Include="Source\Common\Thing\ModuleFactory.cpp">
       <Filter>Source Files\Common\Thing</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\Thing\Thing.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Thing\Thing.cpp">
       <Filter>Source Files\Common\Thing</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\Thing\ThingFactory.cpp">
@@ -261,10 +261,10 @@
     <ClCompile Include="Source\Common\System\SaveGame\GameStateMap.cpp">
       <Filter>Source Files\Common\System %28Common%29\SaveGame %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\ArchiveFile.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\ArchiveFile.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\ArchiveFileSystem.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\ArchiveFileSystem.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\System\AsciiString.cpp">
@@ -273,10 +273,10 @@
     <ClCompile Include="Source\Common\System\BuildAssistant.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\CDManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\CDManager.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\Compression.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\Compression.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\System\CopyProtection.cpp">
@@ -291,16 +291,16 @@
     <ClCompile Include="Source\Common\System\Debug.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\Directory.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\Directory.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\System\DisabledTypes.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\encrypt.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\encrypt.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\File.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\File.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\System\FileSystem.cpp">
@@ -309,13 +309,13 @@
     <ClCompile Include="Source\Common\System\FunctionLexicon.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\GameCommon.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\GameCommon.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\System\GameMemory.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\GameType.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\GameType.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\System\Geometry.cpp">
@@ -324,52 +324,52 @@
     <ClCompile Include="Source\Common\System\KindOf.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\List.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\List.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\LocalFile.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\LocalFile.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\LocalFileSystem.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\LocalFileSystem.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\System\MemoryInit.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\QuickTrig.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\QuickTrig.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\QuotedPrintable.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\QuotedPrintable.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\System\Radar.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\RAMFile.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\RAMFile.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\System\registry.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\Snapshot.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\Snapshot.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\System\StackDump.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\StreamingArchiveFile.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\StreamingArchiveFile.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\String.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\String.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\System\SubsystemInterface.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\Trig.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\Trig.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\UnicodeString.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\UnicodeString.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\System\Upgrade.cpp">
@@ -378,52 +378,52 @@
     <ClCompile Include="Source\Common\System\Xfer.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\XferCRC.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\XferCRC.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\XferLoad.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\XferLoad.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\XferSave.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\XferSave.cpp">
       <Filter>Source Files\Common\System %28Common%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\INI\INI.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIAiData.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIAiData.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIAnimation.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIAnimation.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIAudioEventInfo.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIAudioEventInfo.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\INI\INICommandButton.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INICommandSet.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INICommandSet.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIControlBarScheme.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIControlBarScheme.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INICrate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INICrate.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIDamageFX.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIDamageFX.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIDrawGroupInfo.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIDrawGroupInfo.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIGameData.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIGameData.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\INI\INIMapCache.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIMapData.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIMapData.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\INI\INIMappedImage.cpp">
@@ -432,49 +432,49 @@
     <ClCompile Include="Source\Common\INI\INIMiscAudio.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIModel.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIModel.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\INI\INIMultiplayer.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIObject.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIObject.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIParticleSys.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIParticleSys.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INISpecialPower.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INISpecialPower.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INITerrain.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INITerrain.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INITerrainBridge.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INITerrainBridge.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INITerrainRoad.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INITerrainRoad.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIUpgrade.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\INI\INIVideo.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIWater.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIWater.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIWeapon.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIWeapon.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIWebpageURL.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIWebpageURL.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\Audio\AudioEventRTS.cpp">
       <Filter>Source Files\Common\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\Audio\AudioRequest.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Audio\AudioRequest.cpp">
       <Filter>Source Files\Common\Audio</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\Audio\GameAudio.cpp">
@@ -483,7 +483,7 @@
     <ClCompile Include="Source\Common\Audio\GameMusic.cpp">
       <Filter>Source Files\Common\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\Audio\GameSounds.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Audio\GameSounds.cpp">
       <Filter>Source Files\Common\Audio</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\RTS\ActionManager.cpp">
@@ -492,10 +492,10 @@
     <ClCompile Include="Source\Common\RTS\Energy.cpp">
       <Filter>Source Files\Common\RTS</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\RTS\Handicap.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\RTS\Handicap.cpp">
       <Filter>Source Files\Common\RTS</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\RTS\MissionStats.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\RTS\MissionStats.cpp">
       <Filter>Source Files\Common\RTS</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\RTS\Money.cpp">
@@ -504,7 +504,7 @@
     <ClCompile Include="Source\Common\RTS\Player.cpp">
       <Filter>Source Files\Common\RTS</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\RTS\PlayerList.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\RTS\PlayerList.cpp">
       <Filter>Source Files\Common\RTS</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\RTS\PlayerTemplate.cpp">
@@ -513,13 +513,13 @@
     <ClCompile Include="Source\Common\RTS\ProductionPrerequisite.cpp">
       <Filter>Source Files\Common\RTS</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\RTS\ResourceGatheringManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\RTS\ResourceGatheringManager.cpp">
       <Filter>Source Files\Common\RTS</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\RTS\Science.cpp">
       <Filter>Source Files\Common\RTS</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\RTS\ScoreKeeper.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\RTS\ScoreKeeper.cpp">
       <Filter>Source Files\Common\RTS</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\RTS\SpecialPower.cpp">
@@ -531,10 +531,10 @@
     <ClCompile Include="Source\Common\RTS\TunnelTracker.cpp">
       <Filter>Source Files\Common\RTS</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\Bezier\BezFwdIterator.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Bezier\BezFwdIterator.cpp">
       <Filter>Source Files\Common\Bezier</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\Bezier\BezierSegment.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Bezier\BezierSegment.cpp">
       <Filter>Source Files\Common\Bezier</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\BitFlags.cpp">
@@ -546,16 +546,16 @@
     <ClCompile Include="Source\Common\crc.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\CRCDebug.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\CRCDebug.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\DamageFX.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\Dict.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Dict.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\DiscreteCircle.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\DiscreteCircle.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\GameEngine.cpp">
@@ -564,13 +564,13 @@
     <ClCompile Include="Source\Common\GameLOD.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\GameMain.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\GameMain.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\GlobalData.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\Language.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Language.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\MessageStream.cpp">
@@ -585,13 +585,13 @@
     <ClCompile Include="Source\Common\NameKeyGenerator.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\PartitionSolver.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\PartitionSolver.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\PerfTimer.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\RandomValue.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\RandomValue.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\Recorder.cpp">
@@ -603,22 +603,22 @@
     <ClCompile Include="Source\Common\StateMachine.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\StatsCollector.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\StatsCollector.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\TerrainTypes.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\TerrainTypes.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Source\Common\UserPreferences.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\version.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\version.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\AI\AI.cpp">
       <Filter>Source Files\GameLogic\AI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\AI\AIDock.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\AI\AIDock.cpp">
       <Filter>Source Files\GameLogic\AI</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\AI\AIGroup.cpp">
@@ -642,7 +642,7 @@
     <ClCompile Include="Source\GameLogic\AI\AITNGuard.cpp">
       <Filter>Source Files\GameLogic\AI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\AI\Squad.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\AI\Squad.cpp">
       <Filter>Source Files\GameLogic\AI</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\AI\TurretAI.cpp">
@@ -651,22 +651,22 @@
     <ClCompile Include="Source\GameLogic\Object\Behavior\AutoHealBehavior.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\BehaviorModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\BehaviorModule.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Behavior\BridgeBehavior.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\BridgeScaffoldBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\BridgeScaffoldBehavior.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\BridgeTowerBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\BridgeTowerBehavior.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Behavior\DumbProjectileBehavior.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\FireWeaponWhenDamagedBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\FireWeaponWhenDamagedBehavior.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Behavior\FireWeaponWhenDeadBehavior.cpp">
@@ -678,7 +678,7 @@
     <ClCompile Include="Source\GameLogic\Object\Update\HelicopterSlowDeathUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\InstantDeathBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\InstantDeathBehavior.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Behavior\JetSlowDeathBehavior.cpp">
@@ -687,10 +687,10 @@
     <ClCompile Include="Source\GameLogic\Object\Behavior\MinefieldBehavior.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\NeutronMissileSlowDeathUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\NeutronMissileSlowDeathUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\OverchargeBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\OverchargeBehavior.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Behavior\ParkingPlaceBehavior.cpp">
@@ -702,13 +702,13 @@
     <ClCompile Include="Source\GameLogic\Object\Behavior\PoisonedBehavior.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\POWTruckBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\POWTruckBehavior.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Behavior\PrisonBehavior.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\PropagandaCenterBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\PropagandaCenterBehavior.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Behavior\PropagandaTowerBehavior.cpp">
@@ -723,7 +723,7 @@
     <ClCompile Include="Source\GameLogic\Object\Behavior\SpawnBehavior.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\SupplyWarehouseCripplingBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\SupplyWarehouseCripplingBehavior.cpp">
       <Filter>Source Files\GameLogic\Object\Behavior</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Behavior\TechBuildingBehavior.cpp">
@@ -732,22 +732,22 @@
     <ClCompile Include="Source\GameLogic\Object\Body\ActiveBody.cpp">
       <Filter>Source Files\GameLogic\Object\Body</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Body\BodyModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Body\BodyModule.cpp">
       <Filter>Source Files\GameLogic\Object\Body</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Body\HighlanderBody.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Body\HighlanderBody.cpp">
       <Filter>Source Files\GameLogic\Object\Body</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Body\HiveStructureBody.cpp">
       <Filter>Source Files\GameLogic\Object\Body</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Body\ImmortalBody.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Body\ImmortalBody.cpp">
       <Filter>Source Files\GameLogic\Object\Body</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Body\InactiveBody.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Body\InactiveBody.cpp">
       <Filter>Source Files\GameLogic\Object\Body</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Body\StructureBody.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Body\StructureBody.cpp">
       <Filter>Source Files\GameLogic\Object\Body</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Collide\CrateCollide\ConvertToCarBombCrateCollide.cpp">
@@ -759,7 +759,7 @@
     <ClCompile Include="Source\GameLogic\Object\Collide\CrateCollide\CrateCollide.cpp">
       <Filter>Source Files\GameLogic\Object\Collide\CrateCollide</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Collide\CrateCollide\HealCrateCollide.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Collide\CrateCollide\HealCrateCollide.cpp">
       <Filter>Source Files\GameLogic\Object\Collide\CrateCollide</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Collide\CrateCollide\MoneyCrateCollide.cpp">
@@ -768,22 +768,22 @@
     <ClCompile Include="Source\GameLogic\Object\Collide\CrateCollide\SalvageCrateCollide.cpp">
       <Filter>Source Files\GameLogic\Object\Collide\CrateCollide</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Collide\CrateCollide\ShroudCrateCollide.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Collide\CrateCollide\ShroudCrateCollide.cpp">
       <Filter>Source Files\GameLogic\Object\Collide\CrateCollide</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Collide\CrateCollide\UnitCrateCollide.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Collide\CrateCollide\UnitCrateCollide.cpp">
       <Filter>Source Files\GameLogic\Object\Collide\CrateCollide</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Collide\CrateCollide\VeterancyCrateCollide.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Collide\CrateCollide\VeterancyCrateCollide.cpp">
       <Filter>Source Files\GameLogic\Object\Collide\CrateCollide</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Collide\CollideModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Collide\CollideModule.cpp">
       <Filter>Source Files\GameLogic\Object\Collide</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Collide\FireWeaponCollide.cpp">
       <Filter>Source Files\GameLogic\Object\Collide</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Collide\SquishCollide.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Collide\SquishCollide.cpp">
       <Filter>Source Files\GameLogic\Object\Collide</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Contain\CaveContain.cpp">
@@ -792,7 +792,7 @@
     <ClCompile Include="Source\GameLogic\Object\Contain\GarrisonContain.cpp">
       <Filter>Source Files\GameLogic\Object\Contain</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Contain\HealContain.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Contain\HealContain.cpp">
       <Filter>Source Files\GameLogic\Object\Contain</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Contain\MobNexusContain.cpp">
@@ -807,7 +807,7 @@
     <ClCompile Include="Source\GameLogic\Object\Contain\ParachuteContain.cpp">
       <Filter>Source Files\GameLogic\Object\Contain</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Contain\RailedTransportContain.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Contain\RailedTransportContain.cpp">
       <Filter>Source Files\GameLogic\Object\Contain</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Contain\TransportContain.cpp">
@@ -816,46 +816,46 @@
     <ClCompile Include="Source\GameLogic\Object\Contain\TunnelContain.cpp">
       <Filter>Source Files\GameLogic\Object\Contain</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Create\CreateModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Create\CreateModule.cpp">
       <Filter>Source Files\GameLogic\Object\Create</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Create\GrantUpgradeCreate.cpp">
       <Filter>Source Files\GameLogic\Object\Create</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Create\PreorderCreate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Create\PreorderCreate.cpp">
       <Filter>Source Files\GameLogic\Object\Create</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Create\SpecialPowerCreate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Create\SpecialPowerCreate.cpp">
       <Filter>Source Files\GameLogic\Object\Create</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Create\SupplyCenterCreate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Create\SupplyCenterCreate.cpp">
       <Filter>Source Files\GameLogic\Object\Create</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Create\SupplyWarehouseCreate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Create\SupplyWarehouseCreate.cpp">
       <Filter>Source Files\GameLogic\Object\Create</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Create\VeterancyGainCreate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Create\VeterancyGainCreate.cpp">
       <Filter>Source Files\GameLogic\Object\Create</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Damage\BoneFXDamage.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Damage\BoneFXDamage.cpp">
       <Filter>Source Files\GameLogic\Object\Damage</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Damage\DamageModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Damage\DamageModule.cpp">
       <Filter>Source Files\GameLogic\Object\Damage</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Damage\TransitionDamageFX.cpp">
       <Filter>Source Files\GameLogic\Object\Damage</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Die\CreateCrateDie.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Die\CreateCrateDie.cpp">
       <Filter>Source Files\GameLogic\Object\Die</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Die\CreateObjectDie.cpp">
       <Filter>Source Files\GameLogic\Object\Die</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Die\CrushDie.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Die\CrushDie.cpp">
       <Filter>Source Files\GameLogic\Object\Die</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Die\DamDie.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Die\DamDie.cpp">
       <Filter>Source Files\GameLogic\Object\Die</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Die\DestroyDie.cpp">
@@ -864,28 +864,28 @@
     <ClCompile Include="Source\GameLogic\Object\Die\DieModule.cpp">
       <Filter>Source Files\GameLogic\Object\Die</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Die\EjectPilotDie.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Die\EjectPilotDie.cpp">
       <Filter>Source Files\GameLogic\Object\Die</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Die\FXListDie.cpp">
       <Filter>Source Files\GameLogic\Object\Die</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Die\KeepObjectDie.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Die\KeepObjectDie.cpp">
       <Filter>Source Files\GameLogic\Object\Die</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Die\RebuildHoleExposeDie.cpp">
       <Filter>Source Files\GameLogic\Object\Die</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Die\SpecialPowerCompletionDie.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Die\SpecialPowerCompletionDie.cpp">
       <Filter>Source Files\GameLogic\Object\Die</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Die\UpgradeDie.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Die\UpgradeDie.cpp">
       <Filter>Source Files\GameLogic\Object\Die</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\SpecialPower\BaikonurLaunchPower.cpp">
       <Filter>Source Files\GameLogic\Object\SpecialPower</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\SpecialPower\CashBountyPower.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\SpecialPower\CashBountyPower.cpp">
       <Filter>Source Files\GameLogic\Object\SpecialPower</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\SpecialPower\CashHackSpecialPower.cpp">
@@ -909,16 +909,16 @@
     <ClCompile Include="Source\GameLogic\Object\SpecialPower\SpecialPowerModule.cpp">
       <Filter>Source Files\GameLogic\Object\SpecialPower</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\SpecialPower\SpyVisionSpecialPower.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\SpecialPower\SpyVisionSpecialPower.cpp">
       <Filter>Source Files\GameLogic\Object\SpecialPower</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\ProductionExitUpdate\DefaultProductionExitUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\ProductionExitUpdate\DefaultProductionExitUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update\ProductionExitUpdate</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\ProductionExitUpdate\QueueProductionExitUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\ProductionExitUpdate\QueueProductionExitUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update\ProductionExitUpdate</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\ProductionExitUpdate\SpawnPointProductionExitUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\ProductionExitUpdate\SpawnPointProductionExitUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update\ProductionExitUpdate</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\ProductionExitUpdate\SupplyCenterProductionExitUpdate.cpp">
@@ -927,19 +927,19 @@
     <ClCompile Include="Source\GameLogic\Object\Update\DockUpdate\DockUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update\DockUpdate</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\DockUpdate\PrisonDockUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\DockUpdate\PrisonDockUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update\DockUpdate</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\DockUpdate\RailedTransportDockUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update\DockUpdate</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\DockUpdate\RepairDockUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\DockUpdate\RepairDockUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update\DockUpdate</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\DockUpdate\SupplyCenterDockUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update\DockUpdate</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\DockUpdate\SupplyWarehouseDockUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\DockUpdate\SupplyWarehouseDockUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update\DockUpdate</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\AIUpdate\AssaultTransportAIUpdate.cpp">
@@ -969,10 +969,10 @@
     <ClCompile Include="Source\GameLogic\Object\Update\AIUpdate\MissileAIUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update\AIUpdate</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\AIUpdate\POWTruckAIUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\AIUpdate\POWTruckAIUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update\AIUpdate</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\AIUpdate\RailedTransportAIUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\AIUpdate\RailedTransportAIUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update\AIUpdate</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\AIUpdate\RailroadGuideAIUpdate.cpp">
@@ -984,7 +984,7 @@
     <ClCompile Include="Source\GameLogic\Object\Update\AIUpdate\TransportAIUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update\AIUpdate</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\AIUpdate\WanderAIUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\AIUpdate\WanderAIUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update\AIUpdate</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\AIUpdate\WorkerAIUpdate.cpp">
@@ -999,10 +999,10 @@
     <ClCompile Include="Source\GameLogic\Object\Update\AutoDepositUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\AutoFindHealingUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\AutoFindHealingUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\BaseRenerateUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\BaseRenerateUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\BattlePlanUpdate.cpp">
@@ -1011,10 +1011,10 @@
     <ClCompile Include="Source\GameLogic\Object\Update\BoneFXUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\CheckpointUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\CheckpointUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\CleanupHazardUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\CleanupHazardUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\CommandButtonHuntUpdate.cpp">
@@ -1023,19 +1023,19 @@
     <ClCompile Include="Source\GameLogic\Object\Update\DelayedWeaponSetUpgradeUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\DeletionUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\DeletionUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\DemoTrapUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\DynamicGeometryInfoUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\DynamicGeometryInfoUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\DynamicShroudClearingRangeUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\DynamicShroudClearingRangeUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\EnemyNearUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\EnemyNearUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\FireOCLAfterWeaponCooldownUpdate.cpp">
@@ -1053,10 +1053,10 @@
     <ClCompile Include="Source\GameLogic\Object\Update\FlammableUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\FloatUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\FloatUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\HeightDieUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\HeightDieUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\HijackerUpdate.cpp">
@@ -1065,7 +1065,7 @@
     <ClCompile Include="Source\GameLogic\Object\Update\HordeUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\LifetimeUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\LifetimeUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\MissileLauncherBuildingUpdate.cpp">
@@ -1083,13 +1083,13 @@
     <ClCompile Include="Source\GameLogic\Object\Update\ParticleUplinkCannonUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\PilotFindVehicleUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\PilotFindVehicleUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\PointDefenseLaserUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\PowerPlantUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\PowerPlantUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\ProductionUpdate.cpp">
@@ -1101,10 +1101,10 @@
     <ClCompile Include="Source\GameLogic\Object\Update\ProneUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\RadarUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\RadarUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\RadiusDecalUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\RadiusDecalUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\SlavedUpdate.cpp">
@@ -1131,19 +1131,19 @@
     <ClCompile Include="Source\GameLogic\Object\Update\StructureToppleUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\TensileFormationUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\TensileFormationUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\ToppleUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\ToppleUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\UpdateModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\UpdateModule.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\WaveGuideUpdate.cpp">
       <Filter>Source Files\GameLogic\Object\Update</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\ActiveShroudUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\ActiveShroudUpgrade.cpp">
       <Filter>Source Files\GameLogic\Object\Upgrade</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Upgrade\ArmorUpgrade.cpp">
@@ -1152,28 +1152,28 @@
     <ClCompile Include="Source\GameLogic\Object\Upgrade\CommandSetUpgrade.cpp">
       <Filter>Source Files\GameLogic\Object\Upgrade</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\CostModifierUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\CostModifierUpgrade.cpp">
       <Filter>Source Files\GameLogic\Object\Upgrade</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Upgrade\DelayedUpgrade.cpp">
       <Filter>Source Files\GameLogic\Object\Upgrade</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\ExperienceScalarUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\ExperienceScalarUpgrade.cpp">
       <Filter>Source Files\GameLogic\Object\Upgrade</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\LocomotorSetUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\LocomotorSetUpgrade.cpp">
       <Filter>Source Files\GameLogic\Object\Upgrade</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\MaxHealthUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\MaxHealthUpgrade.cpp">
       <Filter>Source Files\GameLogic\Object\Upgrade</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\ObjectCreationUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\ObjectCreationUpgrade.cpp">
       <Filter>Source Files\GameLogic\Object\Upgrade</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\PowerPlantUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\PowerPlantUpgrade.cpp">
       <Filter>Source Files\GameLogic\Object\Upgrade</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\RadarUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\RadarUpgrade.cpp">
       <Filter>Source Files\GameLogic\Object\Upgrade</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Upgrade\StatusBitsUpgrade.cpp">
@@ -1185,16 +1185,16 @@
     <ClCompile Include="Source\GameLogic\Object\Upgrade\SubObjectsUpgrade.cpp">
       <Filter>Source Files\GameLogic\Object\Upgrade</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\UnpauseSpecialPowerUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\UnpauseSpecialPowerUpgrade.cpp">
       <Filter>Source Files\GameLogic\Object\Upgrade</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Upgrade\UpgradeModule.cpp">
       <Filter>Source Files\GameLogic\Object\Upgrade</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\WeaponBonusUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\WeaponBonusUpgrade.cpp">
       <Filter>Source Files\GameLogic\Object\Upgrade</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\WeaponSetUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\WeaponSetUpgrade.cpp">
       <Filter>Source Files\GameLogic\Object\Upgrade</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Helper\ObjectDefectionHelper.cpp">
@@ -1206,13 +1206,13 @@
     <ClCompile Include="Source\GameLogic\Object\Helper\ObjectRepulsorHelper.cpp">
       <Filter>Source Files\GameLogic\Object\Helper</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Helper\ObjectSMCHelper.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Helper\ObjectSMCHelper.cpp">
       <Filter>Source Files\GameLogic\Object\Helper</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Helper\ObjectWeaponStatusHelper.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Helper\ObjectWeaponStatusHelper.cpp">
       <Filter>Source Files\GameLogic\Object\Helper</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Destroy\DestroyModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Destroy\DestroyModule.cpp">
       <Filter>Source Files\GameLogic\Object\Destroy</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Armor.cpp">
@@ -1224,7 +1224,7 @@
     <ClCompile Include="Source\GameLogic\Object\FiringTracker.cpp">
       <Filter>Source Files\GameLogic\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\GhostObject.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\GhostObject.cpp">
       <Filter>Source Files\GameLogic\Object</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Locomotor.cpp">
@@ -1236,13 +1236,13 @@
     <ClCompile Include="Source\GameLogic\Object\ObjectCreationList.cpp">
       <Filter>Source Files\GameLogic\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\ObjectTypes.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\ObjectTypes.cpp">
       <Filter>Source Files\GameLogic\Object</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\PartitionManager.cpp">
       <Filter>Source Files\GameLogic\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\SimpleObjectIterator.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\SimpleObjectIterator.cpp">
       <Filter>Source Files\GameLogic\Object</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Weapon.cpp">
@@ -1251,10 +1251,10 @@
     <ClCompile Include="Source\GameLogic\Object\WeaponSet.cpp">
       <Filter>Source Files\GameLogic\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\System\CaveSystem.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\System\CaveSystem.cpp">
       <Filter>Source Files\GameLogic\System</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\System\CrateSystem.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\System\CrateSystem.cpp">
       <Filter>Source Files\GameLogic\System</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\System\Damage.cpp">
@@ -1320,10 +1320,10 @@
     <ClCompile Include="Source\GameClient\MessageStream\WindowXlat.cpp">
       <Filter>Source Files\GameClient\MessageStream</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Drawable\Update\AnimatedParticleSysBoneClientUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Drawable\Update\AnimatedParticleSysBoneClientUpdate.cpp">
       <Filter>Source Files\GameClient\Drawable\Update %28Client%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Drawable\Update\BeaconClientUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Drawable\Update\BeaconClientUpdate.cpp">
       <Filter>Source Files\GameClient\Drawable\Update %28Client%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameLogic\Object\Update\LaserUpdate.cpp">
@@ -1332,19 +1332,19 @@
     <ClCompile Include="Source\GameClient\Drawable\Update\SwayClientUpdate.cpp">
       <Filter>Source Files\GameClient\Drawable\Update %28Client%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Drawable\DrawableManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Drawable\DrawableManager.cpp">
       <Filter>Source Files\GameClient\Drawable</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\System\Debug Displayers\AudioDebugDisplay.cpp">
       <Filter>Source Files\GameClient\System %28GameClient%29\Debug Displayers</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\System\Anim2D.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\System\Anim2D.cpp">
       <Filter>Source Files\GameClient\System %28GameClient%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\System\CampaignManager.cpp">
       <Filter>Source Files\GameClient\System %28GameClient%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\System\DebugDisplay.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\System\DebugDisplay.cpp">
       <Filter>Source Files\GameClient\System %28GameClient%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\System\Image.cpp">
@@ -1353,61 +1353,61 @@
     <ClCompile Include="Source\GameClient\System\ParticleSys.cpp">
       <Filter>Source Files\GameClient\System %28GameClient%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\System\RayEffect.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\System\RayEffect.cpp">
       <Filter>Source Files\GameClient\System %28GameClient%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetCheckBox.cpp">
       <Filter>Source Files\GameClient\GUI\Gadget</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetComboBox.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetComboBox.cpp">
       <Filter>Source Files\GameClient\GUI\Gadget</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetHorizontalSlider.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetHorizontalSlider.cpp">
       <Filter>Source Files\GameClient\GUI\Gadget</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetListBox.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetListBox.cpp">
       <Filter>Source Files\GameClient\GUI\Gadget</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetProgressBar.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetProgressBar.cpp">
       <Filter>Source Files\GameClient\GUI\Gadget</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetPushButton.cpp">
       <Filter>Source Files\GameClient\GUI\Gadget</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetRadioButton.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetRadioButton.cpp">
       <Filter>Source Files\GameClient\GUI\Gadget</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetStaticText.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetStaticText.cpp">
       <Filter>Source Files\GameClient\GUI\Gadget</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetTabControl.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetTabControl.cpp">
       <Filter>Source Files\GameClient\GUI\Gadget</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetTextEntry.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetTextEntry.cpp">
       <Filter>Source Files\GameClient\GUI\Gadget</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetVerticalSlider.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetVerticalSlider.cpp">
       <Filter>Source Files\GameClient\GUI\Gadget</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\CreditsMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\CreditsMenu.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\DifficultySelect.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\DifficultySelect.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\DisconnectWindow.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\DownloadMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\DownloadMenu.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\EstablishConnectionsWindow.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\EstablishConnectionsWindow.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\GameInfoWindow.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\GameInfoWindow.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\KeyboardOptionsMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\KeyboardOptionsMenu.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\LanGameOptionsMenu.cpp">
@@ -1416,7 +1416,7 @@
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\LanLobbyMenu.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\LanMapSelectMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\LanMapSelectMenu.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\MainMenu.cpp">
@@ -1425,28 +1425,28 @@
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\MapSelectMenu.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\NetworkDirectConnect.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\NetworkDirectConnect.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\OptionsMenu.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\PopupCommunicator.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\PopupCommunicator.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\PopupHostGame.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\PopupJoinGame.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\PopupJoinGame.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\PopupLadderSelect.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\PopupLadderSelect.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\PopupPlayerInfo.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\PopupReplay.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\PopupReplay.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\PopupSaveLoad.cpp">
@@ -1455,13 +1455,13 @@
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\QuitMenu.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\ReplayMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\ReplayMenu.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\ScoreScreen.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\SinglePlayerMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\SinglePlayerMenu.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\SkirmishGameOptionsMenu.cpp">
@@ -1473,19 +1473,19 @@
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLBuddyOverlay.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLCustomScoreScreen.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\WOLCustomScoreScreen.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLGameSetupMenu.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLLadderScreen.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\WOLLadderScreen.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLLobbyMenu.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLLocaleSelectPopup.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\WOLLocaleSelectPopup.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLLoginMenu.cpp">
@@ -1494,16 +1494,16 @@
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLMapSelectMenu.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLMessageWindow.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\WOLMessageWindow.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLQMScoreScreen.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\WOLQMScoreScreen.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLQuickMatchMenu.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLStatusMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\WOLStatusMenu.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLWelcomeMenu.cpp">
@@ -1518,37 +1518,37 @@
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Diplomacy.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\ExtendedMessageBox.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\ExtendedMessageBox.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\GeneralsExpPoints.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\GeneralsExpPoints.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\IMECandidate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\IMECandidate.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GUICallbacks\InGameChat.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\InGamePopupMessage.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\InGamePopupMessage.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\MessageBox.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\MessageBox.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\ReplayControls.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\ReplayControls.cpp">
       <Filter>Source Files\GameClient\GUI\GUICallbacks</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\Shell\Shell.cpp">
       <Filter>Source Files\GameClient\GUI\Shell</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Shell\ShellMenuScheme.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Shell\ShellMenuScheme.cpp">
       <Filter>Source Files\GameClient\GUI\Shell</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\ControlBar\ControlBar.cpp">
       <Filter>Source Files\GameClient\GUI\ControlBar</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\ControlBar\ControlBarBeacon.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\ControlBar\ControlBarBeacon.cpp">
       <Filter>Source Files\GameClient\GUI\ControlBar</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\ControlBar\ControlBarCommand.cpp">
@@ -1560,16 +1560,16 @@
     <ClCompile Include="Source\GameClient\GUI\ControlBar\ControlBarMultiSelect.cpp">
       <Filter>Source Files\GameClient\GUI\ControlBar</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\ControlBar\ControlBarObserver.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\ControlBar\ControlBarObserver.cpp">
       <Filter>Source Files\GameClient\GUI\ControlBar</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\ControlBar\ControlBarOCLTimer.cpp">
       <Filter>Source Files\GameClient\GUI\ControlBar</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\ControlBar\ControlBarPrintPositions.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\ControlBar\ControlBarPrintPositions.cpp">
       <Filter>Source Files\GameClient\GUI\ControlBar</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\ControlBar\ControlBarResizer.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\ControlBar\ControlBarResizer.cpp">
       <Filter>Source Files\GameClient\GUI\ControlBar</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\ControlBar\ControlBarScheme.cpp">
@@ -1584,34 +1584,34 @@
     <ClCompile Include="Source\GameClient\GUI\DisconnectMenu\DisconnectMenu.cpp">
       <Filter>Source Files\GameClient\GUI\DisconnectMenu</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\EstablishConnectionsMenu\EstablishConnectionsMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\EstablishConnectionsMenu\EstablishConnectionsMenu.cpp">
       <Filter>Source Files\GameClient\GUI\EstablishConnectionsMenu</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\AnimateWindowManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\AnimateWindowManager.cpp">
       <Filter>Source Files\GameClient\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GameFont.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GameFont.cpp">
       <Filter>Source Files\GameClient\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GameWindow.cpp">
       <Filter>Source Files\GameClient\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GameWindowGlobal.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GameWindowGlobal.cpp">
       <Filter>Source Files\GameClient\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GameWindowManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GameWindowManager.cpp">
       <Filter>Source Files\GameClient\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GameWindowManagerScript.cpp">
       <Filter>Source Files\GameClient\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GameWindowTransitions.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GameWindowTransitions.cpp">
       <Filter>Source Files\GameClient\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\GameWindowTransitionsStyles.cpp">
       <Filter>Source Files\GameClient\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\HeaderTemplate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\HeaderTemplate.cpp">
       <Filter>Source Files\GameClient\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GUI\IMEManager.cpp">
@@ -1620,25 +1620,25 @@
     <ClCompile Include="Source\GameClient\GUI\LoadScreen.cpp">
       <Filter>Source Files\GameClient\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\ProcessAnimateWindow.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\ProcessAnimateWindow.cpp">
       <Filter>Source Files\GameClient\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\WindowLayout.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\WindowLayout.cpp">
       <Filter>Source Files\GameClient\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\WindowVideoManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\WindowVideoManager.cpp">
       <Filter>Source Files\GameClient\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\WinInstanceData.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\WinInstanceData.cpp">
       <Filter>Source Files\GameClient\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Input\Keyboard.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Input\Keyboard.cpp">
       <Filter>Source Files\GameClient\Input</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\Input\Mouse.cpp">
       <Filter>Source Files\GameClient\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Terrain\TerrainRoads.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Terrain\TerrainRoads.cpp">
       <Filter>Source Files\GameClient\Terrain</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\Terrain\TerrainVisual.cpp">
@@ -1647,34 +1647,34 @@
     <ClCompile Include="Source\GameClient\Color.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Credits.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Credits.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Display.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Display.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\DisplayString.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\DisplayString.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\DisplayStringManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\DisplayStringManager.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\Drawable.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\DrawGroupInfo.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\DrawGroupInfo.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\Eva.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\FXList.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\FXList.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GameClient.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GameClientDispatch.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GameClientDispatch.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\GameText.cpp">
@@ -1683,7 +1683,7 @@
     <ClCompile Include="Source\GameClient\GlobalLanguage.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GraphDraw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GraphDraw.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\InGameUI.cpp">
@@ -1692,31 +1692,31 @@
     <ClCompile Include="Source\GameClient\LanguageFilter.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Line2D.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Line2D.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\MapUtil.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\RadiusDecal.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\RadiusDecal.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\SelectionInfo.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Statistics.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Statistics.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\VideoPlayer.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\VideoPlayer.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\View.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\View.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClient\Water.cpp">
       <Filter>Source Files\GameClient</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\WOLBrowser\WebBrowser.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\WOLBrowser\WebBrowser.cpp">
       <Filter>Source Files\GameNetwork\WOLBrowser</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameNetwork\GameSpy\Thread\BuddyThread.cpp">
@@ -1731,19 +1731,19 @@
     <ClCompile Include="Source\GameNetwork\GameSpy\Thread\PersistentStorageThread.cpp">
       <Filter>Source Files\GameNetwork\GameSpy\Thread</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\GameSpy\Thread\PingThread.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\GameSpy\Thread\PingThread.cpp">
       <Filter>Source Files\GameNetwork\GameSpy\Thread</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\GameSpy\Thread\ThreadUtils.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\GameSpy\Thread\ThreadUtils.cpp">
       <Filter>Source Files\GameNetwork\GameSpy\Thread</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameNetwork\GameSpy\Chat.cpp">
       <Filter>Source Files\GameNetwork\GameSpy</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\DownloadManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\DownloadManager.cpp">
       <Filter>Source Files\GameNetwork\GameSpy</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\GameSpyOverlay.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\GameSpyOverlay.cpp">
       <Filter>Source Files\GameNetwork\GameSpy</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameNetwork\GameSpy\GSConfig.cpp">
@@ -1767,58 +1767,58 @@
     <ClCompile Include="Source\GameNetwork\GameSpy.cpp">
       <Filter>Source Files\GameNetwork\GameSpyEvalImplementation</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\GameSpyChat.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\GameSpyChat.cpp">
       <Filter>Source Files\GameNetwork\GameSpyEvalImplementation</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\GameSpyGameInfo.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\GameSpyGameInfo.cpp">
       <Filter>Source Files\GameNetwork\GameSpyEvalImplementation</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\GameSpyGP.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\GameSpyGP.cpp">
       <Filter>Source Files\GameNetwork\GameSpyEvalImplementation</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameNetwork\GameSpyPersistentStorage.cpp">
       <Filter>Source Files\GameNetwork\GameSpyEvalImplementation</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\Connection.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\Connection.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameNetwork\ConnectionManager.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\DisconnectManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\DisconnectManager.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\FileTransfer.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\FileTransfer.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameNetwork\FirewallHelper.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\FrameData.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\FrameData.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameNetwork\FrameDataManager.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\FrameMetrics.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\FrameMetrics.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\NAT.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\NAT.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\NetCommandList.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\NetCommandList.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\NetCommandMsg.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\NetCommandMsg.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\NetCommandRef.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\NetCommandRef.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\NetCommandWrapperList.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\NetCommandWrapperList.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\NetMessageStream.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\NetMessageStream.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameNetwork\NetPacket.cpp">
@@ -1827,16 +1827,16 @@
     <ClCompile Include="Source\GameNetwork\Network.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\NetworkUtil.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\NetworkUtil.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\Transport.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\Transport.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameNetwork\udp.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\User.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\User.cpp">
       <Filter>Source Files\GameNetwork\InGameNetwork</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameNetwork\LANAPI.cpp">
@@ -1848,22 +1848,22 @@
     <ClCompile Include="Source\GameNetwork\LANAPIhandlers.cpp">
       <Filter>Source Files\GameNetwork\LAN</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\LANGameInfo.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\LANGameInfo.cpp">
       <Filter>Source Files\GameNetwork\LAN</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameNetwork\GameInfo.cpp">
       <Filter>Source Files\GameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\GameMessageParser.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\GameMessageParser.cpp">
       <Filter>Source Files\GameNetwork</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameNetwork\GUIUtil.cpp">
       <Filter>Source Files\GameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\IPEnumeration.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\IPEnumeration.cpp">
       <Filter>Source Files\GameNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Precompiled\PreRTS.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Precompiled\PreRTS.cpp">
       <Filter>Source Files\Precompiled</Filter>
     </ClCompile>
   </ItemGroup>

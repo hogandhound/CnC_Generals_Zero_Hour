@@ -154,7 +154,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);$(ProjectDir)EAC;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\EAC;$(ProjectDir);$(ProjectDir)LZHCompress;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_LIB;Z_PREFIX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -186,7 +186,7 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);$(ProjectDir)EAC;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\EAC;$(ProjectDir);$(ProjectDir)LZHCompress;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_LIB;Z_PREFIX;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -311,7 +311,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);$(ProjectDir)EAC;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\EAC;$(ProjectDir);$(ProjectDir)LZHCompress;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_RELEASE;WIN32;_LIB;Z_PREFIX;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release\Compression.pch</PrecompiledHeaderOutputFile>
@@ -332,21 +332,21 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CompressionManager.cpp" />
-    <ClCompile Include="EAC\btreeabout.cpp" />
-    <ClCompile Include="EAC\btreedecode.cpp" />
-    <ClCompile Include="EAC\btreeencode.cpp" />
-    <ClCompile Include="EAC\huffabout.cpp" />
-    <ClCompile Include="EAC\huffdecode.cpp" />
-    <ClCompile Include="EAC\huffencode.cpp" />
-    <ClCompile Include="EAC\refabout.cpp" />
-    <ClCompile Include="EAC\refdecode.cpp" />
-    <ClCompile Include="EAC\refencode.cpp" />
-    <ClCompile Include="LZHCompress\CompLibSource\Huff.cpp" />
-    <ClCompile Include="LZHCompress\CompLibSource\Lz.cpp" />
-    <ClCompile Include="LZHCompress\CompLibSource\Lzhl.cpp" />
-    <ClCompile Include="LZHCompress\CompLibSource\Lzhl_tcp.cpp" />
-    <ClCompile Include="LZHCompress\NoxCompress.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\CompressionManager.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\btreeabout.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\btreedecode.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\btreeencode.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\huffabout.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\huffdecode.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\huffencode.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\refabout.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\refdecode.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\refencode.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\LZHCompress\CompLibSource\Huff.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\LZHCompress\CompLibSource\Lz.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\LZHCompress\CompLibSource\Lzhl.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\LZHCompress\CompLibSource\Lzhl_tcp.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\LZHCompress\NoxCompress.cpp" />
     <ClCompile Include="ZLib\adler32.c" />
     <ClCompile Include="ZLib\compress.c" />
     <ClCompile Include="ZLib\crc32.c" />

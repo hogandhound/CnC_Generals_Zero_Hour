@@ -274,7 +274,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\BFISH.CPP" />
+	  <ClCompile Include="$(SolutionDir)/../../Common/Code/Tools/Launcher\BFISH.CPP" />
     <ClCompile Include="..\Toolkit\Debug\DebugPrint.cpp" />
     <ClCompile Include="DatGen.cpp" />
   </ItemGroup>

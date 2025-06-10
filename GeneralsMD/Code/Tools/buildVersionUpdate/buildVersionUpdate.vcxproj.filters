@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="buildVersionUpdate.cpp">
+	  <ClCompile Include="$(SolutionDir)/../../Common/Code/Tools/buildVersionUpdate/buildVersionUpdate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

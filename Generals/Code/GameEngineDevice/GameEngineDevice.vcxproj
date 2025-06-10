@@ -218,7 +218,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\Libraries\Include\MSS;../Libraries/Source/Benchmark;..\Main;Include;..\GameEngine\Include;..\Libraries\Include;..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WW3D2;..\Libraries\Source\WWVegas\WWLib;..\Libraries\Source\WWVegas\WWDebug;..\Libraries\Source\WWVegas\WWMath;..\Libraries\Source\WWVegas\WWSaveLoad;..\Libraries\Include\Granny;%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\DX90SDK\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Libraries/Source/Benchmark;..\Main;Include;..\GameEngine\Include;..\Libraries\Include;..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WW3D2;..\Libraries\Source\WWVegas\WWLib;..\Libraries\Source\WWVegas\WWDebug;..\Libraries\Source\WWVegas\WWMath;..\Libraries\Source\WWVegas\WWSaveLoad;..\Libraries\Include\Granny;%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)\Libraries\include\FFMPEG</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_LIB;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -251,7 +251,7 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\Libraries\Include\MSS;../Libraries/Source/Benchmark;..\Main;Include;..\GameEngine\Include;..\Libraries\Include;..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WW3D2;..\Libraries\Source\WWVegas\WWLib;..\Libraries\Source\WWVegas\WWDebug;..\Libraries\Source\WWVegas\WWMath;..\Libraries\Source\WWVegas\WWSaveLoad;..\Libraries\Include\Granny;%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)\Libraries\include\FFMPEG</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Libraries/Source/Benchmark;..\Main;Include;..\GameEngine\Include;..\Libraries\Include;..\Libraries\Source\WWVegas;..\Libraries\Source\WWVegas\WW3D2;..\Libraries\Source\WWVegas\WWLib;..\Libraries\Source\WWVegas\WWDebug;..\Libraries\Source\WWVegas\WWMath;..\Libraries\Source\WWVegas\WWSaveLoad;..\Libraries\Include\Granny;%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)\Libraries\include\FFMPEG</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_LIB;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -356,95 +356,95 @@
     <ClCompile Include="Source\MilesAudioDevice\MilesAudioManager.cpp" />
     <ClCompile Include="Source\MilesAudioDevice\SoLoudAudioManager.cpp" />
     <ClCompile Include="Source\VideoDevice\Bink\BinkVideoPlayer.cpp" />
-    <ClCompile Include="Source\VideoDevice\Bink\oink.cpp" />
-    <ClCompile Include="Source\W3DDevice\Common\System\W3DFunctionLexicon.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\VideoDevice\Bink\oink.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\Common\System\W3DFunctionLexicon.cpp" />
     <ClCompile Include="Source\W3DDevice\Common\System\W3DRadar.cpp" />
     <ClCompile Include="Source\W3DDevice\Common\Thing\W3DModuleFactory.cpp" />
-    <ClCompile Include="Source\W3DDevice\Common\Thing\W3DThingFactory.cpp" />
-    <ClCompile Include="Source\W3DDevice\Common\W3DConvert.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DDebrisDraw.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DDefaultDraw.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\Common\Thing\W3DThingFactory.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\Common\W3DConvert.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DDebrisDraw.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DDefaultDraw.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DDependencyModelDraw.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DLaserDraw.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DModelDraw.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DOverlordTankDraw.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DPoliceCarDraw.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DProjectileStreamDraw.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DRopeDraw.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DScienceModelDraw.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DSupplyDraw.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DTankDraw.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DTankTruckDraw.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DTracerDraw.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DOverlordTankDraw.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DPoliceCarDraw.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DProjectileStreamDraw.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DRopeDraw.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DScienceModelDraw.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DSupplyDraw.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DTankDraw.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DTankTruckDraw.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DTracerDraw.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DTruckDraw.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DCheckBox.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DComboBox.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DHorizontalSlider.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DListBox.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DProgressBar.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DCheckBox.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DComboBox.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DHorizontalSlider.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DListBox.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DProgressBar.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DPushButton.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DRadioButton.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DRadioButton.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DStaticText.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DTabControl.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DTextEntry.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DVerticalSlider.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\GUICallbacks\W3DControlBar.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\GUICallbacks\W3DMainMenu.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\GUICallbacks\W3DMOTD.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\W3DGameFont.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\W3DGameWindow.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\W3DGameWindowManager.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DTabControl.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DTextEntry.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DVerticalSlider.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\GUICallbacks\W3DControlBar.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\GUICallbacks\W3DMainMenu.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\GUICallbacks\W3DMOTD.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\W3DGameFont.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\W3DGameWindow.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\W3DGameWindowManager.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\HeightMap.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\Shadow\W3DBufferManager.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Shadow\W3DBufferManager.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\Shadow\W3DProjectedShadow.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\Shadow\W3DShadow.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Shadow\W3DShadow.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\Shadow\W3DVolumetricShadow.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\TerrainTex.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\TileData.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\TileData.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DAssetManager.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DAssetManagerExposed.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DAssetManagerExposed.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DBibBuffer.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DBridgeBuffer.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DCustomEdging.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DDebugDisplay.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DDebugDisplay.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DDebugIcons.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DDisplay.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DDisplayString.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DDisplayString.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DDisplayStringManager.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DDynamicLight.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DDynamicLight.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DFileSystem.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DGameClient.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DGranny.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DInGameUI.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DMouse.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DInGameUI.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DMouse.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DParticleSys.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DPoly.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DPoly.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DRoadBuffer.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DScene.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DShaderManager.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DShroud.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DStatusCircle.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DTerrainTracks.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DTerrainTracks.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DTerrainVisual.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DTreeBuffer.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DVideoBuffer.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3DView.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\W3dWaypointBuffer.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DWebBrowser.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DWebBrowser.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\Water\W3DWater.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\Water\W3DWaterTracks.cpp" />
     <ClCompile Include="Source\W3DDevice\GameClient\WorldHeightMap.cpp" />
-    <ClCompile Include="Source\W3DDevice\GameLogic\W3DGameLogic.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameLogic\W3DGameLogic.cpp" />
     <ClCompile Include="Source\W3DDevice\GameLogic\W3DGhostObject.cpp" />
     <ClCompile Include="Source\W3DDevice\GameLogic\W3DTerrainLogic.cpp" />
-    <ClCompile Include="Source\Win32Device\Common\Win32BIGFile.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\Win32Device\Common\Win32BIGFile.cpp" />
     <ClCompile Include="Source\Win32Device\Common\Win32BIGFileSystem.cpp" />
-    <ClCompile Include="Source\Win32Device\Common\Win32CDManager.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\Win32Device\Common\Win32CDManager.cpp" />
     <ClCompile Include="Source\Win32Device\Common\Win32GameEngine.cpp" />
-    <ClCompile Include="Source\Win32Device\Common\Win32LocalFile.cpp" />
-    <ClCompile Include="Source\Win32Device\Common\Win32LocalFileSystem.cpp" />
-    <ClCompile Include="Source\Win32Device\Common\Win32OSDisplay.cpp" />
-    <ClCompile Include="Source\Win32Device\GameClient\Win32DIKeyboard.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\Win32Device\Common\Win32LocalFile.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\Win32Device\Common\Win32LocalFileSystem.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\Win32Device\Common\Win32OSDisplay.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\Win32Device\GameClient\Win32DIKeyboard.cpp" />
     <ClCompile Include="Source\Win32Device\GameClient\Win32Mouse.cpp" />
   </ItemGroup>
   <ItemGroup>

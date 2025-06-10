@@ -22,22 +22,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="configfile.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\configfile.cpp">
       <Filter>dbglib</Filter>
     </ClCompile>
-    <ClCompile Include="monod.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\monod.cpp">
       <Filter>dbglib</Filter>
     </ClCompile>
-    <ClCompile Include="streamer.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\streamer.cpp">
       <Filter>dbglib</Filter>
     </ClCompile>
-    <ClCompile Include="wdebug.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\wdebug.cpp">
       <Filter>dbglib</Filter>
     </ClCompile>
     <ClCompile Include="wstring.cpp">
       <Filter>dbglib</Filter>
     </ClCompile>
-    <ClCompile Include="Toolkit\Support\StringConvert.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\Toolkit\Support\StringConvert.cpp">
       <Filter>Support</Filter>
     </ClCompile>
     <ClCompile Include="Toolkit\Support\UString.cpp">
@@ -46,18 +46,18 @@
     <ClCompile Include="Toolkit\Debug\DebugPrint.cpp">
       <Filter>Debug</Filter>
     </ClCompile>
-    <ClCompile Include="Toolkit\Storage\File.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\Toolkit\Storage\File.cpp">
       <Filter>Storage</Filter>
     </ClCompile>
-    <ClCompile Include="BFISH.CPP" />
-    <ClCompile Include="dialog.cpp" />
-    <ClCompile Include="findpatch.cpp" />
-    <ClCompile Include="loadbmp.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\BFISH.CPP" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\dialog.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\findpatch.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\loadbmp.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\main.cpp" />
     <ClCompile Include="patch.cpp" />
-    <ClCompile Include="process.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\process.cpp" />
     <ClCompile Include="Protect.cpp" />
-    <ClCompile Include="winblows.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\winblows.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="configfile.h">

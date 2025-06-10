@@ -619,8 +619,8 @@
     <ClCompile Include="cominit.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="DownloadManager.cpp" />
-    <ClCompile Include="process.cpp" />
-    <ClCompile Include="winblows.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\process.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\winblows.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="chatapi.h" />

@@ -306,7 +306,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="chunkio.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\chunkio.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> "WIN32"  "WIN32"</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> "WIN32"  "WIN32"</AdditionalOptions>
     </ClCompile>
@@ -346,7 +346,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> "WIN32"  "WIN32"</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> "WIN32"  "WIN32"</AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="realcrc.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\realcrc.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> "WIN32"  "WIN32"</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> "WIN32"  "WIN32"</AdditionalOptions>
     </ClCompile>
@@ -362,7 +362,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> "WIN32"  "WIN32"</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> "WIN32"  "WIN32"</AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="wwmath.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWMath\wwmath.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> "WIN32"  "WIN32"</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> "WIN32"  "WIN32"</AdditionalOptions>
     </ClCompile>

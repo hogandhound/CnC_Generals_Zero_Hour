@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="chunkio.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\chunkio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EULER.CPP">
@@ -45,7 +45,7 @@
     <ClCompile Include="RAWFILE.CPP">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="realcrc.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\realcrc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RGB.CPP">
@@ -57,7 +57,7 @@
     <ClCompile Include="w3dquat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="wwmath.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWMath\wwmath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WWmatrix3.cpp">

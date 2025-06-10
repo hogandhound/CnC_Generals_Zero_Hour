@@ -11,7 +11,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Download.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWDownload\Download.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ftp.cpp">

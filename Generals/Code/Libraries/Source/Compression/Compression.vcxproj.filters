@@ -59,49 +59,49 @@
     <ClCompile Include="ZLib\zutil.c">
       <Filter>Source Files\Zlib</Filter>
     </ClCompile>
-    <ClCompile Include="LZHCompress\CompLibSource\Huff.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\LZHCompress\CompLibSource\Huff.cpp">
       <Filter>Source Files\NoxLZH</Filter>
     </ClCompile>
-    <ClCompile Include="LZHCompress\CompLibSource\Lz.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\LZHCompress\CompLibSource\Lz.cpp">
       <Filter>Source Files\NoxLZH</Filter>
     </ClCompile>
-    <ClCompile Include="LZHCompress\CompLibSource\Lzhl.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\LZHCompress\CompLibSource\Lzhl.cpp">
       <Filter>Source Files\NoxLZH</Filter>
     </ClCompile>
-    <ClCompile Include="LZHCompress\CompLibSource\Lzhl_tcp.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\LZHCompress\CompLibSource\Lzhl_tcp.cpp">
       <Filter>Source Files\NoxLZH</Filter>
     </ClCompile>
-    <ClCompile Include="LZHCompress\NoxCompress.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\LZHCompress\NoxCompress.cpp">
       <Filter>Source Files\NoxLZH</Filter>
     </ClCompile>
-    <ClCompile Include="EAC\btreeabout.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\btreeabout.cpp">
       <Filter>Source Files\EAC</Filter>
     </ClCompile>
-    <ClCompile Include="EAC\btreedecode.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\btreedecode.cpp">
       <Filter>Source Files\EAC</Filter>
     </ClCompile>
-    <ClCompile Include="EAC\btreeencode.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\btreeencode.cpp">
       <Filter>Source Files\EAC</Filter>
     </ClCompile>
-    <ClCompile Include="EAC\huffabout.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\huffabout.cpp">
       <Filter>Source Files\EAC</Filter>
     </ClCompile>
-    <ClCompile Include="EAC\huffdecode.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\huffdecode.cpp">
       <Filter>Source Files\EAC</Filter>
     </ClCompile>
-    <ClCompile Include="EAC\huffencode.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\huffencode.cpp">
       <Filter>Source Files\EAC</Filter>
     </ClCompile>
-    <ClCompile Include="EAC\refabout.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\refabout.cpp">
       <Filter>Source Files\EAC</Filter>
     </ClCompile>
-    <ClCompile Include="EAC\refdecode.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\refdecode.cpp">
       <Filter>Source Files\EAC</Filter>
     </ClCompile>
-    <ClCompile Include="EAC\refencode.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\EAC\refencode.cpp">
       <Filter>Source Files\EAC</Filter>
     </ClCompile>
-    <ClCompile Include="CompressionManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\Compression\CompressionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

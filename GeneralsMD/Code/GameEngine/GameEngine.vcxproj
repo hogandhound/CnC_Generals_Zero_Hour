@@ -451,7 +451,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\Audio\AudioRequest.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Audio\AudioRequest.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -467,15 +467,15 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\Audio\GameSounds.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Audio\GameSounds.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\Bezier\BezFwdIterator.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Bezier\BezFwdIterator.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\Bezier\BezierSegment.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Bezier\BezierSegment.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -491,7 +491,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\CRCDebug.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\CRCDebug.cpp">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">TurnOffAllWarnings</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">TurnOffAllWarnings</WarningLevel>
       <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">true</TreatWarningAsError>
@@ -503,11 +503,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\Dict.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Dict.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\DiscreteCircle.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\DiscreteCircle.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -519,7 +519,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\GameMain.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\GameMain.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -531,15 +531,15 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIAiData.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIAiData.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIAnimation.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIAnimation.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIAudioEventInfo.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIAudioEventInfo.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -547,27 +547,27 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INICommandSet.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INICommandSet.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIControlBarScheme.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIControlBarScheme.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INICrate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INICrate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIDamageFX.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIDamageFX.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIDrawGroupInfo.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIDrawGroupInfo.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIGameData.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIGameData.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -575,7 +575,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIMapData.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIMapData.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -587,7 +587,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIModel.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIModel.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -595,31 +595,31 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIObject.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIObject.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIParticleSys.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIParticleSys.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INISpecialPower.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INISpecialPower.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INITerrain.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INITerrain.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INITerrainBridge.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INITerrainBridge.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INITerrainRoad.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INITerrainRoad.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIUpgrade.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -627,19 +627,19 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIWater.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIWater.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIWeapon.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIWeapon.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\INI\INIWebpageURL.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIWebpageURL.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\Language.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Language.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -659,7 +659,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\PartitionSolver.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\PartitionSolver.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -667,7 +667,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\RandomValue.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\RandomValue.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -687,11 +687,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\RTS\Handicap.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\RTS\Handicap.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\RTS\MissionStats.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\RTS\MissionStats.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -703,7 +703,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\RTS\PlayerList.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\RTS\PlayerList.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -715,7 +715,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\RTS\ResourceGatheringManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\RTS\ResourceGatheringManager.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -723,7 +723,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\RTS\ScoreKeeper.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\RTS\ScoreKeeper.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -747,15 +747,15 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\StatsCollector.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\StatsCollector.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\ArchiveFile.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\ArchiveFile.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\ArchiveFileSystem.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\ArchiveFileSystem.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -767,11 +767,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\CDManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\CDManager.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\Compression.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\Compression.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -791,7 +791,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\Directory.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\Directory.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -799,11 +799,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\encrypt.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\encrypt.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\File.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\File.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -815,7 +815,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\GameCommon.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\GameCommon.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -823,7 +823,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\GameType.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\GameType.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -835,15 +835,15 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\List.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\List.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\LocalFile.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\LocalFile.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\LocalFileSystem.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\LocalFileSystem.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -855,11 +855,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\QuickTrig.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\QuickTrig.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\QuotedPrintable.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\QuotedPrintable.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -867,7 +867,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\RAMFile.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\RAMFile.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -883,7 +883,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\Snapshot.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\Snapshot.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -891,11 +891,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\StreamingArchiveFile.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\StreamingArchiveFile.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\String.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\String.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -903,11 +903,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\Trig.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\Trig.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\UnicodeString.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\UnicodeString.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -919,23 +919,23 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\XferCRC.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\XferCRC.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\XferLoad.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\XferLoad.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\System\XferSave.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\System\XferSave.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\TerrainTypes.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\TerrainTypes.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\Thing\DrawModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Thing\DrawModule.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -947,7 +947,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\Thing\Thing.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Thing\Thing.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -963,7 +963,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Common\version.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\version.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -971,19 +971,19 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Credits.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Credits.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Display.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Display.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\DisplayString.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\DisplayString.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\DisplayStringManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\DisplayStringManager.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -991,15 +991,15 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Drawable\DrawableManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Drawable\DrawableManager.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Drawable\Update\AnimatedParticleSysBoneClientUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Drawable\Update\AnimatedParticleSysBoneClientUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Drawable\Update\BeaconClientUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Drawable\Update\BeaconClientUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1007,7 +1007,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\DrawGroupInfo.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\DrawGroupInfo.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1015,7 +1015,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\FXList.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\FXList.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1023,7 +1023,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GameClientDispatch.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GameClientDispatch.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1035,11 +1035,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GraphDraw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GraphDraw.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\AnimateWindowManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\AnimateWindowManager.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1051,7 +1051,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\ControlBar\ControlBarBeacon.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\ControlBar\ControlBarBeacon.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1067,7 +1067,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\ControlBar\ControlBarObserver.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\ControlBar\ControlBarObserver.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1075,11 +1075,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\ControlBar\ControlBarPrintPositions.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\ControlBar\ControlBarPrintPositions.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\ControlBar\ControlBarResizer.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\ControlBar\ControlBarResizer.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1099,7 +1099,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\EstablishConnectionsMenu\EstablishConnectionsMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\EstablishConnectionsMenu\EstablishConnectionsMenu.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1107,19 +1107,19 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetComboBox.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetComboBox.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetHorizontalSlider.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetHorizontalSlider.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetListBox.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetListBox.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetProgressBar.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetProgressBar.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1127,27 +1127,27 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetRadioButton.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetRadioButton.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetStaticText.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetStaticText.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetTabControl.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetTabControl.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetTextEntry.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetTextEntry.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Gadget\GadgetVerticalSlider.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Gadget\GadgetVerticalSlider.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GameFont.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GameFont.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1155,11 +1155,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GameWindowGlobal.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GameWindowGlobal.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GameWindowManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GameWindowManager.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1167,7 +1167,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GameWindowTransitions.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GameWindowTransitions.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1187,15 +1187,15 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\ExtendedMessageBox.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\ExtendedMessageBox.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\GeneralsExpPoints.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\GeneralsExpPoints.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\IMECandidate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\IMECandidate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1203,7 +1203,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\InGamePopupMessage.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\InGamePopupMessage.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1211,11 +1211,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\CreditsMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\CreditsMenu.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\DifficultySelect.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\DifficultySelect.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1223,19 +1223,19 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\DownloadMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\DownloadMenu.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\EstablishConnectionsWindow.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\EstablishConnectionsWindow.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\GameInfoWindow.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\GameInfoWindow.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\KeyboardOptionsMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\KeyboardOptionsMenu.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1247,7 +1247,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\LanMapSelectMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\LanMapSelectMenu.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1259,7 +1259,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\NetworkDirectConnect.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\NetworkDirectConnect.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1267,7 +1267,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\PopupCommunicator.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\PopupCommunicator.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1275,11 +1275,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\PopupJoinGame.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\PopupJoinGame.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\PopupLadderSelect.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\PopupLadderSelect.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1287,7 +1287,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\PopupReplay.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\PopupReplay.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1299,7 +1299,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\ReplayMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\ReplayMenu.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1307,7 +1307,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\SinglePlayerMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\SinglePlayerMenu.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1323,7 +1323,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLCustomScoreScreen.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\WOLCustomScoreScreen.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1331,7 +1331,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLLadderScreen.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\WOLLadderScreen.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1339,7 +1339,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLLocaleSelectPopup.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\WOLLocaleSelectPopup.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1351,11 +1351,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLMessageWindow.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\WOLMessageWindow.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLQMScoreScreen.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\WOLQMScoreScreen.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1363,7 +1363,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\Menus\WOLStatusMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\Menus\WOLStatusMenu.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1371,15 +1371,15 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\MessageBox.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\MessageBox.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\GUICallbacks\ReplayControls.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\GUICallbacks\ReplayControls.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\HeaderTemplate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\HeaderTemplate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1391,7 +1391,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\ProcessAnimateWindow.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\ProcessAnimateWindow.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1399,19 +1399,19 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\Shell\ShellMenuScheme.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\Shell\ShellMenuScheme.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\WindowLayout.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\WindowLayout.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\WindowVideoManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\WindowVideoManager.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\GUI\WinInstanceData.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\GUI\WinInstanceData.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1419,7 +1419,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Input\Keyboard.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Input\Keyboard.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1431,7 +1431,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Line2D.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Line2D.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1479,7 +1479,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\RadiusDecal.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\RadiusDecal.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1491,11 +1491,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Statistics.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Statistics.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\System\Anim2D.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\System\Anim2D.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1507,7 +1507,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\System\DebugDisplay.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\System\DebugDisplay.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1519,7 +1519,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\System\RayEffect.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\System\RayEffect.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1527,7 +1527,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\Terrain\TerrainRoads.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\Terrain\TerrainRoads.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1535,11 +1535,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\VideoPlayer.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\VideoPlayer.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameClient\View.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameClient\View.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1551,7 +1551,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\AI\AIDock.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\AI\AIDock.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1587,7 +1587,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\AI\Squad.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\AI\Squad.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1619,7 +1619,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\BehaviorModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\BehaviorModule.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1627,11 +1627,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\BridgeScaffoldBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\BridgeScaffoldBehavior.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\BridgeTowerBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\BridgeTowerBehavior.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1647,7 +1647,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\FireWeaponWhenDamagedBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\FireWeaponWhenDamagedBehavior.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1667,7 +1667,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\InstantDeathBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\InstantDeathBehavior.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1683,7 +1683,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\OverchargeBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\OverchargeBehavior.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1695,7 +1695,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\POWTruckBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\POWTruckBehavior.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1703,7 +1703,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\PropagandaCenterBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\PropagandaCenterBehavior.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1723,7 +1723,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Behavior\SupplyWarehouseCripplingBehavior.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Behavior\SupplyWarehouseCripplingBehavior.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1735,11 +1735,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Body\BodyModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Body\BodyModule.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Body\HighlanderBody.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Body\HighlanderBody.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1747,15 +1747,15 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Body\ImmortalBody.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Body\ImmortalBody.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Body\InactiveBody.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Body\InactiveBody.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Body\StructureBody.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Body\StructureBody.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1763,7 +1763,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Collide\CollideModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Collide\CollideModule.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1779,7 +1779,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Collide\CrateCollide\HealCrateCollide.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Collide\CrateCollide\HealCrateCollide.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1823,15 +1823,15 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Collide\CrateCollide\ShroudCrateCollide.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Collide\CrateCollide\ShroudCrateCollide.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Collide\CrateCollide\UnitCrateCollide.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Collide\CrateCollide\UnitCrateCollide.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Collide\CrateCollide\VeterancyCrateCollide.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Collide\CrateCollide\VeterancyCrateCollide.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1839,7 +1839,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Collide\SquishCollide.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Collide\SquishCollide.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1851,7 +1851,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Contain\HealContain.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Contain\HealContain.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1879,7 +1879,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Contain\RailedTransportContain.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Contain\RailedTransportContain.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1895,7 +1895,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Create\CreateModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Create\CreateModule.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1907,31 +1907,31 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Create\PreorderCreate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Create\PreorderCreate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Create\SpecialPowerCreate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Create\SpecialPowerCreate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Create\SupplyCenterCreate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Create\SupplyCenterCreate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Create\SupplyWarehouseCreate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Create\SupplyWarehouseCreate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Create\VeterancyGainCreate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Create\VeterancyGainCreate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Damage\BoneFXDamage.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Damage\BoneFXDamage.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Damage\DamageModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Damage\DamageModule.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1939,11 +1939,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Destroy\DestroyModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Destroy\DestroyModule.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Die\CreateCrateDie.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Die\CreateCrateDie.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1951,11 +1951,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Die\CrushDie.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Die\CrushDie.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Die\DamDie.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Die\DamDie.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1967,7 +1967,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Die\EjectPilotDie.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Die\EjectPilotDie.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1975,7 +1975,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Die\KeepObjectDie.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Die\KeepObjectDie.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1983,11 +1983,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Die\SpecialPowerCompletionDie.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Die\SpecialPowerCompletionDie.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Die\UpgradeDie.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Die\UpgradeDie.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -1999,7 +1999,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\GhostObject.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\GhostObject.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2015,11 +2015,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Helper\ObjectSMCHelper.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Helper\ObjectSMCHelper.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Helper\ObjectWeaponStatusHelper.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Helper\ObjectWeaponStatusHelper.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2047,7 +2047,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\ObjectTypes.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\ObjectTypes.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2055,7 +2055,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\SimpleObjectIterator.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\SimpleObjectIterator.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2063,7 +2063,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\SpecialPower\CashBountyPower.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\SpecialPower\CashBountyPower.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2099,7 +2099,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\SpecialPower\SpyVisionSpecialPower.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\SpecialPower\SpyVisionSpecialPower.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2139,11 +2139,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\AIUpdate\POWTruckAIUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\AIUpdate\POWTruckAIUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\AIUpdate\RailedTransportAIUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\AIUpdate\RailedTransportAIUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2159,7 +2159,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\AIUpdate\WanderAIUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\AIUpdate\WanderAIUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2179,11 +2179,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\AutoFindHealingUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\AutoFindHealingUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\BaseRenerateUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\BaseRenerateUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2195,11 +2195,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\CheckpointUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\CheckpointUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\CleanupHazardUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\CleanupHazardUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2207,7 +2207,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\DeletionUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\DeletionUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2219,7 +2219,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\DockUpdate\PrisonDockUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\DockUpdate\PrisonDockUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2227,7 +2227,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\DockUpdate\RepairDockUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\DockUpdate\RepairDockUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2235,15 +2235,15 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\DockUpdate\SupplyWarehouseDockUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\DockUpdate\SupplyWarehouseDockUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\DynamicGeometryInfoUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\DynamicGeometryInfoUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\DynamicShroudClearingRangeUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\DynamicShroudClearingRangeUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2251,7 +2251,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\EnemyNearUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\EnemyNearUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2275,11 +2275,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\FloatUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\FloatUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\HeightDieUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\HeightDieUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2299,7 +2299,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\LifetimeUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\LifetimeUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2311,7 +2311,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\NeutronMissileSlowDeathUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\NeutronMissileSlowDeathUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2331,7 +2331,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\PilotFindVehicleUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\PilotFindVehicleUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2339,19 +2339,19 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\PowerPlantUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\PowerPlantUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\ProductionExitUpdate\DefaultProductionExitUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\ProductionExitUpdate\DefaultProductionExitUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\ProductionExitUpdate\QueueProductionExitUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\ProductionExitUpdate\QueueProductionExitUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\ProductionExitUpdate\SpawnPointProductionExitUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\ProductionExitUpdate\SpawnPointProductionExitUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2371,11 +2371,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\RadarUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\RadarUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\RadiusDecalUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\RadiusDecalUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2427,15 +2427,15 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\TensileFormationUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\TensileFormationUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\ToppleUpdate.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\ToppleUpdate.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Update\UpdateModule.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Update\UpdateModule.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2447,7 +2447,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\ActiveShroudUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\ActiveShroudUpgrade.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2459,11 +2459,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\CostModifierUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\CostModifierUpgrade.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\ExperienceScalarUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\ExperienceScalarUpgrade.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2471,11 +2471,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\LocomotorSetUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\LocomotorSetUpgrade.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\MaxHealthUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\MaxHealthUpgrade.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2483,7 +2483,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\ObjectCreationUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\ObjectCreationUpgrade.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2491,11 +2491,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\PowerPlantUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\PowerPlantUpgrade.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\RadarUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\RadarUpgrade.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2515,7 +2515,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\UnpauseSpecialPowerUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\UnpauseSpecialPowerUpgrade.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2523,11 +2523,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\WeaponBonusUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\WeaponBonusUpgrade.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\Object\Upgrade\WeaponSetUpgrade.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\Object\Upgrade\WeaponSetUpgrade.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2559,11 +2559,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\System\CaveSystem.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\System\CaveSystem.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameLogic\System\CrateSystem.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameLogic\System\CrateSystem.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2583,7 +2583,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\Connection.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\Connection.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2591,15 +2591,15 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\DisconnectManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\DisconnectManager.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\DownloadManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\DownloadManager.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\FileTransfer.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\FileTransfer.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2607,7 +2607,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\FrameData.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\FrameData.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2615,7 +2615,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\FrameMetrics.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\FrameMetrics.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2623,7 +2623,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\GameMessageParser.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\GameMessageParser.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2639,7 +2639,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\GameSpyChat.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\GameSpyChat.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -2651,7 +2651,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\GameSpyGameInfo.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\GameSpyGameInfo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -2663,7 +2663,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\GameSpyGP.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\GameSpyGP.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -2675,7 +2675,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\GameSpyOverlay.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\GameSpyOverlay.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2735,11 +2735,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\GameSpy\Thread\PingThread.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\GameSpy\Thread\PingThread.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\GameSpy\Thread\ThreadUtils.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\GameSpy\Thread\ThreadUtils.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2747,7 +2747,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\IPEnumeration.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\IPEnumeration.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2763,31 +2763,31 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\LANGameInfo.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\LANGameInfo.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\NAT.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\NAT.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\NetCommandList.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\NetCommandList.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\NetCommandMsg.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\NetCommandMsg.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\NetCommandRef.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\NetCommandRef.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\NetCommandWrapperList.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\NetCommandWrapperList.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\NetMessageStream.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\NetMessageStream.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2799,11 +2799,11 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\NetworkUtil.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\NetworkUtil.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\Transport.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\Transport.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
@@ -2811,15 +2811,15 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\User.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\User.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\GameNetwork\WOLBrowser\WebBrowser.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\WOLBrowser\WebBrowser.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="Source\Precompiled\PreRTS.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Precompiled\PreRTS.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PreRTS.h</PrecompiledHeaderFile>

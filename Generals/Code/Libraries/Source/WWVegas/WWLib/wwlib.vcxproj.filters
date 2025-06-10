@@ -11,127 +11,112 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="_convert.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\base64.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="_mono.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\blit.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="b64pipe.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\blowfish.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="b64straw.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="base64.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="blit.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="blowfish.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="buff.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\buff.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="bufffile.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="chunkio.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\chunkio.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="convert.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\convert.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="cpudetect.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="crc.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\crc.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="cstraw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\data.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="data.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\ddraw.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="ddraw.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="dsurface.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\dsurface.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="ffactory.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="gcd_lcm.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\gcd_lcm.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="hash.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\hash.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="hsv.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\hsv.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="ini.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="int.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\int.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="jshell.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\jshell.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="keyboard.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\keyboard.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="LaunchWeb.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\LaunchWeb.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="lcw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\lcw.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="load.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\load.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="mono.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\mono.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="mpmath.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="mpu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\mpu.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="msgloop.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="multilist.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\multilist.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="mutex.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="nstrdup.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\nstrdup.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="palette.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\palette.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="pcx.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\pcx.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="pipe.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\pipe.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="pk.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\pk.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="ramfile.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="random.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\random.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="rawfile.cpp">
@@ -140,13 +125,10 @@
     <ClCompile Include="rc4.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="rcfile.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\rcfile.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="readline.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="realcrc.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\readline.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="refcount.cpp">
@@ -155,46 +137,40 @@
     <ClCompile Include="registry.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="rgb.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\rgb.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="rle.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\rle.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="rndstrng.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="sampler.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\sampler.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="sha.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="slnode.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="srandom.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\sha.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="stimer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="straw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\straw.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="strtok_r.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\strtok_r.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="systimer.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\systimer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="tagblock.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\tagblock.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="TARGA.CPP">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="textfile.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\textfile.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="thread.cpp">
@@ -212,25 +188,49 @@
     <ClCompile Include="win.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="WWCOMUtil.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\WWCOMUtil.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="wwfile.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\wwfile.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="wwfont.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\wwfont.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="wwstring.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="xpipe.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\xsurface.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="xstraw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\b64pipe.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="xsurface.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\b64straw.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\cstraw.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\realcrc.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\slnode.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="srandom.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\xpipe.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\xstraw.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\_convert.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWLib\_mono.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

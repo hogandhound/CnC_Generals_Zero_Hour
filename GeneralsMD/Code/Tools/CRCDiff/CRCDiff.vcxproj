@@ -120,6 +120,7 @@
       <PrecompiledHeaderOutputFile>.\Release\CRCDiff.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\Release\</ObjectFileName>
       <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
       <TypeLibraryName>.\Release\CRCDiff.tlb</TypeLibraryName>
@@ -154,6 +155,7 @@
       <PrecompiledHeaderOutputFile>.\Release\CRCDiff.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\Release\</ObjectFileName>
       <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
       <TypeLibraryName>.\Release\CRCDiff.tlb</TypeLibraryName>
@@ -190,6 +192,7 @@
       <ObjectFileName>.\Debug\</ObjectFileName>
       <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
       <TypeLibraryName>.\Debug\CRCDiff.tlb</TypeLibraryName>
@@ -225,6 +228,7 @@
       <ObjectFileName>.\Debug\</ObjectFileName>
       <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
       <TypeLibraryName>.\Debug\CRCDiff.tlb</TypeLibraryName>
@@ -245,11 +249,21 @@
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CRCDiff.cpp" />
-    <ClCompile Include="debug.cpp" />
-    <ClCompile Include="expander.cpp" />
-    <ClCompile Include="KVPair.cpp" />
+    <ClCompile Include="$(SolutionDir)/../../Common/Code/Tools/CRCDiff/debug.cpp" />
+    <ClCompile Include="$(SolutionDir)/../../Common/Code/Tools/CRCDiff/expander.cpp" />
+    <ClCompile Include="$(SolutionDir)/../../Common/Code/Tools/CRCDiff/KVPair.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debug.h" />

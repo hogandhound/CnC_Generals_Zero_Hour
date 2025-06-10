@@ -260,7 +260,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="buildVersionUpdate.cpp" />
+	  <ClCompile Include="$(SolutionDir)/../../Common/Code/Tools/buildVersionUpdate/buildVersionUpdate.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

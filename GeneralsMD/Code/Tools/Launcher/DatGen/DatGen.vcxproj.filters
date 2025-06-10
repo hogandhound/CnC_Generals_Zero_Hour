@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\BFISH.CPP">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\BFISH.CPP">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DatGen.cpp">

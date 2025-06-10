@@ -485,7 +485,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\DX90SDK\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;$(ProjectDir);%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\DX90SDK\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -515,7 +515,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;$(SolutionDir)\Libraries\DX90SDK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;$(ProjectDir);$(SolutionDir)\Libraries\DX90SDK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -578,7 +578,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)\Libraries\DX90SDK\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(SolutionDir)\Libraries\DX90SDK\include;$(ProjectDir)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;NDEBUG;WIN32;IG_DEBUG_STACKTRACE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -613,26 +613,26 @@
   <ItemGroup>
     <ClCompile Include="aabtree.cpp" />
     <ClCompile Include="aabtreebuilder.cpp" />
-    <ClCompile Include="agg_def.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\agg_def.cpp" />
     <ClCompile Include="animobj.cpp" />
     <ClCompile Include="assetmgr.cpp" />
     <ClCompile Include="bitmaphandler.cpp" />
     <ClCompile Include="bmp2d.cpp" />
     <ClCompile Include="boxrobj.cpp" />
-    <ClCompile Include="bwrender.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\bwrender.cpp" />
     <ClCompile Include="camera.cpp" />
-    <ClCompile Include="collect.cpp" />
-    <ClCompile Include="coltest.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\collect.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\coltest.cpp" />
     <ClCompile Include="composite.cpp" />
     <ClCompile Include="dazzle.cpp" />
     <ClCompile Include="ddsfile.cpp" />
     <ClCompile Include="decalmsh.cpp" />
     <ClCompile Include="decalsys.cpp" />
-    <ClCompile Include="distlod.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\distlod.cpp" />
     <ClCompile Include="dx8caps.cpp" />
     <ClCompile Include="dx8fvf.cpp" />
     <ClCompile Include="dx8indexbuffer.cpp" />
-    <ClCompile Include="dx8polygonrenderer.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\dx8polygonrenderer.cpp" />
     <ClCompile Include="dx8renderer.cpp" />
     <ClCompile Include="dx8texman.cpp" />
     <ClCompile Include="dx8vertexbuffer.cpp" />
@@ -641,28 +641,28 @@
     <ClCompile Include="dynamesh.cpp" />
     <ClCompile Include="font3d.cpp" />
     <ClCompile Include="formconv.cpp" />
-    <ClCompile Include="FramGrab.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\FramGrab.cpp" />
     <ClCompile Include="hanim.cpp" />
     <ClCompile Include="hanimmgr.cpp" />
-    <ClCompile Include="hcanim.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\hcanim.cpp" />
     <ClCompile Include="hlod.cpp" />
-    <ClCompile Include="hmdldef.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\hmdldef.cpp" />
     <ClCompile Include="hmorphanim.cpp" />
     <ClCompile Include="hrawanim.cpp" />
     <ClCompile Include="htree.cpp" />
     <ClCompile Include="htreemgr.cpp" />
-    <ClCompile Include="intersec.cpp" />
-    <ClCompile Include="layer.cpp" />
-    <ClCompile Include="light.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\intersec.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\layer.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\light.cpp" />
     <ClCompile Include="lightenvironment.cpp" />
     <ClCompile Include="line3d.cpp" />
     <ClCompile Include="mapper.cpp" />
-    <ClCompile Include="matinfo.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\matinfo.cpp" />
     <ClCompile Include="matpass.cpp" />
     <ClCompile Include="matrixmapper.cpp" />
     <ClCompile Include="mesh.cpp" />
-    <ClCompile Include="meshbuild.cpp" />
-    <ClCompile Include="meshdam.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\meshbuild.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\meshdam.cpp" />
     <ClCompile Include="meshgeometry.cpp" />
     <ClCompile Include="meshmatdesc.cpp" />
     <ClCompile Include="meshmdl.cpp" />
@@ -674,44 +674,44 @@
     <ClCompile Include="part_buf.cpp" />
     <ClCompile Include="part_emt.cpp" />
     <ClCompile Include="part_ldr.cpp" />
-    <ClCompile Include="pivot.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\pivot.cpp" />
     <ClCompile Include="pointgr.cpp" />
-    <ClCompile Include="polyinfo.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\polyinfo.cpp" />
     <ClCompile Include="predlod.cpp" />
-    <ClCompile Include="prim_anim.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\prim_anim.cpp" />
     <ClCompile Include="projector.cpp" />
     <ClCompile Include="proto.cpp" />
     <ClCompile Include="render2d.cpp" />
     <ClCompile Include="render2dsentence.cpp" />
-    <ClCompile Include="renderobjectrecycler.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\renderobjectrecycler.cpp" />
     <ClCompile Include="rendobj.cpp" />
     <ClCompile Include="rinfo.cpp" />
     <ClCompile Include="ringobj.cpp" />
     <ClCompile Include="scene.cpp" />
-    <ClCompile Include="segline.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\segline.cpp" />
     <ClCompile Include="seglinerenderer.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="shattersystem.cpp" />
-    <ClCompile Include="snappts.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\snappts.cpp" />
     <ClCompile Include="sortingrenderer.cpp" />
     <ClCompile Include="soundrobj.cpp" />
     <ClCompile Include="sphereobj.cpp" />
     <ClCompile Include="statistics.cpp" />
-    <ClCompile Include="streak.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\streak.cpp" />
     <ClCompile Include="streakRender.cpp" />
-    <ClCompile Include="stripoptimizer.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\stripoptimizer.cpp" />
     <ClCompile Include="surfaceclass.cpp" />
-    <ClCompile Include="texfcach.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\texfcach.cpp" />
     <ClCompile Include="texproject.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="textureloader.cpp" />
     <ClCompile Include="texturethumbnail.cpp" />
-    <ClCompile Include="txt.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\txt.cpp" />
     <ClCompile Include="vertmaterial.cpp" />
     <ClCompile Include="visrasterizer.cpp" />
-    <ClCompile Include="w3dexclusionlist.cpp" />
-    <ClCompile Include="w3d_dep.cpp" />
-    <ClCompile Include="w3d_util.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\w3dexclusionlist.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\w3d_dep.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\w3d_util.cpp" />
     <ClCompile Include="ww3d.cpp" />
     <ClCompile Include="ww3dformat.cpp" />
   </ItemGroup>

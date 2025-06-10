@@ -22,13 +22,13 @@
     <ClCompile Include="CRCDiff.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="debug.cpp">
+    <ClCompile Include="$(SolutionDir)/../../Common/Code/Tools/CRCDiff/debug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="expander.cpp">
+    <ClCompile Include="$(SolutionDir)/../../Common/Code/Tools/CRCDiff/expander.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="KVPair.cpp">
+    <ClCompile Include="$(SolutionDir)/../../Common/Code/Tools/CRCDiff/KVPair.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

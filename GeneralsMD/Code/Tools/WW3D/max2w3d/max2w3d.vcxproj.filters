@@ -108,7 +108,7 @@
     <ClCompile Include="maxworldinfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="meshbuild.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\meshbuild.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="meshcon.cpp">

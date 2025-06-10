@@ -680,7 +680,7 @@
     <ClCompile Include="InputDlg.cpp" />
     <ClCompile Include="logdlg.cpp" />
     <ClCompile Include="maxworldinfo.cpp" />
-    <ClCompile Include="meshbuild.cpp" />
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\meshbuild.cpp" />
     <ClCompile Include="meshcon.cpp" />
     <ClCompile Include="MeshDeform.cpp" />
     <ClCompile Include="MeshDeformData.cpp" />

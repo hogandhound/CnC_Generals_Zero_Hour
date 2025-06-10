@@ -27,10 +27,10 @@
     <ClCompile Include="DownloadManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="process.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\process.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="winblows.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\winblows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

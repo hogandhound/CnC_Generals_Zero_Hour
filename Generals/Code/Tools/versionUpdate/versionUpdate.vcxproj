@@ -264,7 +264,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="versionUpdate.cpp" />
+	  <ClCompile Include="$(SolutionDir)/../../Common/Code/Tools/versionUpdate/versionUpdate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

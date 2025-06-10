@@ -21,7 +21,7 @@
     <ClCompile Include="aabtreebuilder.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="agg_def.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\agg_def.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="animatedsoundmgr.cpp">
@@ -45,16 +45,16 @@
     <ClCompile Include="boxrobj.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="bwrender.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\bwrender.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="camera.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="collect.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\collect.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="coltest.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\coltest.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="composite.cpp">
@@ -72,7 +72,7 @@
     <ClCompile Include="decalsys.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="distlod.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\distlod.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="dx8caps.cpp">
@@ -84,7 +84,7 @@
     <ClCompile Include="dx8indexbuffer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="dx8polygonrenderer.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\dx8polygonrenderer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="dx8renderer.cpp">
@@ -114,7 +114,7 @@
     <ClCompile Include="formconv.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="FramGrab.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\FramGrab.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="hanim.cpp">
@@ -123,13 +123,13 @@
     <ClCompile Include="hanimmgr.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="hcanim.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\hcanim.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="hlod.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="hmdldef.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\hmdldef.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="hmorphanim.cpp">
@@ -144,13 +144,13 @@
     <ClCompile Include="htreemgr.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="intersec.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\intersec.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="layer.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\layer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="light.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\light.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="lightenvironment.cpp">
@@ -165,7 +165,7 @@
     <ClCompile Include="mapper.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="matinfo.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\matinfo.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="matpass.cpp">
@@ -177,10 +177,10 @@
     <ClCompile Include="mesh.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="meshbuild.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\meshbuild.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="meshdam.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\meshdam.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="meshgeometry.cpp">
@@ -216,19 +216,19 @@
     <ClCompile Include="part_ldr.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="pivot.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\pivot.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="pointgr.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="polyinfo.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\polyinfo.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="predlod.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="prim_anim.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\prim_anim.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="projector.cpp">
@@ -243,7 +243,7 @@
     <ClCompile Include="render2dsentence.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="renderobjectrecycler.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\renderobjectrecycler.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="rendobj.cpp">
@@ -258,7 +258,7 @@
     <ClCompile Include="scene.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="segline.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\segline.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="seglinerenderer.cpp">
@@ -270,7 +270,7 @@
     <ClCompile Include="shattersystem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="snappts.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\snappts.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="sortingrenderer.cpp">
@@ -288,19 +288,19 @@
     <ClCompile Include="statistics.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="streak.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\streak.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="streakRender.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="stripoptimizer.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\stripoptimizer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="surfaceclass.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="texfcach.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\texfcach.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="texproject.cpp">
@@ -318,7 +318,7 @@
     <ClCompile Include="texturethumbnail.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="txt.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\txt.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="vertmaterial.cpp">
@@ -327,13 +327,13 @@
     <ClCompile Include="visrasterizer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="w3d_dep.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\w3d_dep.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="w3d_util.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\w3d_util.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="w3dexclusionlist.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\w3dexclusionlist.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="ww3d.cpp">

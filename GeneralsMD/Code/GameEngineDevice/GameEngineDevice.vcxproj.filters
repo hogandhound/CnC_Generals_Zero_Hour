@@ -105,7 +105,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\W3DDevice\GameLogic\W3DGameLogic.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameLogic\W3DGameLogic.cpp">
       <Filter>Source\W3DDevice\GameLogic %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameLogic\W3DGhostObject.cpp">
@@ -117,22 +117,22 @@
     <ClCompile Include="Source\W3DDevice\Common\Thing\W3DModuleFactory.cpp">
       <Filter>Source\W3DDevice\Common %28W3DDevice%29\Thing %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\Common\Thing\W3DThingFactory.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\Common\Thing\W3DThingFactory.cpp">
       <Filter>Source\W3DDevice\Common %28W3DDevice%29\Thing %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\Common\System\W3DFunctionLexicon.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\Common\System\W3DFunctionLexicon.cpp">
       <Filter>Source\W3DDevice\Common %28W3DDevice%29\System %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\Common\System\W3DRadar.cpp">
       <Filter>Source\W3DDevice\Common %28W3DDevice%29\System %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\Common\W3DConvert.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\Common\W3DConvert.cpp">
       <Filter>Source\W3DDevice\Common %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DDebrisDraw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DDebrisDraw.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Drawable %28W3DDevice%29\Draw %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DDefaultDraw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DDefaultDraw.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Drawable %28W3DDevice%29\Draw %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DDependencyModelDraw.cpp">
@@ -147,37 +147,37 @@
     <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DOverlordAircraftDraw.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Drawable %28W3DDevice%29\Draw %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DOverlordTankDraw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DOverlordTankDraw.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Drawable %28W3DDevice%29\Draw %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DOverlordTruckDraw.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Drawable %28W3DDevice%29\Draw %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DPoliceCarDraw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DPoliceCarDraw.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Drawable %28W3DDevice%29\Draw %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DProjectileStreamDraw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DProjectileStreamDraw.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Drawable %28W3DDevice%29\Draw %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DPropDraw.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Drawable %28W3DDevice%29\Draw %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DRopeDraw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DRopeDraw.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Drawable %28W3DDevice%29\Draw %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DScienceModelDraw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DScienceModelDraw.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Drawable %28W3DDevice%29\Draw %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DSupplyDraw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DSupplyDraw.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Drawable %28W3DDevice%29\Draw %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DTankDraw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DTankDraw.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Drawable %28W3DDevice%29\Draw %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DTankTruckDraw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DTankTruckDraw.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Drawable %28W3DDevice%29\Draw %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DTracerDraw.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Drawable\Draw\W3DTracerDraw.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Drawable %28W3DDevice%29\Draw %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DTreeDraw.cpp">
@@ -186,55 +186,55 @@
     <ClCompile Include="Source\W3DDevice\GameClient\Drawable\Draw\W3DTruckDraw.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Drawable %28W3DDevice%29\Draw %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DCheckBox.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DCheckBox.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29\Gadget %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DComboBox.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DComboBox.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29\Gadget %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DHorizontalSlider.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DHorizontalSlider.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29\Gadget %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DListBox.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DListBox.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29\Gadget %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DProgressBar.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DProgressBar.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29\Gadget %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DPushButton.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29\Gadget %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DRadioButton.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DRadioButton.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29\Gadget %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DStaticText.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29\Gadget %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DTabControl.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DTabControl.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29\Gadget %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DTextEntry.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DTextEntry.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29\Gadget %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\Gadget\W3DVerticalSlider.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\Gadget\W3DVerticalSlider.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29\Gadget %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\GUICallbacks\W3DMainMenu.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\GUICallbacks\W3DMainMenu.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29\GUICallbacks\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\GUICallbacks\W3DControlBar.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\GUICallbacks\W3DControlBar.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29\GUICallbacks</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\GUICallbacks\W3DMOTD.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\GUICallbacks\W3DMOTD.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29\GUICallbacks</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\W3DGameFont.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\W3DGameFont.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\W3DGameWindow.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\W3DGameWindow.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\GUI\W3DGameWindowManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\GUI\W3DGameWindowManager.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\GUI %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\Water\W3DWater.cpp">
@@ -243,13 +243,13 @@
     <ClCompile Include="Source\W3DDevice\GameClient\Water\W3DWaterTracks.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Water</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\Shadow\W3DBufferManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Shadow\W3DBufferManager.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Shadow</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\Shadow\W3DProjectedShadow.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Shadow</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\Shadow\W3DShadow.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\Shadow\W3DShadow.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29\Shadow</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\Shadow\W3DVolumetricShadow.cpp">
@@ -270,13 +270,13 @@
     <ClCompile Include="Source\W3DDevice\GameClient\TerrainTex.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\TileData.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\TileData.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\W3DAssetManager.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DAssetManagerExposed.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DAssetManagerExposed.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\W3DBibBuffer.cpp">
@@ -288,7 +288,7 @@
     <ClCompile Include="Source\W3DDevice\GameClient\W3DCustomEdging.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DDebugDisplay.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DDebugDisplay.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\W3DDebugIcons.cpp">
@@ -297,13 +297,13 @@
     <ClCompile Include="Source\W3DDevice\GameClient\W3DDisplay.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DDisplayString.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DDisplayString.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\W3DDisplayStringManager.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DDynamicLight.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DDynamicLight.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\W3DFileSystem.cpp">
@@ -315,16 +315,16 @@
     <ClCompile Include="Source\W3DDevice\GameClient\W3DGranny.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DInGameUI.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DInGameUI.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DMouse.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DMouse.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\W3DParticleSys.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DPoly.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DPoly.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\W3DPropBuffer.cpp">
@@ -354,7 +354,7 @@
     <ClCompile Include="Source\W3DDevice\GameClient\W3DTerrainBackground.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DTerrainTracks.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DTerrainTracks.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\W3DTerrainVisual.cpp">
@@ -372,34 +372,34 @@
     <ClCompile Include="Source\W3DDevice\GameClient\W3dWaypointBuffer.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\W3DDevice\GameClient\W3DWebBrowser.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DWebBrowser.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\WorldHeightMap.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Win32Device\Common\Win32BIGFile.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\Win32Device\Common\Win32BIGFile.cpp">
       <Filter>Source\Win32Device\Common %28Win32Device%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Win32Device\Common\Win32BIGFileSystem.cpp">
       <Filter>Source\Win32Device\Common %28Win32Device%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Win32Device\Common\Win32CDManager.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\Win32Device\Common\Win32CDManager.cpp">
       <Filter>Source\Win32Device\Common %28Win32Device%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Win32Device\Common\Win32GameEngine.cpp">
       <Filter>Source\Win32Device\Common %28Win32Device%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Win32Device\Common\Win32LocalFile.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\Win32Device\Common\Win32LocalFile.cpp">
       <Filter>Source\Win32Device\Common %28Win32Device%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Win32Device\Common\Win32LocalFileSystem.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\Win32Device\Common\Win32LocalFileSystem.cpp">
       <Filter>Source\Win32Device\Common %28Win32Device%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Win32Device\Common\Win32OSDisplay.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\Win32Device\Common\Win32OSDisplay.cpp">
       <Filter>Source\Win32Device\Common %28Win32Device%29</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Win32Device\GameClient\Win32DIKeyboard.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\Win32Device\GameClient\Win32DIKeyboard.cpp">
       <Filter>Source\Win32Device\GameClient %28Win32Device%29</Filter>
     </ClCompile>
     <ClCompile Include="Source\Win32Device\GameClient\Win32Mouse.cpp">
@@ -414,7 +414,7 @@
     <ClCompile Include="Source\MilesAudioDevice\SoLoudAudioManager.cpp">
       <Filter>Source\MilesAudioDevice</Filter>
     </ClCompile>
-    <ClCompile Include="Source\VideoDevice\Bink\oink.cpp">
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\VideoDevice\Bink\oink.cpp">
       <Filter>Source\W3DDevice\VideoDevice\Bink</Filter>
     </ClCompile>
   </ItemGroup>

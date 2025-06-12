@@ -214,7 +214,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;REGEX_MALLOC;STDC_HEADERS;_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Internal\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Internal\wwlib.pch</PrecompiledHeaderOutputFile>
@@ -243,7 +243,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;REGEX_MALLOC;STDC_HEADERS;_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Internal\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Internal\wwlib.pch</PrecompiledHeaderOutputFile>
@@ -273,7 +273,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;REGEX_MALLOC;STDC_HEADERS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\DebugW3D\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\DebugW3D\wwlib.pch</PrecompiledHeaderOutputFile>
@@ -302,7 +302,7 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;REGEX_MALLOC;STDC_HEADERS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\DebugW3D\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\DebugW3D\wwlib.pch</PrecompiledHeaderOutputFile>
@@ -331,7 +331,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;REGEX_MALLOC;STDC_HEADERS;_PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Profile\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Profile\wwlib.pch</PrecompiledHeaderOutputFile>
@@ -361,7 +361,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;REGEX_MALLOC;STDC_HEADERS;_PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Profile\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Profile\wwlib.pch</PrecompiledHeaderOutputFile>
@@ -391,7 +391,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;REGEX_MALLOC;STDC_HEADERS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Debug\wwlib.pch</PrecompiledHeaderOutputFile>
@@ -420,7 +420,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;REGEX_MALLOC;STDC_HEADERS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Debug\wwlib.pch</PrecompiledHeaderOutputFile>
@@ -450,7 +450,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;REGEX_MALLOC;STDC_HEADERS;NDEBUG;WIN32;IG_DEBUG_STACKTRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release\wwlib.pch</PrecompiledHeaderOutputFile>
@@ -479,7 +479,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;REGEX_MALLOC;STDC_HEADERS;NDEBUG;WIN32;IG_DEBUG_STACKTRACE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release\wwlib.pch</PrecompiledHeaderOutputFile>
@@ -501,12 +501,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

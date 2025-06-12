@@ -113,7 +113,7 @@
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>ToolKit;$(ProjectDir);ToolKit\Support;ToolKit\Storage;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>ToolKit;$(ProjectDir);ToolKit\Support;ToolKit\Storage;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Tools/Launcher/Toolkit/Support;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/Debug/;$(SolutionDir)..\../Common/Code/Tools/Launcher/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DEBUG;USE_GAMEDIR_FROM_LCF;WIN32;_WINDOWS;USE_NOTEPAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -155,7 +155,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>ToolKit;$(ProjectDir);ToolKit\Support;ToolKit\Storage;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>ToolKit;$(ProjectDir);ToolKit\Support;ToolKit\Storage;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Tools/Launcher/Toolkit/Support;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/Debug/;$(SolutionDir)..\../Common/Code/Tools/Launcher/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DEBUG;USE_GAMEDIR_FROM_LCF;WIN32;_WINDOWS;USE_NOTEPAD;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -199,7 +199,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>ToolKit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>ToolKit;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Tools/Launcher/Toolkit/Support;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/Debug/;$(SolutionDir)..\../Common/Code/Tools/Launcher/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;USE_NOTEPAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -240,7 +240,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>ToolKit;$(ProjectDir);ToolKit\Support;ToolKit\Storage;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>ToolKit;$(ProjectDir);ToolKit\Support;ToolKit\Storage;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Tools/Launcher/Toolkit/Support;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/Debug/;$(SolutionDir)..\../Common/Code/Tools/Launcher/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;USE_NOTEPAD;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -270,6 +270,16 @@
       <OutputFile>../../../Run/Generals.exe</OutputFile>
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>;$(SolutionDir)..\..\Common/Code/Tools/Launcher/Toolkit/Support;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/Debug/;$(SolutionDir)..\../Common/Code/Tools/Launcher/</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>;$(SolutionDir)..\..\Common/Code/Tools/Launcher/Toolkit/Support;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/Debug/;$(SolutionDir)..\../Common/Code/Tools/Launcher/</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\BFISH.CPP" />

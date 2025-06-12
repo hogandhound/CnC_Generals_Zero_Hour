@@ -152,7 +152,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Internal\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -182,7 +182,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Internal\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -212,7 +212,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -242,7 +242,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;$(ProjectDir);%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -273,7 +273,7 @@
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;$(ProjectDir);%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -304,7 +304,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;$(ProjectDir);%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -328,6 +328,16 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>..\..\..\lib\WWDownloadDebug.lib</OutputFile>
     </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>;$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>;$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Libraries\Source\WWVegas\WWDownload\Download.cpp" />

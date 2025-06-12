@@ -250,7 +250,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;$(SolutionDir)..\..\./Common/Code/Libraries/Source/WWVegas/WWDebug/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32;PARAM_EDITING_ON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\DebugE\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\DebugE\wwsaveload.pch</PrecompiledHeaderOutputFile>
@@ -281,7 +281,7 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;$(SolutionDir)..\..\./Common/Code/Libraries/Source/WWVegas/WWDebug/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32;PARAM_EDITING_ON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\DebugE\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\DebugE\wwsaveload.pch</PrecompiledHeaderOutputFile>
@@ -312,7 +312,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;$(SolutionDir)..\..\./Common/Code/Libraries/Source/WWVegas/WWDebug/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WINVER=0x400;_WINDOWS;WIN32;_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Internal\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -343,7 +343,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;$(SolutionDir)..\..\./Common/Code/Libraries/Source/WWVegas/WWDebug/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WINVER=0x400;_WINDOWS;WIN32;_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Internal\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -374,7 +374,7 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MinimalRebuild>true</MinimalRebuild>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;$(SolutionDir)..\..\./Common/Code/Libraries/Source/WWVegas/WWDebug/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32;PARAM_EDITING_ON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\ProfileE\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\ProfileE\wwsaveload.pch</PrecompiledHeaderOutputFile>
@@ -404,7 +404,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;$(SolutionDir)..\..\./Common/Code/Libraries/Source/WWVegas/WWDebug/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32;PARAM_EDITING_ON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\ProfileE\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\ProfileE\wwsaveload.pch</PrecompiledHeaderOutputFile>
@@ -436,7 +436,7 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MinimalRebuild>true</MinimalRebuild>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;$(SolutionDir)..\..\./Common/Code/Libraries/Source/WWVegas/WWDebug/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Profile\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Profile\wwsaveload.pch</PrecompiledHeaderOutputFile>
@@ -466,7 +466,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;$(SolutionDir)..\..\./Common/Code/Libraries/Source/WWVegas/WWDebug/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Profile\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Profile\wwsaveload.pch</PrecompiledHeaderOutputFile>
@@ -496,7 +496,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;$(SolutionDir)..\..\./Common/Code/Libraries/Source/WWVegas/WWDebug/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WINVER=0x400;_WINDOWS;NDEBUG;WIN32;IG_DEBUG_STACKTRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -527,7 +527,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;$(SolutionDir)..\..\./Common/Code/Libraries/Source/WWVegas/WWDebug/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WINVER=0x400;_WINDOWS;NDEBUG;WIN32;IG_DEBUG_STACKTRACE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -558,7 +558,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;$(SolutionDir)..\..\./Common/Code/Libraries/Source/WWVegas/WWDebug/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WINVER=0x400;_WINDOWS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -589,7 +589,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;$(SolutionDir)..\..\./Common/Code/Libraries/Source/WWVegas/WWDebug/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WINVER=0x400;_WINDOWS;WIN32;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -615,12 +615,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>;$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;$(SolutionDir)..\..\./Common/Code/Libraries/Source/WWVegas/WWDebug/</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>;$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;$(SolutionDir)..\..\./Common/Code/Libraries/Source/WWVegas/WWDebug/</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

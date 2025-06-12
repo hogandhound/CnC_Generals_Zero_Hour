@@ -704,7 +704,7 @@
     <ClInclude Include="Include\MilesAudioDevice\SoLoudAudioManager.h">
       <Filter>Include\MilesAudioDevice H</Filter>
     </ClInclude>
-    <ClInclude Include="Include\VideoDevice\Bink\oink.h">
+    <ClInclude Include="$(SolutionDir)..\..\Common\GameEngineDevice\Include\VideoDevice\Bink\oink.h">
       <Filter>Include\VideoDevice H\Bink H</Filter>
     </ClInclude>
   </ItemGroup>

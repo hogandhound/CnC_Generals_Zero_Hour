@@ -1,2 +1,5 @@
 **/.vs
 **/*.user
+Common/Code/Libraries/Include/FFMPEG
+Common/Code/Libraries/Include/SoLoud
+**.lib

@@ -283,7 +283,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\srsdk1x\include;..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\srsdk1x\include;..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;PARAM_EDITING_ON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\DebugE\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\DebugE\ww3d2.pch</PrecompiledHeaderOutputFile>
@@ -312,7 +312,7 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\srsdk1x\include;..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;$(ProjectDir);$(SolutionDir)\Libraries\DX90SDK\include;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwsaveload/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;PARAM_EDITING_ON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\DebugE\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\DebugE\ww3d2.pch</PrecompiledHeaderOutputFile>
@@ -341,7 +341,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Internal\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Internal\ww3d2.pch</PrecompiledHeaderOutputFile>
@@ -370,7 +370,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;$(ProjectDir);$(SolutionDir)\Libraries\DX90SDK\include;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwsaveload/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Internal\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Internal\ww3d2.pch</PrecompiledHeaderOutputFile>
@@ -400,7 +400,7 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MinimalRebuild>true</MinimalRebuild>
-      <AdditionalIncludeDirectories>..\srsdk1x\include;..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\srsdk1x\include;..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;PARAM_EDITING_ON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\ProfileE\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\ProfileE\ww3d2.pch</PrecompiledHeaderOutputFile>
@@ -429,7 +429,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\srsdk1x\include;..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;$(ProjectDir);$(SolutionDir)\Libraries\DX90SDK\include;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwsaveload/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;PARAM_EDITING_ON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\ProfileE\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\ProfileE\ww3d2.pch</PrecompiledHeaderOutputFile>
@@ -459,7 +459,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\DebugW3D\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\DebugW3D\ww3d2.pch</PrecompiledHeaderOutputFile>
@@ -488,7 +488,7 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;$(ProjectDir);$(SolutionDir)\Libraries\DX90SDK\include;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwsaveload/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\DebugW3D\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\DebugW3D\ww3d2.pch</PrecompiledHeaderOutputFile>
@@ -517,7 +517,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\srsdk1x\include;..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\srsdk1x\include;..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Profile\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Profile\ww3d2.pch</PrecompiledHeaderOutputFile>
@@ -547,7 +547,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\srsdk1x\include;..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;$(ProjectDir);$(SolutionDir)\Libraries\DX90SDK\include;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwsaveload/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Profile\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Profile\ww3d2.pch</PrecompiledHeaderOutputFile>
@@ -577,7 +577,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Debug\ww3d2.pch</PrecompiledHeaderOutputFile>
@@ -606,7 +606,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;$(ProjectDir);$(SolutionDir)\Libraries\DX90SDK\include;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwsaveload/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Debug\ww3d2.pch</PrecompiledHeaderOutputFile>
@@ -635,7 +635,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;NDEBUG;WIN32;IG_DEBUG_STACKTRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release\ww3d2.pch</PrecompiledHeaderOutputFile>
@@ -664,7 +664,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;$(ProjectDir);$(SolutionDir)\Libraries\DX90SDK\include;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwsaveload/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;NDEBUG;WIN32;IG_DEBUG_STACKTRACE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release\ww3d2.pch</PrecompiledHeaderOutputFile>
@@ -685,12 +685,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>;$(ProjectDir);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwmath;..\wwdebug;..\wwcpuid;..\wwsaveload;..\wwaudio;..\miles6\include;$(ProjectDir);$(SolutionDir)\Libraries\DX90SDK\include;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common/Code/Libraries/Source/WWVegas/WWLib/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/$(ProjectName)/;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwmath/;;$(SolutionDir)..\..\Common\Code\Libraries/Source/WWVegas/wwsaveload/;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWAudio;$(SolutionDir)\..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

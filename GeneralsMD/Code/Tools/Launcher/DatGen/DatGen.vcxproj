@@ -155,7 +155,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..;../toolkit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;../toolkit;%(AdditionalIncludeDirectories);$(SolutionDir)..\../Common/Code/Tools/Launcher/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/Debug/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release\DatGen.pch</PrecompiledHeaderOutputFile>
@@ -237,7 +237,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..;../toolkit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;../toolkit;%(AdditionalIncludeDirectories);$(SolutionDir)..\../Common/Code/Tools/Launcher/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/Debug/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Debug\DatGen.pch</PrecompiledHeaderOutputFile>

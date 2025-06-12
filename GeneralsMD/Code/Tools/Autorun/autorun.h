@@ -1,5 +1,5 @@
 /*
-**	Command & Conquer Generals Zero Hour(tm)
+**	Command & Conquer Generals(tm)
 **	Copyright 2025 Electronic Arts Inc.
 **
 **	This program is free software: you can redistribute it and/or modify
@@ -103,10 +103,10 @@ typedef enum {
 */
 #define ELECTRONICARTS_SUBKEY		"Electronic Arts"
 #define EAGAMES_SUBKEY				"EA Games"
-#define GENERALS_SUBKEY				"Command and Conquer Generals Zero Hour"
+#define GENERALS_SUBKEY				"Command and Conquer Generals"
 #define SOFTWARE_EAGAMES_KEY		"Software\\Electronic Arts\\EA Games\\"
-#define EAGAMES_GENERALS_KEY		"Software\\Electronic Arts\\EA Games\\Command and Conquer Generals Zero Hour"
-#define EAGAMES_ERGC_KEY			"Software\\Electronic Arts\\EA Games\\Command and Conquer Generals Zero Hour\\ergc"
+#define EAGAMES_GENERALS_KEY		"Software\\Electronic Arts\\EA Games\\Command and Conquer Generals"
+#define EAGAMES_ERGC_KEY			"Software\\Electronic Arts\\EA Games\\Command and Conquer Generals\\ergc"
 #define LAUNCHER_FILENAME			"Generals.exe"
 #define WORLDBUILDER_FILENAME		"WorldBuilder.exe"
 #define PATCHGET_FILENAME			"patchget.dat"

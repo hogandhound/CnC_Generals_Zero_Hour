@@ -11,13 +11,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="wwdebug.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="wwmemlog.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="wwprofile.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="wwdebug.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

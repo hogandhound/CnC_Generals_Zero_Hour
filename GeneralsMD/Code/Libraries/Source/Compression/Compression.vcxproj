@@ -153,7 +153,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);$(ProjectDir)EAC;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\EAC;$(ProjectDir);$(ProjectDir)LZHCompress;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);$(ProjectDir)EAC;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\EAC;$(ProjectDir);$(ProjectDir)LZHCompress;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common\Code\Libraries\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_LIB;Z_PREFIX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -185,7 +185,7 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);$(ProjectDir)EAC;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\EAC;$(ProjectDir);$(ProjectDir)LZHCompress;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);$(ProjectDir)EAC;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\LZHCompress\CompLibHeader;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\ZLib\$(PlatformToolset);$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\Zlib;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\EAC;$(ProjectDir);$(ProjectDir)LZHCompress;$(SolutionDir)..\..\Common/Code/Libraries/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_LIB;Z_PREFIX;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -217,7 +217,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common\Code\Libraries\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_INTERNAL;WIN32;_LIB;Z_PREFIX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Internal\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Internal\Compression.pch</PrecompiledHeaderOutputFile>
@@ -247,7 +247,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\..\Common\Code\Libraries\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_INTERNAL;WIN32;_LIB;Z_PREFIX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Internal\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Internal\Compression.pch</PrecompiledHeaderOutputFile>
@@ -277,7 +277,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);$(ProjectDir)EAC;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\EAC;$(ProjectDir);$(ProjectDir)LZHCompress;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);$(ProjectDir)EAC;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\EAC;$(ProjectDir);$(ProjectDir)LZHCompress;%(AdditionalIncludeDirectories);$(SolutionDir)..\..\Common\Code\Libraries\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_RELEASE;WIN32;_LIB;Z_PREFIX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release\Compression.pch</PrecompiledHeaderOutputFile>
@@ -307,7 +307,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);$(ProjectDir)EAC;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\EAC;$(ProjectDir);$(ProjectDir)LZHCompress;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);$(ProjectDir)EAC;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\LZHCompress\CompLibHeader;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\ZLib\$(PlatformToolset);$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\Zlib;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\EAC;$(ProjectDir);$(ProjectDir)LZHCompress;$(SolutionDir)..\..\Common/Code/Libraries/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_RELEASE;WIN32;_LIB;Z_PREFIX;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release\Compression.pch</PrecompiledHeaderOutputFile>
@@ -329,12 +329,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>;$(ProjectDir);$(SolutionDir)..\..\Common\Code\Libraries\Include</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>;$(ProjectDir);$(SolutionDir)..\..\Common\Code\Libraries\Include</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

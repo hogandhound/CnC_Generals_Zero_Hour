@@ -116,7 +116,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..;../toolkit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;../toolkit;%(AdditionalIncludeDirectories);$(SolutionDir)..\../Common/Code/Tools/Launcher/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/Debug/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release\DatGen.pch</PrecompiledHeaderOutputFile>
@@ -156,7 +156,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..;../toolkit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;../toolkit;%(AdditionalIncludeDirectories);$(SolutionDir)..\../Common/Code/Tools/Launcher/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/Debug/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release\DatGen.pch</PrecompiledHeaderOutputFile>
@@ -197,7 +197,7 @@
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..;../toolkit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;../toolkit;%(AdditionalIncludeDirectories);$(SolutionDir)..\../Common/Code/Tools/Launcher/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/Debug/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Debug\DatGen.pch</PrecompiledHeaderOutputFile>
@@ -238,7 +238,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..;../toolkit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;../toolkit;%(AdditionalIncludeDirectories);$(SolutionDir)..\../Common/Code/Tools/Launcher/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/Debug/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Debug\DatGen.pch</PrecompiledHeaderOutputFile>
@@ -273,8 +273,18 @@
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>;$(SolutionDir)..\../Common/Code/Tools/Launcher/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/Debug/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>;$(SolutionDir)..\../Common/Code/Tools/Launcher/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/Debug/;$(SolutionDir)..\../Common/Code/Tools/Launcher/Toolkit/</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
-	  <ClCompile Include="$(SolutionDir)/../../Common/Code/Tools/Launcher\BFISH.CPP" />
+    <ClCompile Include="$(SolutionDir)/../../Common/Code/Tools/Launcher\BFISH.CPP" />
     <ClCompile Include="..\Toolkit\Debug\DebugPrint.cpp" />
     <ClCompile Include="DatGen.cpp" />
   </ItemGroup>

@@ -120,7 +120,7 @@
       <PrecompiledHeaderOutputFile>.\Release\CRCDiff.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\Release\</ObjectFileName>
       <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)..\../Common/Code/Tools/CRCDiff/</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
       <TypeLibraryName>.\Release\CRCDiff.tlb</TypeLibraryName>
@@ -155,7 +155,7 @@
       <PrecompiledHeaderOutputFile>.\Release\CRCDiff.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\Release\</ObjectFileName>
       <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)..\../Common/Code/Tools/CRCDiff/</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
       <TypeLibraryName>.\Release\CRCDiff.tlb</TypeLibraryName>
@@ -192,7 +192,7 @@
       <ObjectFileName>.\Debug\</ObjectFileName>
       <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)..\../Common/Code/Tools/CRCDiff/</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
       <TypeLibraryName>.\Debug\CRCDiff.tlb</TypeLibraryName>
@@ -228,7 +228,7 @@
       <ObjectFileName>.\Debug\</ObjectFileName>
       <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)..\../Common/Code/Tools/CRCDiff/</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
       <TypeLibraryName>.\Debug\CRCDiff.tlb</TypeLibraryName>
@@ -251,12 +251,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)..\../Common/Code/Tools/CRCDiff/</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)..\../Common/Code/Tools/CRCDiff/</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

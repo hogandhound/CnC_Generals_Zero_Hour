@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\BFISH.CPP">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DatGen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Toolkit\Debug\DebugPrint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\Tools\Launcher\BFISH.CPP">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

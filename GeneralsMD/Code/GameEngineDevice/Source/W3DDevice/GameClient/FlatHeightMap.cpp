@@ -57,7 +57,6 @@
 #include <coltest.h>
 #include <rinfo.h>
 #include <camera.h>
-#include <d3dx9core.h>
 #include "Common/GlobalData.h"
 #include "Common/PerfTimer.h"
 
@@ -494,7 +493,9 @@ void FlatHeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 	ShaderClass::Invalidate();
 
 	//	tm.Scale(ObjSpaceExtent);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
+#endif
 
 	
 	DX8Wrapper::Set_Material(m_vertexMaterialClass);
@@ -540,9 +541,11 @@ void FlatHeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
  	W3DShaderManager::setTexture(2,m_stageTwoTexture);	//cloud
  	W3DShaderManager::setTexture(3,m_stageThreeTexture);//noise
 	//Disable writes to destination alpha channel (if there is one)
+#ifdef TODO_VULKAN
 	if (DX8Wrapper::getBackBufferFormat() == WW3D_FORMAT_A8R8G8B8) {
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
 	}
+#endif
 
 	Int pass;
 	Int yCoordMax = 0;

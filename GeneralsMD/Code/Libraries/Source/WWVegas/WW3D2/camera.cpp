@@ -723,7 +723,8 @@ void CameraClass::Apply(void)
 	int width,height,bits;
 	bool windowed;
 	WW3D::Get_Render_Target_Resolution(width,height,bits,windowed);
-	
+
+#ifdef TODO_VULKAN
 	D3DVIEWPORT9 vp;
 	vp.X = (DWORD)(Viewport.Min.X * (float)width);
 	vp.Y = (DWORD)(Viewport.Min.Y * (float)height);
@@ -737,6 +738,7 @@ void CameraClass::Apply(void)
 	Get_D3D_Projection_Matrix(&d3dprojection);
 	DX8Wrapper::Set_Projection_Transform_With_Z_Bias(d3dprojection,ZNear,ZFar);
 	DX8Wrapper::Set_Transform(D3DTS_VIEW,CameraInvTransform);
+#endif
 }
 
 void CameraClass::Set_Clip_Planes(float znear,float zfar)						

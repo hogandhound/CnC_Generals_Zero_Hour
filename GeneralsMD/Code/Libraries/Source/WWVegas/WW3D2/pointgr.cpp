@@ -86,7 +86,6 @@
 #include "rinfo.h"
 #include "camera.h"
 #include "dx8fvf.h"
-#include "D3DX9Math.h"
 #include "sortingrenderer.h"
 
 // Upgraded to DX8 2/2/01 HY
@@ -880,7 +879,9 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 
 	// Get the world and view matrices
 	Matrix4x4 view;
+#ifdef TODO_VULKAN
 	DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
+#endif
 
 	// Transform the point locations from worldspace to camera space if needed
 	// (i.e. if they are not already in camera space):
@@ -919,8 +920,10 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 	// so set world and view matrices to identity and render
 	
 	Matrix4x4 identity(true);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,identity);	
 	DX8Wrapper::Set_Transform(D3DTS_VIEW,identity);	
+#endif
 
 	DX8Wrapper::Set_Material(PointMaterial);
 	DX8Wrapper::Set_Shader(Shader);
@@ -991,7 +994,9 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 	} // loop while (current<vnum)							  
 
 	// restore the matrices
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_VIEW,view);
+#endif
 }
 
 
@@ -1202,6 +1207,7 @@ void PointGroupClass::Update_Arrays(
 			{
 				Matrix4x4 view;
 				Vector4 result;
+#ifdef TODO_VULKAN
 				if (!Billboard) {
 					DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
 				}
@@ -1266,6 +1272,7 @@ void PointGroupClass::Update_Arrays(
 					}
 					vert += 4;
 				}
+#endif
 			}
 			break;
 
@@ -1690,7 +1697,9 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 
 		// Get the world and view matrices
 		Matrix4x4 view;
+#ifdef TODO_VULKAN
 		DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
+#endif
 
 
 
@@ -1828,8 +1837,10 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 		// so set world and view matrices to identity and render
 		
 		Matrix4x4 identity(true);
+#ifdef TODO_VULKAN
 		DX8Wrapper::Set_Transform(D3DTS_WORLD,identity);	
 		DX8Wrapper::Set_Transform(D3DTS_VIEW,identity);	
+#endif
 
 		DX8Wrapper::Set_Material(PointMaterial);
 		DX8Wrapper::Set_Shader(Shader);
@@ -1912,5 +1923,7 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 
 
 	// restore the matrices
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_VIEW,view);
+#endif
 }

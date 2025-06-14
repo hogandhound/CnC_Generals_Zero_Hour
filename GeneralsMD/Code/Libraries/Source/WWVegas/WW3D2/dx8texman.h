@@ -108,6 +108,7 @@ public:
 	virtual void Recreate() const
 	{
 		WWASSERT(Texture->Peek_D3D_Base_Texture()==NULL);
+#ifdef TODO_VULKAN
 		Texture->Poke_Texture
 		(
 			DX8Wrapper::_Create_DX8_Texture
@@ -120,6 +121,7 @@ public:
 				RenderTarget
 			)
 		);
+#endif
 	}
 
 private:
@@ -145,6 +147,7 @@ public:
 	virtual void Recreate() const
 	{
 		WWASSERT(Texture->Peek_D3D_Base_Texture()==NULL);
+#ifdef TODO_VULKAN
 		Texture->Poke_Texture
 		(
 			DX8Wrapper::_Create_DX8_ZTexture
@@ -156,6 +159,7 @@ public:
 				D3DPOOL_DEFAULT
 			)
 		);
+#endif
 	}
 
 

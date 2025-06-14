@@ -120,7 +120,13 @@ class SurfaceClass : public W3DMPO, public RefCountClass
 		unsigned char *CreateCopy(int *width,int *height,int*size,bool flip=false);
 
 			// For use by TextureClass:
-		IDirect3DSurface9 *Peek_D3D_Surface(void) { return D3DSurface; }
+		IDirect3DSurface9 *Peek_D3D_Surface(void) {
+#ifdef TODO_VULKAN
+			return D3DSurface; 
+#else
+			return 0;
+#endif
+		}
 
 		// Attaching and detaching a surface pointer
 		void	Attach (IDirect3DSurface9 *surface);
@@ -143,7 +149,9 @@ class SurfaceClass : public W3DMPO, public RefCountClass
 	private:
 
 		// Direct3D surface object
+#ifdef TODO_VULKAN
 		IDirect3DSurface9 *D3DSurface;
+#endif
 
 		WW3DFormat SurfaceFormat;
 	friend class TextureClass;	

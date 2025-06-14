@@ -159,16 +159,18 @@ protected:
 		float tu, tv;
 	}; 
 
+	Int						m_vertexBufferD3DOffset;	///<location to start writing vertices
+	Int	m_numVertices;				///<number of vertices in D3D vertex buffer
+	Int m_numIndices;				///<number of indices in D3D index buffer
+#ifdef TODO_VULKAN
 	LPDIRECT3DDEVICE9 m_pDev;						///<pointer to D3D Device
 	LPDIRECT3DVERTEXBUFFER9 m_vertexBufferD3D;		///<D3D vertex buffer
 	LPDIRECT3DINDEXBUFFER9	m_indexBufferD3D;	///<D3D index buffer
-	Int						m_vertexBufferD3DOffset;	///<location to start writing vertices
 	IDirect3DPixelShader9*					m_dwWavePixelShader;	///<handle to D3D pixel shader
 	IDirect3DVertexShader9* m_dwWaveVertexShader;	///<handle to D3D vertex shader
-	Int	m_numVertices;				///<number of vertices in D3D vertex buffer
-	Int m_numIndices;				///<number of indices in D3D index buffer
 	LPDIRECT3DTEXTURE9 m_pBumpTexture[NUM_BUMP_FRAMES]; ///<animation frames
 	LPDIRECT3DTEXTURE9 m_pBumpTexture2[NUM_BUMP_FRAMES]; ///<animation frames
+#endif
 	Int					m_iBumpFrame;	///<current animation frame
 	Real				m_fBumpScale;	///<scales bump map uv perturbation
 	TextureClass * m_pReflectionTexture;	///<render target for reflection
@@ -211,9 +213,11 @@ protected:
 	TextureClass *m_riverTexture;
 	TextureClass *m_whiteTexture;		///< a texture containing only white used for NULL pixel shader stages.
 	TextureClass *m_waterNoiseTexture;
+#ifdef TODO_VULKAN
 	IDirect3DPixelShader9* m_waterPixelShader;		///<D3D handle to pixel shader.
 	IDirect3DPixelShader9*	m_riverWaterPixelShader;		///<D3D handle to pixel shader.
 	IDirect3DPixelShader9* m_trapezoidWaterPixelShader;	///<handle to D3D vertex shader
+#endif
 	TextureClass *m_waterSparklesTexture;
 	Real m_riverXOffset;
 	Real m_riverYOffset;
@@ -247,7 +251,9 @@ protected:
 	void testCurvedWater(void);	///<draw the sky layer (clouds, stars, etc.)
 	void renderSkyBody(Matrix3D *mat);	///<draw the sky body (sun, moon, etc.)
 	void renderWaterMesh(void);			///<draw the water surface mesh (deformed 3d mesh).
+#ifdef TODO_VULKAN
 	HRESULT initBumpMap(LPDIRECT3DTEXTURE9 *pTex, TextureClass *pBumpSource);	///<copies data into bump-map format.
+#endif
 	void renderMirror(CameraClass *cam);	///< Draw reflected scene into texture
 	void drawSea(RenderInfoClass & rinfo);	///< Draw the surface of the water
 	///bounding box of frustum clipped polygon plane

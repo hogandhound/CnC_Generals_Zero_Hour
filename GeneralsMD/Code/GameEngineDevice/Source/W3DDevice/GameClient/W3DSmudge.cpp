@@ -84,6 +84,7 @@ void W3DSmudgeManager::ReAcquireResources(void)
 {
 	ReleaseResources();
 
+#ifdef TODO_VULKAN
 	SurfaceClass *surface=DX8Wrapper::_Get_DX8_Back_Buffer();
 	SurfaceClass::SurfaceDescription surface_desc;
 
@@ -133,14 +134,16 @@ void W3DSmudgeManager::ReAcquireResources(void)
 			ib+=12;
 		}
 	}
+#endif
 }
 
 /*Copies a portion of the current render target into a specified buffer*/
 Int copyRect(unsigned char *buf, Int bufSize, int oX, int oY, int width, int height)
 {
+	Int result = 0;
+#ifdef TODO_VULKAN
  	IDirect3DSurface9 *surface=NULL;	///<previous render target
  	IDirect3DSurface9 *tempSurface=NULL;
-	Int result = 0;
 	HRESULT hr = S_OK;
 
  	LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
@@ -197,7 +200,7 @@ error:
 		surface->Release();
 	if (tempSurface)
 		tempSurface->Release();
-
+#endif
 	return result;
 }
 
@@ -255,6 +258,7 @@ Bool W3DSmudgeManager::testHardwareSupport(void)
 		v[2].color = UNIQUE_COLOR;
 		v[3].color = UNIQUE_COLOR;
 
+#ifdef TODO_VULKAN
 		LPDIRECT3DDEVICE9 pDev=DX8Wrapper::_Get_D3D_Device8();
 
 		//draw polygons like this is very inefficient but for only 2 triangles, it's
@@ -298,13 +302,14 @@ Bool W3DSmudgeManager::testHardwareSupport(void)
 			return TRUE;
 		}
 		m_hardwareSupportStatus = SMUDGE_SUPPORT_NO;
+#endif
 	}
-
 	return (SMUDGE_SUPPORT_YES == m_hardwareSupportStatus);
 }
 
 void W3DSmudgeManager::render(RenderInfoClass &rinfo)
 {
+#ifdef TODO_VULKAN
 	//Verify that the card supports the effect.
 	if (!testHardwareSupport())
 		return;
@@ -553,5 +558,5 @@ flushSmudges:
 
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0,D3DTSS_COLOROP,D3DTOP_MODULATE);			
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0,D3DTSS_ALPHAOP,D3DTOP_MODULATE);			
-
+#endif
 }

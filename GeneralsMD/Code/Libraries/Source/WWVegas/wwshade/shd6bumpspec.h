@@ -67,7 +67,13 @@ public:
 
 	virtual unsigned					Get_Vertex_Stream_Count() const;
 	virtual unsigned					Get_Vertex_Size(unsigned stream) const;
-	virtual bool						Use_HW_Vertex_Processing() const { return Vertex_Shader.Is_Using_Hardware(); }
+	virtual bool						Use_HW_Vertex_Processing() const {
+#ifdef TODO_VULKAN
+		return Vertex_Shader.Is_Using_Hardware(); 
+#else
+		return 0;
+#endif
+	}
 	virtual void						Copy_Vertex_Stream
 	(
 		unsigned stream, 
@@ -78,7 +84,9 @@ public:
 
 protected:
 
+#ifdef TODO_VULKAN
 	static ShdHWVertexShader		Vertex_Shader;
+#endif
 	static Matrix4x4					View_Projection_Matrix;
 
 	TextureClass*			Texture;

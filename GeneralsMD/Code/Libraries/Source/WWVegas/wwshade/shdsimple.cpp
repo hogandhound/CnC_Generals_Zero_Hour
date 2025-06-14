@@ -36,7 +36,6 @@
  * Functions:                                                                                  *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#include <d3dx9math.h>
 #include "dx8fvf.h"
 #include "dx8wrapper.h"
 #include "assetmgr.h"
@@ -193,10 +192,12 @@ Shd6SimpleClass::Shd6SimpleClass(const ShdDefClass* def)
 	const Vector3& d=Definition->Get_Diffuse();
 	Diffuse.Set(d.X,d.Y,d.Z,1.0f);
 
+#ifdef TODO_VULKAN
 	Material=new D3DMATERIAL9;
 	memset(Material,0,sizeof(D3DMATERIAL9));
 	Material->Ambient.r=a.X; Material->Ambient.g=a.Y; Material->Ambient.b=a.Z; 
 	Material->Diffuse.r=d.X; Material->Diffuse.g=d.Y; Material->Diffuse.b=d.Z; 
+#endif
 }
 
 Shd6SimpleClass::~Shd6SimpleClass()
@@ -219,6 +220,7 @@ void Shd6SimpleClass::Shutdown()
 */
 void Shd6SimpleClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 {
+#ifdef TODO_VULKAN
 	// fixed function uses pass through by default
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_PASSTHRU);
 
@@ -240,6 +242,7 @@ void Shd6SimpleClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_DIFFUSEMATERIALSOURCE,D3DMCS_MATERIAL);
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_SPECULARMATERIALSOURCE,D3DMCS_MATERIAL);
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_EMISSIVEMATERIALSOURCE,D3DMCS_MATERIAL);
+#endif
 
 }
 
@@ -249,7 +252,9 @@ void Shd6SimpleClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 */
 void Shd6SimpleClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 {
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Material(Material);
+#endif
 	DX8Wrapper::Set_Texture(0, Texture);
 }
 

@@ -50,7 +50,9 @@
 // shader code declarations
 #include "shd6bumpspec.vsh_code.h"
 
+#ifdef TODO_VULKAN
 ShdHWVertexShader		Shd6BumpSpecClass::Vertex_Shader;
+#endif
 Matrix4x4				Shd6BumpSpecClass::View_Projection_Matrix;
 
 Shd6BumpSpecClass::Shd6BumpSpecClass(const ShdDefClass* def)
@@ -96,16 +98,20 @@ void Shd6BumpSpecClass::Init()
 #endif
 	};
 
+#ifdef TODO_VULKAN
 	Vertex_Shader.Create
 	(
 		shd6bumpspec_vsh_code,
 		vertex_shader_declaration
 	);
+#endif
 }
 
 void Shd6BumpSpecClass::Shutdown()
 {
+#ifdef TODO_VULKAN
 	Vertex_Shader.Destroy();
+#endif
 }
 
 
@@ -115,18 +121,21 @@ void Shd6BumpSpecClass::Shutdown()
 */
 void Shd6BumpSpecClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 {
+#ifdef TODO_VULKAN
 	// vertex processing behavior
 	DX8Wrapper::_Get_D3D_Device8()->SetSoftwareVertexProcessing(!Vertex_Shader.Is_Using_Hardware());
 
 	// fixed function uses pass through by default
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_PASSTHRU);
 	DX8Wrapper::Set_DX8_Texture_Stage_State(1, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_PASSTHRU);
+#endif
 
 	// set vertex shader
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Vertex_Shader(Vertex_Shader.Peek_Shader());
 
 	const Matrix3D& cam=rinfo.Camera.Get_Transform();
-
+	
 	// set constants
 	DX8Wrapper::Set_Vertex_Shader_Constant
 	(
@@ -182,6 +191,7 @@ void Shd6BumpSpecClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 	DX8Wrapper::Get_Transform(D3DTS_PROJECTION, proj_matrix);
 
 	Matrix4x4::Multiply(proj_matrix, view_matrix, &View_Projection_Matrix);
+#endif
 }
 
 //**********************************************************************************************
@@ -194,6 +204,7 @@ void Shd6BumpSpecClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 
 	// set vertex shader constants
 	Matrix4x4 world;
+#ifdef TODO_VULKAN
 	DX8Wrapper::Get_Transform(D3DTS_WORLD, world);
 
 	Matrix4x4 world_view_proj_matrix;
@@ -210,6 +221,7 @@ void Shd6BumpSpecClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 		Diffuse,
 		Specular
 	);
+#endif
 }
 
 unsigned Shd6BumpSpecClass::Get_Vertex_Stream_Count() const

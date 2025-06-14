@@ -56,7 +56,6 @@
 #include <coltest.h>
 #include <rinfo.h>
 #include <camera.h>
-#include <d3dx9core.h>
 #include "Common/GlobalData.h"
 #include "Common/PerfTimer.h"
 
@@ -1450,7 +1449,8 @@ RenderObjClass *	 BaseHeightMapRenderObjClass::Clone(void) const
 /** Loads the roads from the map objects. */
 //=============================================================================
 void BaseHeightMapRenderObjClass::loadRoadsAndBridges(W3DTerrainLogic *pTerrainLogic, Bool saveGame)
-{	
+{
+#ifdef TODO_VULKAN
 	if (DX8Wrapper::_Get_D3D_Device8() && (DX8Wrapper::_Get_D3D_Device8()->TestCooperativeLevel()) != D3D_OK)
 		return;	//device not ready to render anything
 
@@ -1462,6 +1462,7 @@ void BaseHeightMapRenderObjClass::loadRoadsAndBridges(W3DTerrainLogic *pTerrainL
 	if (m_bridgeBuffer) {
 		m_bridgeBuffer->loadBridges(pTerrainLogic, saveGame);
 	}
+#endif
 }
 
 // ============================================================================
@@ -1890,6 +1891,7 @@ void BaseHeightMapRenderObjClass::freeScorchBuffers(void)
 //=============================================================================
 void BaseHeightMapRenderObjClass::allocateScorchBuffers(void)
 {
+#ifdef TODO_VULKAN
 	m_vertexScorch=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV1,MAX_SCORCH_VERTEX,DX8VertexBufferClass::USAGE_DEFAULT));
 	m_indexScorch=NEW_REF(DX8IndexBufferClass,(MAX_SCORCH_INDEX));
 	m_scorchTexture=new ScorchTextureClass;
@@ -1903,7 +1905,7 @@ void BaseHeightMapRenderObjClass::allocateScorchBuffers(void)
 	loc.X += 5*MAP_XY_FACTOR;
 	addScorch(loc, 3*MAP_XY_FACTOR, SCORCH_1);
 #endif
-
+#endif
 }
 
 //=============================================================================
@@ -2465,6 +2467,7 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 	if (DX8Wrapper::getBackBufferFormat() != WW3D_FORMAT_A8R8G8B8)
 		return;	//can't apply effect on cards without destination alpha
 
+#ifdef TODO_VULKAN
 	Int vertexCount = 0;
 	Int indexCount = 0;
 	Int drawEdgeY=m_map->getDrawOrgY()+m_map->getDrawHeight()-1;
@@ -2615,6 +2618,7 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 
 	//Disable writes to destination alpha
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+#endif
 	ShaderClass::Invalidate();
 }
 
@@ -2633,8 +2637,10 @@ void BaseHeightMapRenderObjClass::renderShoreLinesSorted(CameraClass *pCamera)
 	if (DX8Wrapper::getBackBufferFormat() != WW3D_FORMAT_A8R8G8B8)
 		return;	//can't apply effect on cards without destination alpha
 
+#ifdef TODO_VULKAN
 	Int vertexCount = 0;
 	Int indexCount = 0;
+#endif
 	Int drawEdgeY=m_map->getDrawOrgY()+m_map->getDrawHeight()-1;
 	Int drawEdgeX=m_map->getDrawOrgX()+m_map->getDrawWidth()-1;
 	if (drawEdgeX > (m_map->getXExtent()-1))
@@ -2673,6 +2679,7 @@ void BaseHeightMapRenderObjClass::renderShoreLinesSorted(CameraClass *pCamera)
 	DX8Wrapper::Set_Material(vmat);
 	REF_PTR_RELEASE(vmat);
 	DX8Wrapper::Set_Texture(0,m_destAlphaTexture);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,Matrix3D(1));
 	//Enabled writes to destination alpha only
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
@@ -2960,6 +2967,7 @@ flushVertexBuffer1:
 
 	//Disable writes to destination alpha
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+#endif
 	ShaderClass::Invalidate();
 }
 
@@ -2980,7 +2988,9 @@ void BaseHeightMapRenderObjClass::renderTrees(CameraClass * camera)
 	if (Scene==NULL) return;
 	if (m_treeBuffer) {
 		Matrix3D tm(Transform);
+#ifdef TODO_VULKAN
 		DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
+#endif
 		DX8Wrapper::Set_Material(m_vertexMaterialClass);
 		RTS3DScene *pMyScene = (RTS3DScene *)Scene;
 		RefRenderObjListIterator pDynamicLightsIterator(pMyScene->getDynamicLights());

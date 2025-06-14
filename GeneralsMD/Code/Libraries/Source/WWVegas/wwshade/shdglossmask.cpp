@@ -36,7 +36,6 @@
  * Functions:                                                                                  *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#include <d3dx9math.h>
 #include "dx8fvf.h"
 #include "dx8wrapper.h"
 #include "assetmgr.h"
@@ -199,12 +198,14 @@ Shd6GlossMaskClass::Shd6GlossMaskClass(const ShdDefClass* def)
 	const Vector3& s=Definition->Get_Specular();
 	Specular.Set(s.X,s.Y,s.Z,1.0f);
 
+#ifdef TODO_VULKAN
 	Material=new D3DMATERIAL9;
 	memset(Material,0,sizeof(D3DMATERIAL9));
 	Material->Ambient.r=a.X; Material->Ambient.g=a.Y; Material->Ambient.b=a.Z; 
 	Material->Diffuse.r=d.X; Material->Diffuse.g=d.Y; Material->Diffuse.b=d.Z; 
 	Material->Specular.r=s.X; Material->Specular.g=s.Y; Material->Specular.b=s.Z;
 	Material->Power=20;
+#endif
 }
 
 Shd6GlossMaskClass::~Shd6GlossMaskClass()
@@ -227,6 +228,7 @@ void Shd6GlossMaskClass::Shutdown()
 */
 void Shd6GlossMaskClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 {
+#ifdef TODO_VULKAN
 	// fixed function uses pass through by default
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_PASSTHRU);
 
@@ -272,7 +274,7 @@ void Shd6GlossMaskClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_EMISSIVEMATERIALSOURCE,D3DMCS_MATERIAL);
 
 	DX8Wrapper::Set_DX8_Material(Material);
-
+#endif
 }
 
 //**********************************************************************************************
@@ -288,7 +290,9 @@ void Shd6GlossMaskClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 		DX8Wrapper::Set_Texture(1, Texture);
 	}
 
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Material(Material);
+#endif
 }
 
 unsigned Shd6GlossMaskClass::Get_Vertex_Stream_Count() const

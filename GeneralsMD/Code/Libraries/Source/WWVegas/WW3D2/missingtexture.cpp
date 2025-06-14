@@ -20,7 +20,6 @@
 #include "missingtexture.h"
 #include "texture.h"
 #include "dx8wrapper.h"
-#include <D3dx9core.h>
 
 static unsigned missing_image_width=128;
 static unsigned missing_image_height=128;
@@ -29,6 +28,7 @@ static unsigned missing_image_depth=24;
 extern unsigned int missing_image_palette[];
 extern unsigned int missing_image_pixels[];
 
+#ifdef TODO_VULKAN
 static IDirect3DTexture9 * _MissingTexture = NULL;
 
 IDirect3DTexture9* MissingTexture::_Get_Missing_Texture()
@@ -151,11 +151,14 @@ void MissingTexture::_Init()
 	}
 */
 }
+#endif
 
 void MissingTexture::_Deinit()
 {
+#ifdef TODO_VULKAN
 	_MissingTexture->Release();
 	_MissingTexture=0;
+#endif
 }
 
 static unsigned int missing_image_palette[]={

@@ -44,7 +44,6 @@
 #include "scene.h"
 #include "dx8wrapper.h"
 #include "light.h"
-#include "D3dx9math.h"
 #include "simplevec.h"
 #include "mesh.h"
 #include "matinfo.h"
@@ -213,6 +212,7 @@ void WaterRenderObjClass::setupJbaWaterShader(void)
 
 
 	DX8Wrapper::Apply_Render_State_Changes();	//force update of view and projection matrices
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP,   D3DTOP_ADD );
 	if (!m_riverAlphaEdge->Is_Initialized())
 		m_riverAlphaEdge->Init();
@@ -269,6 +269,7 @@ void WaterRenderObjClass::setupJbaWaterShader(void)
 		DX8Wrapper::_Get_D3D_Device8()->SetPixelShaderConstantF(0,   D3DXVECTOR4(REFLECTION_FACTOR, REFLECTION_FACTOR, REFLECTION_FACTOR, 1.0f), 1);
 		DX8Wrapper::_Get_D3D_Device8()->SetPixelShader(m_riverWaterPixelShader);
 	}
+#endif
 }
 
 
@@ -298,6 +299,7 @@ WaterRenderObjClass::~WaterRenderObjClass(void)
 		REF_PTR_RELEASE(m_settings[i].waterTexture);
 	}
 
+#ifdef TODO_VULKAN
 	i=NUM_BUMP_FRAMES;
 	while (i--)
 	{	SAFE_RELEASE( m_pBumpTexture[i]);
@@ -320,6 +322,7 @@ WaterRenderObjClass::~WaterRenderObjClass(void)
 
 	if (m_waterTrackSystem)
 		delete m_waterTrackSystem;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -342,12 +345,14 @@ WaterRenderObjClass::WaterRenderObjClass(void)
 	m_tod=TIME_OF_DAY_AFTERNOON;
 	m_pReflectionTexture=NULL;
 	m_skyBox=NULL;
+#ifdef TODO_VULKAN
 	m_vertexBufferD3D=NULL;
 	m_indexBufferD3D=NULL;
 	m_vertexBufferD3DOffset=0;
 
 	m_dwWavePixelShader=NULL;
 	m_dwWaveVertexShader=NULL;
+#endif
 	m_meshData=NULL;
 	m_meshDataSize = 0;
 	m_meshInMotion = FALSE;
@@ -360,6 +365,7 @@ WaterRenderObjClass::WaterRenderObjClass(void)
 	m_gridCellsY=WATER_MESH_Y_VERTICES;
 	m_gridWidth = m_gridCellsX * m_gridCellSize;
 	m_gridHeight = m_gridCellsY * m_gridCellSize;
+#ifdef TODO_VULKAN
 	
 	Int i=NUM_BUMP_FRAMES;
 	while (i--)
@@ -376,6 +382,7 @@ WaterRenderObjClass::WaterRenderObjClass(void)
 	m_waterSparklesTexture=0;
 	m_riverXOffset=0;
 	m_riverYOffset=0;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -427,6 +434,7 @@ RenderObjClass *	 WaterRenderObjClass::Clone(void) const
 /** Copies raw bits from pBumpSrc (a regular grayscale texture) into a D3D
 	*   bump-map format. */
 //-------------------------------------------------------------------------------------------------
+#ifdef TODO_VULKAN
 HRESULT WaterRenderObjClass::initBumpMap(LPDIRECT3DTEXTURE9 *pTex, TextureClass *pBumpSource)
 {
     SurfaceClass::SurfaceDescription    d3dsd;
@@ -618,6 +626,7 @@ HRESULT WaterRenderObjClass::initBumpMap(LPDIRECT3DTEXTURE9 *pTex, TextureClass 
 
     return S_OK;
 }
+#endif
 
 //-------------------------------------------------------------------------------------------------
 /** Create and fill a D3D vertex buffer with water surface vertices */
@@ -628,6 +637,7 @@ HRESULT WaterRenderObjClass::generateVertexBuffer( Int sizeX, Int sizeY, Int ver
 	//Assuming dynamic vertex buffer, allocate maximum multiple of required size to allow rendering from
  	//different parts of the buffer. 5-15-03: Disabled this since we use DISCARD mode instead to avoid Nvidia Runtime bug. -MW
  	//m_numVertices=(65536 / (sizeX*sizeY))*sizeX*sizeY;
+#ifdef TODO_VULKAN
 
 	SEA_PATCH_VERTEX* pVertices;
 
@@ -694,7 +704,7 @@ HRESULT WaterRenderObjClass::generateVertexBuffer( Int sizeX, Int sizeY, Int ver
 	}
 
 	if (FAILED(hr=m_vertexBufferD3D->Unlock())) return hr;
-
+#endif
 	return S_OK;
 }
 
@@ -703,6 +713,7 @@ HRESULT WaterRenderObjClass::generateVertexBuffer( Int sizeX, Int sizeY, Int ver
 //-------------------------------------------------------------------------------------------------
 HRESULT WaterRenderObjClass::generateIndexBuffer(Int sizeX, Int sizeY)
 {
+#ifdef TODO_VULKAN
 	HRESULT hr;
 
 	//Will need SizeY-1 strips, each of length SizeX*2 (2 indices per strip segment).
@@ -796,7 +807,7 @@ HRESULT WaterRenderObjClass::generateIndexBuffer(Int sizeX, Int sizeY)
 	}
 */
 	if (FAILED(hr=m_indexBufferD3D->Unlock())) return hr;
-
+#endif
 	return S_OK;
 }
 
@@ -809,6 +820,7 @@ void WaterRenderObjClass::ReleaseResources(void)
 	REF_PTR_RELEASE(m_indexBuffer);
 
 	REF_PTR_RELEASE(m_pReflectionTexture);
+#ifdef TODO_VULKAN
 	SAFE_RELEASE(m_vertexBufferD3D);
 	SAFE_RELEASE(m_indexBufferD3D);
 
@@ -835,6 +847,7 @@ void WaterRenderObjClass::ReleaseResources(void)
 	m_waterPixelShader = 0;
 	m_trapezoidWaterPixelShader=0;
 	m_riverWaterPixelShader=0;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -842,7 +855,9 @@ void WaterRenderObjClass::ReleaseResources(void)
 //-------------------------------------------------------------------------------------------------
 void WaterRenderObjClass::ReAcquireResources(void)
 {
+#ifdef TODO_VULKAN
 	HRESULT hr;
+#endif
 
 	m_indexBuffer=NEW_REF(DX8IndexBufferClass,(6));
 	// Fill up the IB
@@ -863,6 +878,7 @@ void WaterRenderObjClass::ReAcquireResources(void)
 		ib[5]=1;
 	}
 
+#ifdef TODO_VULKAN
 	m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 	//We're using the same grid for either 3D Water Mesh or Pixel/Vertex shader.  Just
@@ -965,6 +981,7 @@ void WaterRenderObjClass::ReAcquireResources(void)
 		surface->DrawPixel(0,0,0xffffffff);
 		REF_PTR_RELEASE(surface);
 	}
+#endif
 }
 
 void WaterRenderObjClass::load(void)
@@ -1189,9 +1206,11 @@ void WaterRenderObjClass::enableWaterGrid(Bool state)
 		memset(m_meshData,0,sizeof(WaterMeshData)*(m_gridCellsX+1+2)*(m_gridCellsY+1+2));
 		reset();
 
+#ifdef TODO_VULKAN
 		//Release existing grid data
 		SAFE_RELEASE(m_vertexBufferD3D);
 		SAFE_RELEASE(m_indexBufferD3D);
+#endif
 
 		//Create new grid data
 		if (FAILED(generateIndexBuffer(m_gridCellsX+1,m_gridCellsY+1)))
@@ -1785,6 +1804,7 @@ void WaterRenderObjClass::drawSea(RenderInfoClass & rinfo)
 	if (!getClippedWaterPlane(&rinfo.Camera,&seaBox))
 		return;	//the sea is not visible
 
+#ifdef TODO_VULKAN
 	D3DXMATRIX matProj, matView, matWW3D;
 
 	//create a transform which will flip the y and z coordinates to fit our system
@@ -1980,7 +2000,7 @@ void WaterRenderObjClass::drawSea(RenderInfoClass & rinfo)
 		}
 		W3DShaderManager::resetShader(W3DShaderManager::ST_SHROUD_TEXTURE);
 	}
-
+#endif
 }
 
 
@@ -2116,7 +2136,9 @@ void WaterRenderObjClass::renderSky(void)
 
 	Matrix3D tm(1);
 	tm.Set_Translation(Vector3(0,0,0));
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
+#endif
 
 	DX8Wrapper::Draw_Triangles(	0,2, 0,	4);	//draw a quad, 2 triangles, 4 verts
 }
@@ -2158,6 +2180,7 @@ void WaterRenderObjClass::renderSkyBody(Matrix3D *mat)
 	tm.Adjust_Translation(Vector3(SKYBODY_X,SKYBODY_Y,SKYBODY_HEIGHT));
 
 
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
 
 
@@ -2217,6 +2240,7 @@ void WaterRenderObjClass::renderSkyBody(Matrix3D *mat)
 
 	DX8Wrapper::Set_Index_Buffer(m_indexBuffer,0);
 	DX8Wrapper::Set_Vertex_Buffer(vb_access);
+#endif
 
 	DX8Wrapper::Draw_Triangles(	0,2, 0,	4);	//draw a quad, 2 triangles, 4 verts
 }
@@ -2240,12 +2264,14 @@ void WaterRenderObjClass::renderWaterMesh(void)
  	//new dynamic VB each frame - so we force a DISCARD by overflowing the counter.
  	m_vertexBufferD3DOffset = 0xffff;
 
-	Setting *setting=&m_settings[m_tod];
+#ifdef TODO_VULKAN
 
+	Setting *setting=&m_settings[m_tod];
 	WaterMeshData *pData;
 	Int	mx=m_gridCellsX+1;
 	Int my=m_gridCellsY+1;
 	Int i,j;
+#endif
 	
 	Real cellSizeX=m_gridCellSize;
 	Real cellSizeY=m_gridCellSize;
@@ -2254,8 +2280,10 @@ void WaterRenderObjClass::renderWaterMesh(void)
 
 	//Old waterRepeatCount settings in INI were based on 128x128 water grid of cellsize=10
 	//Scale values to correct size.
+#ifdef TODO_VULKAN
 	Real	uScale=setting->waterRepeatCount/(128.0f)*cellSizeX/10.0f*0.2f;
 	Real	vScale=setting->waterRepeatCount/(128.0f)*cellSizeY/10.0f*0.2f;
+#endif
 
 	Vector3	nx(cellSizeX*2.0f,0,0);
 	Vector3 ny(0,cellSizeY*2.0f,0);
@@ -2287,6 +2315,7 @@ void WaterRenderObjClass::renderWaterMesh(void)
 	PhasePerFrameY -= 0.1f;
 #endif
 
+#ifdef TODO_VULKAN
 	MaterMeshVertexFormat *vb;
 	if (m_vertexBufferD3DOffset < m_numVertices)
 	{	//we have room in current VB, append new verts
@@ -2442,7 +2471,8 @@ void WaterRenderObjClass::renderWaterMesh(void)
 	m_shaderClass.Set_Cull_Mode(oldCullMode);	//water should be visible from both sides
 
 	// restore shader to old mask
-	m_shaderClass.Set_Depth_Mask(oldDepthMask);	 
+	m_shaderClass.Set_Depth_Mask(oldDepthMask);
+#endif
 
 	//W3DShaderManager::resetShader(W3DShaderManager::ST_SHROUD_TEXTURE);
 
@@ -2885,6 +2915,7 @@ void WaterRenderObjClass::drawRiverWater(PolygonTrigger *pTrig)
 
 	Matrix3D tm(1);
 
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);	//position the water surface
 	DX8Wrapper::Set_Index_Buffer(ib_access,0);
 	DX8Wrapper::Set_Vertex_Buffer(vb_access);
@@ -2932,7 +2963,7 @@ void WaterRenderObjClass::drawRiverWater(PolygonTrigger *pTrig)
 		W3DShaderManager::resetShader(W3DShaderManager::ST_SHROUD_TEXTURE);
 	}
 	DX8Wrapper::_Get_D3D_Device8()->SetRenderState(D3DRS_CULLMODE, cull);
-
+#endif
 
 }
 
@@ -2954,6 +2985,7 @@ void WaterRenderObjClass::setupFlatWaterShader(void)
 
 	DX8Wrapper::Apply_Render_State_Changes();	//force update of view and projection matrices
 
+#ifdef TODO_VULKAN
 	//Setup shroud to render in same pass as water
 	if (m_trapezoidWaterPixelShader)
 	{	if (TheTerrainRenderObject->getShroud())
@@ -3029,6 +3061,7 @@ void WaterRenderObjClass::setupFlatWaterShader(void)
 		DX8Wrapper::_Get_D3D_Device8()->SetPixelShaderConstantF(0,   D3DXVECTOR4(REFLECTION_FACTOR, REFLECTION_FACTOR, REFLECTION_FACTOR, 1.0f), 1);
 		DX8Wrapper::_Get_D3D_Device8()->SetPixelShader(m_trapezoidWaterPixelShader);
 	}
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3262,6 +3295,7 @@ void WaterRenderObjClass::drawTrapezoidWater(Vector3 points[4])
 
 	Matrix3D tm(1);
 
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);	//position the water surface
 	DX8Wrapper::Set_Index_Buffer(ib_access,0);
 	DX8Wrapper::Set_Vertex_Buffer(vb_access);
@@ -3348,6 +3382,7 @@ void WaterRenderObjClass::drawTrapezoidWater(Vector3 points[4])
 		}
 	}
 	DX8Wrapper::_Get_D3D_Device8()->SetRenderState(D3DRS_CULLMODE, cull);
+#endif
 }
 
 

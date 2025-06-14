@@ -65,7 +65,13 @@ public:
 
 	virtual unsigned					Get_Vertex_Stream_Count() const;
 	virtual unsigned					Get_Vertex_Size(unsigned stream) const;
-	virtual bool						Use_HW_Vertex_Processing() const { return Vertex_Shader.Is_Using_Hardware(); }
+	virtual bool						Use_HW_Vertex_Processing() const {
+#ifdef TODO_VULKAN
+		return Vertex_Shader.Is_Using_Hardware();
+#else
+		return false;
+#endif
+	}
 	virtual void						Copy_Vertex_Stream
 	(
 		unsigned stream, 
@@ -78,8 +84,10 @@ protected:
 
 	void Setup_Self_Shadow_Info(ShdMeshClass& mesh, RenderInfoClass& rinfo);
 
+#ifdef TODO_VULKAN
 	static ShdHWVertexShader		Vertex_Shader;
 	static ShdHWPixelShader			Pixel_Shader;
+#endif
 
 	static Matrix4x4					View_Projection_Matrix;
 
@@ -92,8 +100,10 @@ protected:
 	Vector4					Bumpiness;
 
 	// self shadowing
+#ifdef TODO_VULKAN
 	static ShdHWPixelShader		Self_Shadow_Pixel_Shader;
 	static ShdHWVertexShader	Self_Shadow_Vertex_Shader;
+#endif
 	Matrix4x4						Self_Shadow_Transform;
 };
 

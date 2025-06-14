@@ -227,6 +227,7 @@ void MatrixMapperClass::Apply(int uv_array_index)
 {
 	Matrix4x4 m;
 
+#ifdef TODO_VULKAN
 	switch (Type) 
 	{
 	case ORTHO_PROJECTION:
@@ -275,7 +276,7 @@ void MatrixMapperClass::Apply(int uv_array_index)
 		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2);
 		break;
 	}
-
+#endif
 
 }
 

@@ -41,11 +41,14 @@
 
 #include "dx8fvf.h"
 #include "wwstring.h"
-#include <D3dx9core.h>
 
 static unsigned Get_FVF_Vertex_Size(unsigned FVF)
 {
+#ifdef TODO_VULKAN
 	return D3DXGetFVFVertexSize(FVF);
+	#else
+	return 0;
+#endif
 }
 
 FVFInfoClass::FVFInfoClass(unsigned FVF_, unsigned vertex_size) 
@@ -53,6 +56,7 @@ FVFInfoClass::FVFInfoClass(unsigned FVF_, unsigned vertex_size)
 	FVF(FVF_),
 	fvf_size(FVF!=0 ? Get_FVF_Vertex_Size(FVF) : vertex_size)
 {
+#ifdef TODO_VULKAN
 	location_offset=0;
 	blend_offset=location_offset;
 	
@@ -80,10 +84,12 @@ FVFInfoClass::FVFInfoClass(unsigned FVF_, unsigned vertex_size)
 		else if ((int(FVF)&D3DFVF_TEXCOORDSIZE3(i-1))==D3DFVF_TEXCOORDSIZE3(i-1)) texcoord_offset[i]+=3*sizeof(float);
 		else if ((int(FVF)&D3DFVF_TEXCOORDSIZE4(i-1))==D3DFVF_TEXCOORDSIZE4(i-1)) texcoord_offset[i]+=4*sizeof(float);
 	}
+#endif
 }
 
 void FVFInfoClass::Get_FVF_Name(StringClass& fvfname) const
 {
+#ifdef TODO_VULKAN
 	switch (Get_FVF()) {
 	case DX8_FVF_XYZ: fvfname="D3DFVF_XYZ"; break;
 	case DX8_FVF_XYZN: fvfname="D3DFVF_XYZ|D3DFVF_NORMAL"; break;
@@ -100,4 +106,5 @@ void FVFInfoClass::Get_FVF_Name(StringClass& fvfname) const
 	case DX8_FVF_XYZNDCUBEMAP : fvfname="(D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_DIFFUSE|D3DFVF_TEX1|D3DFVFTEXCOORDSIZE3(0)"; break;
 	default: fvfname="Unknown!";
 	}
+#endif
 }

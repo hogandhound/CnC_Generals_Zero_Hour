@@ -318,8 +318,10 @@ void W3DCustomEdging::freeEdgingBuffers(void)
 //=============================================================================
 void W3DCustomEdging::allocateEdgingBuffers(void)
 {
+#ifdef TODO_VULKAN
 	m_vertexEdging=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV2,MAX_EDGE_VERTEX+4,DX8VertexBufferClass::USAGE_DYNAMIC));
 	m_indexEdging=NEW_REF(DX8IndexBufferClass,(2*MAX_EDGE_INDEX+4, DX8IndexBufferClass::USAGE_DYNAMIC));
+#endif
 	m_curNumEdgingVertices=0;
 	m_curNumEdgingIndices=0;
 	//m_edgeTexture = MSGNEW("TextureClass") TextureClass("EdgingTemplate.tga","EdgingTemplate.tga", TextureClass::MIP_LEVELS_3);
@@ -371,6 +373,7 @@ void W3DCustomEdging::drawEdging(WorldHeightMap *pMap, Int minX, Int maxX, Int m
 	DX8Wrapper::Set_Texture(1,edgeTex);
 	DX8Wrapper::Apply_Render_State_Changes();
 
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAREF,0x7B);
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAFUNC,D3DCMP_LESSEQUAL);	//pass pixels who's alpha is not zero
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHATESTENABLE, true);	//test pixels if transparent(clipped) before rendering.
@@ -434,6 +437,7 @@ void W3DCustomEdging::drawEdging(WorldHeightMap *pMap, Int minX, Int maxX, Int m
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND,D3DBLEND_ZERO);
 		DX8Wrapper::Draw_Triangles(	m_curEdgingIndexOffset, m_curNumEdgingIndices/3, 0,	m_curNumEdgingVertices);
 	}
+#endif
 }
 
 

@@ -49,7 +49,9 @@
 
 bool ShaderClass::ShaderDirty=true;
 unsigned long ShaderClass::CurrentShader=0;
+#ifdef TODO_VULKAN
 unsigned long _PolygonCullMode = D3DCULL_CW;
+#endif
 
 
 /*
@@ -365,6 +367,7 @@ class Blend
 {
 public:
 
+#ifdef TODO_VULKAN
 	Blend(D3DBLEND f, bool ab)
 	{
 		func = f;
@@ -373,8 +376,10 @@ public:
 
 	D3DBLEND	func;
 	bool		useAlpha;
+#endif
 };
 
+#ifdef TODO_VULKAN
 const Blend srcBlendLUT[ShaderClass::SRCBLEND_MAX] = 
 {
 	Blend(D3DBLEND_ZERO, false),
@@ -392,7 +397,7 @@ const Blend dstBlendLUT[ShaderClass::DSTBLEND_MAX] =
  	Blend(D3DBLEND_SRCALPHA, true),
  	Blend(D3DBLEND_INVSRCALPHA, true)
 };
-
+#endif
 
 /***********************************************************************************************
  * ShaderClass::Apply -- Apply the renderstates for this shader                                *
@@ -410,7 +415,9 @@ void ShaderClass::Apply()
 {
 	unsigned long diff;
 
+#ifdef TODO_VULKAN
 	unsigned int TextureOpCaps=DX8Wrapper::Get_Current_Caps()->Get_DX8_Caps().TextureOpCaps;
+#endif
 
 	if (ShaderDirty)
 	{
@@ -435,6 +442,7 @@ void ShaderClass::Apply()
 		if(Get_Color_Mask() != ShaderClass::COLOR_WRITE_ENABLE)
 			planeMask = 0;
 
+#ifdef TODO_VULKAN
 		D3DBLEND	sf;
 		D3DBLEND	df;
 		bool	blendAlpha = false;
@@ -486,6 +494,7 @@ void ShaderClass::Apply()
 		diff &= ~(ShaderClass::MASK_COLORMASK | ShaderClass::MASK_SRCBLEND | ShaderClass::MASK_DSTBLEND | ShaderClass::MASK_ALPHATEST);		
 		if(!diff) 			
 			return;
+#endif
 	}	
 
 	if(diff & (ShaderClass::MASK_FOG))
@@ -494,6 +503,7 @@ void ShaderClass::Apply()
 		// can defer the "fog enabled" check inside the "fog settings changed" check.
 		if (DX8Wrapper::Get_Current_Caps()->Is_Fog_Allowed() && DX8Wrapper::Get_Fog_Enable()) {
 
+#ifdef TODO_VULKAN
 			BOOL fm = FALSE;
 			D3DCOLOR fogColor = DX8Wrapper::Get_Fog_Color();
 			
@@ -521,9 +531,11 @@ void ShaderClass::Apply()
 			{
 				DX8Wrapper::Set_DX8_Render_State(D3DRS_FOGCOLOR,fogColor);
 			}
-
+#endif
 		} else {
+#ifdef TODO_VULKAN
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_FOGENABLE,FALSE);
+#endif
 		}
 		
 		diff &= ~(ShaderClass::MASK_FOG);
@@ -532,7 +544,8 @@ void ShaderClass::Apply()
 	}
 
 	// Defaults
-	
+
+#ifdef TODO_VULKAN
 	D3DTEXTUREOP	PricOp	= D3DTOP_SELECTARG1;
 	DWORD				PricArg1 = D3DTA_DIFFUSE;
 	DWORD				PricArg2 = D3DTA_DIFFUSE;
@@ -1040,7 +1053,7 @@ void ShaderClass::Apply()
 
 	// Enable/disable alpha test
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHATESTENABLE,BOOL(Get_Alpha_Test()));	
-
+#endif
 	// Enable/disable stencil test
 	// Not supported yet
 }
@@ -1060,11 +1073,13 @@ void ShaderClass::Apply()
  *=============================================================================================*/
 void ShaderClass::Invert_Backface_Culling(bool onoff)
 {
+#ifdef TODO_VULKAN
 	if (onoff == true) {
 		_PolygonCullMode = D3DCULL_CCW;
 	} else {
 		_PolygonCullMode = D3DCULL_CW;
 	}
+#endif
 	Invalidate();
 }
 
@@ -1160,7 +1175,11 @@ int ShaderClass::Guess_Sort_Level(void) const
  *=============================================================================================*/
 bool ShaderClass::Is_Backface_Culling_Inverted(void)
 {
+#ifdef TODO_VULKAN
 	return (_PolygonCullMode == D3DCULL_CCW);
+#else
+	return false;
+#endif
 }
 
 const StringClass& ShaderClass::Get_Description(StringClass& str) const

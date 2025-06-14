@@ -48,13 +48,13 @@
 #define DX8_FVF_H
 
 #include "always.h"
-#include <d3d9.h>
 #ifdef WWDEBUG
 #include "wwdebug.h"
 #endif
 
 class StringClass;
 
+#ifdef TODO_VULKAN
 enum {
 	DX8_FVF_XYZ				= D3DFVF_XYZ,
 	DX8_FVF_XYZN			= D3DFVF_XYZ|D3DFVF_NORMAL,
@@ -70,6 +70,7 @@ enum {
  	DX8_FVF_XYZNUV2DMAP	= (D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX3 | D3DFVF_TEXCOORDSIZE1(0) | D3DFVF_TEXCOORDSIZE4(1) | D3DFVF_TEXCOORDSIZE2(2) ),
 	DX8_FVF_XYZNDCUBEMAP	= D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_DIFFUSE //|D3DFVF_TEX1|D3DFVF_TEXCOORDSIZE3(0)
 };
+#endif
 
 // ----------------------------------------------------------------------------
 //
@@ -260,7 +261,11 @@ class FVFInfoClass : public W3DMPO
 	unsigned							location_offset;
 	unsigned							normal_offset;
 	unsigned							blend_offset;
+#ifdef TODO_VULKAN
 	unsigned							texcoord_offset[D3DDP_MAXTEXCOORD];	
+#else
+	unsigned							texcoord_offset[8];	
+#endif
 	unsigned							diffuse_offset;
 	unsigned							specular_offset;
 public:
@@ -269,7 +274,11 @@ public:
 	inline unsigned Get_Location_Offset() const { return location_offset; }
 	inline unsigned Get_Normal_Offset() const { return normal_offset; }
 #ifdef WWDEBUG
-	inline unsigned Get_Tex_Offset(unsigned int n) const { WWASSERT(n<D3DDP_MAXTEXCOORD); return texcoord_offset[n]; }	
+	inline unsigned Get_Tex_Offset(unsigned int n) const {
+#ifdef TODO_VULKAN
+		WWASSERT(n<D3DDP_MAXTEXCOORD); 
+#endif
+		return texcoord_offset[n]; }	
 #else
 	inline unsigned Get_Tex_Offset(unsigned int n) const { return texcoord_offset[n]; }	
 #endif

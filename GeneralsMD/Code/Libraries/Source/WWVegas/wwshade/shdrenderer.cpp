@@ -630,7 +630,9 @@ void ShdDX8RendererNodeClass::Flush(int cur_pass)
 		DX8Wrapper::Set_Vertex_Buffer(vb);//stream 0
 
 		DX8Wrapper::Set_Index_Buffer(IndexBuffer,0);
+#ifdef TODO_VULKAN
 		DX8Wrapper::Set_Transform(D3DTS_WORLD,Matrix3D(true));//Mesh->Get_Transform());
+#endif
 
 		DX8Wrapper::Set_Light_Environment(&LightEnvironment);
 		SubMesh->Peek_Shader()->Apply_Instance(cur_pass, *RenderInfo);
@@ -666,7 +668,9 @@ void ShdDX8RendererNodeClass::Flush(int cur_pass)
 	}
 
 	DX8Wrapper::Set_Index_Buffer(IndexBuffer,0);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,Mesh->Get_Transform());
+#endif
 
 	DX8Wrapper::Set_Light_Environment(&LightEnvironment);
 	SubMesh->Peek_Shader()->Apply_Instance(cur_pass, *RenderInfo);

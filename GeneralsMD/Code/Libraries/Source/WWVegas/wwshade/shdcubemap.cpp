@@ -37,7 +37,6 @@
  * Currently unsupported due to cube map texture management needed by W3D
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#include <d3dx9math.h>
 #include "dx8fvf.h"
 #include "dx8wrapper.h"
 #include "assetmgr.h"
@@ -204,12 +203,14 @@ Shd6CubeMapClass::Shd6CubeMapClass(const ShdDefClass* def)
 	const Vector3& s=Definition->Get_Specular();
 	Specular.Set(s.X,s.Y,s.Z,1.0f);
 
+#ifdef TODO_VULKAN
 	Material=new D3DMATERIAL9;
 	memset(Material,0,sizeof(D3DMATERIAL9));
 	Material->Ambient.r=a.X; Material->Ambient.g=a.Y; Material->Ambient.b=a.Z; 
 	Material->Diffuse.r=d.X; Material->Diffuse.g=d.Y; Material->Diffuse.b=d.Z; 
 	Material->Specular.r=s.X; Material->Specular.g=s.Y; Material->Specular.b=s.Z;
 	Material->Power=20;
+#endif
 }
 
 Shd6CubeMapClass::~Shd6CubeMapClass()
@@ -232,6 +233,7 @@ void Shd6CubeMapClass::Shutdown()
 */
 void Shd6CubeMapClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 {
+#ifdef TODO_VULKAN
 	// fixed function uses pass through by default
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_CAMERASPACEREFLECTIONVECTOR); 
 
@@ -256,6 +258,7 @@ void Shd6CubeMapClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_EMISSIVEMATERIALSOURCE,D3DMCS_MATERIAL);
 
 	DX8Wrapper::Set_DX8_Material(Material);
+#endif
 }
 
 //**********************************************************************************************

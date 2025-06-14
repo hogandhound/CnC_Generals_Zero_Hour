@@ -220,6 +220,7 @@ void W3DDebugIcons::Render(RenderInfoClass & rinfo)
 	DX8Wrapper::Apply_Render_State_Changes();
 
 	Matrix3D tm(Transform);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
 
 	Int numRect = m_numDebugIcons;
@@ -312,6 +313,7 @@ void W3DDebugIcons::Render(RenderInfoClass & rinfo)
 		DX8Wrapper::Set_Vertex_Buffer(vb_access);
 		DX8Wrapper::Draw_Triangles(	0,curIndex/3, 0,	numVertex);	//draw a quad, 2 triangles, 4 verts
 	}
+#endif
 
 	if (anyVanished) {
 		compressIconsArray();

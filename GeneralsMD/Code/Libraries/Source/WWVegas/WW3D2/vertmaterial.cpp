@@ -59,7 +59,9 @@ class DynD3DMATERIAL9 : public W3DMPO
 {
 	W3DMPO_GLUE(DynD3DMATERIAL9)
 public:
+#ifdef TODO_VULKAN
 	D3DMATERIAL9 Mat;
+#endif
 };
 #define Material				(&MaterialDyn->Mat)
 #define SRCMATPTR(src)	(&(src)->MaterialDyn->Mat)
@@ -78,9 +80,11 @@ VertexMaterialClass::VertexMaterialClass(void):
 	MaterialOld(NULL),
 #endif
 	Flags(0),
+#ifdef TODO_VULKAN
 	AmbientColorSource(D3DMCS_MATERIAL),
 	EmissiveColorSource(D3DMCS_MATERIAL),
 	DiffuseColorSource(D3DMCS_MATERIAL),
+#endif
 	UseLighting(false),
 	UniqueID(0),
 	CRCDirty(true)
@@ -98,7 +102,9 @@ VertexMaterialClass::VertexMaterialClass(void):
 #else
 	MaterialOld=W3DNEW D3DMATERIAL9;
 #endif
+#ifdef TODO_VULKAN
 	memset(Material,0,sizeof(D3DMATERIAL9));
+#endif
 	Set_Ambient(1.0f,1.0f,1.0f);
 	Set_Diffuse(1.0f,1.0f,1.0f);
 
@@ -139,7 +145,9 @@ VertexMaterialClass::VertexMaterialClass(const VertexMaterialClass & src) :
 #else
 	MaterialOld=W3DNEW D3DMATERIAL9;
 #endif
+#ifdef TODO_VULKAN
 	memcpy(Material, SRCMATPTR(&src), sizeof(D3DMATERIAL9));
+#endif
 }
 
 void VertexMaterialClass::Make_Unique()
@@ -197,7 +205,9 @@ VertexMaterialClass & VertexMaterialClass::operator = (const VertexMaterialClass
 			UVSource[stage] = src.UVSource[stage];
 		}
 
+#ifdef TODO_VULKAN
 		*Material = *SRCMATPTR(&src);
+#endif
 	}
 	return *this;
 }
@@ -209,7 +219,9 @@ unsigned long VertexMaterialClass::Compute_CRC(void) const
 // don't include the name when determining whether two vertex materials match
 //	crc = CRC_Memory(reinterpret_cast<const unsigned char *>(Name.Peek_Buffer()),sizeof(char)*strlen(Name),crc);
 
+#ifdef TODO_VULKAN
 	crc = CRC_Memory(reinterpret_cast<const unsigned char *>(Material),sizeof(D3DMATERIAL9),crc);
+#endif
 	crc = CRC_Memory(reinterpret_cast<const unsigned char *>(&Flags),sizeof(Flags),crc);
 	crc = CRC_Memory(reinterpret_cast<const unsigned char *>(&DiffuseColorSource),sizeof(DiffuseColorSource),crc);
 	crc = CRC_Memory(reinterpret_cast<const unsigned char *>(&AmbientColorSource),sizeof(AmbientColorSource),crc);
@@ -231,185 +243,239 @@ unsigned long VertexMaterialClass::Compute_CRC(void) const
 
 void VertexMaterialClass::Get_Ambient(Vector3 * set) const
 {
-	assert(set); 
+	assert(set);
+#ifdef TODO_VULKAN
 	*set=Vector3(Material->Ambient.r,Material->Ambient.g,Material->Ambient.b);
+#endif
 }
 
 void VertexMaterialClass::Set_Ambient(const Vector3 & color)
 {
 	CRCDirty=true;
+#ifdef TODO_VULKAN
 	Material->Ambient.r=color.X;
 	Material->Ambient.g=color.Y;
 	Material->Ambient.b=color.Z;	
+#endif
 }
 
 void VertexMaterialClass::Set_Ambient(float r,float g,float b)
 {
 	CRCDirty=true;
+#ifdef TODO_VULKAN
 	Material->Ambient.r=r;
 	Material->Ambient.g=g;
 	Material->Ambient.b=b;	
+#endif
 }
 
 // Diffuse Get and Sets
 
 void VertexMaterialClass::Get_Diffuse(Vector3 * set) const
 {
-	assert(set); 
+	assert(set);
+#ifdef TODO_VULKAN
 	*set=Vector3(Material->Diffuse.r,Material->Diffuse.g,Material->Diffuse.b);
+#endif
 }
 
 void VertexMaterialClass::Set_Diffuse(const Vector3 & color)
 {
 	CRCDirty=true;
+#ifdef TODO_VULKAN
 	Material->Diffuse.r=color.X;
 	Material->Diffuse.g=color.Y;
-	Material->Diffuse.b=color.Z;	
+	Material->Diffuse.b=color.Z;
+#endif
 }
 
 void VertexMaterialClass::Set_Diffuse(float r,float g,float b)
 {
 	CRCDirty=true;
+#ifdef TODO_VULKAN
 	Material->Diffuse.r=r;
 	Material->Diffuse.g=g;
-	Material->Diffuse.b=b;	
+	Material->Diffuse.b=b;
+#endif
 }
 
 // Specular Get and Sets
 
 void VertexMaterialClass::Get_Specular(Vector3 * set) const
 {
-	assert(set); 
+	assert(set);
+#ifdef TODO_VULKAN
 	*set=Vector3(Material->Specular.r,Material->Specular.g,Material->Specular.b);
+#endif
 }
 
 void VertexMaterialClass::Set_Specular(const Vector3 & color)
 {
 	CRCDirty=true;
+#ifdef TODO_VULKAN
 	Material->Specular.r=color.X;
 	Material->Specular.g=color.Y;
-	Material->Specular.b=color.Z;	
+	Material->Specular.b=color.Z;
+#endif
 }
 
 void VertexMaterialClass::Set_Specular(float r,float g,float b)
 {
 	CRCDirty=true;
+#ifdef TODO_VULKAN
 	Material->Specular.r=r;
 	Material->Specular.g=g;
 	Material->Specular.b=b;
+#endif
 }
 
 // Emissive Get and Sets
 
 void VertexMaterialClass::Get_Emissive(Vector3 * set) const
 {
-	assert(set); 
+	assert(set);
+#ifdef TODO_VULKAN
 	*set=Vector3(Material->Emissive.r,Material->Emissive.g,Material->Emissive.b);
+#endif
 }
 
 void VertexMaterialClass::Set_Emissive(const Vector3 & color)
 {
 	CRCDirty=true;
+#ifdef TODO_VULKAN
 	Material->Emissive.r=color.X;
 	Material->Emissive.g=color.Y;
 	Material->Emissive.b=color.Z;
+#endif
 }
 
 void VertexMaterialClass::Set_Emissive(float r,float g,float b)
 {
 	CRCDirty=true;
+#ifdef TODO_VULKAN
 	Material->Emissive.r=r;
 	Material->Emissive.g=g;
 	Material->Emissive.b=b;
+#endif
 }
 
 
 float	VertexMaterialClass::Get_Shininess(void) const
 {
+#ifdef TODO_VULKAN
 	return Material->Power;
+#else
+	return 0.f;
+#endif
 }
 
 void	VertexMaterialClass::Set_Shininess(float shin)
 {
 	CRCDirty=true;
+#ifdef TODO_VULKAN
 	Material->Power=shin;
+#endif
 }
 
 float	VertexMaterialClass::Get_Opacity(void) const
 {
+#ifdef TODO_VULKAN
 	return Material->Diffuse.a;
+#else
+	return 0.f;
+#endif
 }
 
 void	VertexMaterialClass::Set_Opacity(float o)
 {
 	CRCDirty=true;
+#ifdef TODO_VULKAN
 	Material->Diffuse.a=o;
+#endif
 }
 
 void	VertexMaterialClass::Set_Ambient_Color_Source(ColorSourceType src)
 {
 	CRCDirty=true;
+#ifdef TODO_VULKAN
 	switch (src) 
 	{
 	case	COLOR1:		AmbientColorSource = D3DMCS_COLOR1; break;
 	case	COLOR2:		AmbientColorSource = D3DMCS_COLOR2; break;
 	default:				AmbientColorSource = D3DMCS_MATERIAL; break;
 	}
+#endif
 }
 
 void	VertexMaterialClass::Set_Emissive_Color_Source(ColorSourceType src)
 {
 	CRCDirty=true;
+#ifdef TODO_VULKAN
 	switch (src) 
 	{
 	case	COLOR1:		EmissiveColorSource = D3DMCS_COLOR1; break;
 	case	COLOR2:		EmissiveColorSource = D3DMCS_COLOR2; break;
 	default:				EmissiveColorSource = D3DMCS_MATERIAL; break;
 	}
+#endif
 }
 
 void	VertexMaterialClass::Set_Diffuse_Color_Source(ColorSourceType src)
 {
 	CRCDirty=true;
+#ifdef TODO_VULKAN
 	switch (src) 
 	{
 	case	COLOR1:		DiffuseColorSource = D3DMCS_COLOR1; break;
 	case	COLOR2:		DiffuseColorSource = D3DMCS_COLOR2; break;
 	default:				DiffuseColorSource = D3DMCS_MATERIAL; break;
 	}
+#endif
 }
 
 VertexMaterialClass::ColorSourceType 
 VertexMaterialClass::Get_Ambient_Color_Source(void)
 {
+#ifdef TODO_VULKAN
 	switch(AmbientColorSource) 
 	{
 	case D3DMCS_COLOR1:	return COLOR1;
 	case D3DMCS_COLOR2:	return COLOR2;
 	default:					return MATERIAL;
 	}
+#else
+	return COLOR1;
+#endif
 }	
 
 VertexMaterialClass::ColorSourceType 
 VertexMaterialClass::Get_Emissive_Color_Source(void)
 {
+#ifdef TODO_VULKAN
 	switch(EmissiveColorSource) 
 	{
 	case D3DMCS_COLOR1:	return COLOR1;
 	case D3DMCS_COLOR2:	return COLOR2;
 	default:					return MATERIAL;
 	}
+#else
+	return VertexMaterialClass::ColorSourceType::COLOR1;
+#endif
 }	
 
 VertexMaterialClass::ColorSourceType	
 VertexMaterialClass::Get_Diffuse_Color_Source(void)
 {
+#ifdef TODO_VULKAN
 	switch(DiffuseColorSource) 
 	{
 	case D3DMCS_COLOR1:	return COLOR1;
 	case D3DMCS_COLOR2:	return COLOR2;
 	default:					return MATERIAL;
 	}
+#else
+	return COLOR1;
+#endif
 }
 
 void VertexMaterialClass::Set_UV_Source(int stage,int array_index)
@@ -948,6 +1014,7 @@ WW3DErrorType VertexMaterialClass::Save_W3D(ChunkSaveClass & csave)
 
 void VertexMaterialClass::Apply(void) const
 {
+#ifdef TODO_VULKAN
 	int i;
 
 	DX8Wrapper::Set_DX8_Material(Material);
@@ -969,10 +1036,12 @@ void VertexMaterialClass::Apply(void) const
 			DX8Wrapper::Set_DX8_Texture_Stage_State(i,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_DISABLE);		
 		}
 	}
+#endif
 }
 
 void VertexMaterialClass::Apply_Null(void)
 {
+#ifdef TODO_VULKAN
 	int i;
 	static D3DMATERIAL9 default_settings = 
 	{
@@ -995,6 +1064,7 @@ void VertexMaterialClass::Apply_Null(void)
 		DX8Wrapper::Set_DX8_Texture_Stage_State(i,D3DTSS_TEXCOORDINDEX,D3DTSS_TCI_PASSTHRU | i);	
 		DX8Wrapper::Set_DX8_Texture_Stage_State(i,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_DISABLE);		
 	}
+#endif
 }
 
 

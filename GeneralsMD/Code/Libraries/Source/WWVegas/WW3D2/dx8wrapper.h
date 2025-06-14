@@ -48,7 +48,6 @@
 
 #include "always.h"
 #include "dllist.h"
-#include "d3d9.h"
 #include "matrix4.h"
 #include "statistics.h"
 #include "wwstring.h"
@@ -124,8 +123,10 @@ void Log_DX8_ErrorCode(unsigned res);
 
 WWINLINE void DX8_ErrorCode(unsigned res)
 {
+#ifdef TODO_VULKAN
 	if (res==D3D_OK) return;
 	Log_DX8_ErrorCode(res);
+#endif
 }
 
 #ifdef WWDEBUG
@@ -182,7 +183,9 @@ struct RenderStateStruct
 	ShaderClass shader;
 	VertexMaterialClass* material;
 	TextureBaseClass * Textures[MAX_TEXTURE_STAGES];
+#ifdef TODO_VULKAN
 	D3DLIGHT9 Lights[4];
+#endif
 	bool LightEnable[4];
   //unsigned lightsHash;
 	Matrix4x4 world;
@@ -283,7 +286,9 @@ public:
 
 	static void Clear(bool clear_color, bool clear_z_stencil, const Vector3 &color, float dest_alpha=0.0f, float z=1.0f, unsigned int stencil=0);
 
+#ifdef TODO_VULKAN
 	static void	Set_Viewport(CONST D3DVIEWPORT9* pViewport);
+#endif
 
 	static void Set_Vertex_Buffer(const VertexBufferClass* vb, unsigned stream=0);
 	static void Set_Vertex_Buffer(const DynamicVBAccessClass& vba);
@@ -295,7 +300,9 @@ public:
 	static void Set_Render_State(const RenderStateStruct& state);
 	static void Release_Render_State();
 
+#ifdef TODO_VULKAN
 	static void Set_DX8_Material(const D3DMATERIAL9* mat);
+#endif
 
 	static void Set_Gamma(float gamma,float bright,float contrast,bool calibrate=true,bool uselimit=true);
 
@@ -304,9 +311,11 @@ public:
 	static void Set_DX8_ZBias(int zbias);
 	static void Set_Projection_Transform_With_Z_Bias(const Matrix4x4& matrix,float znear, float zfar);	// pointer to 16 matrices
 
+#ifdef TODO_VULKAN
 	static void Set_Transform(D3DTRANSFORMSTATETYPE transform,const Matrix4x4& m);
 	static void Set_Transform(D3DTRANSFORMSTATETYPE transform,const Matrix3D& m);
 	static void Get_Transform(D3DTRANSFORMSTATETYPE transform, Matrix4x4& m);
+#endif
 	static void	Set_World_Identity();
 	static void Set_View_Identity();
 	static bool	Is_World_Identity();
@@ -314,21 +323,25 @@ public:
 
 	// Note that *_DX8_Transform() functions take the matrix in DX8 format - transposed from Westwood convention.
 
+#ifdef TODO_VULKAN
 	static void _Set_DX8_Transform(D3DTRANSFORMSTATETYPE transform,const Matrix4x4& m);
 	static void _Set_DX8_Transform(D3DTRANSFORMSTATETYPE transform,const Matrix3D& m);
 	static void _Get_DX8_Transform(D3DTRANSFORMSTATETYPE transform, Matrix4x4& m);
 
 	static void Set_DX8_Light(int index,D3DLIGHT9* light);
 	static void Set_DX8_Render_State(D3DRENDERSTATETYPE state, unsigned value);
-	static void Set_DX8_Clip_Plane(DWORD Index, CONST float* pPlane);
 	static void Set_DX8_Texture_Stage_State(unsigned stage, D3DTEXTURESTAGESTATETYPE state, unsigned value);
 	static void Set_DX8_Sampler_Stage_State(unsigned stage, D3DSAMPLERSTATETYPE state, unsigned value);
 	static void Set_DX8_Texture(unsigned int stage, IDirect3DBaseTexture9* texture);
+#endif
+	static void Set_DX8_Clip_Plane(DWORD Index, CONST float* pPlane);
 	static void Set_Light_Environment(LightEnvironmentClass* light_env);
 	static LightEnvironmentClass* Get_Light_Environment() { return Light_Environment; }
 	static void Set_Fog(bool enable, const Vector3 &color, float start, float end);
 
+#ifdef TODO_VULKAN
 	static WWINLINE const D3DLIGHT9& Peek_Light(unsigned index);
+#endif
 	static WWINLINE bool Is_Light_Enabled(unsigned index);
 
 	static bool Validate_Device(void);
@@ -339,7 +352,9 @@ public:
 	static void Get_Shader(ShaderClass& shader);
 	static void Set_Texture(unsigned stage,TextureBaseClass* texture);
 	static void Set_Material(const VertexMaterialClass* material);
+#ifdef TODO_VULKAN
 	static void Set_Light(unsigned index,const D3DLIGHT9* light);
+#endif
 	static void Set_Light(unsigned index,const LightClass &light);
 
 	static void Apply_Render_State_Changes();	// Apply deferred render state changes (will be called automatically by Draw...)
@@ -371,8 +386,10 @@ public:
 		unsigned int height,
 		unsigned int depth,
 		WW3DFormat format,
-		MipCountType mip_level_count,
-		D3DPOOL pool=D3DPOOL_MANAGED
+		MipCountType mip_level_count
+#ifdef TODO_VULKAN
+		, D3DPOOL pool=D3DPOOL_MANAGED
+#endif
 	);
 
 	static IDirect3DCubeTexture9* _Create_DX8_Cube_Texture
@@ -381,7 +398,9 @@ public:
 		unsigned int height,
 		WW3DFormat format,
 		MipCountType mip_level_count,
+#ifdef TODO_VULKAN
 		D3DPOOL pool=D3DPOOL_MANAGED,
+#endif
 		bool rendertarget=false
 	);
 
@@ -391,8 +410,10 @@ public:
 		unsigned int width,
 		unsigned int height,
 		WW3DZFormat zformat,
-		MipCountType mip_level_count,
-		D3DPOOL pool=D3DPOOL_MANAGED
+		MipCountType mip_level_count
+#ifdef TODO_VULKAN
+		, D3DPOOL pool=D3DPOOL_MANAGED
+#endif
 	);
 
 
@@ -402,9 +423,12 @@ public:
 		unsigned int height,
 		WW3DFormat format,
 		MipCountType mip_level_count,
+#ifdef TODO_VULKAN
 		D3DPOOL pool=D3DPOOL_MANAGED,
+#endif
 		bool rendertarget=false
 	);
+#ifdef TODO_VULKAN
 	static IDirect3DTexture9 * _Create_DX8_Texture(const char *filename, MipCountType mip_level_count);
 	static IDirect3DTexture9 * _Create_DX8_Texture(IDirect3DSurface9 *surface, MipCountType mip_level_count);
 
@@ -420,13 +444,16 @@ public:
 			IDirect3DSurface9* pDestinationSurface,
 			CONST POINT* pDestPointsArray
 	);
+#endif
 
 	static void _Update_Texture(TextureClass *system, TextureClass *video);
 	static void Flush_DX8_Resource_Manager(unsigned int bytes=0);
 	static unsigned int Get_Free_Texture_RAM();
 
 	static unsigned _Get_Main_Thread_ID() { return _MainThreadID; }
+#ifdef TODO_VULKAN
 	static const D3DADAPTER_IDENTIFIER9& Get_Current_Adapter_Identifier() { return CurrentAdapterIdentifier; }
+#endif
 
 	/*
 	** Statistics
@@ -448,7 +475,9 @@ public:
 
 	// Needed by shader class
 	static bool						Get_Fog_Enable() { return FogEnable; }
+#ifdef TODO_VULKAN
 	static D3DCOLOR				Get_Fog_Color() { return FogColor; }
+#endif
 
 	// Utilities
 	static Vector4 Convert_Color(unsigned color);
@@ -480,7 +509,9 @@ public:
 	**	DX8Wrapper::Set_Render_Target ((IDirect3DSurface9 *)NULL);
 	**
 	*/
+#ifdef TODO_VULKAN
 	static IDirect3DSwapChain9 *	Create_Additional_Swap_Chain (HWND render_window);
+#endif
 
 	/*
 	** Render target interface. If render target format is WW3D_FORMAT_UNKNOWN, current display format is used.
@@ -490,7 +521,9 @@ public:
 	static void					Set_Render_Target (IDirect3DSurface9 *render_target, bool use_default_depth_buffer = false);
 	static void					Set_Render_Target (IDirect3DSurface9* render_target, IDirect3DSurface9* dpeth_buffer);
 
+#ifdef TODO_VULKAN
 	static void					Set_Render_Target (IDirect3DSwapChain9 *swap_chain);
+#endif
 	static bool					Is_Render_To_Texture(void) { return IsRenderToTexture; }
 
 	// for depth map support KJM V
@@ -513,8 +546,10 @@ public:
 	static void Apply_Default_State();
 
 	static void Set_Vertex_Shader(DWORD vertex_shader);
+#ifdef TODO_VULKAN
 	static void Set_Vertex_Shader(IDirect3DVertexShader9* vertex_shader);
 	static void Set_Pixel_Shader(IDirect3DPixelShader9* pixel_shader);
+#endif
 
 	static void Set_Vertex_Shader_Constant(int reg, const void* data, int count);
 	static void Set_Pixel_Shader_Constant(int reg, const void* data, int count);
@@ -529,8 +564,10 @@ public:
 
 
 
+#ifdef TODO_VULKAN
 	static IDirect3DDevice9* _Get_D3D_Device8() { return D3DDevice; }
 	static IDirect3D9* _Get_D3D8() { return D3DInterface; }
+#endif
 	/// Returns the display format - added by TR for video playback - not part of W3D
 	static WW3DFormat	getBackBufferFormat( void );
 	static bool Reset_Device(bool reload_assets=true);
@@ -540,6 +577,7 @@ public:
 	static bool Registry_Save_Render_Device( const char * sub_key );
 	static bool Registry_Load_Render_Device( const char * sub_key, bool resize_window );
 
+#ifdef TODO_VULKAN
 	static const char* Get_DX8_Render_State_Name(D3DRENDERSTATETYPE state);
 	static const char* Get_DX8_Texture_Stage_State_Name(D3DTEXTURESTAGESTATETYPE state);
 	static const char* Get_DX8_Sampler_Stage_State_Name(D3DSAMPLERSTATETYPE state);
@@ -549,6 +587,7 @@ public:
 	static void Get_DX8_Texture_Stage_State_Value_Name(StringClass& name, D3DTEXTURESTAGESTATETYPE state, unsigned value);
 	static void Get_DX8_Sampler_Stage_State_Value_Name(StringClass& name, D3DSAMPLERSTATETYPE state, unsigned value);
 	static void Get_DX8_Render_State_Value_Name(StringClass& name, D3DRENDERSTATETYPE state, unsigned value);
+#endif
 
 	static const char* Get_DX8_Texture_Address_Name(unsigned value);
 	static const char* Get_DX8_Texture_Filter_Name(unsigned value);
@@ -617,10 +656,12 @@ protected:
 	/*
 	** Internal functions
 	*/
+#ifdef TODO_VULKAN
 	static bool Find_Color_And_Z_Mode(int resx,int resy,int bitdepth,D3DFORMAT * set_colorbuffer,D3DFORMAT * set_backbuffer, D3DFORMAT * set_zmode);
 	static bool Find_Color_Mode(D3DFORMAT colorbuffer, int resx, int resy, UINT *mode);
 	static bool Find_Z_Mode(D3DFORMAT colorbuffer,D3DFORMAT backbuffer, D3DFORMAT *zmode);
 	static bool Test_Z_Mode(D3DFORMAT colorbuffer,D3DFORMAT backbuffer, D3DFORMAT zmode);
+#endif
 	static void Compute_Caps(WW3DFormat display_format);
 
 	/*
@@ -631,7 +672,11 @@ protected:
 
 	static RenderStateStruct			render_state;
 	static unsigned						render_state_changed;
+#ifdef TODO_VULKAN
 	static Matrix4x4						DX8Transforms[D3DTS_WORLD+1];
+#else
+	static Matrix4x4						DX8Transforms[256 + 1];
+#endif
 
 	static bool								IsInitted;
 	static bool								IsDeviceLost;
@@ -646,16 +691,19 @@ protected:
 	static int								BitDepth;
 	static int								TextureBitDepth;
 	static bool								IsWindowed;
+#ifdef TODO_VULKAN
 	static D3DFORMAT					DisplayFormat;
 	
 	static D3DMATRIX						old_world;
-	static D3DMATRIX						old_view;
+	static D3DMATRIX						old_vie#endifw;
 	static D3DMATRIX						old_prj;
 
 	// shader system updates KJM v
 	static DWORD							Vertex_Shader_FVF;
 	static IDirect3DVertexShader9* Vertex_Shader_Ptr;
 	static IDirect3DPixelShader9* Pixel_Shader;
+#endif
+
 
 	static Vector4							Vertex_Shader_Constants[MAX_VERTEX_SHADER_CONSTANTS];
 	static Vector4							Pixel_Shader_Constants[MAX_PIXEL_SHADER_CONSTANTS];
@@ -679,7 +727,9 @@ protected:
 	// These fog settings are constant for all objects in a given scene,
 	// unlike the matching renderstates which vary based on shader settings.
 	static bool								FogEnable;
+#ifdef TODO_VULKAN
 	static D3DCOLOR						FogColor;
+#endif
 
 	static unsigned						matrix_changes;
 	static unsigned						material_changes;
@@ -696,10 +746,12 @@ protected:
 
 	static DX8Caps*						CurrentCaps;
 
+#ifdef TODO_VULKAN
 	static D3DADAPTER_IDENTIFIER9		CurrentAdapterIdentifier;
 
 	static IDirect3D9 *					D3DInterface;			//d3d8;
 	static IDirect3DDevice9 *			D3DDevice;				//d3ddevice8;
+#endif
 
 	static IDirect3DSurface9 *			CurrentRenderTarget;
 	static IDirect3DSurface9 *			CurrentDepthBuffer;
@@ -722,6 +774,7 @@ protected:
 };
 
 // shader system updates KJM v
+#ifdef TODO_VULKAN
 WWINLINE void DX8Wrapper::Set_Vertex_Shader(DWORD vertex_shader)
 {
 #if 0 //(gth) some code is bypassing this acessor function so we can't count on this variable...
@@ -812,6 +865,7 @@ WWINLINE void DX8Wrapper::_Get_DX8_Transform(D3DTRANSFORMSTATETYPE transform, Ma
 {
 	DX8CALL(GetTransform(transform,(D3DMATRIX*)&m));
 }
+#endif
 
 // ----------------------------------------------------------------------------
 //
@@ -838,6 +892,7 @@ WWINLINE void DX8Wrapper::Set_Fog(bool enable, const Vector3 &color, float start
 {
 	// Set global states
 	FogEnable = enable;
+#ifdef TODO_VULKAN
 	FogColor = Convert_Color(color,0.0f);
 
 	// Invalidate the current shader (since the renderstates set by the shader
@@ -847,13 +902,16 @@ WWINLINE void DX8Wrapper::Set_Fog(bool enable, const Vector3 &color, float start
 	// Set renderstates which are not affected by the shader
 	Set_DX8_Render_State(D3DRS_FOGSTART, *(DWORD *)(&start));
 	Set_DX8_Render_State(D3DRS_FOGEND,   *(DWORD *)(&end));
+#endif
 }
 
 
 WWINLINE void DX8Wrapper::Set_Ambient(const Vector3& color)
 {
 	Ambient_Color=color;
+#ifdef TODO_VULKAN
 	Set_DX8_Render_State(D3DRS_AMBIENT, DX8Wrapper::Convert_Color(color,0.0f));
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -864,6 +922,7 @@ WWINLINE void DX8Wrapper::Set_Ambient(const Vector3& color)
 //
 // ----------------------------------------------------------------------------
 
+#ifdef TODO_VULKAN
 WWINLINE void DX8Wrapper::Set_DX8_Material(const D3DMATERIAL9* mat)
 {
 	DX8_RECORD_MATERIAL_CHANGE();
@@ -908,12 +967,15 @@ WWINLINE void DX8Wrapper::Set_DX8_Render_State(D3DRENDERSTATETYPE state, unsigne
 	DX8CALL(SetRenderState( state, value ));
 	DX8_RECORD_RENDER_STATE_CHANGE();
 }
-
+#endif
 WWINLINE void DX8Wrapper::Set_DX8_Clip_Plane(DWORD Index, CONST float* pPlane)
 {
+#ifdef TODO_VULKAN
 	DX8CALL(SetClipPlane( Index, pPlane ));
+#endif
 }
 
+#ifdef TODO_VULKAN
 WWINLINE void DX8Wrapper::Set_DX8_Texture_Stage_State(unsigned stage, D3DTEXTURESTAGESTATETYPE state, unsigned value)
 {
   	if (stage >= MAX_TEXTURE_STAGES)
@@ -1022,6 +1084,7 @@ WWINLINE void DX8Wrapper::_Copy_DX8_Rects(
 	}
 #endif
 }
+#endif
 
 WWINLINE Vector4 DX8Wrapper::Convert_Color(unsigned color)
 {
@@ -1292,6 +1355,7 @@ WWINLINE void DX8Wrapper::Set_Projection_Transform_With_Z_Bias(const Matrix4x4& 
 	ZNear=znear;
 	ProjectionMatrix=matrix.Transpose();
 
+#ifdef TODO_VULKAN
 	if (!Get_Current_Caps()->Support_ZBias() && ZNear!=ZFar) {
 		Matrix4x4 tmp=ProjectionMatrix;
 		float tmp_zbias=ZBias;
@@ -1303,6 +1367,7 @@ WWINLINE void DX8Wrapper::Set_Projection_Transform_With_Z_Bias(const Matrix4x4& 
 	else {
 		DX8CALL(SetTransform(D3DTS_PROJECTION,(D3DMATRIX*)&ProjectionMatrix));
 	}
+#endif
 }
 
 WWINLINE void DX8Wrapper::Set_DX8_ZBias(int zbias)
@@ -1312,6 +1377,7 @@ WWINLINE void DX8Wrapper::Set_DX8_ZBias(int zbias)
 	if (zbias<0) zbias=0;
 	ZBias=zbias;
 
+#ifdef TODO_VULKAN
 	if (!Get_Current_Caps()->Support_ZBias() && ZNear!=ZFar) {
 		Matrix4x4 tmp=ProjectionMatrix;
 		float tmp_zbias=ZBias;
@@ -1323,8 +1389,10 @@ WWINLINE void DX8Wrapper::Set_DX8_ZBias(int zbias)
 	else {
 		Set_DX8_Render_State (D3DRS_DEPTHBIAS,ZBias * -0.000005f);
 	}
+#endif
 }
 
+#ifdef TODO_VULKAN
 WWINLINE void DX8Wrapper::Set_Transform(D3DTRANSFORMSTATETYPE transform,const Matrix4x4& m)
 {
 	switch ((int)transform) {
@@ -1375,6 +1443,7 @@ WWINLINE void DX8Wrapper::Set_Transform(D3DTRANSFORMSTATETYPE transform,const Ma
 		break;
 	}
 }
+#endif
 
 WWINLINE void DX8Wrapper::Set_World_Identity()
 {
@@ -1400,6 +1469,7 @@ WWINLINE bool DX8Wrapper::Is_View_Identity()
 	return !!(render_state_changed&(unsigned)VIEW_IDENTITY);
 }
 
+#ifdef TODO_VULKAN
 WWINLINE void DX8Wrapper::Get_Transform(D3DTRANSFORMSTATETYPE transform, Matrix4x4& m)
 {
 	D3DMATRIX mat;
@@ -1425,6 +1495,7 @@ WWINLINE const D3DLIGHT9& DX8Wrapper::Peek_Light(unsigned index)
 {
 	return render_state.Lights[index];;
 }
+#endif
 
 WWINLINE bool DX8Wrapper::Is_Light_Enabled(unsigned index)
 {
@@ -1551,6 +1622,7 @@ WWINLINE RenderStateStruct& RenderStateStruct::operator= (const RenderStateStruc
 	LightEnable[1]=src.LightEnable[1];
 	LightEnable[2]=src.LightEnable[2];
 	LightEnable[3]=src.LightEnable[3];
+#ifdef TODO_VULKAN
 	if (LightEnable[0]) {
 		Lights[0]=src.Lights[0];
 		if (LightEnable[1]) {
@@ -1567,6 +1639,7 @@ WWINLINE RenderStateStruct& RenderStateStruct::operator= (const RenderStateStruc
     //lightsHash = flimby((char*)(&Lights[0]), sizeof(D3DLIGHT9)-1 );
 
 	}
+#endif
 
 	shader=src.shader;
 	world=src.world;

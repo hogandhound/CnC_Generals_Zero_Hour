@@ -86,6 +86,7 @@ static ShaderClass detailAlphaShader(SC_ALPHA_DETAIL);
 //=============================================================================
 void W3DBibBuffer::loadBibsInVertexAndIndexBuffers(void)
 {
+#ifdef TODO_VULKAN
 	if (!m_indexBib || !m_vertexBib || !m_initialized) {
 		return;
 	}
@@ -200,6 +201,7 @@ void W3DBibBuffer::loadBibsInVertexAndIndexBuffers(void)
 	} catch(...) {
 		IndexBufferExceptionFunc();
 	}
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -265,8 +267,10 @@ void W3DBibBuffer::freeBibBuffers(void)
 //=============================================================================
 void W3DBibBuffer::allocateBibBuffers(void)
 {
+#ifdef TODO_VULKAN
 	m_vertexBib=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV1,m_vertexBibSize+4,DX8VertexBufferClass::USAGE_DYNAMIC));
 	m_indexBib=NEW_REF(DX8IndexBufferClass,(m_indexBibSize+4, DX8IndexBufferClass::USAGE_DYNAMIC));
+#endif
 	m_curNumBibVertices=0;
 	m_curNumBibIndices=0;
 }

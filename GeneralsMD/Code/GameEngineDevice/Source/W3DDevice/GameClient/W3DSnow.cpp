@@ -65,10 +65,11 @@ void W3DSnowManager::ReleaseResources(void)
 {
 	REF_PTR_RELEASE(m_snowTexture);
 
+#ifdef TODO_VULKAN
 	if (m_VertexBufferD3D)
 		m_VertexBufferD3D->Release();
-
 	m_VertexBufferD3D=NULL;
+#endif
 
 	REF_PTR_RELEASE(m_indexBuffer);
 }
@@ -83,6 +84,7 @@ Bool W3DSnowManager::ReAcquireResources(void)
 
 	if (TheWeatherSetting->m_usePointSprites && DX8Wrapper::Get_Current_Caps()->Support_PointSprites())
 	{
+#ifdef TODO_VULKAN
 		LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 		DEBUG_ASSERTCRASH(m_pDev, ("Trying to ReAquireResources on W3DSnowManager without device"));
@@ -100,6 +102,7 @@ Bool W3DSnowManager::ReAcquireResources(void)
 			)))
 				return FALSE;
 		}
+#endif
 	}
 	else
 	{
@@ -270,11 +273,13 @@ void W3DSnowManager::renderSubBox(RenderInfoClass &rinfo, Int originX, Int origi
 		if((m_dwBase + batchSize) > m_dwDiscard)
 			m_dwBase = 0;
 
+#ifdef TODO_VULKAN
 		POINTVERTEX* verts;
 
 		if(m_VertexBufferD3D->Lock(m_dwBase * sizeof(POINTVERTEX), batchSize * sizeof(POINTVERTEX),
 			(void **) &verts, m_dwBase ? D3DLOCK_NOOVERWRITE : D3DLOCK_DISCARD) != D3D_OK )
 			return;	//couldn't lock buffer.
+#endif
 
 		Int numberInBatch=0;
 
@@ -282,6 +287,7 @@ void W3DSnowManager::renderSubBox(RenderInfoClass &rinfo, Int originX, Int origi
 		{
 			for (Int x=cubeOriginXRemainder; x<cubeDimX; x++)
 			{
+#ifdef TODO_VULKAN
 				if (numberInBatch >= batchSize)
 				{	cubeOriginXRemainder = x;
 					goto flush_particles;
@@ -305,6 +311,7 @@ void W3DSnowManager::renderSubBox(RenderInfoClass &rinfo, Int originX, Int origi
 
 				*(Vector3 *)verts=snowCenter;
 				verts++;
+#endif
 
 				numberInBatch++;
 			}
@@ -312,6 +319,7 @@ void W3DSnowManager::renderSubBox(RenderInfoClass &rinfo, Int originX, Int origi
 			cubeOriginXRemainder = originX;	//reset to normal amount
 		}
 
+#ifdef TODO_VULKAN
 flush_particles:
 		m_VertexBufferD3D->Unlock();
 		//Render any particles that may be queued up.
@@ -322,6 +330,8 @@ flush_particles:
 			totalPart -= numberInBatch;
 			m_dwBase += numberInBatch;
 		}
+#endif
+
 	}
 }
 
@@ -397,7 +407,9 @@ void W3DSnowManager::render(RenderInfoClass &rinfo)
 	m_heightTraveled=m_time*m_velocity+cameraOffset;	//height that snow flake traveled this frame.
 
 	Matrix4x4 identity(true);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,identity);	
+#endif
 
 	DX8Wrapper::Set_Shader(ShaderClass::_PresetAlphaShader);
 
@@ -424,6 +436,7 @@ void W3DSnowManager::render(RenderInfoClass &rinfo)
 
 	DX8Wrapper::Apply_Render_State_Changes();
 
+#ifdef TODO_VULKAN
     // Set the render states for using point sprites
 	DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSPRITEENABLE, TRUE );
     DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSCALEENABLE,  TRUE );
@@ -449,6 +462,7 @@ void W3DSnowManager::render(RenderInfoClass &rinfo)
 	// Reset render states
     DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSPRITEENABLE, FALSE );
     DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSCALEENABLE,  FALSE );
+#endif
 
 }
 
@@ -488,7 +502,9 @@ void W3DSnowManager::renderAsQuads(RenderInfoClass &rinfo, Int cubeOriginX, Int 
 	}
 
 	Matrix4x4 identity(true);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_VIEW,identity);	
+#endif
 
 	DX8Wrapper::Set_Index_Buffer(m_indexBuffer,0);
 

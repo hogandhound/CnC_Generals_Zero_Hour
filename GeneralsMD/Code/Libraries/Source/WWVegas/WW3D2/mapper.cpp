@@ -90,6 +90,7 @@ void ScaleTextureMapperClass::Apply(int uv_array_index)
 	// Set up the texture matrix
 	Matrix4x4 m;
 	Calculate_Texture_Matrix(m);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE) (D3DTS_TEXTURE0+Stage),m);
 
 	// Disable Texgen
@@ -97,6 +98,7 @@ void ScaleTextureMapperClass::Apply(int uv_array_index)
 
 	// Tell rasterizer to expect 2D texture coordinates
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2);
+#endif
 }
 
 void ScaleTextureMapperClass::Calculate_Texture_Matrix(Matrix4x4 &tex_matrix)
@@ -228,6 +230,7 @@ void GridTextureMapperClass::Apply(int uv_array_index)
 	// Set up the texture matrix
 	Matrix4x4 m;
 	Calculate_Texture_Matrix(m);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE) (D3DTS_TEXTURE0+Stage), m);
 
 	// Disable Texgen
@@ -235,6 +238,7 @@ void GridTextureMapperClass::Apply(int uv_array_index)
 
 	// Tell rasterizer to expect 2D texture coordinates
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
+#endif
 }
 
 void GridTextureMapperClass::Reset(void)
@@ -623,6 +627,7 @@ void ClassicEnvironmentMapperClass::Apply(int uv_array_index)
 	// Set up the texture matrix
 	Matrix4x4 m;
 	Calculate_Texture_Matrix(m);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE) (D3DTS_TEXTURE0+Stage),m);
 
 	// Get camera normals
@@ -630,6 +635,7 @@ void ClassicEnvironmentMapperClass::Apply(int uv_array_index)
 
 	// Tell rasterizer to expect 2D matrices
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2);
+#endif
 	
 }
 
@@ -649,6 +655,7 @@ void EnvironmentMapperClass::Apply(int uv_array_index)
 	// Set up the texture matrix
 	Matrix4x4 m;
 	Calculate_Texture_Matrix(m);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE) (D3DTS_TEXTURE0+Stage),m);
 
 	// Get camera reflection vector
@@ -656,6 +663,7 @@ void EnvironmentMapperClass::Apply(int uv_array_index)
 
 	// Tell rasterizer to expect 2D matrices
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2);
+#endif
 	
 }
 
@@ -705,6 +713,7 @@ void EdgeMapperClass::Apply(int uv_array_index)
 	// Set up the texture matrix
 	Matrix4x4 m;
 	Calculate_Texture_Matrix(m);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE) (D3DTS_TEXTURE0+Stage),m);
 
 	// Get camera reflection vector
@@ -715,6 +724,7 @@ void EdgeMapperClass::Apply(int uv_array_index)
 
 	// Tell rasterizer to expect 2D matrices
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2);
+#endif
 	
 }
 
@@ -793,8 +803,10 @@ void WSEnvMapperClass::Calculate_Texture_Matrix(Matrix4x4 &tex_matrix)
 			break;
 	}
 	// multiply by inverse of view transform	
-	Matrix4x4 mat;	
+	Matrix4x4 mat;
+#ifdef TODO_VULKAN
 	DX8Wrapper::Get_Transform(D3DTS_VIEW,mat);		
+#endif
 	Matrix4x4 mat2(	mat[0].X, mat[1].X, mat[2].X, 0.0f,
 						mat[0].Y, mat[1].Y, mat[2].Y, 0.0f,
 						mat[0].Z, mat[1].Z, mat[2].Z, 0.0f,
@@ -807,6 +819,7 @@ void WSClassicEnvironmentMapperClass::Apply(int uv_array_index)
 	// Set up the texture matrix
 	Matrix4x4 m;
 	Calculate_Texture_Matrix(m);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE) (D3DTS_TEXTURE0+Stage),m);
 
 	// Get camera normals
@@ -814,6 +827,7 @@ void WSClassicEnvironmentMapperClass::Apply(int uv_array_index)
 
 	// Tell rasterizer to expect 2D matrices
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2);
+#endif
 	
 }
 
@@ -822,6 +836,7 @@ void WSEnvironmentMapperClass::Apply(int uv_array_index)
 	// Set up the texture matrix
 	Matrix4x4 m;
 	Calculate_Texture_Matrix(m);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE) (D3DTS_TEXTURE0+Stage),m);	
 
 	// Get camera reflection
@@ -829,6 +844,7 @@ void WSEnvironmentMapperClass::Apply(int uv_array_index)
 
 	// Tell rasterizer to expect 2D matrices
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2);
+#endif
 	
 }
 
@@ -837,6 +853,7 @@ void GridClassicEnvironmentMapperClass::Apply(int uv_array_index)
 	// Set up the texture matrix
 	Matrix4x4 m;
 	Calculate_Texture_Matrix(m);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE) (D3DTS_TEXTURE0+Stage),m);
 
 	// Get camera normals
@@ -844,6 +861,7 @@ void GridClassicEnvironmentMapperClass::Apply(int uv_array_index)
 
 	// Tell rasterizer to expect 2D matrices
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2);
+#endif
 }
 
 void GridClassicEnvironmentMapperClass::Calculate_Texture_Matrix(Matrix4x4 &tex_matrix)
@@ -866,6 +884,7 @@ void GridEnvironmentMapperClass::Apply(int uv_array_index)
 	// Set up the texture matrix
 	Matrix4x4 m;
 	Calculate_Texture_Matrix(m);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE) (D3DTS_TEXTURE0+Stage),m);
 
 	// Get camera space reflection
@@ -873,6 +892,7 @@ void GridEnvironmentMapperClass::Apply(int uv_array_index)
 
 	// Tell rasterizer to expect 2D matrices
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2);
+#endif
 }
 
 void GridEnvironmentMapperClass::Calculate_Texture_Matrix(Matrix4x4 &tex_matrix)
@@ -895,6 +915,7 @@ void ScreenMapperClass::Apply(int uv_array_index)
 	// Set up the texture matrix
 	Matrix4x4 m;
 	Calculate_Texture_Matrix(m);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE) (D3DTS_TEXTURE0+Stage),m);	
 
 	// Get camera space position
@@ -902,6 +923,7 @@ void ScreenMapperClass::Apply(int uv_array_index)
 
 	// Tell rasterizer what to expect
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_PROJECTED | D3DTTFF_COUNT3);
+#endif
 }
 
 void ScreenMapperClass::Calculate_Texture_Matrix(Matrix4x4 &tex_matrix)
@@ -927,7 +949,9 @@ void ScreenMapperClass::Calculate_Texture_Matrix(Matrix4x4 &tex_matrix)
 
 	// multiply by projection matrix	
 	// followed by scale and translation
-	DX8Wrapper::Get_Transform(D3DTS_PROJECTION, tex_matrix);	
+#ifdef TODO_VULKAN
+	DX8Wrapper::Get_Transform(D3DTS_PROJECTION, tex_matrix);
+#endif
 	tex_matrix[0] *= Scale.X; // entire row since we're pre-multiplying
 	tex_matrix[1] *= Scale.Y;
 	Vector4 last(tex_matrix[3]); // this gets the w
@@ -1075,10 +1099,12 @@ void BumpEnvTextureMapperClass::Apply(int uv_array_index)
 	s=ScaleFactor * WWMath::Fast_Sin(CurrentAngle);
 
 	// Set the Bump Environment Matrix
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_BUMPENVMAT00, F2DW(c));
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_BUMPENVMAT01, F2DW(-s));
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_BUMPENVMAT10, F2DW(s));
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_BUMPENVMAT11, F2DW(c));
+#endif
 }
 
 /*
@@ -1153,8 +1179,10 @@ GridWSEnvMapperClass::GridWSEnvMapperClass(const INIClass &ini, const char *sect
 void GridWSEnvMapperClass::Calculate_Texture_Matrix(Matrix4x4 &tex_matrix)
 {
 	// multiply by inverse of view transform	
-	Matrix4x4 mat;	
-	DX8Wrapper::Get_Transform(D3DTS_VIEW,mat);		
+	Matrix4x4 mat;
+#ifdef TODO_VULKAN
+	DX8Wrapper::Get_Transform(D3DTS_VIEW,mat);
+#endif
 	Matrix4x4 mv (	mat[0].X, mat[1].X, mat[2].X, 0.0f,
 						mat[0].Y, mat[1].Y, mat[2].Y, 0.0f,
 						mat[0].Z, mat[1].Z, mat[2].Z, 0.0f,
@@ -1231,6 +1259,7 @@ void GridWSClassicEnvironmentMapperClass::Apply(int uv_array_index)
 	// Set up the texture matrix
 	Matrix4x4 m;
 	Calculate_Texture_Matrix(m);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE) (D3DTS_TEXTURE0+Stage),m);
 
 	// Get camera normals
@@ -1238,6 +1267,7 @@ void GridWSClassicEnvironmentMapperClass::Apply(int uv_array_index)
 
 	// Tell rasterizer to expect 2D matrices
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2);
+#endif
 }
 
 /***********************************************************************************************
@@ -1275,6 +1305,7 @@ void GridWSEnvironmentMapperClass::Apply(int uv_array_index)
 	// Set up the texture matrix
 	Matrix4x4 m;
 	Calculate_Texture_Matrix(m);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE) (D3DTS_TEXTURE0+Stage),m);
 
 	// Get camera space reflection
@@ -1282,4 +1313,5 @@ void GridWSEnvironmentMapperClass::Apply(int uv_array_index)
 
 	// Tell rasterizer to expect 2D matrices
 	DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2);
+#endif
 }

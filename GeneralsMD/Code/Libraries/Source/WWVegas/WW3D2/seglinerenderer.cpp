@@ -222,12 +222,14 @@ void SegLineRendererClass::Render
 	Vector4 * rgbas
 )
 {
+#ifdef TODO_VULKAN
 	Matrix4x4 view;
 	DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
 
 	Matrix4x4 identity(true);
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,identity);	
 	DX8Wrapper::Set_Transform(D3DTS_VIEW,identity);	
+#endif
 
 	/* 
 	** Handle texture UV offset animation (done once for entire line).
@@ -281,6 +283,7 @@ void SegLineRendererClass::Render
 
 		Vector3 xformed_pts[MAX_SEGLINE_POINT_BUFFER_SIZE];
 
+#ifdef TODO_VULKAN
 		Matrix3D view2(	view[0].X,view[0].Y,view[0].Z,view[0].W,
 								view[1].X,view[1].Y,view[1].Z,view[1].W,
 								view[2].X,view[2].Y,view[2].Z,view[2].W);
@@ -294,6 +297,7 @@ void SegLineRendererClass::Render
 
 		VectorProcessorClass::Transform(&xformed_pts[0],
 			&points[chidx], modelview, point_cnt);
+#endif
 
 
 		/*
@@ -1200,7 +1204,9 @@ void SegLineRendererClass::Render
 
 	}	// Chunking loop
 
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_VIEW,view);
+#endif
 
 }
 

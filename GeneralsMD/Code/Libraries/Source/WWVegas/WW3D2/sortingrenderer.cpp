@@ -44,8 +44,6 @@
 #include "dx8wrapper.h"
 #include "vertmaterial.h"
 #include "texture.h"
-#include "d3d9.h"
-#include "D3dx9math.h"
 #include "statistics.h"
 #include <wwprofile.h>
 #include <algorithm>
@@ -251,6 +249,7 @@ void SortingRendererClass::Insert_Triangles(
 	WWASSERT(vertex_buffer);
 	WWASSERT(state->vertex_count<=vertex_buffer->Get_Vertex_Count());
 
+#ifdef TODO_VULKAN
 	D3DXMATRIX mtx=(D3DXMATRIX&)state->sorting_state.world*(D3DXMATRIX&)state->sorting_state.view;
 	D3DXVECTOR3 vec=(D3DXVECTOR3&)state->bounding_sphere.Center;
 	D3DXVECTOR4 transformed_vec;
@@ -259,7 +258,7 @@ void SortingRendererClass::Insert_Triangles(
 		&vec,
 		&mtx); 
 	state->transformed_center=Vector3(transformed_vec[0],transformed_vec[1],transformed_vec[2]);
-
+#endif
 	
 	/// @todo lorenzen sez use a bucket sort here... and stop copying so much data so many times
 
@@ -371,9 +370,9 @@ static void Apply_Render_State(RenderStateStruct& render_state)
 		DX8Wrapper::Set_Texture(i,render_state.Textures[i]);
 	}
 
+#ifdef TODO_VULKAN
 	DX8Wrapper::_Set_DX8_Transform(D3DTS_WORLD,render_state.world);
 	DX8Wrapper::_Set_DX8_Transform(D3DTS_VIEW,render_state.view);
-
 
 
   if (!render_state.material->Get_Lighting())
@@ -403,7 +402,7 @@ static void Apply_Render_State(RenderStateStruct& render_state)
 	}
 	else 
 		DX8Wrapper::Set_DX8_Light(0,NULL);
-
+#endif
 
 }
 
@@ -448,8 +447,10 @@ void SortingRendererClass::Flush_Sorting_Pool()
 			memcpy(dest_verts, src_verts, sizeof(VertexFormatXYZNDUV2)*state->vertex_count);
 			dest_verts += state->vertex_count;
 
+#ifdef TODO_VULKAN
 			D3DXMATRIX d3d_mtx=(D3DXMATRIX&)state->sorting_state.world*(D3DXMATRIX&)state->sorting_state.view;
 			const Matrix4x4& mtx=(const Matrix4x4&)d3d_mtx;
+#endif
 
 			unsigned short* indices=NULL;
 			SortingIndexBufferClass* index_buffer=static_cast<SortingIndexBufferClass*>(state->sorting_state.index_buffer);
@@ -459,6 +460,7 @@ void SortingRendererClass::Flush_Sorting_Pool()
 			indices+=state->start_index;
 			indices+=state->sorting_state.iba_offset;
 
+#ifdef TODO_VULKAN
 			if (mtx[0][2] == 0.0f && mtx[1][2] == 0.0f && mtx[3][2] == 0.0f && mtx[2][2] == 1.0f) {
 				// The common case for particle systems.
 				for (int i=0;i<state->polygon_count;++i) {
@@ -505,6 +507,7 @@ void SortingRendererClass::Flush_Sorting_Pool()
 					DEBUG_ASSERTCRASH((! _isnan(tis_ptr->z) && _finite(tis_ptr->z)), ("Triangle has invalid center"));
 				}
 			}
+#endif
 
 			state->min_vertex_index=vertex_array_offset;
 
@@ -614,8 +617,10 @@ void SortingRendererClass::Flush()
 	WWPROFILE("SortingRenderer::Flush");
 	Matrix4x4 old_view;
 	Matrix4x4 old_world;
+#ifdef TODO_VULKAN
 	DX8Wrapper::Get_Transform(D3DTS_VIEW,old_view);
 	DX8Wrapper::Get_Transform(D3DTS_WORLD,old_world);
+#endif
 
 	while (SortingNodeStruct* state=sorted_list.Head()) {
 		state->Remove();
@@ -646,8 +651,10 @@ void SortingRendererClass::Flush()
 	DynamicVBAccessClass::_Reset(false);
 
 
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_VIEW,old_view);
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,old_world);
+#endif
 
 }
 
@@ -721,6 +728,7 @@ void SortingRendererClass::Insert_VolumeParticle(
 
 	// Transform the center point to view space for sorting
 
+#ifdef TODO_VULKAN
 	D3DXMATRIX mtx=(D3DXMATRIX&)state->sorting_state.world*(D3DXMATRIX&)state->sorting_state.view;
 	D3DXVECTOR3 vec=(D3DXVECTOR3&)state->bounding_sphere.Center;
 	D3DXVECTOR4 transformed_vec;
@@ -729,6 +737,7 @@ void SortingRendererClass::Insert_VolumeParticle(
 		&vec,
 		&mtx); 
 	state->transformed_center=Vector3(transformed_vec[0],transformed_vec[1],transformed_vec[2]);
+#endif
 
 
 	// BUT WHAT IS THE DEAL WITH THE VERTCOUNT AND POLYCOUNT BEING N BUT TRANSFORMED CENTER COUNT == 1

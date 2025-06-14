@@ -189,10 +189,12 @@ void RoadType::loadTexture(AsciiString path, Int ID)
 	m_roadTexture->Get_Filter().Set_U_Addr_Mode(TextureFilterClass::TEXTURE_ADDRESS_REPEAT);
 	m_roadTexture->Get_Filter().Set_V_Addr_Mode(TextureFilterClass::TEXTURE_ADDRESS_REPEAT);
 
+#ifdef TODO_VULKAN
 	m_vertexRoad=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV1,TheGlobalData->m_maxRoadVertex+4, (s_dynamic?DX8VertexBufferClass::USAGE_DYNAMIC:DX8VertexBufferClass::USAGE_DEFAULT)));
 	m_indexRoad=NEW_REF(DX8IndexBufferClass,(TheGlobalData->m_maxRoadIndex+4, (s_dynamic?DX8IndexBufferClass::USAGE_DYNAMIC:DX8IndexBufferClass::USAGE_DEFAULT)));
 	m_numRoadVertices=0;
 	m_numRoadIndices=0;
+#endif
 
 #ifdef LOAD_TEST_ASSETS
 	m_texturePath = path;
@@ -1231,18 +1233,20 @@ void W3DRoadBuffer::loadRoadsInVertexAndIndexBuffers()
 	}
 	m_curNumRoadVertices = 0;
 	m_curNumRoadIndices = 0;
-	VertexFormatXYZDUV1 *vb;
-	UnsignedShort *ib;
 	// Lock the buffers.
 	if (m_roadTypes[m_curRoadType].getIB() == NULL) {
 		this->m_roadTypes[m_curRoadType].setNumVertices(0);
 		this->m_roadTypes[m_curRoadType].setNumIndices(0);
 		return;
 	}
+#ifdef TODO_VULKAN
+	VertexFormatXYZDUV1 *vb;
+	UnsignedShort *ib;
 	DX8IndexBufferClass::WriteLockClass lockIdxBuffer(m_roadTypes[m_curRoadType].getIB(), s_dynamic?D3DLOCK_DISCARD:0);
 	DX8VertexBufferClass::WriteLockClass lockVtxBuffer(m_roadTypes[m_curRoadType].getVB(), s_dynamic?D3DLOCK_DISCARD:0);
 	vb=(VertexFormatXYZDUV1*)lockVtxBuffer.Get_Vertex_Array();
 	ib = lockIdxBuffer.Get_Index_Array();
+#endif
 	// Add to the index buffer & vertex buffer.
 
 	Int curRoad;
@@ -1253,7 +1257,9 @@ void W3DRoadBuffer::loadRoadsInVertexAndIndexBuffers()
 	for (corner = SEGMENT; corner < NUM_JOINS; corner = (TCorner)(corner+1)) {
 		for (curRoad=0; curRoad<m_numRoads; curRoad++) {
 			if (m_roads[curRoad].m_type == corner) {
+#ifdef TODO_VULKAN
 				loadRoadSegment(ib, vb, &m_roads[curRoad]);
+#endif
 			}
 		}		
 	}

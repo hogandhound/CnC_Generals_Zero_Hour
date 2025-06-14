@@ -52,7 +52,6 @@
 #include "W3DDevice/GameClient/TileData.h"
 #include "common/GlobalData.h"
 #include "WW3D2/dx8wrapper.h"
-#include "d3dx9tex.h"
 
 /******************************************************************************
 						TerrainTextureClass
@@ -97,6 +96,7 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 {
 	// D3DTexture is our texture;
 
+#ifdef TODO_VULKAN
 	IDirect3DSurface9 *surface_level;
 	D3DSURFACE_DESC surface_desc;
 	D3DLOCKED_RECT locked_rect;
@@ -199,6 +199,9 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 		Peek_D3D_Texture()->SetLOD(TheWritableGlobalData->m_textureReductionFactor);
 	}
 	return(surface_desc.Height);
+#else
+	return 0;
+#endif
 }
 
 #if 0 // old version.
@@ -363,7 +366,9 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 //=============================================================================
 void TerrainTextureClass::setLOD(Int LOD)
 {
+#ifdef TODO_VULKAN
 	if (Peek_D3D_Texture()) Peek_D3D_Texture()->SetLOD(LOD);
+#endif
 }
 //=============================================================================
 // TerrainTextureClass::update
@@ -376,6 +381,7 @@ Bool TerrainTextureClass::updateFlat(WorldHeightMap *htMap, Int xCell, Int yCell
 {
 	// D3DTexture is our texture;
 
+#ifdef TODO_VULKAN
 	IDirect3DSurface9 *surface_level;
 	D3DSURFACE_DESC surface_desc;
 	D3DLOCKED_RECT locked_rect;
@@ -426,6 +432,9 @@ Bool TerrainTextureClass::updateFlat(WorldHeightMap *htMap, Int xCell, Int yCell
 	surface_level->Release();
 	DX8_ErrorCode(D3DXFilterTexture(Peek_D3D_Texture(), NULL, 0, D3DX_FILTER_BOX));	
 	return(surface_desc.Height);
+#else
+	return 0;
+#endif
 }
 
 //=============================================================================
@@ -489,8 +498,10 @@ AlphaTerrainTextureClass::AlphaTerrainTextureClass( TextureClass *pBaseTex ):
 		WW3D_FORMAT_A1R5G5B5, MIP_LEVELS_1 )
 { 
 	// Attach the base texture's d3d texture.
+#ifdef TODO_VULKAN
 	IDirect3DTexture9 * d3d_tex = pBaseTex->Peek_D3D_Texture();
 	Set_D3D_Base_Texture(d3d_tex);
+#endif
 }
 
 
@@ -508,6 +519,7 @@ void AlphaTerrainTextureClass::Apply(unsigned int stage)
 {
 	// Do the base apply.
 	TextureClass::Apply(stage);
+#ifdef TODO_VULKAN
 	
 	// Set the bilinear or trilinear filtering.
 	if (TheGlobalData && TheGlobalData->m_bilinearTerrainTex || TheGlobalData->m_trilinearTerrainTex) {
@@ -631,6 +643,7 @@ void AlphaTerrainTextureClass::Apply(unsigned int stage)
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
 		}
 	}
+#endif
 }
 
 
@@ -769,6 +782,7 @@ int AlphaEdgeTextureClass::update256(WorldHeightMap *htMap)
 int AlphaEdgeTextureClass::update(WorldHeightMap *htMap)
 {
 	// D3DTexture is our texture;
+#ifdef TODO_VULKAN
 
 	IDirect3DSurface9 *surface_level;
 	D3DSURFACE_DESC surface_desc;
@@ -838,6 +852,9 @@ int AlphaEdgeTextureClass::update(WorldHeightMap *htMap)
 	surface_level->Release();
 	DX8_ErrorCode(D3DXFilterTexture(Peek_D3D_Texture(), NULL, 0, D3DX_FILTER_BOX));
 	return(surface_desc.Height);
+#else
+	return 0;
+#endif
 }
 
 void AlphaEdgeTextureClass::Apply(unsigned int stage)
@@ -1031,6 +1048,7 @@ understood by w3d. */
 //=============================================================================
 void CloudMapTerrainTextureClass::restore(void)
 {
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
 	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
 	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
@@ -1073,6 +1091,7 @@ void CloudMapTerrainTextureClass::restore(void)
 			DX8Wrapper::Set_DX8_Texture(i, NULL);
 		}
 	}
+#endif
 }
 
 /******************************************************************************
@@ -1107,6 +1126,7 @@ void ScorchTextureClass::Apply(unsigned int stage)
 {
 	// Do the base apply.
 	TextureClass::Apply(stage);
+#ifdef TODO_VULKAN
 	// Setup bilinear or trilinear filtering as specified in global data.
 	if (TheGlobalData && TheGlobalData->m_bilinearTerrainTex || TheGlobalData->m_trilinearTerrainTex) {
 		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
@@ -1137,6 +1157,7 @@ void ScorchTextureClass::Apply(unsigned int stage)
 
 	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
 	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+#endif
 }
 
 

@@ -30,6 +30,7 @@ W3DBufferManager *TheW3DBufferManager=NULL;	//singleton
 
 static int FVFTypeIndexList[W3DBufferManager::MAX_FVF]=
 {
+#ifdef TODO_VULKAN
 	D3DFVF_XYZ,
 	D3DFVF_XYZ|D3DFVF_DIFFUSE,
 	D3DFVF_XYZ|D3DFVF_TEX1,
@@ -48,6 +49,7 @@ static int FVFTypeIndexList[W3DBufferManager::MAX_FVF]=
 	D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX1,
 	D3DFVF_XYZRHW|D3DFVF_TEX2,
 	D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX2
+#endif
 };
 
 Int W3DBufferManager::getDX8Format(VBM_FVF_TYPES format)

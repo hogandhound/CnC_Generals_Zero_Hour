@@ -50,8 +50,10 @@
 #include "shd7bumpspecpass0.vsh_code.h"
 #include "shd7bumpspecpass1.vsh_code.h"
 
+#ifdef TODO_VULKAN
 ShdHWVertexShader		Shd7BumpSpecClass::Pass_0_Vertex_Shader;
 ShdHWVertexShader		Shd7BumpSpecClass::Pass_1_Vertex_Shader;
+#endif
 Matrix4x4				Shd7BumpSpecClass::View_Projection_Matrix;
 
 
@@ -112,6 +114,7 @@ void Shd7BumpSpecClass::Init()
 #endif
 	};
 
+#ifdef TODO_VULKAN
 	Pass_0_Vertex_Shader.Create
 	(
 		shd7bumpspecpass0_vsh_code,
@@ -123,13 +126,16 @@ void Shd7BumpSpecClass::Init()
 		shd7bumpspecpass1_vsh_code,
 		vertex_shader_declaration
 	);
+#endif
 
 }
 
 void Shd7BumpSpecClass::Shutdown()
 {
+#ifdef TODO_VULKAN
 	Pass_0_Vertex_Shader.Destroy();
 	Pass_1_Vertex_Shader.Destroy();
+#endif
 }
 
 
@@ -141,6 +147,7 @@ void Shd7BumpSpecClass::Shutdown()
 void Shd7BumpSpecClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 {
 	// vertex processing behavior
+#ifdef TODO_VULKAN
 	DX8Wrapper::_Get_D3D_Device8()->SetSoftwareVertexProcessing(!Pass_0_Vertex_Shader.Is_Using_Hardware());
 	//DX8Wrapper::Set_DX8_Render_State(D3DRS_SOFTWAREVERTEXPROCESSING,!Pass_0_Vertex_Shader.Is_Using_Hardware());
 
@@ -235,6 +242,7 @@ void Shd7BumpSpecClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 	DX8Wrapper::Get_Transform(D3DTS_PROJECTION, proj_matrix);
 
 	Matrix4x4::Multiply(proj_matrix, view_matrix, &View_Projection_Matrix);
+#endif
 }
 
 //**********************************************************************************************
@@ -248,6 +256,7 @@ void Shd7BumpSpecClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 
 	// set vertex shader constants
 	Matrix4x4 world;
+#ifdef TODO_VULKAN
 	DX8Wrapper::Get_Transform(D3DTS_WORLD, world);
 
 	Matrix4x4 world_view_proj_matrix;
@@ -264,6 +273,7 @@ void Shd7BumpSpecClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 		Diffuse,
 		Specular
 	);
+#endif
 
 	DX8Wrapper::Set_Vertex_Shader_Constant(CV_BUMPINESS, &Bumpiness, 1);
 }

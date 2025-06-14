@@ -168,8 +168,10 @@ Int W3DStatusCircle::initData(void)
 		ib+=3;	//skip the 3 indices we just filled
 	}
 
+#ifdef TODO_VULKAN
 	m_vertexBufferCircle=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV1,m_numTriangles*3,DX8VertexBufferClass::USAGE_DEFAULT));
 	m_vertexBufferScreen=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV1,2*3,DX8VertexBufferClass::USAGE_DEFAULT));
+#endif
 
 	//go with a preset material for now.
 	m_vertexMaterialClass=VertexMaterialClass::Get_Preset(VertexMaterialClass::PRELIT_DIFFUSE);
@@ -332,7 +334,9 @@ void W3DStatusCircle::Render(RenderInfoClass & rinfo)
 
 		tm.Set_Translation(vec);
 
+#ifdef TODO_VULKAN
 		DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
+#endif
 		DX8Wrapper::Draw_Triangles(	0,NUM_TRI, 0,	(m_numTriangles*3));
 	}
 
@@ -353,6 +357,7 @@ void W3DStatusCircle::Render(RenderInfoClass & rinfo)
 	Int clr = 255*intensity;
 	Int diffuse = (0xff<<24)|(clr<<16)|(clr<<8)|clr;	 // b g<<8 r<<16 a<<24.		 
 	updateScreenVB(diffuse);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
 	DX8Wrapper::Set_Shader(ShaderClass(SC_ADD));
 	DX8Wrapper::Set_Vertex_Buffer(m_vertexBufferScreen);
@@ -381,5 +386,6 @@ void W3DStatusCircle::Render(RenderInfoClass & rinfo)
 			DX8Wrapper::Draw_Triangles(	0,2, 0,	(2*3));
 			break;
 	}
+#endif
 	ShaderClass::Invalidate();
 }

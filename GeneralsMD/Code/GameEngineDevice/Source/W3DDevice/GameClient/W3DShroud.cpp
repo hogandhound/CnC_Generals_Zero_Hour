@@ -97,9 +97,11 @@ W3DShroud::W3DShroud(void)
 W3DShroud::~W3DShroud(void)
 {
 	ReleaseResources();
+#ifdef TODO_VULKAN
 	if (m_pSrcTexture)
 		m_pSrcTexture->Release();
 	m_pSrcTexture=NULL;
+#endif
 	if (m_finalFogData)
 		delete [] m_finalFogData;
 	if (m_currentFogData)
@@ -160,6 +162,7 @@ void W3DShroud::init(WorldHeightMap *pMap, Real worldCellSizeX, Real worldCellSi
  	memset(m_finalFogData,0,srcWidth*srcHeight);
 #endif
 
+#ifdef TODO_VULKAN
 #if defined(_DEBUG) || defined(_INTERNAL)
 	if (TheGlobalData && TheGlobalData->m_fogOfWarOn)
 		m_pSrcTexture = DX8Wrapper::_Create_DX8_Surface(srcWidth,srcHeight, WW3D_FORMAT_A4R4G4B4);
@@ -201,6 +204,7 @@ void W3DShroud::init(WorldHeightMap *pMap, Real worldCellSizeX, Real worldCellSi
 	//Force a refresh of shroud data since we just created a new source texture.
 	if (ThePartitionManager)
 		ThePartitionManager->refreshShroudForLocalPlayer();
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -208,9 +212,11 @@ void W3DShroud::init(WorldHeightMap *pMap, Real worldCellSizeX, Real worldCellSi
 void W3DShroud::reset()
 {
 	//Free old shroud data since it may no longer fit new map.
+#ifdef TODO_VULKAN
 	if (m_pSrcTexture)
 		m_pSrcTexture->Release();
 	m_pSrcTexture=NULL;
+#endif
 	if (m_finalFogData)
 		delete [] m_finalFogData;
 	m_finalFogData=NULL;
@@ -417,6 +423,7 @@ void W3DShroud::fillShroudData(W3DShroudLevel level)
 
 void W3DShroud::fillBorderShroudData(W3DShroudLevel level, SurfaceClass* pDestSurface)
 {
+#ifdef TODO_VULKAN
 	Int x,y;
 	UnsignedShort pixel;
 
@@ -503,6 +510,7 @@ void W3DShroud::fillBorderShroudData(W3DShroudLevel level, SurfaceClass* pDestSu
 		}
 	}
 	
+#endif
 }
 
 /**Set the shroud color within the border area of the map*/
@@ -528,8 +536,10 @@ void W3DShroud::render(CameraClass *cam)
 	if (!m_pSrcTexture)
 		return; //nothing to update from.  Must be in reset state.
 
+#ifdef TODO_VULKAN
 	if (DX8Wrapper::_Get_D3D_Device8() && (DX8Wrapper::_Get_D3D_Device8()->TestCooperativeLevel()) != D3D_OK)
 		return;	//device not ready to render anything
+#endif
 
 #if defined(_DEBUG) || defined(_INTERNAL)
 	if (TheGlobalData && TheGlobalData->m_fogOfWarOn != m_drawFogOfWar)
@@ -712,6 +722,7 @@ void W3DShroud::render(CameraClass *cam)
 	}
 
 	{
+#ifdef TODO_VULKAN
 		//USE_PERF_TIMER(shroudCopy)
 		DX8Wrapper::_Copy_DX8_Rects(
 				m_pSrcTexture,
@@ -719,6 +730,7 @@ void W3DShroud::render(CameraClass *cam)
 				1,
 				pDestSurface->Peek_D3D_Surface(),
 				&dstPoint);
+#endif
 	}
 
 	REF_PTR_RELEASE (pDestSurface);

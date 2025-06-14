@@ -37,7 +37,6 @@
 #define __W3DSHADERMANAGER_H_
 
 #include "WW3D2/Texture.h"
-#include "d3d9.h"
 enum FilterTypes;
 enum CustomScenePassModes;
 enum StaticGameLODLevel;
@@ -188,7 +187,9 @@ protected:
 ///converts viewport to black & white.
 class ScreenBWFilter : public W3DFilterInterface
 {
+#ifdef TODO_VULKAN
 	IDirect3DPixelShader9*	m_dwBWPixelShader;		///<D3D handle to pixel shader which tints texture to black & white.
+#endif
 public:
 	virtual Int init(void);			///<perform any one time initialization and validation
 	virtual Int shutdown(void);		///<release resources used by shader

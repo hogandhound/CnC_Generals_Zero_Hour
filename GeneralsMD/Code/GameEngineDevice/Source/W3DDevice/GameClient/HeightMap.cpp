@@ -61,7 +61,6 @@
 #include <coltest.h>
 #include <rinfo.h>
 #include <camera.h>
-#include <D3dx9core.h>
 #include "Common/GlobalData.h"
 #include "Common/PerfTimer.h"
 
@@ -1379,10 +1378,12 @@ Int HeightMapRenderObjClass::initHeightData(Int x, Int y, WorldHeightMap *pMap, 
 		Int numVertex = VERTEX_BUFFER_TILE_LENGTH*2*VERTEX_BUFFER_TILE_LENGTH*2;
 
 		for (i=0; i<m_numVertexBufferTiles; i++) {
+#ifdef TODO_VULKAN
 #ifdef USE_NORMALS	 
 			m_vertexBufferTiles[i]=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZNUV2,numVertex,DX8VertexBufferClass::USAGE_DEFAULT));
 #else
 			m_vertexBufferTiles[i]=NEW_REF(DX8VertexBufferClass,(DX8_VERTEX_FORMAT,numVertex,DX8VertexBufferClass::USAGE_DEFAULT));
+#endif
 #endif
 			m_vertexBufferBackup[i] = new char[numVertex*sizeof(VERTEX_FORMAT)];
 		} 
@@ -1964,7 +1965,9 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 	ShaderClass::Invalidate();
 
 	//	tm.Scale(ObjSpaceExtent);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
+#endif
 
 	//Apply the shader and material
 
@@ -1997,11 +2000,15 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 				DX8Wrapper::Set_Shader(ShaderClass::_PresetOpaqueSolidShader);
 				devicePasses=1;	//one pass solid, next in wireframe.
 				DX8Wrapper::Apply_Render_State_Changes();
+#ifdef TODO_VULKAN
 				DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_TFACTOR );
 				DX8Wrapper::Set_DX8_Render_State(D3DRS_TEXTUREFACTOR,0xff808080);
+#endif
 				doMultiPassWireFrame=TRUE;
 				renderTerrainPass(&rinfo.Camera);
+#ifdef TODO_VULKAN
 				DX8Wrapper::Set_DX8_Render_State(D3DRS_TEXTUREFACTOR,0xff008000);
+#endif
 				return;
 			}
 	}
@@ -2050,8 +2057,10 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
  		W3DShaderManager::setTexture(2,m_stageTwoTexture);	//cloud
  		W3DShaderManager::setTexture(3,m_stageThreeTexture);//noise
 		//Disable writes to destination alpha channel (if there is one)
+#ifdef TODO_VULKAN
 		if (DX8Wrapper::getBackBufferFormat() == WW3D_FORMAT_A8R8G8B8)
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+#endif
 	}
 
 	Int pass;
@@ -2200,6 +2209,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 ///Performs additional terrain rendering pass, blending in the black shroud texture.
 void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 {
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,Matrix3D(1));
 
 	//Apply the shader and material
@@ -2239,6 +2249,7 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 				DX8Wrapper::Draw_Triangles(	0,numPolys, 0,	numVertex);
 			}
 		}
+#endif
 }
 
 //=============================================================================
@@ -2248,6 +2259,7 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 blended together.  Used primarily for corner cases where 3 different textures meet.*/
 void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 {
+#ifdef TODO_VULKAN
 	Int vertexCount = 0;
 	Int indexCount = 0;
 	Int xExtent = m_map->getXExtent();
@@ -2457,6 +2469,7 @@ void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 			}
 			W3DShaderManager::resetShader(st);
 		}
-  }
+	}
+#endif
 }
 #endif

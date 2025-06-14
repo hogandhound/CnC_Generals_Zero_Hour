@@ -959,6 +959,7 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 	//Override the behind building selection if it's not available on current hardware (needs stencil).
 	TheWritableGlobalData->m_enableBehindBuildingMarkers = TheWritableGlobalData->m_enableBehindBuildingMarkers && DX8Wrapper::Has_Stencil();
 
+#ifdef TODO_VULKAN
 	if (Get_Extra_Pass_Polygon_Mode() == EXTRA_PASS_DISABLE)
 	{
 		if (m_customPassMode == SCENE_PASS_DEFAULT)
@@ -1072,6 +1073,7 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 			ShaderClass::Invalidate();
 		}
 	}
+#endif
 }
 
 //=============================================================================
@@ -1257,6 +1259,7 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 	REF_PTR_RELEASE(vmat);
 	DX8Wrapper::Apply_Render_State_Changes();	//force update all renderstates
 
+#ifdef TODO_VULKAN
 	LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 	if (!m_pDev)
@@ -1321,6 +1324,7 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 
 	if (oldColorWriteEnable != 0x12345678)
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,oldColorWriteEnable);
+#endif
 
 }  // end renderStencilShadows
 
@@ -1332,12 +1336,14 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 	RenderObjClass *playerObjects[MAX_PLAYER_COUNT][MAX_VISIBLE_OCCLUDED_PLAYER_OBJECTS];
 	RenderObjClass **lastPlayerObject[MAX_PLAYER_COUNT];
 	Int playerColorIndex[MAX_PLAYER_COUNT];
-	Int visiblePlayerColors[MAX_PLAYER_COUNT];	///<color assigned to each of the visible players
-	Int numObjects;
 	Vector3 hsv,rgb;
 
+#ifdef TODO_VULKAN
+	Int numObjects;
+	Int visiblePlayerColors[MAX_PLAYER_COUNT];	///<color assigned to each of the visible players
 	Int usedPlayerColorIndex=1;
 	Int numVisiblePlayerColors=0;
+#endif
 
 	//Clear pointers into temporary arrays where each player's objects will be stored.
 	//We do this so that all objects are sorted by color which reduces the number of
@@ -1376,6 +1382,7 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 			lastPlayerObject[index]++;	//increment to next object
 		}
 
+#ifdef TODO_VULKAN
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILENABLE, TRUE );
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_ZENABLE, TRUE );
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILMASK, 0xffffffff);
@@ -1499,6 +1506,7 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 		}
 
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILENABLE, FALSE );
+#endif
 	}
 	else
 	if (m_numNonOccluderOrOccludee || m_numPotentialOccluders || m_numPotentialOccludees)
@@ -1531,7 +1539,9 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 	//Reset scene ambient because we sometimes mess around with it to make objects
 	//glow, etc. when processing drawables.  This is a good place to do it because this
 	//function gets called right after we flush regular render objects.
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_AMBIENT,DX8Wrapper::Convert_Color(this->Get_Ambient_Light(),0.0f));
+#endif
 }
 
 /*Version which does not require stencil buffer*/
@@ -1544,6 +1554,7 @@ void RTS3DScene::flushOccludedObjects(RenderInfoClass & rinfo)
 
 	if (m_occludedObjectsCount)
 	{
+#ifdef TODO_VULKAN
 		Int localPlayerIndex = ThePlayerList ? ThePlayerList->getLocalPlayer()->getPlayerIndex() : 0;
 
 		if (DX8Wrapper::Has_Stencil())	//just in case we have shadows, disable them over occluded pixels.
@@ -1559,6 +1570,7 @@ void RTS3DScene::flushOccludedObjects(RenderInfoClass & rinfo)
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILPASS,  D3DSTENCILOP_REPLACE );
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFUNC,  D3DCMP_ALWAYS );
 		}
+#endif
 
 		//First draw all the solid colored models
 		///@todo: Optimize this so that the extra passes don't actually install the material since it's all the same.
@@ -1582,6 +1594,7 @@ void RTS3DScene::flushOccludedObjects(RenderInfoClass & rinfo)
 
 		//Now draw the normal models so they cover up the colored models on any pixels that
 
+#ifdef TODO_VULKAN
 		//Now draw the normal models so they cover up the colored models on any pixels that
 		//Normal models will clear stencil value from 128 back to 0 where the object pixels are
 		//not occluded but will leave  128 in stencil where still occluded.
@@ -1599,12 +1612,15 @@ void RTS3DScene::flushOccludedObjects(RenderInfoClass & rinfo)
 		m_occludedObjectsCount = 0;
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILENABLE, FALSE );
 		TheW3DShadowManager->setStencilShadowMask(0x80808080);	//upper MSB always contains flag indicating occluded player color.
+#endif
 	}
 
 	//Reset scene ambient because we sometimes mess around with it to make objects
 	//glow, etc. when processing drawables.  This is a good place to do it because this
 	//function gets called right after we flush regular render objects.
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_AMBIENT,DX8Wrapper::Convert_Color(this->Get_Ambient_Light(),0.0f));
+#endif
 }
 
 void RTS3DScene::flushTranslucentObjects(RenderInfoClass & rinfo)
@@ -1636,7 +1652,9 @@ void RTS3DScene::flushTranslucentObjects(RenderInfoClass & rinfo)
 	//Reset scene ambient because we sometimes mess around with it to make objects
 	//glow, etc. when processing drawables.  This is a good place to do it because this
 	//function gets called right after we flush regular render objects.
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_AMBIENT,DX8Wrapper::Convert_Color(this->Get_Ambient_Light(),0.0f));
+#endif
 }
 
 //=============================================================================

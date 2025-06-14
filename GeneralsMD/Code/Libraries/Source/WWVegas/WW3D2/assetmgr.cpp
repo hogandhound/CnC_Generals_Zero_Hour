@@ -114,7 +114,6 @@
 #include <ini.h>
 #include <windows.h>
 #include <stdio.h>
-#include <D3dx9core.h>
 #include "texture.h"
 #include "wwprofile.h"
 #include "assetstatus.h"
@@ -317,6 +316,7 @@ static void Log_Textures(bool inited,unsigned& total_count, unsigned& total_mem)
 		TextureClass * tex=ite.Peek_Value();
 		if (tex->Is_Initialized()!=inited) continue;
 
+#ifdef TODO_VULKAN
 		D3DSURFACE_DESC desc;
 		IDirect3DTexture9* d3d_texture=tex->Peek_D3D_Texture();
 		if (!d3d_texture) continue;
@@ -378,6 +378,7 @@ static void Log_Textures(bool inited,unsigned& total_count, unsigned& total_mem)
 			number,
 			tex->Num_Refs()));
 
+#endif
 	}	
 }
 

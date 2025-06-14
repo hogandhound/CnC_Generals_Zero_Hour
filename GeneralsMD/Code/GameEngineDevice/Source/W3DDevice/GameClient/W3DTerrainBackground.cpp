@@ -131,7 +131,9 @@ void W3DTerrainBackground::doPartialUpdate(const IRegion2D &partialRange, WorldH
 		m_vertexTerrainSize = requiredVertexSize;
 		REF_PTR_RELEASE(m_vertexTerrain);
 		REF_PTR_RELEASE(m_indexTerrain);
+#ifdef TODO_VULKAN
 		m_vertexTerrain=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV1,m_vertexTerrainSize+4,DX8VertexBufferClass::USAGE_DEFAULT));
+#endif
 	}
 
 	Int requiredIndexSize = (m_width+1) * (m_width+1) + 6;
@@ -512,7 +514,9 @@ void W3DTerrainBackground::doTesselatedUpdate(const IRegion2D &partialRange, Wor
 	if (m_vertexTerrainSize<requiredVertex || m_vertexTerrain==NULL) {
 		m_vertexTerrainSize = requiredVertex;
 		REF_PTR_RELEASE(m_vertexTerrain);
+#ifdef TODO_VULKAN
 		m_vertexTerrain=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV2,m_vertexTerrainSize+4,DX8VertexBufferClass::USAGE_DEFAULT));
+#endif
 	}
 
 	m_curNumTerrainVertices = 0;

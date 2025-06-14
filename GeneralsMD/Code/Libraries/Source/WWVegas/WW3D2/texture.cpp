@@ -41,9 +41,7 @@
 
 #include "texture.h"
 
-#include <d3d9.h>
 #include <stdio.h>
-#include <D3dx9core.h>
 #include "dx8wrapper.h"
 #include "targa.h"
 #include <nstrdup.h>
@@ -123,11 +121,13 @@ TextureBaseClass::~TextureBaseClass(void)
 	delete ThumbnailLoadTask;
 	ThumbnailLoadTask=NULL;
 
+#ifdef TODO_VULKAN
 	if (D3DTexture) 
 	{
 		D3DTexture->Release();
 		D3DTexture = NULL;
 	}
+#endif
 
 	DX8TextureManagerClass::Remove(this);
 }
@@ -205,11 +205,13 @@ void TextureBaseClass::Invalidate()
 		return;
 	}
 
+#ifdef TODO_VULKAN
 	if (D3DTexture) 
 	{
 		D3DTexture->Release();
 		D3DTexture = NULL;
 	}
+#endif
 
 	Initialized=false;
 
@@ -270,7 +272,8 @@ void TextureBaseClass::Set_D3D_Base_Texture(IDirect3DBaseTexture9* tex)
 	// (gth) Generals does stuff directly with the D3DTexture pointer so lets
 	// reset the access timer whenever someon messes with this pointer.
 	LastAccessed=WW3D::Get_Sync_Time();
-	
+
+#ifdef TODO_VULKAN
 	if (D3DTexture != NULL) {
 		D3DTexture->Release();
 	}
@@ -278,6 +281,7 @@ void TextureBaseClass::Set_D3D_Base_Texture(IDirect3DBaseTexture9* tex)
 	if (D3DTexture != NULL) {
 		D3DTexture->AddRef();
 	}
+#endif
 }
 
 
@@ -288,8 +292,10 @@ void TextureBaseClass::Set_D3D_Base_Texture(IDirect3DBaseTexture9* tex)
 void TextureBaseClass::Load_Locked_Surface()
 {
 	WWPROFILE(("TextureClass::Load_Locked_Surface()"));
+#ifdef TODO_VULKAN
 	if (D3DTexture) D3DTexture->Release();
 	D3DTexture=0;
+#endif
 	TextureLoader::Request_Thumbnail(this);
 	Initialized=false;
 }
@@ -302,6 +308,7 @@ void TextureBaseClass::Load_Locked_Surface()
 bool TextureBaseClass::Is_Missing_Texture()
 {
 	bool flag = false;
+#ifdef TODO_VULKAN
 	IDirect3DBaseTexture9 *missing_texture = MissingTexture::_Get_Missing_Texture();
 
 	if (D3DTexture == missing_texture)
@@ -311,6 +318,7 @@ bool TextureBaseClass::Is_Missing_Texture()
 	{
 		missing_texture->Release();
 	}
+#endif
 
 	return flag;
 }
@@ -340,8 +348,12 @@ unsigned int TextureBaseClass::Get_Priority(void)
 		return 0;
 	}
 
+#ifdef TODO_VULKAN
 #ifndef _XBOX
 	return D3DTexture->GetPriority();
+#else
+	return 0;
+#endif
 #else
 	return 0;
 #endif
@@ -360,8 +372,12 @@ unsigned int TextureBaseClass::Set_Priority(unsigned int priority)
 		return 0;
 	}
 
+#ifdef TODO_VULKAN
 #ifndef _XBOX
 	return D3DTexture->SetPriority(priority);
+#else
+	return 0;
+#endif
 #else
 	return 0;
 #endif
@@ -399,8 +415,10 @@ unsigned TextureBaseClass::Get_Reduction() const
 */
 void TextureBaseClass::Apply_Null(unsigned int stage)
 {
+#ifdef TODO_VULKAN
 	// This function sets the render states for a "NULL" texture
 	DX8Wrapper::Set_DX8_Texture(stage, NULL);
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -622,7 +640,8 @@ TextureClass::TextureClass
 		break;
 	default : break;
 	}
-		
+
+#ifdef TODO_VULKAN
 	D3DPOOL d3dpool=(D3DPOOL)0;
 	switch(pool)
 	{
@@ -644,6 +663,7 @@ TextureClass::TextureClass
 			rendertarget
 		)
 	);
+#endif
 
 	if (pool==POOL_DEFAULT)
 	{
@@ -792,6 +812,7 @@ TextureClass::TextureClass
 	default: break;
 	}
 
+#ifdef TODO_VULKAN
 	Poke_Texture
 	(
 		DX8Wrapper::_Create_DX8_Texture
@@ -800,6 +821,7 @@ TextureClass::TextureClass
 			mip_level_count
 		)
 	);
+#endif
 	LastAccessed=WW3D::Get_Sync_Time();
 }
 
@@ -808,16 +830,27 @@ TextureClass::TextureClass(IDirect3DBaseTexture9* d3d_texture)
 :	TextureBaseClass
 	(
 		0,
-		0,
+		0
+#ifdef TODO_VULKAN
+		,
 		((MipCountType)d3d_texture->GetLevelCount())
-	),
-	Filter((MipCountType)d3d_texture->GetLevelCount())
+#endif
+	)
+	,
+	Filter(
+#ifdef TODO_VULKAN
+		(MipCountType)d3d_texture->GetLevelCount()
+#else
+		(MipCountType)0
+#endif
+	)
 {
 	Initialized=true;
 	IsProcedural=true;
 	IsReducible=false;
 	
 	Set_D3D_Base_Texture(d3d_texture);
+#ifdef TODO_VULKAN
 	IDirect3DSurface9* surface;
 	DX8_ErrorCode(Peek_D3D_Texture()->GetSurfaceLevel(0,&surface));
 	D3DSURFACE_DESC d3d_desc;
@@ -838,6 +871,7 @@ TextureClass::TextureClass(IDirect3DBaseTexture9* d3d_texture)
 	default: break;
 	}
 
+#endif
 	LastAccessed=WW3D::Get_Sync_Time();
 }
 
@@ -898,6 +932,7 @@ void TextureClass::Apply_New_Surface
 	bool disable_auto_invalidation
 )
 {
+#ifdef TODO_VULKAN
 	IDirect3DBaseTexture9* d3d_tex=Peek_D3D_Base_Texture();
 
 	if (d3d_tex) d3d_tex->Release();
@@ -921,7 +956,7 @@ void TextureClass::Apply_New_Surface
 		Height=d3d_desc.Height;
 	}
 	surface->Release();
-
+#endif
 }
 
 
@@ -966,6 +1001,7 @@ void TextureClass::Apply(unsigned int stage)
 
 	DX8_RECORD_TEXTURE(this);
 
+#ifdef TODO_VULKAN
 	// Set texture itself
 	if (WW3D::Is_Texturing_Enabled()) 
 	{
@@ -975,6 +1011,7 @@ void TextureClass::Apply(unsigned int stage)
 	{
 		DX8Wrapper::Set_DX8_Texture(stage, NULL);
 	}
+#endif
 
 	Filter.Apply(stage);
 }
@@ -991,12 +1028,16 @@ SurfaceClass *TextureClass::Get_Surface_Level(unsigned int level)
 		return 0;
 	}
 
+#ifdef TODO_VULKAN
 	IDirect3DSurface9 *d3d_surface = NULL;
 	DX8_ErrorCode(Peek_D3D_Texture()->GetSurfaceLevel(level, &d3d_surface));
 	SurfaceClass *surface = new SurfaceClass(d3d_surface);
 	d3d_surface->Release();
 
 	return surface;
+#else
+	return 0;
+#endif
 }
 
 //**********************************************************************************************
@@ -1024,9 +1065,13 @@ IDirect3DSurface9 *TextureClass::Get_D3D_Surface_Level(unsigned int level)
 		return 0;
 	}
 
+#ifdef TODO_VULKAN
 	IDirect3DSurface9 *d3d_surface = NULL;
 	DX8_ErrorCode(Peek_D3D_Texture()->GetSurfaceLevel(level, &d3d_surface));
 	return d3d_surface;
+#else
+	return 0;
+#endif
 }
 
 //**********************************************************************************************
@@ -1036,6 +1081,7 @@ IDirect3DSurface9 *TextureClass::Get_D3D_Surface_Level(unsigned int level)
 unsigned TextureClass::Get_Texture_Memory_Usage() const
 {
 	int size=0;
+#ifdef TODO_VULKAN
 	if (!Peek_D3D_Texture()) return 0;
 	for (unsigned i=0;i<Peek_D3D_Texture()->GetLevelCount();++i) 
 	{
@@ -1043,6 +1089,7 @@ unsigned TextureClass::Get_Texture_Memory_Usage() const
 		DX8_ErrorCode(Peek_D3D_Texture()->GetLevelDesc(i,&desc));
 		size+=desc.Width*desc.Height;
 	}
+#endif
 	return size;
 }
 
@@ -1217,6 +1264,7 @@ ZTextureClass::ZTextureClass
 :	TextureBaseClass(width,height, mip_level_count, pool),
 	DepthStencilTextureFormat(zformat)
 {
+#ifdef TODO_VULKAN
 	D3DPOOL d3dpool=(D3DPOOL)0;
 	switch (pool)
 	{
@@ -1254,6 +1302,7 @@ ZTextureClass::ZTextureClass
 	Initialized=true;
 	IsProcedural=true;
 	IsReducible=false;
+#endif
 
 	LastAccessed=WW3D::Get_Sync_Time();
 }
@@ -1265,7 +1314,9 @@ ZTextureClass::ZTextureClass
 */
 void ZTextureClass::Apply(unsigned int stage)
 {
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Texture(stage, Peek_D3D_Base_Texture());
+#endif
 }
 
 //**********************************************************************************************
@@ -1279,6 +1330,7 @@ void ZTextureClass::Apply_New_Surface
 	bool disable_auto_invalidation
 )
 {
+#ifdef TODO_VULKAN
 	IDirect3DBaseTexture9* d3d_tex=Peek_D3D_Base_Texture();
 
 	if (d3d_tex) d3d_tex->Release();
@@ -1302,6 +1354,7 @@ void ZTextureClass::Apply_New_Surface
 		Height=d3d_desc.Height;
 	}
 	surface->Release();
+#endif
 }
 
 //**********************************************************************************************
@@ -1316,9 +1369,13 @@ IDirect3DSurface9* ZTextureClass::Get_D3D_Surface_Level(unsigned int level)
 		return 0;
 	}
 
+#ifdef TODO_VULKAN
 	IDirect3DSurface9 *d3d_surface = NULL;
 	DX8_ErrorCode(Peek_D3D_Texture()->GetSurfaceLevel(level, &d3d_surface));
 	return d3d_surface;
+#else
+	return 0;
+#endif
 }
 
 //**********************************************************************************************
@@ -1329,12 +1386,14 @@ unsigned ZTextureClass::Get_Texture_Memory_Usage() const
 {
 	int size=0;
 	if (!Peek_D3D_Texture()) return 0;
+#ifdef TODO_VULKAN
 	for (unsigned i=0;i<Peek_D3D_Texture()->GetLevelCount();++i) 
 	{
 		D3DSURFACE_DESC desc;
 		DX8_ErrorCode(Peek_D3D_Texture()->GetLevelDesc(i,&desc));
 		size+=desc.Width*desc.Height;
 	}
+#endif
 	return size;
 }
 
@@ -1370,7 +1429,8 @@ CubeTextureClass::CubeTextureClass
 		break;
 	default : break;
 	}
-		
+
+#ifdef TODO_VULKAN
 	D3DPOOL d3dpool=(D3DPOOL)0;
 	switch(pool)
 	{
@@ -1407,6 +1467,7 @@ CubeTextureClass::CubeTextureClass
 		);
 		DX8TextureManagerClass::Add(track);
 	}
+#endif
 	LastAccessed=WW3D::Get_Sync_Time();
 }
 
@@ -1600,6 +1661,7 @@ void CubeTextureClass::Apply_New_Surface
 {
 	IDirect3DBaseTexture9* d3d_tex=Peek_D3D_Base_Texture();
 
+#ifdef TODO_VULKAN
 	if (d3d_tex) d3d_tex->Release();
 
 	Poke_Texture(d3d_texture);//TextureLoadTask->Peek_D3D_Texture();
@@ -1619,6 +1681,7 @@ void CubeTextureClass::Apply_New_Surface
 		Width=d3d_desc.Width;
 		Height=d3d_desc.Height;
 	}
+#endif
 }
 
 
@@ -1654,7 +1717,8 @@ VolumeTextureClass::VolumeTextureClass
 		break;
 	default : break;
 	}
-		
+
+#ifdef TODO_VULKAN
 	D3DPOOL d3dpool=(D3DPOOL)0;
 	switch(pool)
 	{
@@ -1691,6 +1755,7 @@ VolumeTextureClass::VolumeTextureClass
 		);
 		DX8TextureManagerClass::Add(track);
 	}
+#endif
 	LastAccessed=WW3D::Get_Sync_Time();
 }
 
@@ -1886,6 +1951,7 @@ void VolumeTextureClass::Apply_New_Surface
 	bool disable_auto_invalidation
 )
 {
+#ifdef TODO_VULKAN
 	IDirect3DBaseTexture9* d3d_tex=Peek_D3D_Base_Texture();
 
 	if (d3d_tex) d3d_tex->Release();
@@ -1909,4 +1975,5 @@ void VolumeTextureClass::Apply_New_Surface
 		Height=d3d_desc.Height;
 		Depth=d3d_desc.Depth;
 	}
+#endif
 }

@@ -611,6 +611,7 @@ void Render2DClass::Render(void)
 	Matrix4x4 view,proj;
 	Matrix4x4 identity(true);
 
+#ifdef TODO_VULKAN
 	DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
 	DX8Wrapper::Get_Transform(D3DTS_PROJECTION,proj);
 
@@ -702,7 +703,7 @@ void Render2DClass::Render(void)
 	DX8Wrapper::Set_Transform(D3DTS_PROJECTION,proj);
 	if (IsGrayScale)
 		ShaderClass::Invalidate();	//force both stages to be reset.
-
+#endif
 }
 
 

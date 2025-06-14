@@ -432,6 +432,7 @@ DX8FVFCategoryContainer::DX8FVFCategoryContainer(unsigned FVF_,bool sorting_)
 	AnythingToRender(false),
 	AnyDelayedPassesToRender(false)
 {
+#ifdef TODO_VULKAN
 	if ((FVF&D3DFVF_TEX1)==D3DFVF_TEX1) uv_coordinate_channels=1;
 	if ((FVF&D3DFVF_TEX2)==D3DFVF_TEX2) uv_coordinate_channels=2;
 	if ((FVF&D3DFVF_TEX3)==D3DFVF_TEX3) uv_coordinate_channels=3;
@@ -440,6 +441,7 @@ DX8FVFCategoryContainer::DX8FVFCategoryContainer(unsigned FVF_,bool sorting_)
 	if ((FVF&D3DFVF_TEX6)==D3DFVF_TEX6) uv_coordinate_channels=6;
 	if ((FVF&D3DFVF_TEX7)==D3DFVF_TEX7) uv_coordinate_channels=7;
 	if ((FVF&D3DFVF_TEX8)==D3DFVF_TEX8) uv_coordinate_channels=8;
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -704,6 +706,7 @@ unsigned DX8FVFCategoryContainer::Define_FVF(MeshModelClass* mmc,bool enable_lig
 		return dynamic_fvf_type;
 	}
 
+#ifdef TODO_VULKAN
 	unsigned fvf=D3DFVF_XYZ;
 
 	int tex_coord_count=mmc->Get_UV_Array_Count();
@@ -735,6 +738,9 @@ unsigned DX8FVFCategoryContainer::Define_FVF(MeshModelClass* mmc,bool enable_lig
 
 	fvf|=D3DFVF_NORMAL;	// Realtime-lit
 	return fvf;
+#else
+	return 0;
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -1040,7 +1046,8 @@ void DX8RigidFVFCategoryContainer::Add_Mesh(MeshModelClass* mmc_)
 	for (i=0; i<split_table.Get_Vertex_Count(); i++)
 	{
 		*(Vector3*)(vb+fi.Get_Location_Offset())=locs[i];
-		
+
+#ifdef TODO_VULKAN
 		if ((FVF&D3DFVF_NORMAL)==D3DFVF_NORMAL && norms) {
 			*(Vector3*)(vb+fi.Get_Normal_Offset())=norms[i];
 		}
@@ -1060,7 +1067,7 @@ void DX8RigidFVFCategoryContainer::Add_Mesh(MeshModelClass* mmc_)
 				*(unsigned int*)(vb+fi.Get_Specular_Offset()) = 0xFFFFFFFF;
 			}
 		}
-
+#endif
 		vb+=fi.Get_FVF_Size();
 	}
 	
@@ -1069,6 +1076,7 @@ void DX8RigidFVFCategoryContainer::Add_Mesh(MeshModelClass* mmc_)
 	** Append the UV coordinates to the vertex buffer
 	*/
 	int uvcount = 0;
+#ifdef TODO_VULKAN
 	if ((FVF&D3DFVF_TEX1) == D3DFVF_TEX1) {
 		uvcount = 1;
 	}
@@ -1093,6 +1101,7 @@ void DX8RigidFVFCategoryContainer::Add_Mesh(MeshModelClass* mmc_)
 	if ((FVF&D3DFVF_TEX8) == D3DFVF_TEX8) {
 		uvcount = 8;
 	}
+#endif
 	
 	for (int j=0; j<uvcount; j++) {
 		unsigned char *vb=(unsigned char*) l.Get_Vertex_Array();
@@ -1252,7 +1261,13 @@ void DX8FVFCategoryContainer::Generate_Texture_Categories(Vertex_Split_Table& sp
 
 DX8SkinFVFCategoryContainer::DX8SkinFVFCategoryContainer(bool sorting)
 	:
-	DX8FVFCategoryContainer(DX8_FVF_XYZNUV1,sorting),
+	DX8FVFCategoryContainer(
+#ifdef TODO_VULKAN
+		DX8_FVF_XYZNUV1
+#else
+		0
+#endif
+		,sorting),
 	VisibleVertexCount(0),
 	VisibleSkinHead(NULL),
 	VisibleSkinTail(NULL)
@@ -1726,7 +1741,9 @@ void DX8TextureCategoryClass::Render(void)
 		//DX8Wrapper::Set_Material(material);
 		//REF_PTR_RELEASE(material);
 		DX8Wrapper::Apply_Render_State_Changes();
+#ifdef TODO_VULKAN
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND,D3DBLEND_DESTCOLOR);
+#endif
 	}
 
 
@@ -1863,13 +1880,17 @@ void DX8TextureCategoryClass::Render(void)
 		}
 		else {
 			SNAPSHOT_SAY(("Set_World_Transform\n"));
+#ifdef TODO_VULKAN
 			DX8Wrapper::Set_Transform(D3DTS_WORLD,*world_transform);
+#endif
 		}
 
 		
 //--------------------------------------------------------------------
+#ifdef TODO_VULKAN
 		if (mesh->Get_ObjectScale() != 1.0f)
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_NORMALIZENORMALS, TRUE);
+#endif
 //--------------------------------------------------------------------
 		/*
 		** Render mesh using either sorting or immediate pipeline
@@ -1911,9 +1932,11 @@ void DX8TextureCategoryClass::Render(void)
 					vmaterial->Set_Opacity(mesh->Get_Alpha_Override());
 					DX8Wrapper::Set_Shader(theAlphaShader);
 					DX8Wrapper::Apply_Render_State_Changes();
+#ifdef TODO_VULKAN
 					DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAREF,(int)((float)0x60*mesh->Get_Alpha_Override()));
 					renderer->Render(mesh->Get_Base_Vertex_Offset());
 					DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAREF,0x60);
+#endif
 					vmaterial->Set_Opacity(oldOpacity);	//restore previous value
 					vmaterial->Set_Diffuse(oldDiffuse.X,oldDiffuse.Y,oldDiffuse.Z);
 					DX8Wrapper::Set_Shader(theShader);	//restore previous value
@@ -1932,8 +1955,10 @@ void DX8TextureCategoryClass::Render(void)
 				renderer->Render(mesh->Get_Base_Vertex_Offset());
 		}
 //--------------------------------------------------------------------
+#ifdef TODO_VULKAN
 		if (mesh->Get_ObjectScale() != 1.0f)
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_NORMALIZENORMALS, FALSE);
+#endif
 //--------------------------------------------------------------------
 
 
@@ -2217,6 +2242,7 @@ void DX8MeshRendererClass::Render_Decal_Meshes(void)
 	DecalMeshClass * decal_mesh = visible_decal_meshes;
 	if (!decal_mesh) return;
 
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_DEPTHBIAS,8 * -0.000005f);
 	
 	while (decal_mesh != NULL) {
@@ -2226,6 +2252,7 @@ void DX8MeshRendererClass::Render_Decal_Meshes(void)
 	visible_decal_meshes = NULL;
 
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_DEPTHBIAS,0);
+#endif
 }
 
 // ----------------------------------------------------------------------------

@@ -659,6 +659,7 @@ void SphereRenderObjClass::Render(RenderInfoClass & rinfo)
 		}
 
 		// Camera Align
+#ifdef TODO_VULKAN
 		if (Flags & USE_CAMERA_ALIGN) {
 			Matrix4x4 view,ident(true);
 			DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
@@ -680,6 +681,7 @@ void SphereRenderObjClass::Render(RenderInfoClass & rinfo)
 			DX8Wrapper::Set_Transform(D3DTS_WORLD,temp);	
 			render_sphere();
 		}		
+#endif
 	}
 }
 

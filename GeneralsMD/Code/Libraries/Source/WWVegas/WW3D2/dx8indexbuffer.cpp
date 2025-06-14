@@ -188,6 +188,7 @@ IndexBufferClass::WriteLockClass::WriteLockClass(IndexBufferClass* index_buffer_
 	WWASSERT(index_buffer);
 	WWASSERT(!index_buffer->Engine_Refs());
 	index_buffer->Add_Ref();
+#ifdef TODO_VULKAN
 	switch (index_buffer->Type()) {
 	case BUFFER_TYPE_DX8:
 		DX8_Assert();
@@ -204,6 +205,7 @@ IndexBufferClass::WriteLockClass::WriteLockClass(IndexBufferClass* index_buffer_
 		WWASSERT(0);
 		break;
 	}
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -214,6 +216,7 @@ IndexBufferClass::WriteLockClass::WriteLockClass(IndexBufferClass* index_buffer_
 IndexBufferClass::WriteLockClass::~WriteLockClass()
 {
 	DX8_THREAD_ASSERT();
+#ifdef TODO_VULKAN
 	switch (index_buffer->Type()) {
 	case BUFFER_TYPE_DX8:
 		DX8_Assert();
@@ -226,6 +229,7 @@ IndexBufferClass::WriteLockClass::~WriteLockClass()
 		break;
 	}
 	index_buffer->Release_Ref();
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -234,6 +238,7 @@ IndexBufferClass::AppendLockClass::AppendLockClass(IndexBufferClass* index_buffe
 	:
 	index_buffer(index_buffer_)
 {
+#ifdef TODO_VULKAN
 	DX8_THREAD_ASSERT();
 	WWASSERT(start_index+index_range<=index_buffer->Get_Index_Count());
 	WWASSERT(index_buffer);
@@ -255,6 +260,7 @@ IndexBufferClass::AppendLockClass::AppendLockClass(IndexBufferClass* index_buffe
 		WWASSERT(0);
 		break;
 	}
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -262,6 +268,7 @@ IndexBufferClass::AppendLockClass::AppendLockClass(IndexBufferClass* index_buffe
 IndexBufferClass::AppendLockClass::~AppendLockClass()
 {
 	DX8_THREAD_ASSERT();
+#ifdef TODO_VULKAN
 	switch (index_buffer->Type()) {
 	case BUFFER_TYPE_DX8:
 		DX8_Assert();
@@ -274,6 +281,7 @@ IndexBufferClass::AppendLockClass::~AppendLockClass()
 		break;
 	}
 	index_buffer->Release_Ref();
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -288,6 +296,7 @@ DX8IndexBufferClass::DX8IndexBufferClass(unsigned short index_count_,UsageType u
 {
 	DX8_THREAD_ASSERT();
 	WWASSERT(index_count);
+#ifdef TODO_VULKAN
 	unsigned usage_flags=
 		D3DUSAGE_WRITEONLY|
 		((usage&USAGE_DYNAMIC) ? D3DUSAGE_DYNAMIC : 0)|
@@ -332,13 +341,16 @@ DX8IndexBufferClass::DX8IndexBufferClass(unsigned short index_count_,UsageType u
 
 	// If it still fails it is fatal
 	DX8_ErrorCode(ret);
+#endif
 }
 
 // ----------------------------------------------------------------------------
 
 DX8IndexBufferClass::~DX8IndexBufferClass()
 {
+#ifdef TODO_VULKAN
 	index_buffer->Release();
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -423,6 +435,7 @@ DynamicIBAccessClass::WriteLockClass::WriteLockClass(DynamicIBAccessClass* ib_ac
 	:
 	DynamicIBAccess(ib_access_)
 {
+#ifdef TODO_VULKAN
 	DX8_THREAD_ASSERT();
 	DynamicIBAccess->IndexBuffer->Add_Ref();
 	switch (DynamicIBAccess->Get_Type()) {
@@ -445,11 +458,13 @@ DynamicIBAccessClass::WriteLockClass::WriteLockClass(DynamicIBAccessClass* ib_ac
 		WWASSERT(0);
 		break;
 	}
+#endif
 }
 
 DynamicIBAccessClass::WriteLockClass::~WriteLockClass()
 {
 	DX8_THREAD_ASSERT();
+#ifdef TODO_VULKAN
 	switch (DynamicIBAccess->Get_Type()) {
 	case BUFFER_TYPE_DYNAMIC_DX8:
 		DX8_Assert();
@@ -462,6 +477,7 @@ DynamicIBAccessClass::WriteLockClass::~WriteLockClass()
 		break;
 	}
 	DynamicIBAccess->IndexBuffer->Release_Ref();
+#endif
 }
 
 // ----------------------------------------------------------------------------

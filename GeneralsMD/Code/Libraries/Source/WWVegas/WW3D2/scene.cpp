@@ -223,6 +223,7 @@ void SceneClass::Render(RenderInfoClass & rinfo)
 	else {
 		bool old_enable=WW3D::Is_Texturing_Enabled();
 
+#ifdef TODO_VULKAN
 		DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 0);
 		Customized_Render(rinfo);
 		switch (Get_Extra_Pass_Polygon_Mode()) {
@@ -240,6 +241,7 @@ void SceneClass::Render(RenderInfoClass & rinfo)
 			Customized_Render(rinfo);
 			break;
 		}
+#endif
 
 		WW3D::Enable_Texturing(old_enable);
 	}
@@ -557,10 +559,12 @@ void SimpleSceneClass::Customized_Render(RenderInfoClass & rinfo)
 	WWASSERT(rinfo.light_environment==NULL);
 	int count=0;
 	// Turn off lights in case we have none
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Light(0,NULL);
 	DX8Wrapper::Set_Light(1,NULL);
 	DX8Wrapper::Set_Light(2,NULL);
 	DX8Wrapper::Set_Light(3,NULL);
+#endif
 
 // (gth) WWShade only works with light environments.  We need to upgrade LightEnvironment to
 // support real point lights, etc.  It will likely just evolve into "the n most important" lights

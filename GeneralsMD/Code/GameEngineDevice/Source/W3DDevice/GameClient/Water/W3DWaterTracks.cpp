@@ -310,6 +310,7 @@ Int WaterTracksObj::update(Int msElapsed)
 
 Int WaterTracksObj::render(DX8VertexBufferClass	*vertexBuffer, Int batchStart)
 {
+#ifdef TODO_VULKAN
 	VertexFormatXYZDUV1 *vb;
 	Vector2	waveTailOrigin,waveFrontOrigin;
 	Real	ooWaveDirLen=1.0f/m_waveDir.Length();	//one over length
@@ -489,6 +490,9 @@ Int WaterTracksObj::render(DX8VertexBufferClass	*vertexBuffer, Int batchStart)
 	DX8Wrapper::Draw_Strip(0,idxCount-2,0,m_x*m_y);	//there are always n-2 primitives for n index strip.
 
 	return batchStart+m_x*m_y;	//return new offset into unused area of vertex buffer
+#else
+	return 0;
+#endif
 }
 
 //=============================================================================
@@ -683,7 +687,9 @@ void WaterTracksRenderSystem::ReAcquireResources(void)
 		}
 	}
 
+#ifdef TODO_VULKAN
 	m_vertexBuffer=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV1,m_stripSizeX*m_stripSizeY*WATER_VB_PAGES,DX8VertexBufferClass::USAGE_DYNAMIC));
+#endif
 	m_batchStart=0;
 }
 
@@ -901,6 +907,7 @@ Try improving the fit to vertical surfaces like cliffs.
 	diffuseLight=REAL_TO_INT(shadeB) | (REAL_TO_INT(shadeG) << 8) | (REAL_TO_INT(shadeR) << 16);
 
 	Matrix3D tm(1);	///set to identity
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);	//position the water surface
 
 	DX8Wrapper::Set_Material(m_vertexMaterialClass);
@@ -926,6 +933,7 @@ Try improving the fit to vertical surfaces like cliffs.
 		//write to the zbuffer.  Change to LESSEQUAL.
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 	}
+#endif
 
 	Int LastTextureType=-1;
 
@@ -943,6 +951,7 @@ Try improving the fit to vertical surfaces like cliffs.
 		mod = mod->m_nextSystem;
 	}	//while (mod)
 
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_DEPTHBIAS,0);
 
 	if (TheTerrainRenderObject->getShroud())
@@ -950,6 +959,7 @@ Try improving the fit to vertical surfaces like cliffs.
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_ZFUNC, D3DCMP_EQUAL);
 		W3DShaderManager::resetShader(W3DShaderManager::ST_SHROUD_TEXTURE);
 	}
+#endif
 }
 
 WaterTracksObj *WaterTracksRenderSystem::findTrack(Vector2 &start, Vector2 &end, waveType type)

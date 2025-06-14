@@ -134,7 +134,9 @@ protected:
 
 	static Matrix4x4					View_Projection_Matrix;
 
+#ifdef TODO_VULKAN
 	D3DMATERIAL9*			Material;
+#endif
 
 	TextureClass*			Texture;
 

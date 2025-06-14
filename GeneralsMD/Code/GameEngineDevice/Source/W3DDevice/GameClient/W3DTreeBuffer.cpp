@@ -86,7 +86,6 @@ enum
 #include "WW3D2/Matinfo.h"
 #include "WW3D2/Mesh.h"
 #include "WW3D2/MeshMdl.h"
-#include "d3dx9tex.h"
 
 #ifdef _INTERNAL
 // for occasional debugging...
@@ -135,6 +134,7 @@ int W3DTreeBuffer::W3DTreeTextureClass::update(W3DTreeBuffer *buffer)
 	//Set to clamp.
 	Get_Filter().Set_U_Addr_Mode(TextureFilterClass::TEXTURE_ADDRESS_CLAMP);
 	Get_Filter().Set_V_Addr_Mode(TextureFilterClass::TEXTURE_ADDRESS_CLAMP);
+#ifdef TODO_VULKAN
 
 	IDirect3DSurface9 *surface_level;
 	D3DSURFACE_DESC surface_desc;
@@ -198,6 +198,9 @@ int W3DTreeBuffer::W3DTreeTextureClass::update(W3DTreeBuffer *buffer)
 		DX8_ErrorCode(Peek_D3D_Texture()->SetLOD((DWORD)TheWritableGlobalData->m_textureReductionFactor));
 	}
 	return(surface_desc.Height);
+#else
+	return 0;
+#endif
 }
 
 
@@ -208,9 +211,11 @@ int W3DTreeBuffer::W3DTreeTextureClass::update(W3DTreeBuffer *buffer)
 //=============================================================================
 void W3DTreeBuffer::W3DTreeTextureClass::setLOD(Int LOD) const
 {
+#ifdef TODO_VULKAN
 	if (Peek_D3D_Texture()) {
 		DX8_ErrorCode(Peek_D3D_Texture()->SetLOD((DWORD)LOD));
 	}
+#endif
 }
 //=============================================================================
 // W3DTreeBuffer::W3DTreeTextureClass::Apply
@@ -1115,8 +1120,10 @@ W3DTreeBuffer::W3DTreeBuffer(void)
 		m_curNumTreeIndices[i]=0;
 	}
 	m_treeTexture = NULL;
+#ifdef TODO_VULKAN
 	m_dwTreeVertexShader = 0;
 	m_dwTreePixelShader = 0;
+#endif
 	clearAllTrees();
 	allocateTreeBuffers();
 	m_initialized = true;
@@ -1139,7 +1146,8 @@ void W3DTreeBuffer::freeTreeBuffers(void)
 		REF_PTR_RELEASE(m_vertexTree[i]);
 		REF_PTR_RELEASE(m_indexTree[i]);
 	}
-	
+
+#ifdef TODO_VULKAN
 	if (m_dwTreePixelShader)
 		m_dwTreePixelShader->Release();
 	m_dwTreePixelShader = 0;
@@ -1147,6 +1155,7 @@ void W3DTreeBuffer::freeTreeBuffers(void)
 	if (m_dwTreeVertexShader)
 		m_dwTreeVertexShader->Release();
 	m_dwTreeVertexShader = 0;
+#endif
 }
 
 //=============================================================================
@@ -1237,6 +1246,7 @@ void W3DTreeBuffer::allocateTreeBuffers(void)
 {
 	Int i;
 	for	(i=0; i<MAX_BUFFERS; i++) {
+#ifdef TODO_VULKAN
 	#ifdef USE_STATIC
 		m_vertexTree[i]=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZNDUV1,MAX_TREE_VERTEX+4,DX8VertexBufferClass::USAGE_DEFAULT));
 		m_indexTree[i]=NEW_REF(DX8IndexBufferClass,(MAX_TREE_INDEX+4, DX8IndexBufferClass::USAGE_DEFAULT));
@@ -1244,9 +1254,11 @@ void W3DTreeBuffer::allocateTreeBuffers(void)
 		m_vertexTree[i]=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZNDUV1,MAX_TREE_VERTEX+4,DX8VertexBufferClass::USAGE_DYNAMIC));
 		m_indexTree[i]=NEW_REF(DX8IndexBufferClass,(MAX_TREE_INDEX+4, DX8IndexBufferClass::USAGE_DYNAMIC));
 	#endif
+#endif
 		m_curNumTreeVertices[i]=0;
 		m_curNumTreeIndices[i]=0;
 	}
+#ifdef TODO_VULKAN
 
 		//shader decleration
 	// DX8_FVF_XYZNDUV1
@@ -1272,6 +1284,7 @@ void W3DTreeBuffer::allocateTreeBuffers(void)
 	hr = W3DShaderManager::LoadAndCreateD3DShader("shaders\\Trees.pso", &Declaration[0], 0, false, (void**)&m_dwTreePixelShader);
 	if (FAILED(hr))
 		return;
+#endif
 }
 
 //=============================================================================
@@ -1734,6 +1747,7 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 
 	DX8Wrapper::Set_Texture(0,m_treeTexture);
 	DX8Wrapper::Set_Texture(1,NULL);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0,  D3DTSS_TEXCOORDINDEX, 0);
 	DX8Wrapper::Set_DX8_Texture_Stage_State(1,  D3DTSS_TEXCOORDINDEX, 1);
 	// Draw all the trees.
@@ -1820,6 +1834,7 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 
 	DX8Wrapper::Set_Vertex_Shader(DX8_FVF_XYZNDUV1);
 	DX8Wrapper::Set_Pixel_Shader(NULL);
+#endif
 	DX8Wrapper::Invalidate_Cached_Render_States();	//code above mucks around with W3D states so make sure we reset
 
 }

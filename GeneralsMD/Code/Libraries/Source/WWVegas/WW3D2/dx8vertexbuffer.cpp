@@ -45,7 +45,6 @@
 #include "dx8caps.h"
 #include "thread.h"
 #include "wwmemlog.h"
-#include <D3dx9core.h>
 
 #define DEFAULT_VB_SIZE 5000
 
@@ -174,11 +173,13 @@ VertexBufferClass::WriteLockClass::WriteLockClass(VertexBufferClass* VertexBuffe
 		}
 #endif
 		DX8_Assert();
+#ifdef TODO_VULKAN
 		DX8_ErrorCode(static_cast<DX8VertexBufferClass*>(VertexBuffer)->Get_DX8_Vertex_Buffer()->Lock(
 			0,
 			0,
 			(void**)&Vertices,
 			flags));	//flags
+#endif
 		break;
 	case BUFFER_TYPE_SORTING:
 		Vertices=static_cast<SortingVertexBufferClass*>(VertexBuffer)->VertexBuffer;
@@ -200,7 +201,9 @@ VertexBufferClass::WriteLockClass::~WriteLockClass()
 		WWDEBUG_SAY(("VertexBuffer->Unlock()\n"));
 #endif
 		DX8_Assert();
+#ifdef TODO_VULKAN
 		DX8_ErrorCode(static_cast<DX8VertexBufferClass*>(VertexBuffer)->Get_DX8_Vertex_Buffer()->Unlock());
+#endif
 		break;
 	case BUFFER_TYPE_SORTING:
 		break;
@@ -240,11 +243,13 @@ VertexBufferClass::AppendLockClass::AppendLockClass(VertexBufferClass* VertexBuf
 		}
 #endif
 		DX8_Assert();
+#ifdef TODO_VULKAN
 		DX8_ErrorCode(static_cast<DX8VertexBufferClass*>(VertexBuffer)->Get_DX8_Vertex_Buffer()->Lock(
 			start_index*VertexBuffer->FVF_Info().Get_FVF_Size(),
 			index_range*VertexBuffer->FVF_Info().Get_FVF_Size(),
 			(void**)&Vertices,
 			0));	// Default (no) flags
+#endif
 		break;
 	case BUFFER_TYPE_SORTING:
 		Vertices=static_cast<SortingVertexBufferClass*>(VertexBuffer)->VertexBuffer+start_index;
@@ -266,7 +271,9 @@ VertexBufferClass::AppendLockClass::~AppendLockClass()
 #ifdef VERTEX_BUFFER_LOG
 		WWDEBUG_SAY(("VertexBuffer->Unlock()\n"));
 #endif
+#ifdef TODO_VULKAN
 		DX8_ErrorCode(static_cast<DX8VertexBufferClass*>(VertexBuffer)->Get_DX8_Vertex_Buffer()->Unlock());
+#endif
 		break;
 	case BUFFER_TYPE_SORTING:
 		break;
@@ -324,7 +331,13 @@ DX8VertexBufferClass::DX8VertexBufferClass(
 	unsigned short VertexCount,
 	UsageType usage)
 	:
-	VertexBufferClass(BUFFER_TYPE_DX8, D3DFVF_XYZ|D3DFVF_TEX1|D3DFVF_NORMAL, VertexCount),
+	VertexBufferClass(BUFFER_TYPE_DX8,
+#ifdef TODO_VULKAN
+		D3DFVF_XYZ|D3DFVF_TEX1|D3DFVF_NORMAL
+#else
+		0
+#endif
+		, VertexCount),
 	VertexBuffer(NULL)
 {
 	WWASSERT(vertices);
@@ -345,7 +358,13 @@ DX8VertexBufferClass::DX8VertexBufferClass(
 	unsigned short VertexCount,
 	UsageType usage)
 	:
-	VertexBufferClass(BUFFER_TYPE_DX8, D3DFVF_XYZ|D3DFVF_TEX1|D3DFVF_NORMAL|D3DFVF_DIFFUSE, VertexCount),
+	VertexBufferClass(BUFFER_TYPE_DX8,
+#ifdef TODO_VULKAN
+		D3DFVF_XYZ|D3DFVF_TEX1|D3DFVF_NORMAL|D3DFVF_DIFFUSE
+#else
+		0
+#endif
+		, VertexCount),
 	VertexBuffer(NULL)
 {
 	WWASSERT(vertices);
@@ -366,7 +385,13 @@ DX8VertexBufferClass::DX8VertexBufferClass(
 	unsigned short VertexCount,
 	UsageType usage)
 	:
-	VertexBufferClass(BUFFER_TYPE_DX8, D3DFVF_XYZ|D3DFVF_TEX1|D3DFVF_DIFFUSE, VertexCount),
+	VertexBufferClass(BUFFER_TYPE_DX8,
+#ifdef TODO_VULKAN
+		D3DFVF_XYZ|D3DFVF_TEX1|D3DFVF_DIFFUSE
+#else
+		0
+#endif
+		, VertexCount),
 	VertexBuffer(NULL)
 {
 	WWASSERT(vertices);
@@ -385,7 +410,13 @@ DX8VertexBufferClass::DX8VertexBufferClass(
 	unsigned short VertexCount,
 	UsageType usage)
 	:
-	VertexBufferClass(BUFFER_TYPE_DX8, D3DFVF_XYZ|D3DFVF_TEX1, VertexCount),
+	VertexBufferClass(BUFFER_TYPE_DX8,
+#ifdef TODO_VULKAN
+		D3DFVF_XYZ|D3DFVF_TEX1
+#else
+		0
+#endif
+		, VertexCount),
 	VertexBuffer(NULL)
 {
 	WWASSERT(vertices);
@@ -404,7 +435,9 @@ DX8VertexBufferClass::~DX8VertexBufferClass()
 	_DX8VertexBufferCount--;
 	WWDEBUG_SAY(("Current vertex buffer count: %d\n",_DX8VertexBufferCount));
 #endif
+#ifdef TODO_VULKAN
 	VertexBuffer->Release();
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -432,11 +465,12 @@ void DX8VertexBufferClass::Create_Vertex_Buffer(UsageType usage)
 	WWDEBUG_SAY(("Current vertex buffer count: %d\n",_DX8VertexBufferCount));
 #endif
 
-	unsigned usage_flags=
-		D3DUSAGE_WRITEONLY|
-		((usage&USAGE_DYNAMIC) ? D3DUSAGE_DYNAMIC : 0)|
-		((usage&USAGE_NPATCHES) ? D3DUSAGE_NPATCHES : 0)|
-		((usage&USAGE_SOFTWAREPROCESSING) ? D3DUSAGE_SOFTWAREPROCESSING : 0);
+#ifdef TODO_VULKAN
+	unsigned usage_flags =
+		D3DUSAGE_WRITEONLY |
+		((usage & USAGE_DYNAMIC) ? D3DUSAGE_DYNAMIC : 0) |
+		((usage & USAGE_NPATCHES) ? D3DUSAGE_NPATCHES : 0) |
+		((usage & USAGE_SOFTWAREPROCESSING) ? D3DUSAGE_SOFTWAREPROCESSING : 0);
 	if (!DX8Wrapper::Get_Current_Caps()->Support_TnL()) {
 		usage_flags|=D3DUSAGE_SOFTWAREPROCESSING;
 	}
@@ -483,6 +517,7 @@ void DX8VertexBufferClass::Create_Vertex_Buffer(UsageType usage)
 
 	// If it still fails it is fatal
 	DX8_ErrorCode(ret);
+#endif
 
 	/* Old Code
 	DX8CALL(CreateVertexBuffer(
@@ -502,6 +537,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, const V
 	WWASSERT(norm);
 	WWASSERT(uv);
 	WWASSERT(count<=VertexCount);
+#ifdef TODO_VULKAN
 	WWASSERT(FVF_Info().Get_FVF()==DX8_FVF_XYZNUV1);
 
 	if (first_vertex) {
@@ -532,6 +568,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, const V
 			verts[v].v1=(*uv++)[1];
 		}
 	}
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -540,6 +577,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, unsigned first_vertex, unsig
 {
 	WWASSERT(loc);
 	WWASSERT(count<=VertexCount);
+#ifdef TODO_VULKAN
 	WWASSERT(FVF_Info().Get_FVF()==DX8_FVF_XYZ);
 
 	if (first_vertex) {
@@ -560,6 +598,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, unsigned first_vertex, unsig
 			verts[v].z=(*loc++)[2];
 		}
 	}
+#endif
 
 }
 
@@ -570,6 +609,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector2* uv, unsigned 
 	WWASSERT(loc);
 	WWASSERT(uv);
 	WWASSERT(count<=VertexCount);
+#ifdef TODO_VULKAN
 	WWASSERT(FVF_Info().Get_FVF()==DX8_FVF_XYZUV1);
 
 	if (first_vertex) {
@@ -594,6 +634,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector2* uv, unsigned 
 			verts[v].v1=(*uv++)[1];
 		}
 	}
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -603,6 +644,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, unsigne
 	WWASSERT(loc);
 	WWASSERT(norm);
 	WWASSERT(count<=VertexCount);
+#ifdef TODO_VULKAN
 	WWASSERT(FVF_Info().Get_FVF()==DX8_FVF_XYZN);
 
 	if (first_vertex) {
@@ -629,6 +671,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, unsigne
 			verts[v].nz=(*norm++)[2];
 		}
 	}
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -640,6 +683,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, const V
 	WWASSERT(uv);
 	WWASSERT(diffuse);
 	WWASSERT(count<=VertexCount);
+#ifdef TODO_VULKAN
 	WWASSERT(FVF_Info().Get_FVF()==DX8_FVF_XYZNDUV1);
 
 	if (first_vertex) {
@@ -672,6 +716,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, const V
 			verts[v].diffuse=DX8Wrapper::Convert_Color(diffuse[v]);
 		}
 	}
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -682,6 +727,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector2* uv, const Vec
 	WWASSERT(uv);
 	WWASSERT(diffuse);
 	WWASSERT(count<=VertexCount);
+#ifdef TODO_VULKAN
 	WWASSERT(FVF_Info().Get_FVF()==DX8_FVF_XYZDUV1);
 
 	if (first_vertex) {
@@ -708,6 +754,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector2* uv, const Vec
 			verts[v].diffuse=DX8Wrapper::Convert_Color(diffuse[v]);
 		}
 	}
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -833,6 +880,7 @@ DynamicVBAccessClass::WriteLockClass::WriteLockClass(DynamicVBAccessClass* dynam
 	DynamicVBAccess(dynamic_vb_access_)
 {
 	DX8_THREAD_ASSERT();
+#ifdef TODO_VULKAN
 	switch (DynamicVBAccess->Get_Type()) {
 	case BUFFER_TYPE_DYNAMIC_DX8:
 #ifdef VERTEX_BUFFER_LOG
@@ -869,6 +917,7 @@ DynamicVBAccessClass::WriteLockClass::WriteLockClass(DynamicVBAccessClass* dynam
 		WWASSERT(0);
 		break;
 	}
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -876,6 +925,7 @@ DynamicVBAccessClass::WriteLockClass::WriteLockClass(DynamicVBAccessClass* dynam
 DynamicVBAccessClass::WriteLockClass::~WriteLockClass()
 {
 	DX8_THREAD_ASSERT();
+#ifdef TODO_VULKAN
 	switch (DynamicVBAccess->Get_Type()) {
 	case BUFFER_TYPE_DYNAMIC_DX8:
 #ifdef VERTEX_BUFFER_LOG
@@ -893,6 +943,7 @@ DynamicVBAccessClass::WriteLockClass::~WriteLockClass()
 		WWASSERT(0);
 		break;
 	}
+#endif
 }
 
 // ----------------------------------------------------------------------------

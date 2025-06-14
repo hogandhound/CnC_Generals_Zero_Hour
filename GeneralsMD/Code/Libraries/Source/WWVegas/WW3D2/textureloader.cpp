@@ -53,7 +53,6 @@
 #include "dx8caps.h"
 #include "missingtexture.h"
 #include "targa.h"
-#include <d3dx9tex.h>
 #include <cstdio>
 #include "wwmemlog.h"
 #include "texture.h"
@@ -277,9 +276,11 @@ IDirect3DTexture9* Load_Compressed_Texture(
 	for (unsigned level=0;level<mips;++level) {
 		IDirect3DSurface9* d3d_surface=NULL;
 		WWASSERT(d3d_texture);
+#ifdef TODO_VULKAN
 		DX8_ErrorCode(d3d_texture->GetSurfaceLevel(level/*-reduction_factor*/,&d3d_surface));
 		dds_file.Copy_Level_To_Surface(level,d3d_surface);
 		d3d_surface->Release();
+#endif
 	}
 	return d3d_texture;
 }
@@ -364,6 +365,7 @@ void TextureLoader::Validate_Texture_Size
 	unsigned& depth
 )
 {
+#ifdef TODO_VULKAN
 	const D3DCAPS9& dx8caps=DX8Wrapper::Get_Current_Caps()->Get_DX8_Caps();
 
 	unsigned poweroftwowidth = 1;
@@ -415,6 +417,7 @@ void TextureLoader::Validate_Texture_Size
 	width=poweroftwowidth;
 	height=poweroftwoheight;
 	depth=poweroftwodepth;
+#endif
 }
 
 IDirect3DTexture9* TextureLoader::Load_Thumbnail(const StringClass& filename, const Vector3& hsv_shift)//,WW3DFormat texture_format)
@@ -445,14 +448,20 @@ IDirect3DTexture9* TextureLoader::Load_Thumbnail(const StringClass& filename, co
 		thumb->Get_Width(),
 		thumb->Get_Height(),
 		dest_format,
-		MIP_LEVELS_ALL,
+		MIP_LEVELS_ALL
+#ifdef TODO_VULKAN
+		,
 #ifdef USE_MANAGED_TEXTURES
 		D3DPOOL_MANAGED);
 #else
 		D3DPOOL_SYSTEMMEM);
 #endif
+#else
+		);
+#endif
 
 	unsigned level=0;
+#ifdef TODO_VULKAN
 	D3DLOCKED_RECT locked_rects[12];
 	WWASSERT(sysmem_texture->GetLevelCount()<=12);
 
@@ -513,6 +522,9 @@ IDirect3DTexture9* TextureLoader::Load_Thumbnail(const StringClass& filename, co
 	WWDEBUG_SAY(("Created non-managed texture (%s)\n",filename));
 	return d3d_texture;
 #endif
+#else
+	return 0;
+#endif
 }
 
 
@@ -532,6 +544,7 @@ IDirect3DSurface9* TextureLoader::Load_Surface_Immediate(
 
 	bool compressed=Is_Format_Compressed(texture_format,allow_compression);
 
+#ifdef TODO_VULKAN
 	if (compressed) {
 		IDirect3DTexture9* comp_tex=Load_Compressed_Texture(filename,0,MIP_LEVELS_1,WW3D_FORMAT_UNKNOWN);
 		if (comp_tex) {
@@ -629,6 +642,9 @@ IDirect3DSurface9* TextureLoader::Load_Surface_Immediate(
 	if (converted_surface) delete[] converted_surface;
 
 	return d3d_surface;
+#else
+	return 0;
+#endif
 }
 
 
@@ -959,6 +975,7 @@ void TextureLoader::Load_Thumbnail(TextureBaseClass *tc)
 	WWASSERT(Is_DX8_Thread());
 
 	// load thumbnail texture
+#ifdef TODO_VULKAN
 	IDirect3DTexture9 *d3d_texture = Load_Thumbnail(tc->Get_Full_Path(),tc->Get_HSV_Shift());
 
 	// apply thumbnail to texture
@@ -970,6 +987,7 @@ void TextureLoader::Load_Thumbnail(TextureBaseClass *tc)
 	// release our reference to thumbnail texture
 	d3d_texture->Release();
 	d3d_texture = 0;
+#endif
 }
 
 
@@ -1279,7 +1297,9 @@ void TextureLoadTaskClass::Apply_Missing_Texture(void)
 	WWASSERT(TextureLoader::Is_DX8_Thread());
 	WWASSERT(!D3DTexture);
 
+#ifdef TODO_VULKAN
 	D3DTexture = MissingTexture::_Get_Missing_Texture();
+#endif
 	Apply(true);
 }
 
@@ -1293,10 +1313,12 @@ void TextureLoadTaskClass::Apply(bool initialize)
 		WWASSERT(LockedSurfacePtr[i]==NULL);
 	}
 
+#ifdef TODO_VULKAN
 	Texture->Apply_New_Surface(D3DTexture, initialize);
 
 	D3DTexture->Release();
 	D3DTexture = NULL;
+#endif
 }
 
 static bool	Get_Texture_Information
@@ -1520,6 +1542,7 @@ bool TextureLoadTaskClass::Begin_Compressed_Load(void)
 		mip_level_count = max_mip_level_count;
 	}
 
+#ifdef TODO_VULKAN
 	D3DTexture	= DX8Wrapper::_Create_DX8_Texture
 	(
 		reducedWidth, 
@@ -1534,7 +1557,7 @@ bool TextureLoadTaskClass::Begin_Compressed_Load(void)
 	);
 
 	MipLevelCount = mip_level_count;
-
+#endif
 	return true;
 }
 
@@ -1615,18 +1638,23 @@ bool TextureLoadTaskClass::Begin_Uncompressed_Load(void)
 			reducedMipCount -= Reduction;
 	}
 
+#ifdef TODO_VULKAN
 	D3DTexture = DX8Wrapper::_Create_DX8_Texture
 	(
 		reducedWidth, 
 		reducedHeight, 
 		Format, 
-		(MipCountType)reducedMipCount,
+		(MipCountType)reducedMipCount
+#ifdef TODO_VULKAN
+		,
 #ifdef USE_MANAGED_TEXTURES
 		D3DPOOL_MANAGED
 #else
 		D3DPOOL_SYSTEMMEM
 #endif
+#endif
 	);
+#endif
 
 	return true;
 }
@@ -1778,6 +1806,7 @@ bool TextureLoadTaskClass::Begin_Uncompressed_Load(void)
 
 void TextureLoadTaskClass::Lock_Surfaces(void)
 {
+#ifdef TODO_VULKAN
 	MipLevelCount = D3DTexture->GetLevelCount();
 
 	for (unsigned int i = 0; i < MipLevelCount; ++i) 
@@ -1796,11 +1825,13 @@ void TextureLoadTaskClass::Lock_Surfaces(void)
 		LockedSurfacePtr[i]		= (unsigned char *)locked_rect.pBits;
 		LockedSurfacePitch[i]	= locked_rect.Pitch;
 	}
+#endif
 }
 
 
 void TextureLoadTaskClass::Unlock_Surfaces(void)
 {
+#ifdef TODO_VULKAN
 	for (unsigned int i = 0; i < MipLevelCount; ++i) 
 	{
 		if (LockedSurfacePtr[i]) 
@@ -1818,7 +1849,7 @@ void TextureLoadTaskClass::Unlock_Surfaces(void)
 	D3DTexture=tex;
 	WWDEBUG_SAY(("Created non-managed texture (%s)\n",Texture->Get_Full_Path()));
 #endif
-
+#endif
 }
 
 
@@ -2163,6 +2194,7 @@ void CubeTextureLoadTaskClass::Lock_Surfaces(void)
 	{
 		for (unsigned int i=0; i<MipLevelCount; i++)
 		{
+#ifdef TODO_VULKAN
 			D3DLOCKED_RECT locked_rect;
 			DX8_ErrorCode
 			(
@@ -2177,6 +2209,7 @@ void CubeTextureLoadTaskClass::Lock_Surfaces(void)
 			);
 			LockedCubeSurfacePtr[f][i]	 = (unsigned char *)locked_rect.pBits;
 			LockedCubeSurfacePitch[f][i]= locked_rect.Pitch;
+#endif
 		}
 	}
 }
@@ -2190,10 +2223,12 @@ void CubeTextureLoadTaskClass::Unlock_Surfaces(void)
 			if (LockedCubeSurfacePtr[f][i]) 
 			{
 				WWASSERT(ThreadClass::_Get_Current_Thread_ID() == DX8Wrapper::_Get_Main_Thread_ID());
+#ifdef TODO_VULKAN
 				DX8_ErrorCode
 				(
 					Peek_D3D_Cube_Texture()->UnlockRect((D3DCUBEMAP_FACES)f,i)
 				);
+#endif
 			}
 			LockedCubeSurfacePtr[f][i] = NULL;
 		}
@@ -2303,6 +2338,7 @@ bool CubeTextureLoadTaskClass::Begin_Compressed_Load()
 		mip_level_count = max_mip_level_count;
 	}
 
+#ifdef TODO_VULKAN
 	D3DTexture	= DX8Wrapper::_Create_DX8_Cube_Texture
 	(
 		Width, 
@@ -2315,6 +2351,7 @@ bool CubeTextureLoadTaskClass::Begin_Compressed_Load()
 		D3DPOOL_SYSTEMMEM
 #endif
 	);
+#endif
 
 	MipLevelCount = mip_level_count;
 	return true;
@@ -2372,6 +2409,7 @@ bool CubeTextureLoadTaskClass::Begin_Uncompressed_Load(void)
 		Format = Get_Valid_Texture_Format(Format, false);
 	}
 
+#ifdef TODO_VULKAN
 	D3DTexture = DX8Wrapper::_Create_DX8_Cube_Texture
 	(
 		Width, 
@@ -2384,6 +2422,7 @@ bool CubeTextureLoadTaskClass::Begin_Uncompressed_Load(void)
 		D3DPOOL_SYSTEMMEM
 #endif
 	);
+#endif
 
 	return true;
 }
@@ -2533,6 +2572,7 @@ void VolumeTextureLoadTaskClass::Lock_Surfaces()
 {
 	for (unsigned int i=0; i<MipLevelCount; i++)
 	{
+#ifdef TODO_VULKAN
 		D3DLOCKED_BOX locked_box;
 		DX8_ErrorCode
 		(
@@ -2547,6 +2587,7 @@ void VolumeTextureLoadTaskClass::Lock_Surfaces()
 		LockedSurfacePtr[i]			= (unsigned char *)locked_box.pBits;
 		LockedSurfacePitch[i]		= locked_box.RowPitch;
 		LockedSurfaceSlicePitch[i]	= locked_box.SlicePitch;
+#endif
 	}
 }
 
@@ -2558,10 +2599,12 @@ void VolumeTextureLoadTaskClass::Unlock_Surfaces()
 		if (LockedSurfacePtr[i]) 
 		{
 			WWASSERT(ThreadClass::_Get_Current_Thread_ID() == DX8Wrapper::_Get_Main_Thread_ID());
+#ifdef TODO_VULKAN
 			DX8_ErrorCode
 			(
 				Peek_D3D_Volume_Texture()->UnlockBox(i)
 			);
+#endif
 		}
 		LockedSurfacePtr[i] = NULL;
 	}
@@ -2668,6 +2711,7 @@ bool VolumeTextureLoadTaskClass::Begin_Compressed_Load()
 		mip_level_count = max_mip_level_count;
 	}
 
+#ifdef TODO_VULKAN
 	D3DTexture	= DX8Wrapper::_Create_DX8_Volume_Texture
 	(
 		Width, 
@@ -2681,6 +2725,7 @@ bool VolumeTextureLoadTaskClass::Begin_Compressed_Load()
 		D3DPOOL_SYSTEMMEM
 #endif
 	);
+#endif
 
 	MipLevelCount = mip_level_count;
 	return true;
@@ -2740,6 +2785,7 @@ bool VolumeTextureLoadTaskClass::Begin_Uncompressed_Load(void)
 		Format = Get_Valid_Texture_Format(Format, false);
 	}
 
+#ifdef TODO_VULKAN
 	D3DTexture = DX8Wrapper::_Create_DX8_Volume_Texture
 	(
 		Width, 
@@ -2753,6 +2799,7 @@ bool VolumeTextureLoadTaskClass::Begin_Uncompressed_Load(void)
 		D3DPOOL_SYSTEMMEM
 #endif
 	);
+#endif
 
 	return true;
 }

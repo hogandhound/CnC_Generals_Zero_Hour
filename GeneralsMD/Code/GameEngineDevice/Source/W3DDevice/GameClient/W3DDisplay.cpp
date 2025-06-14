@@ -1842,6 +1842,7 @@ AGAIN:
 			}
 		}
 
+#ifdef TODO_VULKAN
 		// update all views of the world - recomputes data which will affect drawing
 		if (DX8Wrapper::_Get_D3D_Device8() && (DX8Wrapper::_Get_D3D_Device8()->TestCooperativeLevel()) == D3D_OK)
 		{	//Checking if we have the device before updating views because the heightmap crashes otherwise while
@@ -1866,6 +1867,7 @@ AGAIN:
 			if (TheW3DProjectedShadowManager)
 				TheW3DProjectedShadowManager->updateRenderTargetTextures();
 		}
+#endif
 
 		Debug_Statistics::End_Statistics();	//record number of polygons rendered in RenderTargetTextures.
 
@@ -3014,6 +3016,7 @@ void W3DDisplay::takeScreenShot(void)
 
 	// Lock front buffer and copy
 
+#ifdef TODO_VULKAN
 	IDirect3DSurface9 *fb;
 	fb=DX8Wrapper::_Get_DX8_Front_Buffer();
 	D3DSURFACE_DESC desc;
@@ -3118,6 +3121,7 @@ void W3DDisplay::takeScreenShot(void)
 	UnicodeString ufileName;
 	ufileName.translate(leafname);
 	TheInGameUI->message(TheGameText->fetch("GUI:ScreenCapture"), ufileName.str());
+#endif
 }
 
 /** Start/Stop campturing an AVI movie*/

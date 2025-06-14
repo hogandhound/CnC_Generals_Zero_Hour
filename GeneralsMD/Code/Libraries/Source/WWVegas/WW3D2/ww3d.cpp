@@ -796,6 +796,7 @@ WW3DErrorType WW3D::Begin_Render(bool clear,bool clearz,const Vector3 & color, f
 
 	WWPROFILE("WW3D::Begin_Render");
 	WWASSERT(IsInitted);
+#ifdef TODO_VULKAN
 	HRESULT hr;
 
 	SNAPSHOT_SAY(("==========================================\r\n"));
@@ -816,6 +817,7 @@ WW3DErrorType WW3D::Begin_Render(bool clear,bool clearz,const Vector3 & color, f
 
 		return WW3D_ERROR_GENERIC;
 	}
+#endif
 
 	// Memory allocation statistics
 	LastFrameMemoryAllocations=WWMemoryLogClass::Get_Allocate_Count();
@@ -839,6 +841,7 @@ WW3DErrorType WW3D::Begin_Render(bool clear,bool clearz,const Vector3 & color, f
 	WWASSERT(!IsRendering);
 	IsRendering = true;
 
+#ifdef TODO_VULKAN
 	// If we want to clear the screen, we need to set the viewport to include the entire screen:
 	if (clear || clearz) {
 		D3DVIEWPORT9 vp;
@@ -854,6 +857,7 @@ WW3DErrorType WW3D::Begin_Render(bool clear,bool clearz,const Vector3 & color, f
 		DX8Wrapper::Set_Viewport(&vp);
 		DX8Wrapper::Clear(clear, clearz, color, dest_alpha);
 	}
+#endif
 
 	// Notify D3D that we are beginning to render the frame
 	DX8Wrapper::Begin_Scene();
@@ -957,6 +961,7 @@ WW3DErrorType WW3D::Render(SceneClass * scene,CameraClass * cam,bool clear,bool 
 	}
 
 	// set the rendering mode
+#ifdef TODO_VULKAN
 	switch(scene->Get_Polygon_Mode()) {
 		case SceneClass::POINT:
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_POINT);
@@ -968,6 +973,7 @@ WW3DErrorType WW3D::Render(SceneClass * scene,CameraClass * cam,bool clear,bool 
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_SOLID);
 			break;
 	}
+#endif
 
 	// Set the global ambient light value here.  If the scene is using the LightEnvironment system
 	// this setting will get overriden.
@@ -1019,7 +1025,9 @@ WW3DErrorType WW3D::Render(
 	rinfo.Camera.Apply();
 
 	// set the rendering mode
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_SOLID);
+#endif
 
 	// Install the lighting environment if one is supplied
 	if (rinfo.light_environment != NULL) {
@@ -1343,6 +1351,7 @@ void WW3D::Make_Screen_Shot( const char * filename_base , const float gamma, con
 	for (i = 0; i < 256; i++) {
 		gamma_lut[i] = (unsigned char) (256.0f * powf(i / 256.0f, recip));
 	}
+#ifdef TODO_VULKAN
 
 	// Lock front buffer and copy
 
@@ -1455,6 +1464,7 @@ void WW3D::Make_Screen_Shot( const char * filename_base , const float gamma, con
 	}
 
 	delete [] image;
+#endif
 }
 
 
@@ -1680,6 +1690,7 @@ void WW3D::Update_Movie_Capture( void )
 	WWDEBUG_SAY(( "Updating\n"));
 
 		// Lock front buffer and copy
+#ifdef TODO_VULKAN
 
 	IDirect3DSurface9 *fb;
 	fb=DX8Wrapper::_Get_DX8_Front_Buffer();
@@ -1718,6 +1729,7 @@ void WW3D::Update_Movie_Capture( void )
 	fb->Release();
 
 	Movie->Grab(image);
+#endif
 #endif
 }
 

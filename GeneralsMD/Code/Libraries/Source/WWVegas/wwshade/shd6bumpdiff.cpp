@@ -51,7 +51,9 @@
 #include "shd6bumpdiff.vsh_code.h"
 
 
+#ifdef TODO_VULKAN
 ShdHWVertexShader		Shd6BumpDiffClass::Vertex_Shader;
+#endif
 Matrix4x4				Shd6BumpDiffClass::View_Projection_Matrix;
 
 Shd6BumpDiffClass::Shd6BumpDiffClass(const ShdDefClass* def)
@@ -93,16 +95,20 @@ void Shd6BumpDiffClass::Init()
 #endif
 	};
 
+#ifdef TODO_VULKAN
 	Vertex_Shader.Create
 	(
 		shd6bumpdiff_vsh_code,
 		vertex_shader_declaration
 	);
+#endif
 }
 
 void Shd6BumpDiffClass::Shutdown()
 {
+#ifdef TODO_VULKAN
 	Vertex_Shader.Destroy();
+#endif
 }
 
 
@@ -112,6 +118,7 @@ void Shd6BumpDiffClass::Shutdown()
 */
 void Shd6BumpDiffClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 {
+#ifdef TODO_VULKAN
 	// vertex processing behavior
 	DX8Wrapper::_Get_D3D_Device8()->SetSoftwareVertexProcessing(!Vertex_Shader.Is_Using_Hardware());
 
@@ -140,6 +147,7 @@ void Shd6BumpDiffClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 	DX8Wrapper::Get_Transform(D3DTS_PROJECTION, proj_matrix);
 
 	Matrix4x4::Multiply(proj_matrix, view_matrix, &View_Projection_Matrix);
+#endif
 }
 
 //**********************************************************************************************
@@ -152,6 +160,7 @@ void Shd6BumpDiffClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 
 	// set vertex shader constants
 	Matrix4x4 world;
+#ifdef TODO_VULKAN
 	DX8Wrapper::Get_Transform(D3DTS_WORLD, world);
 
 	Matrix4x4 world_view_proj_matrix;
@@ -167,6 +176,7 @@ void Shd6BumpDiffClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 		Ambient,
 		Diffuse
 	);
+#endif
 }
 
 unsigned Shd6BumpDiffClass::Get_Vertex_Stream_Count() const

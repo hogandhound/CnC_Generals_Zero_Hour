@@ -694,13 +694,15 @@ void W3DBridgeBuffer::loadBridgesInVertexAndIndexBuffers(RefRenderObjListIterato
 	}
 	m_curNumBridgeVertices = 0;
 	m_curNumBridgeIndices = 0;
+	// Lock the buffers.
+#ifdef TODO_VULKAN
 	VertexFormatXYZNDUV1 *vb;
 	UnsignedShort *ib;
-	// Lock the buffers.
 	DX8IndexBufferClass::WriteLockClass lockIdxBuffer(m_indexBridge, D3DLOCK_DISCARD);
 	DX8VertexBufferClass::WriteLockClass lockVtxBuffer(m_vertexBridge, D3DLOCK_DISCARD);
 	vb=(VertexFormatXYZNDUV1*)lockVtxBuffer.Get_Vertex_Array();
 	ib = lockIdxBuffer.Get_Index_Array();
+#endif
 
 //	UnsignedShort *curIb = ib;
 
@@ -710,8 +712,10 @@ void W3DBridgeBuffer::loadBridgesInVertexAndIndexBuffers(RefRenderObjListIterato
 
 	try {
 	for (curBridge=0; curBridge<m_numBridges; curBridge++) {
+#ifdef TODO_VULKAN
 		m_bridges[curBridge].getIndicesNVertices(ib, vb, &m_curNumBridgeIndices, 
 			&m_curNumBridgeVertices, pLightsIterator);
+#endif
 	}
 	IndexBufferExceptionFunc();
 	} catch(...) {
@@ -773,8 +777,10 @@ void W3DBridgeBuffer::freeBridgeBuffers(void)
 //=============================================================================
 void W3DBridgeBuffer::allocateBridgeBuffers(void)
 {
+#ifdef TODO_VULKAN
 	m_vertexBridge=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZNDUV1,MAX_BRIDGE_VERTEX+4,DX8VertexBufferClass::USAGE_DYNAMIC));
 	m_indexBridge=NEW_REF(DX8IndexBufferClass,(MAX_BRIDGE_INDEX+4, DX8IndexBufferClass::USAGE_DYNAMIC));
+#endif
 	m_vertexMaterial=VertexMaterialClass::Get_Preset(VertexMaterialClass::PRELIT_DIFFUSE);
 #ifdef USE_BRIDGE_NORMALS
 	m_vertexMaterial= new VertexMaterialClass();

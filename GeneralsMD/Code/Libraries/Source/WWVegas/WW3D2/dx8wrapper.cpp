@@ -71,7 +71,6 @@
 #include "missingtexture.h"
 #include "thread.h"
 #include <stdio.h>
-#include <D3dx9core.h>
 #include "pot.h"
 #include "wwprofile.h"
 #include "ffactory.h"
@@ -110,6 +109,7 @@ int								DX8Wrapper::ResolutionHeight							= DEFAULT_RESOLUTION_HEIGHT;
 int								DX8Wrapper::BitDepth										= DEFAULT_BIT_DEPTH;
 int								DX8Wrapper::TextureBitDepth							= DEFAULT_TEXTURE_BIT_DEPTH;
 bool								DX8Wrapper::IsWindowed									= false;
+#ifdef TODO_VULKAN
 D3DFORMAT					DX8Wrapper::DisplayFormat	= D3DFMT_UNKNOWN;
 
 D3DMATRIX						DX8Wrapper::old_world;
@@ -120,6 +120,7 @@ D3DMATRIX						DX8Wrapper::old_prj;
 DWORD								DX8Wrapper::Vertex_Shader_FVF = 0;
 IDirect3DVertexShader9* DX8Wrapper::Vertex_Shader_Ptr = 0;
 IDirect3DPixelShader9* DX8Wrapper::Pixel_Shader								= 0;
+#endif
 
 Vector4							DX8Wrapper::Vertex_Shader_Constants[MAX_VERTEX_SHADER_CONSTANTS];
 Vector4							DX8Wrapper::Pixel_Shader_Constants[MAX_PIXEL_SHADER_CONSTANTS];
@@ -142,6 +143,7 @@ RenderStateStruct				DX8Wrapper::render_state;
 unsigned							DX8Wrapper::render_state_changed;
 
 bool								DX8Wrapper::FogEnable									= false;
+#ifdef TODO_VULKAN
 D3DCOLOR							DX8Wrapper::FogColor										= 0;
 
 IDirect3D9 *					DX8Wrapper::D3DInterface								= NULL;
@@ -150,6 +152,7 @@ IDirect3DSurface9 *			DX8Wrapper::CurrentRenderTarget						= NULL;
 IDirect3DSurface9 *			DX8Wrapper::CurrentDepthBuffer						= NULL;
 IDirect3DSurface9 *			DX8Wrapper::DefaultRenderTarget						= NULL;
 IDirect3DSurface9 *			DX8Wrapper::DefaultDepthBuffer						= NULL;
+#endif
 bool								DX8Wrapper::IsRenderToTexture							= false;
 
 unsigned							DX8Wrapper::matrix_changes								= 0;
@@ -175,7 +178,9 @@ DX8Caps*							DX8Wrapper::CurrentCaps = 0;
 // Hack test... this disables rendering of batches of too few polygons.
 unsigned							DX8Wrapper::DrawPolygonLowBoundLimit=0;
 
+#ifdef TODO_VULKAN
 D3DADAPTER_IDENTIFIER9		DX8Wrapper::CurrentAdapterIdentifier;
+#endif
 
 unsigned long DX8Wrapper::FrameCount = 0;
 
@@ -271,6 +276,7 @@ bool DX8Wrapper::Init(void * hwnd, bool lite)
 
 	for (int light=0;light<4;++light) CurrentDX8LightEnables[light]=false;
 
+#ifdef TODO_VULKAN
 	::ZeroMemory(&old_world, sizeof(D3DMATRIX));
 	::ZeroMemory(&old_view, sizeof(D3DMATRIX));
 	::ZeroMemory(&old_prj, sizeof(D3DMATRIX));
@@ -315,12 +321,14 @@ bool DX8Wrapper::Init(void * hwnd, bool lite)
 		Enumerate_Devices();
 		WWDEBUG_SAY(("DX8Wrapper Init completed\n"));
 	}
+#endif
 
 	return(true);
 }
 
 void DX8Wrapper::Shutdown(void)
 {
+#ifdef TODO_VULKAN
 	if (D3DDevice) {
 
 		Set_Render_Target ((IDirect3DSurface9 *)NULL);
@@ -332,6 +340,7 @@ void DX8Wrapper::Shutdown(void)
 		D3DInterface=NULL;
 
 	}
+#endif
 
 	if (CurrentCaps)
 	{
@@ -346,6 +355,7 @@ void DX8Wrapper::Shutdown(void)
 		}
 	}
 
+#ifdef TODO_VULKAN
 	if (D3DInterface) {
 		UINT newRefCount=D3DInterface->Release();
 		D3DInterface=NULL;
@@ -355,7 +365,7 @@ void DX8Wrapper::Shutdown(void)
 		FreeLibrary(D3D8Lib);
 		D3D8Lib = NULL;
 	}
-
+#endif
 	_RenderDeviceNameTable.Clear();		 // note - Delete_All() resizes the vector, causing a reallocation.  Clear is better. jba.
 	_RenderDeviceShortNameTable.Clear();
 	_RenderDeviceDescriptionTable.Clear();	
@@ -369,7 +379,9 @@ void DX8Wrapper::Do_Onetime_Device_Dependent_Inits(void)
 	/*
 	** Set Global render states (some of which depend on caps)
 	*/
+#ifdef TODO_VULKAN
 	Compute_Caps(D3DFormat_To_WW3DFormat(DisplayFormat));
+#endif
 
    /*
 	** Initalize any other subsystems inside of WW3D
@@ -391,6 +403,7 @@ inline DWORD F2DW(float f) { return *((unsigned*)&f); }
 void DX8Wrapper::Set_Default_Global_Render_States(void)
 {
 	DX8_THREAD_ASSERT();
+#ifdef TODO_VULKAN
 	const D3DCAPS9 &caps = Get_Current_Caps()->Get_DX8_Caps();
 
 	Set_DX8_Render_State(D3DRS_RANGEFOGENABLE, (caps.RasterCaps & D3DPRASTERCAPS_FOGRANGE) ? TRUE : FALSE);
@@ -405,6 +418,7 @@ void DX8Wrapper::Set_Default_Global_Render_States(void)
 	Set_DX8_Texture_Stage_State(0, D3DTSS_BUMPENVMAT01,F2DW(0.0f));
 	Set_DX8_Texture_Stage_State(0, D3DTSS_BUMPENVMAT10,F2DW(0.0f));
 	Set_DX8_Texture_Stage_State(0, D3DTSS_BUMPENVMAT11,F2DW(1.0f));
+#endif
 
 //	Set_DX8_Render_State(D3DRS_CULLMODE, D3DCULL_CW);
 	// Set dither mode here?
@@ -413,9 +427,11 @@ void DX8Wrapper::Set_Default_Global_Render_States(void)
 //MW: I added this for 'Generals'.
 bool DX8Wrapper::Validate_Device(void)
 {	DWORD numPasses=0;
-	HRESULT hRes;
+	HRESULT hRes = D3D_OK;
 
+#ifdef TODO_VULKAN
 	hRes=_Get_D3D_Device8()->ValidateDevice(&numPasses);
+#endif
 
 	return (hRes == D3D_OK);
 }
@@ -436,12 +452,14 @@ void DX8Wrapper::Invalidate_Cached_Render_States(void)
 		}
 		//Need to explicitly set texture to NULL, otherwise app will not be able to
 		//set it to null because of redundant state checker. MW
+#ifdef TODO_VULKAN
 		if (_Get_D3D_Device8())
 			_Get_D3D_Device8()->SetTexture(a,NULL);
 		if (Textures[a] != NULL) {
 			Textures[a]->Release();
 		}
 		Textures[a]=NULL;
+#endif
 	}
 
 	ShaderClass::Invalidate();
@@ -497,6 +515,7 @@ void DX8Wrapper::Do_Onetime_Device_Dependent_Shutdowns(void)
 
 bool DX8Wrapper::Create_Device(void)
 {
+#ifdef TODO_VULKAN
 	WWASSERT(D3DDevice==NULL);	// for now, once you've created a device, you're stuck with it!
 
 	D3DCAPS9 caps;
@@ -611,6 +630,7 @@ bool DX8Wrapper::Create_Device(void)
 	** Initialize all subsystems
 	*/
 	Do_Onetime_Device_Dependent_Inits();
+#endif
 	return true;
 }
 
@@ -618,6 +638,7 @@ bool DX8Wrapper::Reset_Device(bool reload_assets)
 {
 	WWDEBUG_SAY(("Resetting device.\n"));
 	DX8_THREAD_ASSERT();
+#ifdef TODO_VULKAN
 	if ((IsInitted) && (D3DDevice != NULL)) {
 		// Release all non-MANAGED stuff
 		WW3D::_Invalidate_Textures();
@@ -664,11 +685,13 @@ bool DX8Wrapper::Reset_Device(bool reload_assets)
 		return true;
 	}
 	WWDEBUG_SAY(("Device reset failed\n"));
+#endif
 	return false;
 }
 
 void DX8Wrapper::Release_Device(void)
 {
+#ifdef TODO_VULKAN
 	if (D3DDevice) {
 
 		for (int a=0;a<MAX_TEXTURE_STAGES;++a)
@@ -703,12 +726,14 @@ void DX8Wrapper::Release_Device(void)
 		D3DDevice->Release();
 		D3DDevice=NULL;
 	}
+#endif
 }
 
 void DX8Wrapper::Enumerate_Devices()
 {
 	DX8_Assert();
 
+#ifdef TODO_VULKAN
 	int adapter_count = D3DInterface->GetAdapterCount();
 	for (int adapter_index=0; adapter_index<adapter_count; adapter_index++) {
 
@@ -795,6 +820,7 @@ void DX8Wrapper::Enumerate_Devices()
 			}
 		}
 	}
+#endif
 }
 
 bool DX8Wrapper::Set_Any_Render_Device(void)
@@ -956,6 +982,7 @@ bool DX8Wrapper::Set_Render_Device(int dev, int width, int height, int bits, int
 		}
 	}
 #endif
+#ifdef TODO_VULKAN
 	//must be either resetting existing device or creating a new one.
 	WWASSERT(reset_device || D3DDevice == NULL);
 	
@@ -1071,6 +1098,9 @@ bool DX8Wrapper::Set_Render_Device(int dev, int width, int height, int bits, int
 	WWDEBUG_SAY(("Reset/Create_Device done, reset_device=%d, restore_assets=%d\n", reset_device, restore_assets));
 
 	return ret;
+#else
+	return false;
+#endif
 }
 
 bool DX8Wrapper::Set_Next_Render_Device(void)
@@ -1192,6 +1222,7 @@ const char * DX8Wrapper::Get_Render_Device_Name(int device_index)
 
 bool DX8Wrapper::Set_Device_Resolution(int width,int height,int bits,int windowed, bool resize_window)
 {
+#ifdef TODO_VULKAN
 	if (D3DDevice != NULL) {
 
 		if (width != -1) {
@@ -1239,6 +1270,9 @@ bool DX8Wrapper::Set_Device_Resolution(int width,int height,int bits,int windowe
 	} else {
 		return false;
 	}
+#else
+	return false;
+#endif
 }
 
 void DX8Wrapper::Get_Device_Resolution(int & set_w,int & set_h,int & set_bits,bool & set_windowed)
@@ -1419,6 +1453,7 @@ bool DX8Wrapper::Registry_Load_Render_Device( const char * sub_key, char *device
 	return false;
 }
 
+#ifdef TODO_VULKAN
 
 bool DX8Wrapper::Find_Color_And_Z_Mode(int resx,int resy,int bitdepth,D3DFORMAT * set_colorbuffer,D3DFORMAT * set_backbuffer,D3DFORMAT * set_zmode)
 {
@@ -1605,6 +1640,7 @@ bool DX8Wrapper::Test_Z_Mode(D3DFORMAT colorbuffer,D3DFORMAT backbuffer, D3DFORM
 	}
 	return true;
 }
+#endif
 
 
 void DX8Wrapper::Reset_Statistics()
@@ -1674,7 +1710,9 @@ unsigned long DX8Wrapper::Get_FrameCount(void) {return FrameCount;}
 
 void DX8_Assert()
 {
+#ifdef TODO_VULKAN
 	WWASSERT(DX8Wrapper::_Get_D3D8());
+#endif
 	DX8_THREAD_ASSERT();
 }
 
@@ -1685,8 +1723,10 @@ void DX8Wrapper::Begin_Scene(void)
 #if ENABLE_EMBEDDED_BROWSER
 	DX8WebBrowser::Update();
 #endif
-	
+
+#ifdef TODO_VULKAN
 	DX8CALL(BeginScene());
+#endif
 
 	DX8WebBrowser::Update();
 }
@@ -1694,6 +1734,7 @@ void DX8Wrapper::Begin_Scene(void)
 void DX8Wrapper::End_Scene(bool flip_frames)
 {
 	DX8_THREAD_ASSERT();
+#ifdef TODO_VULKAN
 	DX8CALL(EndScene());
 
 	DX8WebBrowser::Render(0);
@@ -1742,6 +1783,7 @@ void DX8Wrapper::End_Scene(bool flip_frames)
 	Set_Index_Buffer(NULL,0);
 	for (int i=0;i<CurrentCaps->Get_Max_Textures_Per_Pass();++i) Set_Texture(i,NULL);
 	Set_Material(NULL);
+#endif
 }
 
 
@@ -1759,6 +1801,7 @@ void DX8Wrapper::Flip_To_Primary(void)
 		int resetAttempts = 0;
 
 		while ((flipCount > 0) && (resetAttempts < 3)) {
+#ifdef TODO_VULKAN
 			HRESULT hr = _Get_D3D_Device8()->TestCooperativeLevel();
 
 			if (FAILED(hr)) {
@@ -1791,6 +1834,7 @@ void DX8Wrapper::Flip_To_Primary(void)
 			}
 
 			--flipCount;
+#endif
 		}
 	}
 }
@@ -1811,6 +1855,7 @@ void DX8Wrapper::Clear(bool clear_color, bool clear_z_stencil, const Vector3 &co
 								_PresentParameters.AutoDepthStencilFormat == D3DFMT_D24S8 ||
 								_PresentParameters.AutoDepthStencilFormat == D3DFMT_D24X4S4);*/
 	bool has_stencil=false;
+#ifdef TODO_VULKAN
 	IDirect3DSurface9* depthbuffer;
 
 	_Get_D3D_Device8()->GetDepthStencilSurface(&depthbuffer);
@@ -1839,13 +1884,16 @@ void DX8Wrapper::Clear(bool clear_color, bool clear_z_stencil, const Vector3 &co
 	{
 		DX8CALL(Clear(0, NULL, flags, Convert_Color(color,dest_alpha), z, stencil));
 	}
+#endif
 }
 
+#ifdef TODO_VULKAN
 void DX8Wrapper::Set_Viewport(CONST D3DVIEWPORT9* pViewport)
 {
 	DX8_THREAD_ASSERT();
 	DX8CALL(SetViewport(pViewport));
 }
+#endif
 
 // ----------------------------------------------------------------------------
 //
@@ -1975,6 +2023,7 @@ void DX8Wrapper::Draw_Sorting_IB_VB(
 		}
 	}
 
+#ifdef TODO_VULKAN
 	DX8CALL(SetStreamSource(
 		0,
 		static_cast<DX8VertexBufferClass*>(dyn_vb_access.VertexBuffer)->Get_DX8_Vertex_Buffer(),
@@ -2031,6 +2080,7 @@ void DX8Wrapper::Draw_Sorting_IB_VB(
 		polygon_count));
 
 	DX8_RECORD_RENDER(polygon_count,vertex_count,render_state.shader);
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -2056,6 +2106,7 @@ void DX8Wrapper::Draw(
 	// Debug feature to disable triangle drawing...
 	if (!_Is_Triangle_Draw_Enabled()) return;
 
+#ifdef TODO_VULKAN
 #ifdef MESH_RENDER_SNAPSHOT_ENABLED
 	if (WW3D::Is_Snapshot_Activated()) {
 		unsigned long passes=0;
@@ -2175,6 +2226,7 @@ void DX8Wrapper::Draw(
 		WWASSERT(0);
 		break;
 	}
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -2273,6 +2325,7 @@ void DX8Wrapper::Apply_Render_State_Changes()
 		}
 		else VertexMaterialClass::Apply_Null();
 	}
+#ifdef TODO_VULKAN
 
 	if (render_state_changed&LIGHTS_CHANGED)
 	{
@@ -2376,6 +2429,7 @@ void DX8Wrapper::Apply_Render_State_Changes()
 	render_state_changed&=((unsigned)WORLD_IDENTITY|(unsigned)VIEW_IDENTITY);
 
 	SNAPSHOT_SAY(("DX8Wrapper::Apply_Render_State_Changes() - finished\n"));
+#endif
 }
 
 IDirect3DTexture9 * DX8Wrapper::_Create_DX8_Texture
@@ -2384,7 +2438,9 @@ IDirect3DTexture9 * DX8Wrapper::_Create_DX8_Texture
 	unsigned int height,
 	WW3DFormat format,
 	MipCountType mip_level_count,
+#ifdef TODO_VULKAN
 	D3DPOOL pool,
+#endif
 	bool rendertarget
 )
 {
@@ -2398,6 +2454,7 @@ IDirect3DTexture9 * DX8Wrapper::_Create_DX8_Texture
 	// NOTE: If 'format' is not supported as a texture format, this function will find the closest
 	// format that is supported and use that instead.
 
+#ifdef TODO_VULKAN
 	// Render target may return NOTAVAILABLE, in
 	// which case we return NULL.
 	if (rendertarget) {
@@ -2497,8 +2554,12 @@ IDirect3DTexture9 * DX8Wrapper::_Create_DX8_Texture
 	DX8_ErrorCode(ret);
 
 	return texture;
+#else
+	return nullptr;
+#endif
 }
 
+#ifdef TODO_VULKAN
 IDirect3DTexture9 * DX8Wrapper::_Create_DX8_Texture
 (
 	const char *filename,
@@ -2543,7 +2604,9 @@ IDirect3DTexture9 * DX8Wrapper::_Create_DX8_Texture
 	}
 	return texture;
 }
+#endif
 
+#ifdef TODO_VULKAN
 IDirect3DTexture9 * DX8Wrapper::_Create_DX8_Texture
 (
 	IDirect3DSurface9 *surface,
@@ -2576,19 +2639,20 @@ IDirect3DTexture9 * DX8Wrapper::_Create_DX8_Texture
 	}
 
 	return texture;
-
 }
+#endif
 
 /*!
  * KJM create depth stencil texture
  */
+#ifdef TODO_VULKAN
 IDirect3DTexture9 * DX8Wrapper::_Create_DX8_ZTexture
 (
 	unsigned int width,
 	unsigned int height,
 	WW3DZFormat zformat,
-	MipCountType mip_level_count,
-	D3DPOOL pool
+	MipCountType mip_level_count
+	, D3DPOOL pool
 )
 {
 	DX8_THREAD_ASSERT();
@@ -2659,6 +2723,7 @@ IDirect3DTexture9 * DX8Wrapper::_Create_DX8_ZTexture
 
 	return texture;
 }
+#endif
 
 /*!
  * KJM create cube map texture
@@ -2669,13 +2734,16 @@ IDirect3DCubeTexture9* DX8Wrapper::_Create_DX8_Cube_Texture
 	unsigned int height,
 	WW3DFormat format,
 	MipCountType mip_level_count,
+#ifdef TODO_VULKAN
 	D3DPOOL pool,
+#endif
 	bool rendertarget
 )
 {
 	WWASSERT(width==height);
 	DX8_THREAD_ASSERT();
 	DX8_Assert();
+#ifdef TODO_VULKAN
 	IDirect3DCubeTexture9* texture=NULL;
 
 	// Paletted textures not supported!
@@ -2796,11 +2864,15 @@ IDirect3DCubeTexture9* DX8Wrapper::_Create_DX8_Cube_Texture
 	DX8_ErrorCode(ret);
 
 	return texture;
+#else
+	return nullptr;
+#endif
 }
 
 /*!
  * KJM create volume texture
  */
+#ifdef TODO_VULKAN
 IDirect3DVolumeTexture9* DX8Wrapper::_Create_DX8_Volume_Texture
 (
 	unsigned int width,
@@ -2876,8 +2948,10 @@ IDirect3DVolumeTexture9* DX8Wrapper::_Create_DX8_Volume_Texture
 
 	return texture;
 }
+#endif
 
 
+#ifdef TODO_VULKAN
 IDirect3DSurface9 * DX8Wrapper::_Create_DX8_Surface(unsigned int width, unsigned int height, WW3DFormat format)
 {
 	DX8_THREAD_ASSERT();
@@ -2892,7 +2966,9 @@ IDirect3DSurface9 * DX8Wrapper::_Create_DX8_Surface(unsigned int width, unsigned
 
 	return surface;
 }
+#endif
 
+#ifdef TODO_VULKAN
 IDirect3DSurface9 * DX8Wrapper::_Create_DX8_Surface(const char *filename_)
 {
 	DX8_THREAD_ASSERT();
@@ -2941,6 +3017,7 @@ IDirect3DSurface9 * DX8Wrapper::_Create_DX8_Surface(const char *filename_)
 		true);
 	return surface;
 }
+#endif
 
 
 /***********************************************************************************************
@@ -2964,7 +3041,9 @@ void DX8Wrapper::_Update_Texture(TextureClass *system, TextureClass *video)
 	WWASSERT(video);
 	WWASSERT(system->Get_Pool()==TextureClass::POOL_SYSTEMMEM);
 	WWASSERT(video->Get_Pool()==TextureClass::POOL_DEFAULT);
+#ifdef TODO_VULKAN
 	DX8CALL(UpdateTexture(system->Peek_D3D_Base_Texture(),video->Peek_D3D_Base_Texture()));
+#endif
 }
 
 void DX8Wrapper::Compute_Caps(WW3DFormat display_format)
@@ -2972,10 +3051,13 @@ void DX8Wrapper::Compute_Caps(WW3DFormat display_format)
 	DX8_THREAD_ASSERT();
 	DX8_Assert();
 	delete CurrentCaps;
+#ifdef TODO_VULKAN
 	CurrentCaps=new DX8Caps(_Get_D3D8(),D3DDevice,display_format,Get_Current_Adapter_Identifier());
+#endif
 }
 
 
+#ifdef TODO_VULKAN
 void DX8Wrapper::Set_Light(unsigned index, const D3DLIGHT9* light)
 {
 	if (light) {
@@ -2987,9 +3069,11 @@ void DX8Wrapper::Set_Light(unsigned index, const D3DLIGHT9* light)
 	}
 	render_state_changed|=(LIGHT0_CHANGED<<index);
 }
+#endif
 
 void DX8Wrapper::Set_Light(unsigned index,const LightClass &light)
 {
+#ifdef TODO_VULKAN
 	D3DLIGHT9 dlight;
 	Vector3 temp;
 	memset(&dlight,0,sizeof(D3DLIGHT9));
@@ -3058,6 +3142,7 @@ void DX8Wrapper::Set_Light(unsigned index,const LightClass &light)
 	dlight.Attenuation2=0.0f;
 
 	Set_Light(index,&dlight);
+#endif
 }
 
 //**********************************************************************************************
@@ -3070,6 +3155,7 @@ void DX8Wrapper::Set_Light_Environment(LightEnvironmentClass* light_env)
 	// Shader light environment support															*
 //	if (Light_Environment && light_env && (*Light_Environment)==(*light_env)) return;
 
+#ifdef TODO_VULKAN
 	Light_Environment=light_env;
 
 	if (light_env) 
@@ -3143,8 +3229,10 @@ void DX8Wrapper::Set_Light_Environment(LightEnvironmentClass* light_env)
 		}
 	}
 */
+#endif
 }
 
+#ifdef TODO_VULKAN
 IDirect3DSurface9 * DX8Wrapper::_Get_DX8_Front_Buffer()
 {
 	DX8_THREAD_ASSERT();
@@ -3159,22 +3247,23 @@ IDirect3DSurface9 * DX8Wrapper::_Get_DX8_Front_Buffer()
 	DX8CALL(GetFrontBufferData(0, fb));
 	return fb;
 }
-
+#endif
+#ifdef TODO_VULKAN
 SurfaceClass * DX8Wrapper::_Get_DX8_Back_Buffer(unsigned int num)
 {
 	DX8_THREAD_ASSERT();
 
-	IDirect3DSurface9 * bb;
 	SurfaceClass *surf=NULL;
+	IDirect3DSurface9 * bb;
 	DX8CALL(GetBackBuffer(0, num,D3DBACKBUFFER_TYPE_MONO,&bb));
 	if (bb)
 	{
 		surf=NEW_REF(SurfaceClass,(bb));
 		bb->Release();
 	}
-
 	return surf;
 }
+#endif
 
 
 TextureClass *
@@ -3184,12 +3273,14 @@ DX8Wrapper::Create_Render_Target (int width, int height, WW3DFormat format)
 	DX8_Assert();
 	number_of_DX8_calls++;
 
+#ifdef TODO_VULKAN
 	// Use the current display format if format isn't specified
 	if (format==WW3D_FORMAT_UNKNOWN) {
 		D3DDISPLAYMODE mode;
 		DX8CALL(GetDisplayMode(0,&mode));
 		format=D3DFormat_To_WW3DFormat(mode.Format);
 	}
+#endif
 
 	// If render target format isn't supported return NULL
 	if (!Get_Current_Caps()->Support_Render_To_Texture_Format(format)) {
@@ -3200,6 +3291,7 @@ DX8Wrapper::Create_Render_Target (int width, int height, WW3DFormat format)
 	//
 	//	Note: We're going to force the width and height to be powers of two and equal
 	//
+#ifdef TODO_VULKAN
 	const D3DCAPS9& dx8caps=Get_Current_Caps()->Get_DX8_Caps();
 	float poweroftwosize = width;
 	if (height > 0 && height < width) {
@@ -3219,6 +3311,7 @@ DX8Wrapper::Create_Render_Target (int width, int height, WW3DFormat format)
 	//
 	//	Attempt to create the render target
 	//
+#endif
 	TextureClass * tex = NEW_REF(TextureClass,(width,height,format,MIP_LEVELS_1,TextureClass::POOL_DEFAULT,true));
 
 	// 3dfx drivers are lying in the CheckDeviceFormat call and claiming
@@ -3270,6 +3363,7 @@ void DX8Wrapper::Create_Render_Target
 	}
 
 	//	Note: We're going to force the width and height to be powers of two and equal
+#ifdef TODO_VULKAN
 	const D3DCAPS9& dx8caps=Get_Current_Caps()->Get_DX8_Caps();
 	float poweroftwosize = width;
 	if (height > 0 && height < width) 
@@ -3315,6 +3409,7 @@ void DX8Wrapper::Create_Render_Target
 			TextureClass::POOL_DEFAULT
 		)
 	);
+#endif
 }
 
 /*!
@@ -3349,6 +3444,7 @@ void DX8Wrapper::Set_Render_Target_With_Z
 	IsRenderToTexture = true;
 }
 
+#ifdef TODO_VULKAN
 void
 DX8Wrapper::Set_Render_Target(IDirect3DSwapChain9 *swap_chain)
 {
@@ -3501,12 +3597,14 @@ DX8Wrapper::Set_Render_Target(IDirect3DSurface9 *render_target, bool use_default
 	return ;
 //#endif // XBOX
 }
+#endif
 
 
 //**********************************************************************************************
 //! Set render target with depth stencil buffer
 /*! KJM
 */
+#ifdef TODO_VULKAN
 void DX8Wrapper::Set_Render_Target
 (
 	IDirect3DSurface9* render_target, 
@@ -3617,8 +3715,9 @@ void DX8Wrapper::Set_Render_Target
 	IsRenderToTexture=true;
 //#endif // XBOX
 }
+#endif
 
-
+#ifdef TODO_VULKAN
 IDirect3DSwapChain9 *
 DX8Wrapper::Create_Additional_Swap_Chain (HWND render_window)
 {
@@ -3647,18 +3746,25 @@ DX8Wrapper::Create_Additional_Swap_Chain (HWND render_window)
 	DX8CALL(CreateAdditionalSwapChain(&params, &swap_chain));
 	return swap_chain;
 }
+#endif
 
+#ifdef TODO_VULKAN
 void DX8Wrapper::Flush_DX8_Resource_Manager(unsigned int bytes)
 {
 	DX8_Assert();
 	DX8CALL(EvictManagedResources());
 }
+#endif
 
 unsigned int DX8Wrapper::Get_Free_Texture_RAM()
 {
 	DX8_Assert();
 	number_of_DX8_calls++;
+#ifdef TODO_VULKAN
 	return DX8Wrapper::_Get_D3D_Device8()->GetAvailableTextureMem();
+#else
+	return 0;
+#endif
 }
 
 // Converts a linear gamma ramp to one that is controlled by:
@@ -3702,7 +3808,9 @@ void DX8Wrapper::Set_Gamma(float gamma,float bright,float contrast,bool calibrat
 	}
 
 	if (Get_Current_Caps()->Support_Gamma())	{
+#ifdef TODO_VULKAN
 		DX8Wrapper::_Get_D3D_Device8()->SetGammaRamp(0,flag,&ramp);
+#endif
 	} else {
 		HWND hwnd = GetDesktopWindow();
 		HDC hdc = GetDC(hwnd);
@@ -3721,7 +3829,8 @@ void DX8Wrapper::Set_Gamma(float gamma,float bright,float contrast,bool calibrat
 void DX8Wrapper::Apply_Default_State()
 {
 	SNAPSHOT_SAY(("DX8Wrapper::Apply_Default_State()\n"));
-	
+
+#ifdef TODO_VULKAN
 	// only set states used in game
 	Set_DX8_Render_State(D3DRS_ZENABLE, TRUE);
 //	Set_DX8_Render_State(D3DRS_FILLMODE, D3DFILL_SOLID);
@@ -3861,10 +3970,11 @@ void DX8Wrapper::Apply_Default_State()
 
 	Set_Vertex_Shader(DX8_FVF_XYZNDUV2);
 	Set_Pixel_Shader(0);
-
+#endif
 	ShaderClass::Invalidate();
 }
 
+#ifdef TODO_VULKAN
 const char* DX8Wrapper::Get_DX8_Render_State_Name(D3DRENDERSTATETYPE state)
 {
 	switch (state) {
@@ -3947,7 +4057,9 @@ const char* DX8Wrapper::Get_DX8_Render_State_Name(D3DRENDERSTATETYPE state)
 	default											  : return "UNKNOWN";
 	}
 }
+#endif
 
+#ifdef TODO_VULKAN
 const char* DX8Wrapper::Get_DX8_Texture_Stage_State_Name(D3DTEXTURESTAGESTATETYPE state)
 {
 	switch (state) {
@@ -3987,7 +4099,8 @@ const char* DX8Wrapper::Get_DX8_Sampler_Stage_State_Name(D3DSAMPLERSTATETYPE sta
 	default: return "UNKNOWN";
 	}
 }
-
+#endif
+#ifdef TODO_VULKAN
 void DX8Wrapper::Get_DX8_Render_State_Value_Name(StringClass& name, D3DRENDERSTATETYPE state, unsigned value)
 {
 	switch (state) {
@@ -4460,6 +4573,7 @@ const char* DX8Wrapper::Get_DX8_Blend_Op_Name(unsigned value)
 	default							: return "UNKNOWN";
 	}
 }
+#endif
 
 
 //============================================================================
@@ -4468,5 +4582,9 @@ const char* DX8Wrapper::Get_DX8_Blend_Op_Name(unsigned value)
 
 WW3DFormat	DX8Wrapper::getBackBufferFormat( void )
 {
+#ifdef TODO_VULKAN
 	return D3DFormat_To_WW3DFormat( _PresentParameters.BackBufferFormat );
+#else
+	return (WW3DFormat)0;
+#endif
 }

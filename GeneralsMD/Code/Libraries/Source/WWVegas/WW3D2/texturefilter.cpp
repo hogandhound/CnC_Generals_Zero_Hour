@@ -69,6 +69,7 @@ TextureFilterClass::TextureFilterClass(MipCountType mip_level_count=MIP_LEVELS_1
 */
 void TextureFilterClass::Apply(unsigned int stage)
 {
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Sampler_Stage_State(stage,D3DSAMP_MINFILTER,_MinTextureFilters[stage][TextureMinFilter]);
 	DX8Wrapper::Set_DX8_Sampler_Stage_State(stage,D3DSAMP_MAGFILTER,_MagTextureFilters[stage][TextureMagFilter]);
 	DX8Wrapper::Set_DX8_Sampler_Stage_State(stage,D3DSAMP_MIPFILTER,_MipMapFilters[stage][MipMapFilter]);
@@ -94,6 +95,7 @@ void TextureFilterClass::Apply(unsigned int stage)
 		DX8Wrapper::Set_DX8_Sampler_Stage_State(stage, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 		break;
 	}
+#endif
 }
 
 //**********************************************************************************************
@@ -102,6 +104,7 @@ void TextureFilterClass::Apply(unsigned int stage)
 */
 void TextureFilterClass::_Init_Filters(TextureFilterMode filter_type)
 {
+#ifdef TODO_VULKAN
 	const D3DCAPS9& dx8caps=DX8Wrapper::Get_Current_Caps()->Get_DX8_Caps();
 
 #ifndef _XBOX
@@ -145,6 +148,7 @@ void TextureFilterClass::_Init_Filters(TextureFilterMode filter_type)
 		if (dx8caps.TextureFilterCaps&D3DPTFILTERCAPS_MIPFLINEAR) _MipMapFilters[0][FILTER_TYPE_BEST]=D3DTEXF_LINEAR;
 	}
 #endif
+#endif
 
 	// For stages above zero, set best filter to the same as the stage zero, except if anisotropic
 	int i = 1;
@@ -169,6 +173,7 @@ void TextureFilterClass::_Init_Filters(TextureFilterMode filter_type)
 		_MagTextureFilters[i][FILTER_TYPE_FAST]=_MagTextureFilters[i-1][FILTER_TYPE_FAST];
 		_MipMapFilters[i][FILTER_TYPE_FAST]=_MipMapFilters[i-1][FILTER_TYPE_FAST];
 
+#ifdef TODO_VULKAN
 		if (_MagTextureFilters[i-1][FILTER_TYPE_BEST]==D3DTEXF_ANISOTROPIC) {
 			_MagTextureFilters[i][FILTER_TYPE_BEST]=D3DTEXF_LINEAR;
 		}
@@ -182,6 +187,7 @@ void TextureFilterClass::_Init_Filters(TextureFilterMode filter_type)
 		else {
 			_MinTextureFilters[i][FILTER_TYPE_BEST]=_MinTextureFilters[i-1][FILTER_TYPE_BEST];
 		}
+#endif
 		_MipMapFilters[i][FILTER_TYPE_BEST]=_MipMapFilters[i-1][FILTER_TYPE_BEST];
 
 
@@ -193,7 +199,9 @@ void TextureFilterClass::_Init_Filters(TextureFilterMode filter_type)
 		_MagTextureFilters[i][FILTER_TYPE_DEFAULT]=_MagTextureFilters[i][FILTER_TYPE_BEST];
 		_MipMapFilters[i][FILTER_TYPE_DEFAULT]=_MipMapFilters[i][FILTER_TYPE_BEST];
 
+#ifdef TODO_VULKAN
 		DX8Wrapper::Set_DX8_Sampler_Stage_State(i,D3DSAMP_MAXANISOTROPY,2);
+#endif
 	}
 
 }

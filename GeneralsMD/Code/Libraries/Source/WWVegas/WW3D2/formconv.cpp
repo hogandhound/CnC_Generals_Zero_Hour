@@ -38,6 +38,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 #include "formconv.h"
 
+#ifdef TODO_VULKAN
 D3DFORMAT WW3DFormatToD3DFormatConversionArray[WW3D_FORMAT_COUNT] = {
 	D3DFMT_UNKNOWN,
 	D3DFMT_R8G8B8,
@@ -65,8 +66,10 @@ D3DFORMAT WW3DFormatToD3DFormatConversionArray[WW3D_FORMAT_COUNT] = {
 	D3DFMT_DXT4,
 	D3DFMT_DXT5
 };
+#endif
 
 // adding depth stencil format conversion
+#ifdef TODO_VULKAN
 D3DFORMAT WW3DZFormatToD3DFormatConversionArray[WW3D_ZFORMAT_COUNT] = 
 {
 #ifndef _XBOX
@@ -94,6 +97,7 @@ D3DFORMAT WW3DZFormatToD3DFormatConversionArray[WW3D_ZFORMAT_COUNT] =
 	D3DFMT_LIN_F16
 #endif
 };
+#endif
 
 
 /*
@@ -129,6 +133,7 @@ WW3DFormat D3DFormatToWW3DFormatConversionArray[HIGHEST_SUPPORTED_D3DFORMAT + 1]
 };
 */
 
+#ifdef TODO_VULKAN
 #ifndef _XBOX
 #define HIGHEST_SUPPORTED_D3DFORMAT D3DFMT_X8L8V8U8
 #define HIGHEST_SUPPORTED_D3DZFORMAT D3DFMT_D24X4S4
@@ -197,6 +202,7 @@ WW3DZFormat D3DFormat_To_WW3DZFormat(D3DFORMAT d3d_format)
 		return D3DFormatToWW3DZFormatConversionArray[(unsigned int)d3d_format];
 	}
 }
+#endif
 
 //**********************************************************************************************
 //! Init format conversion tables
@@ -205,6 +211,7 @@ WW3DZFormat D3DFormat_To_WW3DZFormat(D3DFORMAT d3d_format)
 */
 void Init_D3D_To_WW3_Conversion()
 {
+#ifdef TODO_VULKAN
 	int i = 0;
 	for (;i<HIGHEST_SUPPORTED_D3DFORMAT;++i) {
 		D3DFormatToWW3DFormatConversionArray[i]=WW3D_FORMAT_UNKNOWN;
@@ -248,5 +255,6 @@ void Init_D3D_To_WW3_Conversion()
 	D3DFormatToWW3DZFormatConversionArray[D3DFMT_LIN_F24S8]=WW3D_ZFORMAT_LIN_F24S8;
 	D3DFormatToWW3DZFormatConversionArray[D3DFMT_LIN_D16]=WW3D_ZFORMAT_LIN_D16;
 	D3DFormatToWW3DZFormatConversionArray[D3DFMT_LIN_F16]=WW3D_ZFORMAT_LIN_F16;
+#endif
 #endif
 };

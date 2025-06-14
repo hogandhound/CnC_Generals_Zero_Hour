@@ -49,7 +49,6 @@
 #include "Lib/BaseType.h"
 #include "W3DDevice/GameClient/W3DGranny.h"
 #include "W3DDevice/GameClient/Heightmap.h"
-#include "D3dx9math.h"
 #include "common/GlobalData.h"
 #include "common/drawmodule.h"
 #include "W3DDevice/GameClient/W3DVolumetricShadow.h"
@@ -111,8 +110,10 @@ struct SHADOW_STATIC_VOLUME_VERTEX	//vertex structure passed to D3D
 	#define SHADOW_DYNAMIC_VOLUME_FVF	D3DFVF_XYZ
 #endif
 
+#ifdef TODO_VULKAN
 LPDIRECT3DVERTEXBUFFER9 shadowVertexBufferD3D=NULL;		///<D3D vertex buffer
 LPDIRECT3DINDEXBUFFER9	shadowIndexBufferD3D=NULL;	///<D3D index buffer
+#endif
 int nShadowVertsInBuf=0;	//model vetices in vertex buffer
 int nShadowStartBatchVertex=0;
 int nShadowIndicesInBuf=0;	//model vetices in vertex buffer
@@ -129,7 +130,9 @@ static Real beX;
 static Real beY;
 static Real beZ;
 
+#ifdef TODO_VULKAN
 static LPDIRECT3DVERTEXBUFFER9 lastActiveVertexBuffer=NULL;
+#endif
 
 /** A simple structure to hold random geometry (vertices, polygons, etc.).  We'll use this
 * to store shadow volumes. */
@@ -1374,6 +1377,7 @@ void W3DVolumetricShadow::RenderVolume(Int meshIndex, Int lightIndex)
 
 void W3DVolumetricShadow::RenderMeshVolume(Int meshIndex, Int lightIndex, const Matrix3D *meshXform)
 {
+#ifdef TODO_VULKAN
 	Geometry *geometry;
 	Int numVerts, numPolys, numIndex;
 
@@ -1429,11 +1433,12 @@ void W3DVolumetricShadow::RenderMeshVolume(Int meshIndex, Int lightIndex, const 
 		Debug_Statistics::Record_DX8_Polys_And_Vertices(numPolys,numVerts,ShaderClass::_PresetOpaqueShader);
 		m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, vbSlot->m_start,0,numVerts,ibSlot->m_start,numPolys);
 	}
-
+#endif
 }
 
 void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex, const Matrix3D *meshXform)
 {
+#ifdef TODO_VULKAN
 	Geometry *geometry;
 	Int numVerts, numPolys, numIndex;
 	SHADOW_DYNAMIC_VOLUME_VERTEX* pvVertices;
@@ -1541,11 +1546,13 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 
 	nShadowIndicesInBuf += numIndex;
 	nShadowStartBatchIndex=nShadowIndicesInBuf;
+#endif
 }
 
 /** Debug function to draw bounding boxes around shadow volumes */
 void W3DVolumetricShadow::RenderMeshVolumeBounds(Int meshIndex, Int lightIndex, const Matrix3D *meshXform)
 {
+#ifdef TODO_VULKAN
 	Geometry *geometry;
 	Int numVerts, numPolys, numIndex;
 	SHADOW_DYNAMIC_VOLUME_VERTEX* pvVertices;
@@ -1690,6 +1697,7 @@ void W3DVolumetricShadow::RenderMeshVolumeBounds(Int meshIndex, Int lightIndex, 
 
 	nShadowIndicesInBuf += numIndex;
 	nShadowStartBatchIndex=nShadowIndicesInBuf;
+#endif
 }
 
 // Shadow =====================================================================
@@ -2105,8 +2113,10 @@ void W3DVolumetricShadow::updateMeshVolume(Int meshIndex, Int lightIndex, const 
 		// care only about the rotation of components for the coordinate
 		// system change, not the translations
 		//
+#ifdef TODO_VULKAN
 		Real det;
 		D3DXMatrixInverse((D3DXMATRIX*)&worldToObject, &det, (D3DXMATRIX*)&objectToWorld);
+#endif
 
 		// find out light position in object space
 		Matrix4x4::Transform_Vector(worldToObject,lightPosWorld,&lightPosObject);
@@ -3386,6 +3396,7 @@ void W3DVolumetricShadow::resetSilhouette( Int meshIndex )
 // ============================================================================
 void W3DVolumetricShadowManager::renderStencilShadows( void )
 {
+#ifdef TODO_VULKAN
 	LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 	if (!m_pDev)
@@ -3447,13 +3458,15 @@ void W3DVolumetricShadowManager::renderStencilShadows( void )
 	m_pDev->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
 	// turn off the stencil buffer
 	m_pDev->SetRenderState( D3DRS_STENCILENABLE, FALSE );
-
+#endif
 }  // end renderStencilShadows
 
 void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 {
+#ifdef TODO_VULKAN
 	W3DVolumetricShadow *shadow;
 	Int numRenderedShadows = 0;
+#endif
 
  	AABoxClass bbox;
 	SphereClass bsphere;
@@ -3473,6 +3486,7 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 
 	if (m_shadowList && TheGlobalData->m_useShadowVolumes)
 	{
+#ifdef TODO_VULKAN
 
 		LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
@@ -3662,6 +3676,7 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 		m_pDev->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 		DX8Wrapper::Invalidate_Cached_Render_States();
+#endif
 	}
 	else
 	if (forceStencilFill)
@@ -3775,6 +3790,7 @@ W3DVolumetricShadowManager::~W3DVolumetricShadowManager( void )
 /** Releases all W3D/D3D assets before a reset.. */
 void W3DVolumetricShadowManager::ReleaseResources(void)
 {
+#ifdef TODO_VULKAN
 	if (shadowIndexBufferD3D)
 		shadowIndexBufferD3D->Release();
 	if (shadowVertexBufferD3D)
@@ -3785,12 +3801,14 @@ void W3DVolumetricShadowManager::ReleaseResources(void)
 	{	TheW3DBufferManager->ReleaseResources();
 		invalidateCachedLightPositions();	//vertex buffers need to be refilled.
 	}
+#endif
 }
 
 /** (Re)allocates all W3D/D3D assets after a reset.. */
 Bool W3DVolumetricShadowManager::ReAcquireResources(void)
 {
 	ReleaseResources();
+#ifdef TODO_VULKAN
 
 	LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
@@ -3823,7 +3841,7 @@ Bool W3DVolumetricShadowManager::ReAcquireResources(void)
 	if (TheW3DBufferManager)
 		if (!TheW3DBufferManager->ReAcquireResources())
 			return FALSE;
-
+#endif
 	return TRUE;
 }
 

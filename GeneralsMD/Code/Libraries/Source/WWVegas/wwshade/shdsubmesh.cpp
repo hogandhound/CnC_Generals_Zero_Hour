@@ -137,6 +137,7 @@ static unsigned Define_FVF(MeshModelClass* mmc,bool enable_lighting)
 		return dynamic_fvf_type;
 	}
 
+#ifdef TODO_VULKAN
 	unsigned fvf=D3DFVF_XYZ;
 
 	int tex_coord_count=mmc->Get_UV_Array_Count();
@@ -168,6 +169,9 @@ static unsigned Define_FVF(MeshModelClass* mmc,bool enable_lighting)
 
 	fvf|=D3DFVF_NORMAL;	// Realtime-lit
 	return fvf;
+#else
+	return 0;
+#endif
 }
 
 
@@ -181,6 +185,7 @@ static unsigned Define_FVF(ShdSubMeshClass* ssm,bool enable_lighting)
 		return dynamic_fvf_type;
 	}
 
+#ifdef TODO_VULKAN
 	unsigned fvf=D3DFVF_XYZ;
 
 	int tex_coord_count=0;
@@ -213,6 +218,9 @@ static unsigned Define_FVF(ShdSubMeshClass* ssm,bool enable_lighting)
 	}
 
 	return fvf;
+#else
+	return 0;
+#endif
 }
 
 

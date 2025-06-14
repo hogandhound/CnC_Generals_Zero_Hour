@@ -37,7 +37,6 @@
 #define __W3DSHADERMANAGER_H_
 
 #include "WW3D2/Texture.h"
-#include "d3d9.h"
 enum FilterTypes;
 enum CustomScenePassModes;
 enum StaticGameLODLevel;
@@ -95,7 +94,9 @@ public:
 	///Return last activated shader.
 	static inline ShaderTypes getCurrentShader(void) {return m_currentShader;}
 	/// Loads a .vso file and creates a vertex shader for it
+#ifdef INFO_VULKAN
 	static HRESULT LoadAndCreateD3DShader(char* strFilePath, const DWORD* pDeclaration, DWORD Usage, Bool ShaderType, void** pHandle);
+#endif
 
 	static Bool testMinimumRequirements(ChipsetType *videoChipType, CpuType *cpuType, int64_t*cpuFreq, int64_t*numRAM, Real *intBenchIndex, Real *floatBenchIndex, Real *memBenchIndex);
 	static StaticGameLODLevel getGPUPerformanceIndex(void);
@@ -107,10 +108,12 @@ public:
 	static Bool filterSetup(FilterTypes filter, enum FilterModes mode);
 
 	// Support routines for filter methods.
-	static Bool canRenderToTexture(void) { return (m_oldRenderSurface && m_newRenderSurface);}
+	static Bool canRenderToTexture(void) {
+		return true;//(m_oldRenderSurface && m_newRenderSurface);
+		}
 	static void startRenderToTexture(void); ///< Sets render target to texture.
-	static IDirect3DTexture9 * endRenderToTexture(void); ///< Ends render to texture, & returns texture.
-	static IDirect3DTexture9 * getRenderTexture(void);	///< returns last used render target texture
+	static VK::Texture endRenderToTexture(void); ///< Ends render to texture, & returns texture.
+	static VK::Texture getRenderTexture(void);	///< returns last used render target texture
 	static Bool isRenderingToTexture(void) {return m_renderingToTexture; }
 	static void drawViewport(Int color);	///<draws 2 triangles covering the current tactical viewport
 
@@ -126,10 +129,10 @@ protected:
 	static FilterTypes m_currentFilter; ///< Last filter that was set.
 	// Info for a render to texture surface for special effects.
 	static Bool m_renderingToTexture;
-	static IDirect3DSurface9 *m_oldRenderSurface;	///<previous render target
-	static IDirect3DTexture9 *m_renderTexture;		///<texture into which rendering will be redirected.
-	static IDirect3DSurface9 *m_newRenderSurface;	///<new render target inside m_renderTexture
-	static IDirect3DSurface9 *m_oldDepthSurface;	///<previous depth buffer surface
+	//static VK::Texture m_oldRenderSurface;	///<previous render target
+	static VK::Texture m_renderTexture;		///<texture into which rendering will be redirected.
+	//static VK::Texture m_newRenderSurface;	///<new render target inside m_renderTexture
+	//static VK::Texture m_oldDepthSurface;	///<previous depth buffer surface
 
 
 };
@@ -188,7 +191,9 @@ protected:
 ///converts viewport to black & white.
 class ScreenBWFilter : public W3DFilterInterface
 {
+#ifdef INFO_VULKAN
 	IDirect3DPixelShader9*	m_dwBWPixelShader;		///<D3D handle to pixel shader which tints texture to black & white.
+#endif
 public:
 	virtual Int init(void);			///<perform any one time initialization and validation
 	virtual Int shutdown(void);		///<release resources used by shader
@@ -208,19 +213,6 @@ protected:
 	static Int m_fadeDirection;
 	static Int m_curFadeFrame;
 	static Real m_curFadeValue;
-};
-
-class ScreenBWFilterDOT3 : public ScreenBWFilter
-{
-public:
-	virtual Int init(void);			///<perform any one time initialization and validation
-	virtual Int shutdown(void);		///<release resources used by shader
-	virtual Bool preRender(Bool &skipRender, CustomScenePassModes &scenePassMode); ///< Set up at start of render.  Only applies to screen filter shaders.
-	virtual Bool postRender(enum FilterModes mode, Coord2D &scrollDelta,Bool &doExtraRender); ///< Called after render.  Only applies to screen filter shaders.
-	virtual Bool setup(enum FilterModes mode){return true;} ///< Called when the filter is started, one time before the first prerender.
-protected:
-	virtual Int set(enum FilterModes mode);		///<setup shader for the specified rendering pass.
-	virtual void reset(void);		///<do any custom resetting necessary to bring W3D in sync.
 };
 
 /*=========  ScreenCrossFadeFilter	=============================================================*/

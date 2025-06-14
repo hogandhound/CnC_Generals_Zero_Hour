@@ -82,8 +82,9 @@ static WW3DFormat findFormat(const WW3DFormat formats[])
 {
 	for( Int i = 0; formats[ i ] != WW3D_FORMAT_UNKNOWN; i++ )
 	{
-
+#ifdef INFO_VULKAN
 		if( DX8Wrapper::Get_Current_Caps()->Support_Texture_Format( formats[ i ] ) )
+#endif
 		{
 
 			return formats[ i ];
@@ -620,120 +621,120 @@ void W3DRadar::renderObjectList( const RadarObject *listHead, TextureClass *text
 {
 
 	// sanity
-	if( listHead == NULL || texture == NULL )
+	if (listHead == NULL || texture == NULL)
 		return;
 
 	// get surface for texture to render into
-	SurfaceClass *surface = texture->Get_Surface_Level();
+	SurfaceClass* surface = texture->Get_Surface_Level();
 
 	// loop through all objects and draw
 	ICoord2D radarPoint;
 
-	Player *player = ThePlayerList->getLocalPlayer();
-	Int playerIndex=0;
+	Player* player = ThePlayerList->getLocalPlayer();
+	Int playerIndex = 0;
 	if (player)
-		playerIndex=player->getPlayerIndex();
+		playerIndex = player->getPlayerIndex();
 
-	if( calcHero )
+	if (calcHero)
 	{
 		// clear all entries from the cached hero object list
 		m_cachedHeroPosList.clear();
 	}
 
-	for( const RadarObject *rObj = listHead; rObj; rObj = rObj->friend_getNext() )
+	for (const RadarObject* rObj = listHead; rObj; rObj = rObj->friend_getNext())
 	{
 
 		if (rObj->isTemporarilyHidden())
 			continue;
 
 		// get object
-		const Object *obj = rObj->friend_getObject();
+		const Object* obj = rObj->friend_getObject();
 
 		// cache hero object positions for drawing in icon layer
-		if( calcHero && obj->isHero() )
+		if (calcHero && obj->isHero())
 		{
 			m_cachedHeroPosList.push_back(obj->getPosition());
 		}
-    Bool skip = FALSE;
+		Bool skip = FALSE;
 
 		// check for shrouded status
 		if (obj->getShroudedStatus(playerIndex) > OBJECTSHROUD_PARTIAL_CLEAR)
 			skip = TRUE;	//object is fogged or shrouded, don't render it.
 
- 		//
- 		// objects with a local only unit priority will only appear on the radar if they
- 		// are controlled by the local player, or if the local player is an observer (cause
+		//
+		// objects with a local only unit priority will only appear on the radar if they
+		// are controlled by the local player, or if the local player is an observer (cause
 		// they are godlike and can see everything)
- 		//
+		//
 
 
- 		if( obj->getRadarPriority() == RADAR_PRIORITY_LOCAL_UNIT_ONLY &&
- 				obj->getControllingPlayer() != ThePlayerList->getLocalPlayer() &&
-				ThePlayerList->getLocalPlayer()->isPlayerActive() )
- 			skip = TRUE;
+		if (obj->getRadarPriority() == RADAR_PRIORITY_LOCAL_UNIT_ONLY &&
+			obj->getControllingPlayer() != ThePlayerList->getLocalPlayer() &&
+			ThePlayerList->getLocalPlayer()->isPlayerActive())
+			skip = TRUE;
 
 		// get object position
-		const Coord3D *pos = obj->getPosition();
+		const Coord3D* pos = obj->getPosition();
 
 		// compute object position as a radar blip
 		radarPoint.x = pos->x / (m_mapExtent.width() / RADAR_CELL_WIDTH);
 		radarPoint.y = pos->y / (m_mapExtent.height() / RADAR_CELL_HEIGHT);
 
 
-    if ( skip )
-      continue;
+		if (skip)
+			continue;
 
-    // get the color we're going to draw in
+		// get the color we're going to draw in
 		Color c = rObj->getColor();
 
-		
-		
+
+
 		// adjust the alpha for stealth units so they "fade/blink" on the radar for the controller
 		// if( obj->getRadarPriority() == RADAR_PRIORITY_LOCAL_UNIT_ONLY )
 		// ML-- What the heck is this? local-only and neutral-observier-viewed units are stealthy?? Since when?	
 		// Now it twinkles for any stealthed object, whether locally controlled or neutral-observier-viewed
-		if( obj->testStatus( OBJECT_STATUS_STEALTHED ) )
+		if (obj->testStatus(OBJECT_STATUS_STEALTHED))
 		{
-      if ( ThePlayerList->getLocalPlayer()->getRelationship(obj->getTeam()) == ENEMIES )
-        if( !obj->testStatus( OBJECT_STATUS_DETECTED ) && !obj->testStatus( OBJECT_STATUS_DISGUISED ) )
-				  skip = TRUE;
+			if (ThePlayerList->getLocalPlayer()->getRelationship(obj->getTeam()) == ENEMIES)
+				if (!obj->testStatus(OBJECT_STATUS_DETECTED) && !obj->testStatus(OBJECT_STATUS_DISGUISED))
+					skip = TRUE;
 
 			UnsignedByte r, g, b, a;
-			GameGetColorComponents( c, &r, &g, &b, &a );
+			GameGetColorComponents(c, &r, &g, &b, &a);
 
 			const UnsignedInt framesForTransition = LOGICFRAMES_PER_SECOND;
 			const UnsignedByte minAlpha = 32;
-			
-      if (skip)
-        continue;
+
+			if (skip)
+				continue;
 
 			Real alphaScale = INT_TO_REAL(TheGameLogic->getFrame() % framesForTransition) / (framesForTransition / 2.0f);
-			if( alphaScale > 0.0f )
-				a = REAL_TO_UNSIGNEDBYTE( ((alphaScale - 1.0f) * (255.0f - minAlpha)) + minAlpha );
+			if (alphaScale > 0.0f)
+				a = REAL_TO_UNSIGNEDBYTE(((alphaScale - 1.0f) * (255.0f - minAlpha)) + minAlpha);
 			else
-				a = REAL_TO_UNSIGNEDBYTE( (alphaScale * (255.0f - minAlpha)) + minAlpha );
-			c = GameMakeColor( r, g, b, a );
+				a = REAL_TO_UNSIGNEDBYTE((alphaScale * (255.0f - minAlpha)) + minAlpha);
+			c = GameMakeColor(r, g, b, a);
 
 		}  // end if
 
 
 
-		
+
 		// draw the blip, but make sure the points are legal
-		if( legalRadarPoint( radarPoint.x, radarPoint.y ) )
-			surface->DrawPixel( radarPoint.x, radarPoint.y, c );
+		if (legalRadarPoint(radarPoint.x, radarPoint.y))
+			surface->DrawPixel(radarPoint.x, radarPoint.y, c);
 
 		radarPoint.y++;
-		if( legalRadarPoint( radarPoint.x, radarPoint.y ) )
-			surface->DrawPixel( radarPoint.x, radarPoint.y, c );
+		if (legalRadarPoint(radarPoint.x, radarPoint.y))
+			surface->DrawPixel(radarPoint.x, radarPoint.y, c);
 
 		radarPoint.x++;
-		if( legalRadarPoint( radarPoint.x, radarPoint.y ) )
-			surface->DrawPixel( radarPoint.x, radarPoint.y, c );
+		if (legalRadarPoint(radarPoint.x, radarPoint.y))
+			surface->DrawPixel(radarPoint.x, radarPoint.y, c);
 
 		radarPoint.y--;
-		if( legalRadarPoint( radarPoint.x, radarPoint.y ) )
-			surface->DrawPixel( radarPoint.x, radarPoint.y, c );
+		if (legalRadarPoint(radarPoint.x, radarPoint.y))
+			surface->DrawPixel(radarPoint.x, radarPoint.y, c);
 
 	}  // end for
 	REF_PTR_RELEASE(surface);
@@ -966,14 +967,14 @@ void W3DRadar::reset( void )
 	surface = m_terrainTexture->Get_Surface_Level();
 	if( surface )
 	{
-		surface->Clear();
+		surface->Clear(&m_terrainTexture->Peek_D3D_Texture());
 		REF_PTR_RELEASE(surface);
 	}
 
 	surface = m_overlayTexture->Get_Surface_Level();
 	if( surface )
 	{
-		surface->Clear();
+		surface->Clear(&m_overlayTexture->Peek_D3D_Texture());
 		REF_PTR_RELEASE(surface);
 	}
 
@@ -1245,6 +1246,7 @@ void W3DRadar::buildTerrainTexture( TerrainLogic *terrain )
 
 	}  // end for y
 
+	surface->Unlock(&m_terrainTexture->Peek_D3D_Texture(), m_terrainTexture->Get_Filter().GetSamplerSettings());
 	// all done with the surface
 	REF_PTR_RELEASE(surface);
 
@@ -1267,12 +1269,13 @@ void W3DRadar::clearShroud()
 	{
 		surface->DrawHLine(y, 0, m_textureWidth-1, color);
 	}
+	surface->Unlock(&m_shroudTexture->Peek_D3D_Texture(), m_shroudTexture->Get_Filter().GetSamplerSettings());
 	REF_PTR_RELEASE(surface);
 }
 
 // ------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
-void W3DRadar::setShroudLevel(Int shroudX, Int shroudY, CellShroudStatus setting)
+void W3DRadar::setShroudLevel(Int shroudX, Int shroudY, CellShroudStatus setting, bool upload)
 {
 #if defined(_DEBUG) || defined(_INTERNAL)
 	if (!TheGlobalData->m_shroudOn)
@@ -1333,6 +1336,14 @@ void W3DRadar::setShroudLevel(Int shroudX, Int shroudY, CellShroudStatus setting
 				surface->DrawPixel( x, y, GameMakeColor( 0, 0, 0, alpha ) );
 		}
 	}
+	if (upload)
+		surface->Unlock(&m_shroudTexture->Peek_D3D_Texture(), m_shroudTexture->Get_Filter().GetSamplerSettings());
+	REF_PTR_RELEASE(surface);
+}
+void W3DRadar::uploadShroud()
+{
+	SurfaceClass* surface = m_shroudTexture->Get_Surface_Level();
+	surface->Unlock(&m_shroudTexture->Peek_D3D_Texture(), m_shroudTexture->Get_Filter().GetSamplerSettings());
 	REF_PTR_RELEASE(surface);
 }
 
@@ -1398,7 +1409,7 @@ void W3DRadar::draw( Int pixelX, Int pixelY, Int width, Int height )
 
 		// reset the overlay texture
 		SurfaceClass *surface = m_overlayTexture->Get_Surface_Level();
-		surface->Clear();
+		surface->Clear(&m_overlayTexture->Peek_D3D_Texture());
 		REF_PTR_RELEASE(surface);
 
 		// rebuild the object overlay

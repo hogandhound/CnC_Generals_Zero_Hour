@@ -39,8 +39,6 @@
 #include "assetmgr.h"
 
 #include "shdbumpspec.h"
-#include "shd6bumpspec.h"
-#include "shd7bumpspec.h"
 #include "shd8bumpspec.h"
 
 #include "editable.h"
@@ -191,25 +189,17 @@ bool ShdBumpSpecDefClass::Load(ChunkLoadClass &cload)
 void ShdBumpSpecDefClass::Init()
 {
 	// select shader version
+#ifdef INFO_VULKAN
 	if ((DX8Wrapper::Get_Current_Caps()->Get_Pixel_Shader_Major_Version())==1 &&
 		 (DX8Wrapper::Get_Current_Caps()->Get_Pixel_Shader_Minor_Version())>=1)
+#endif
 	{
 		Version.Set(SHDVER_8);
-	}
-	else if (DX8Wrapper::Get_Current_Caps()->Support_Dot3())
-	{
-		Version.Set(SHDVER_7);
-	}
-	else
-	{
-		Version.Set(SHDVER_6);
 	}
 
 	switch (Version.Get())
 	{
 	case SHDVER_8		: Shd8BumpSpecClass::Init(); break;
-	case SHDVER_7		: Shd7BumpSpecClass::Init(); break;
-	case SHDVER_6		: Shd6BumpSpecClass::Init(); break;
 	}
 }
 
@@ -218,8 +208,6 @@ void ShdBumpSpecDefClass::Shutdown()
 	switch (Version.Get())
 	{
 	case SHDVER_8		: Shd8BumpSpecClass::Shutdown(); break;
-	case SHDVER_7		: Shd7BumpSpecClass::Shutdown(); break;
-	case SHDVER_6		: Shd6BumpSpecClass::Shutdown(); break;
 	}
 }
 
@@ -228,8 +216,6 @@ ShdInterfaceClass* ShdBumpSpecDefClass::Create() const
 	switch (Version.Get())
 	{
 	case SHDVER_8		: return new Shd8BumpSpecClass(this); break;
-	case SHDVER_7		: return new Shd7BumpSpecClass(this); break;
-	case SHDVER_6		: return new Shd6BumpSpecClass(this); break;
 	}
 	return NULL;
 }

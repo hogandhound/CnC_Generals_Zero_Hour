@@ -1269,7 +1269,7 @@ void PartitionCell::invalidateShroudedStatusForAllCois(Int playerIndex)
 }
 
 //-----------------------------------------------------------------------------
-void PartitionCell::addLooker(Int playerIndex)
+void PartitionCell::addLooker(Int playerIndex, bool upload)
 {
 	CellShroudStatus oldShroud = getShroudStatusForPlayer( playerIndex );
 	// The decreasing Algorithm: A 1 will go straight to -1, otherwise it just gets decremented
@@ -1294,13 +1294,13 @@ void PartitionCell::addLooker(Int playerIndex)
 		{
 			// and if this is the local player, do the Client update.
 			TheDisplay->setShroudLevel(m_cellX, m_cellY, newShroud);
-			TheRadar->setShroudLevel(m_cellX, m_cellY, newShroud);
+			TheRadar->setShroudLevel(m_cellX, m_cellY, newShroud, upload);
 		}
 	}
 }
 
 //-----------------------------------------------------------------------------
-void PartitionCell::removeLooker(Int playerIndex)
+void PartitionCell::removeLooker(Int playerIndex, bool upload)
 {
 	CellShroudStatus oldShroud = getShroudStatusForPlayer( playerIndex );
 	// the increasing Algorithm: a -1 goes up to min(1,activeLevel), otherwise it just gets incremented
@@ -1330,13 +1330,13 @@ void PartitionCell::removeLooker(Int playerIndex)
 		{
 			// and if this is the local player, do the Client update.
 			TheDisplay->setShroudLevel(m_cellX, m_cellY, newShroud);
-			TheRadar->setShroudLevel(m_cellX, m_cellY, newShroud);
+			TheRadar->setShroudLevel(m_cellX, m_cellY, newShroud, upload);
 		}
 	}
 }
 
 //-----------------------------------------------------------------------------
-void PartitionCell::addShrouder( Int playerIndex )
+void PartitionCell::addShrouder( Int playerIndex, bool upload)
 {
 	CellShroudStatus oldShroud = getShroudStatusForPlayer( playerIndex );
 	// Increasing active shroud: activeLevel gets incremented, and CS is set to 1 if at zero
@@ -1357,13 +1357,13 @@ void PartitionCell::addShrouder( Int playerIndex )
 		if( playerIndex == ThePlayerList->getLocalPlayer()->getPlayerIndex() )
 		{
 			TheDisplay->setShroudLevel(m_cellX, m_cellY, newShroud);
-			TheRadar->setShroudLevel(m_cellX, m_cellY, newShroud);
+			TheRadar->setShroudLevel(m_cellX, m_cellY, newShroud, upload);
 		}
 	}
 }
 
 //-----------------------------------------------------------------------------
-void PartitionCell::removeShrouder( Int playerIndex )
+void PartitionCell::removeShrouder( Int playerIndex)
 {
 	// Decreasing active shroud: just decrement activeLevel.  This will never result in a client change.
 	// Either it was passive shroud and is now active, or it was being looked at and still is.
@@ -2975,9 +2975,10 @@ void PartitionManager::revealMapForPlayer( Int playerIndex )
 	// By adding a looker directly I don't hit the Ally logic of the normal look/doShroudReveal
 	for (int i = 0; i < m_totalCellCount; ++i) 
 	{
-		m_cells[i].addLooker( playerIndex );
-		m_cells[i].removeLooker( playerIndex );
+		m_cells[i].addLooker( playerIndex, false);
+		m_cells[i].removeLooker( playerIndex, false);
 	}
+	TheRadar->uploadShroud();
 }
 
 /** 
@@ -2990,8 +2991,9 @@ void PartitionManager::revealMapForPlayerPermanently( Int playerIndex )
 	// By adding a looker directly I don't hit the Ally logic of the normal look/doShroudReveal
 	for (int i = 0; i < m_totalCellCount; ++i) 
 	{
-		m_cells[i].addLooker( playerIndex );
+		m_cells[i].addLooker( playerIndex,false );
 	}
+	TheRadar->uploadShroud();
 }
 
 /** 
@@ -3006,8 +3008,9 @@ void PartitionManager::undoRevealMapForPlayerPermanently( Int playerIndex )
 	// Everything you own can become shrouded.
 	for (int i = 0; i < m_totalCellCount; ++i) 
 	{
-		m_cells[i].removeLooker( playerIndex );
+		m_cells[i].removeLooker( playerIndex, false);
 	}
+	TheRadar->uploadShroud();
 }
 
 /** 
@@ -3021,9 +3024,10 @@ void PartitionManager::shroudMapForPlayer( Int playerIndex )
 	// By pulsing a blast of shroud like this, we will set everything not actively looked at as Passive Shroud
 	for (int i = 0; i < m_totalCellCount; ++i) 
 	{
-		m_cells[i].addShrouder( playerIndex );
+		m_cells[i].addShrouder( playerIndex, false );
 		m_cells[i].removeShrouder( playerIndex );
 	}
+	TheRadar->uploadShroud();
 }
 
 //-----------------------------------------------------------------------------
@@ -3040,9 +3044,10 @@ void PartitionManager::refreshShroudForLocalPlayer()
 		Int y = m_cells[i].getCellY();
 		CellShroudStatus status = m_cells[i].getShroudStatusForPlayer(playerIndex);
 		TheDisplay->setShroudLevel(x, y, status);
-		TheRadar->setShroudLevel(x, y, status);
+		TheRadar->setShroudLevel(x, y, status,false);
 		m_cells[i].invalidateShroudedStatusForAllCois(playerIndex);
 	}
+	TheRadar->uploadShroud();
 }
 
 //-----------------------------------------------------------------------------
@@ -3987,6 +3992,7 @@ void PartitionManager::doShroudReveal(Real centerX, Real centerY, Real radius, P
 			circle.drawCircle(hLineAddLooker, (void*)(uintptr_t)currentIndex);
 		}
 	}
+	TheRadar->uploadShroud();
 }
 	
 //-----------------------------------------------------------------------------
@@ -4052,6 +4058,7 @@ void PartitionManager::undoShroudReveal(Real centerX, Real centerY, Real radius,
 			circle.drawCircle(hLineRemoveLooker, (void*)(uintptr_t)currentIndex);
 		}
 	}
+	TheRadar->uploadShroud();
 }
 	
 //-----------------------------------------------------------------------------
@@ -4091,6 +4098,7 @@ void PartitionManager::doShroudCover(Real centerX, Real centerY, Real radius, Pl
 			circle.drawCircle(hLineAddShrouder, (void*)(uintptr_t)currentIndex);
 		}
 	}
+	TheRadar->uploadShroud();
 }
 
 //-----------------------------------------------------------------------------
@@ -4900,17 +4908,18 @@ void PartitionManager::restoreFoggedCells(const ShroudStatusStoreRestore &inPart
 
 				if (byteToRestore == STORE_FOG && restoreToFog) {
 					// restore the fog status of this cell
-					m_cells[j * m_cellCountX + i].addLooker(p);
-					m_cells[j * m_cellCountX + i].removeLooker(p);
+					m_cells[j * m_cellCountX + i].addLooker(p, false);
+					m_cells[j * m_cellCountX + i].removeLooker(p, false);
 				}
 
 				if (byteToRestore == STORE_PERMANENTLY_REVEALED && !restoreToFog) {
 					// Add an extra looker.
-					m_cells[j * m_cellCountX + i].addLooker(p);
+					m_cells[j * m_cellCountX + i].addLooker(p, false);
 				}
 			}
 		}
 	}
+	TheRadar->uploadShroud();
 }
 
 
@@ -5610,7 +5619,7 @@ static void hLineAddLooker(Int x1, Int x2, Int y, void *playerIndexVoid)
 	{
 		if (x < 0 || x >= ThePartitionManager->m_cellCountX)
 			continue;
-		cell->addLooker(playerIndex);
+		cell->addLooker(playerIndex,false);
 	}
 }
 
@@ -5627,7 +5636,7 @@ static void hLineRemoveLooker(Int x1, Int x2, Int y, void *playerIndexVoid)
 	{
 		if (x < 0 || x >= ThePartitionManager->m_cellCountX)
 			continue;
-		cell->removeLooker(playerIndex);
+		cell->removeLooker(playerIndex,false);
 	}
 }
 
@@ -5644,7 +5653,7 @@ static void hLineAddShrouder(Int x1, Int x2, Int y, void *playerIndexVoid)
 	{
 		if (x < 0 || x >= ThePartitionManager->m_cellCountX)
 			continue;
-		cell->addShrouder( playerIndex );
+		cell->addShrouder( playerIndex,false );
 	}
 }
 

@@ -272,8 +272,8 @@ void Line3DClass::Render(RenderInfoClass & rinfo)
 	VertexMaterialClass *vm=VertexMaterialClass::Get_Preset(VertexMaterialClass::PRELIT_DIFFUSE);
 	DX8Wrapper::Set_Material(vm);
 	REF_PTR_RELEASE(vm);
-
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,Transform);	
+	
+	DX8Wrapper::Set_Transform(VkTS::WORLD,Transform);	
 
 	DynamicVBAccessClass vb(BUFFER_TYPE_DYNAMIC_DX8,dynamic_fvf_type,8);
 	{
@@ -306,7 +306,41 @@ void Line3DClass::Render(RenderInfoClass & rinfo)
 
 	DX8Wrapper::Set_Vertex_Buffer(vb);
 	DX8Wrapper::Set_Index_Buffer(ib,0);
+	DX8Wrapper::Apply_Render_State_Changes();
+	auto pipelines = DX8Wrapper::FindClosestPipelines(vb.FVF_Info().FVF);
+	assert(pipelines.size() == 1);
+	WWVKDSV;
+	switch (pipelines[0]) {
+	case PIPELINE_WWVK_FVF_NDUV2_NOL_DROPTEX:
+	{
+		WorldMatrix push;
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+		WWVK_UpdateFVF_NDUV2_NOL_DROPTEXDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+			&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		WWVK_DrawFVF_NDUV2_NOL_DROPTEX(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, 36, 0,
+			VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+			0, (WorldMatrix*)&push);
+		break;
+	}
+	case PIPELINE_WWVK_FVF_NDUV2_NOL_DROPTEX2:
+	{
+		WorldMatrix push;
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+		WWVK_UpdateFVF_NDUV2_NOL_DROPTEX2DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+			DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		WWVK_DrawFVF_NDUV2_NOL_DROPTEX2(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, 36, 0,
+			VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+			0, (WorldMatrix*)&push);
+		break;
+	}
+
+	default: assert(false);
+	}
+#ifdef INFO_VULKAN
 	DX8Wrapper::Draw_Triangles(0,36/3,0,8);
+#endif
 }
 
 /************************************************************************** 

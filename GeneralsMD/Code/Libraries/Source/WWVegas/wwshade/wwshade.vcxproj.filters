@@ -65,26 +65,11 @@
     <ClCompile Include="shdsubmesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="shdsimple.cpp">
-      <Filter>Shaders\Simple</Filter>
-    </ClCompile>
-    <ClCompile Include="shd6bumpspec.cpp">
-      <Filter>Shaders\Bump Specular</Filter>
-    </ClCompile>
-    <ClCompile Include="shd7bumpspec.cpp">
-      <Filter>Shaders\Bump Specular</Filter>
-    </ClCompile>
     <ClCompile Include="shd8bumpspec.cpp">
       <Filter>Shaders\Bump Specular</Filter>
     </ClCompile>
     <ClCompile Include="shdbumpspec.cpp">
       <Filter>Shaders\Bump Specular</Filter>
-    </ClCompile>
-    <ClCompile Include="shd6bumpdiff.cpp">
-      <Filter>Shaders\Bump Diffuse</Filter>
-    </ClCompile>
-    <ClCompile Include="shd7bumpdiff.cpp">
-      <Filter>Shaders\Bump Diffuse</Filter>
     </ClCompile>
     <ClCompile Include="shd8bumpdiff.cpp">
       <Filter>Shaders\Bump Diffuse</Filter>
@@ -139,21 +124,6 @@
     <ClInclude Include="shdsubmesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="shdsimple.h">
-      <Filter>Shaders\Simple</Filter>
-    </ClInclude>
-    <ClInclude Include="shd6bumpspec.h">
-      <Filter>Shaders\Bump Specular</Filter>
-    </ClInclude>
-    <ClInclude Include="shd6bumpspec_constants.h">
-      <Filter>Shaders\Bump Specular</Filter>
-    </ClInclude>
-    <ClInclude Include="shd7bumpspec.h">
-      <Filter>Shaders\Bump Specular</Filter>
-    </ClInclude>
-    <ClInclude Include="shd7bumpspec_constants.h">
-      <Filter>Shaders\Bump Specular</Filter>
-    </ClInclude>
     <ClInclude Include="shd8bumpspec.h">
       <Filter>Shaders\Bump Specular</Filter>
     </ClInclude>
@@ -162,18 +132,6 @@
     </ClInclude>
     <ClInclude Include="shdbumpspec.h">
       <Filter>Shaders\Bump Specular</Filter>
-    </ClInclude>
-    <ClInclude Include="shd6bumpdiff.h">
-      <Filter>Shaders\Bump Diffuse</Filter>
-    </ClInclude>
-    <ClInclude Include="shd6bumpdiff_constants.h">
-      <Filter>Shaders\Bump Diffuse</Filter>
-    </ClInclude>
-    <ClInclude Include="shd7bumpdiff.h">
-      <Filter>Shaders\Bump Diffuse</Filter>
-    </ClInclude>
-    <ClInclude Include="shd7bumpdiff_constants.h">
-      <Filter>Shaders\Bump Diffuse</Filter>
     </ClInclude>
     <ClInclude Include="shd8bumpdiff.h">
       <Filter>Shaders\Bump Diffuse</Filter>
@@ -193,49 +151,5 @@
     <ClInclude Include="shdlegacyw3d.h">
       <Filter>Shaders\LegacyW3D</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="shd6bumpspec.vsh">
-      <Filter>Shaders\Bump Specular</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd7bumpspecpass0.vsh">
-      <Filter>Shaders\Bump Specular</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd7bumpspecpass1.vsh">
-      <Filter>Shaders\Bump Specular</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd8bumpspec.psh">
-      <Filter>Shaders\Bump Specular</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd8bumpspec.vsh">
-      <Filter>Shaders\Bump Specular</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd8ssbumpspec.psh">
-      <Filter>Shaders\Bump Specular</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd8ssbumpspec.vsh">
-      <Filter>Shaders\Bump Specular</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd6bumpdiff.vsh">
-      <Filter>Shaders\Bump Diffuse</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd7bumpdiffpass0.vsh">
-      <Filter>Shaders\Bump Diffuse</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd7bumpdiffpass1.vsh">
-      <Filter>Shaders\Bump Diffuse</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd8bumpdiff.psh">
-      <Filter>Shaders\Bump Diffuse</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd8bumpdiff.vsh">
-      <Filter>Shaders\Bump Diffuse</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd8ssbumpdiff.psh">
-      <Filter>Shaders\Bump Diffuse</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd8ssbumpdiff.vsh">
-      <Filter>Shaders\Bump Diffuse</Filter>
-    </CustomBuild>
   </ItemGroup>
 </Project>

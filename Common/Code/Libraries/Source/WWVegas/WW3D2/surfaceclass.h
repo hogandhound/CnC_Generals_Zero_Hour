@@ -45,10 +45,17 @@
 
 #include "ww3dformat.h"
 #include "refcount.h"
+#include <WWVKStructs.h>
+#include <vector>
+#include <VkRenderTarget.h>
 
 struct IDirect3DSurface9;
 class Vector2i;
 class Vector3;
+namespace VK
+{
+	struct Texture;
+}
 
 /*************************************************************************
 **                             SurfaceClass
@@ -76,7 +83,9 @@ class SurfaceClass : public W3DMPO, public RefCountClass
 		SurfaceClass(const char *filename);
 
 		// Create the surface from a D3D pointer
+#ifdef INFO_VULKAN
 		SurfaceClass(IDirect3DSurface9 *d3d_surface);
+#endif
 
 		~SurfaceClass(void);
 
@@ -85,30 +94,24 @@ class SurfaceClass : public W3DMPO, public RefCountClass
 
 		// Lock / unlock the surface
 		void * Lock(int * pitch);
-		void Unlock(void);
+		void Unlock(VK::Texture* tex, VK::SamplerSettings samp);
 
 		// HY -- The following functions are support functions for font3d
 		// zaps the surface memory to zero
-		void Clear();
+		void Clear(VK::Texture* texture);
 
 		// copies the contents of one surface to another		
 		void Copy(
 			unsigned int dstx, unsigned int dsty,
 			unsigned int srcx, unsigned int srcy, 
 			unsigned int width, unsigned int height,
-			const SurfaceClass *other);
+			const SurfaceClass *other, VK::Texture* texture);
 
 		// support for copying from a byte array
-		void Copy(const unsigned char *other);
+		void Copy(const unsigned char *other, VK::Texture* texture);
 
 		// support for copying from a byte array
-		void Copy(Vector2i &min,Vector2i &max, const unsigned char *other);
-
-		// copies the contents of one surface to another, stretches
-		void Stretch_Copy(
-			unsigned int dstx, unsigned int dsty,unsigned int dstwidth, unsigned int dstheight,
-			unsigned int srcx, unsigned int srcy, unsigned int srcwidth, unsigned int srcheight,
-			const SurfaceClass *source);
+		void Copy(Vector2i &min,Vector2i &max, const unsigned char *other, VK::Texture* texture);
 
 		// finds the bounding box of non-zero pixels, used in font3d
 		void FindBB(Vector2i *min,Vector2i*max);
@@ -117,14 +120,25 @@ class SurfaceClass : public W3DMPO, public RefCountClass
 		bool Is_Transparent_Column(unsigned int column);		
 
 		// makes a copy of the surface into a byte array
-		unsigned char *CreateCopy(int *width,int *height,int*size,bool flip=false);
+		std::vector<uint8_t> CreateCopy(int *width,int *height, int* size, bool flip=false);
 
 			// For use by TextureClass:
-		IDirect3DSurface9 *Peek_D3D_Surface(void) { return D3DSurface; }
+		std::vector<uint8_t>& Peek_D3D_Surface(void) {
+#ifdef INFO_VULKAN
+			return D3DSurface; 
+#else
+			return surface.buffer;
+#endif
+		}
+		const std::vector<uint8_t>& Peek_D3D_Surface(void) const {
+			return surface.buffer;
+		}
 
 		// Attaching and detaching a surface pointer
+#ifdef INFO_VULKAN
 		void	Attach (IDirect3DSurface9 *surface);
 		void	Detach (void);
+#endif
 
 		// draws a horizontal line
 		void DrawHLine(const unsigned int y,const unsigned int x1, const unsigned int x2, unsigned int color);
@@ -143,7 +157,10 @@ class SurfaceClass : public W3DMPO, public RefCountClass
 	private:
 
 		// Direct3D surface object
+#ifdef INFO_VULKAN
 		IDirect3DSurface9 *D3DSurface;
+#endif
+		VK::Surface surface;
 
 		WW3DFormat SurfaceFormat;
 	friend class TextureClass;	

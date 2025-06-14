@@ -119,7 +119,13 @@ void MaterialPassClass::Install_Materials(void) const
 {
 	DX8Wrapper::Set_Material(Peek_Material());
 	DX8Wrapper::Set_Shader(Peek_Shader());
-	for (int i=0;i<DX8Wrapper::Get_Current_Caps()->Get_Max_Textures_Per_Pass();++i) 
+	for (int i=0;i<
+#ifdef INFO_VULKAN
+		DX8Wrapper::Get_Current_Caps()->Get_Max_Textures_Per_Pass()
+#else
+		8
+#endif
+		;++i) 
 	{
 		DX8Wrapper::Set_Texture(i,Peek_Texture(i));
 	}

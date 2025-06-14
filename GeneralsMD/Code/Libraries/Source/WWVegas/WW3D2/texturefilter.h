@@ -40,9 +40,7 @@
 #ifndef TEXTUREFILTER_H
 #define TEXTUREFILTER_H
 
-#ifndef DX8_WRAPPER_H
-//#include "dx8wrapper.h"
-#endif
+#include <VkRenderTarget.h>
 
 enum MipCountType 
 {
@@ -99,6 +97,7 @@ public:
 	TextureFilterClass(MipCountType mip_level_count);
 
 	void Apply(unsigned int stage);
+	VK::SamplerSettings GetSamplerSettings();
 
 	// Filter and MIPmap settings:
 	FilterType Get_Min_Filter(void) const { return TextureMinFilter; }

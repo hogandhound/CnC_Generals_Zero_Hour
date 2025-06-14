@@ -64,7 +64,8 @@ public:
 	void draw( Int pixelX, Int pixelY, Int width, Int height );		///< draw the radar
 
 	virtual void clearShroud();
-	virtual void setShroudLevel(Int x, Int y, CellShroudStatus setting);
+	void setShroudLevel(Int x, Int y, CellShroudStatus setting, bool upload = true) override;
+	void uploadShroud() override;
 
 	virtual void refreshTerrain( TerrainLogic *terrain );
 

@@ -408,7 +408,7 @@ void GrannyRenderObjClass::Render(RenderInfoClass & rinfo)
 			DX8Wrapper::Set_Light_Environment(rinfo.light_environment);
 			DX8Wrapper::Set_Material(m_prototype.m_vertexMaterial);
 			DX8Wrapper::Set_Shader(ShaderClass::_PresetOpaqueShader);
-			DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
+			DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 			DX8Wrapper::Set_Index_Buffer(ib_access,0);
 			DX8Wrapper::Set_Vertex_Buffer(vb_access);
 			DX8Wrapper::Draw_Triangles(	0,indexCount/3, 0,	m_vertexCount);	//draw a quad, 2 triangles, 4 verts
@@ -895,7 +895,7 @@ void GrannyRenderObjSystem::Flush(void)
 					
 					Matrix3D tm(robj->Transform);
 					DX8Wrapper::Set_Light_Environment(&m_renderLocalLightEnv[modelCount]);
-					DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
+					DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 					DX8Wrapper::Set_Vertex_Buffer(vb_access);
 					DX8Wrapper::Draw_Triangles(	0,indexCount/3, 0,	robj->m_vertexCount);	//draw a quad, 2 triangles, 4 verts
 				}
@@ -1100,7 +1100,7 @@ void GrannyRenderObjClassSystem::flush()
 		DX8Wrapper::Set_Vertex_Buffer(m_vertexBuffer);
 
 		Matrix3D tm(mod->Transform);
-		DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
+		DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 		DX8Wrapper::Set_Index_Buffer_Index_Offset(0);
 		DX8Wrapper::Draw_Triangles(	0,2, 0, 1*2);
 

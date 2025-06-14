@@ -514,7 +514,16 @@ void BoxRenderObjClass::render_box(RenderInfoClass & rinfo,const Vector3 & cente
 		SphereClass sphere;
 		Get_Obj_Space_Bounding_Sphere(sphere); 
 
+		DX8Wrapper::Apply_Render_State_Changes();
+		auto pipelines = DX8Wrapper::FindClosestPipelines(vbaccess.FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(buffer_type,0,NUM_BOX_FACES,0,NUM_BOX_VERTS);
+#endif
 	}
 }
 
@@ -704,7 +713,7 @@ void AABoxRenderObjClass::Render(RenderInfoClass & rinfo)
 {
 	Matrix3D temp(1);
 	temp.Translate(Transform.Get_Translation());
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,temp);
+	DX8Wrapper::Set_Transform(VkTS::WORLD,temp);
 	render_box(rinfo,ObjSpaceCenter,ObjSpaceExtent);
 }
 
@@ -1088,7 +1097,7 @@ int OBBoxRenderObjClass::Class_ID(void) const
  *=============================================================================================*/
 void OBBoxRenderObjClass::Render(RenderInfoClass & rinfo)
 {
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,Transform);
+	DX8Wrapper::Set_Transform(VkTS::WORLD,Transform);
 	render_box(rinfo,ObjSpaceCenter,ObjSpaceExtent);
 }
 

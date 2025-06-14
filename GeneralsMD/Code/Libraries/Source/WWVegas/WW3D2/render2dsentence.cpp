@@ -140,7 +140,7 @@ Render2DSentenceClass::Reset (void)
 	//	Make sure we unlock the current surface (if necessary)
 	//
 	if (LockedPtr != NULL) {
-		CurSurface->Unlock ();
+		CurSurface->Unlock (0, {});
 		LockedPtr = NULL;
 	}
 
@@ -353,7 +353,7 @@ Render2DSentenceClass::Build_Textures (void)
 	//	Make sure we unlock the current surface
 	//
 	if (LockedPtr != NULL) {
-		CurSurface->Unlock ();
+		CurSurface->Unlock (0, {});
 		LockedPtr = NULL;
 	}
 	
@@ -381,7 +381,7 @@ Render2DSentenceClass::Build_Textures (void)
 		//	Create the new texture
 		//
 		TextureClass *new_texture = W3DNEW TextureClass (desc.Width, desc.Width, WW3D_FORMAT_A4R4G4B4, 
-			MIP_LEVELS_1, TextureClass::POOL_DEFAULT);
+			MIP_LEVELS_1);
 		SurfaceClass *texture_surface = new_texture->Get_Surface_Level ();
 
 		new_texture->Get_Filter().Set_U_Addr_Mode(TextureFilterClass::TEXTURE_ADDRESS_CLAMP);
@@ -393,8 +393,12 @@ Render2DSentenceClass::Build_Textures (void)
 		//
 		//	Copy the contents of the texture from the surface
 		//
+#ifdef INFO_VULKAN
 		DX8Wrapper::_Copy_DX8_Rects(curr_surface->Peek_D3D_Surface(), NULL, 0, texture_surface->Peek_D3D_Surface(), NULL);
-		//DX8Wrapper::_Stretch_DX9_Rects (curr_surface->Peek_D3D_Surface (), NULL, 0, texture_surface->Peek_D3D_Surface (), NULL, D3DTEXF_LINEAR);
+#else
+		texture_surface->Copy(curr_surface->Peek_D3D_Surface().data(), &new_texture->Peek_D3D_Texture());
+#endif
+		//DX8Wrapper::_Stretch_DX9_Rects (curr_surface->Peek_D3D_Surface (), NULL, 0, texture_surface->Peek_D3D_Surface (), NULL, VK_FILTER_LINEAR);
 		REF_PTR_RELEASE (texture_surface);
 	
 		//
@@ -640,7 +644,7 @@ Render2DSentenceClass::Allocate_New_Surface (const WCHAR *text, bool justCalcExt
 		//	Unlock the last surface (if necessary)
 		//
 		if (LockedPtr != NULL) {
-			CurSurface->Unlock ();
+			CurSurface->Unlock (0, {});
 			LockedPtr = NULL;
 		}
 	}

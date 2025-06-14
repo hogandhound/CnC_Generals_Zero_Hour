@@ -38,7 +38,7 @@
     <SccProjectName>Compression</SccProjectName>
     <SccLocalPath>..\..</SccLocalPath>
     <ProjectGuid>{5E2A1D5D-9E1C-424A-9CFF-ABFBD768723D}</ProjectGuid>
-    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">
@@ -81,9 +81,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -187,13 +188,14 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\include;$(ProjectDir)LZHCompress\CompLibHeader;$(ProjectDir)ZLib\$(PlatformToolset);$(ProjectDir)EAC;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\LZHCompress\CompLibHeader;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\ZLib\$(PlatformToolset);$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\Zlib;$(SolutionDir)..\..\Common\Code\Libraries\Source\Compression\EAC;$(ProjectDir);$(ProjectDir)LZHCompress;$(SolutionDir)..\..\Common/Code/Libraries/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;_LIB;Z_PREFIX;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_LIB;Z_PREFIX;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_DISABLE_VECTOR_ANNOTATION;_DISABLE_STRING_ANNOTATION</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
       <PrecompiledHeaderOutputFile>.\Debug\Compression.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\Debug\</ObjectFileName>
       <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>

@@ -317,12 +317,11 @@ void StreakRendererClass::RenderStreak
 )
 {
 	Matrix4x4 view;
-	DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
+	DX8Wrapper::Get_Transform(VkTS::VIEW,view);
 
 	Matrix4x4 identity(true);
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,identity);	
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,identity);	
-
+	DX8Wrapper::Set_Transform(VkTS::WORLD,identity);	
+	DX8Wrapper::Set_Transform(VkTS::VIEW,identity);	
 	/* 
 	** Handle texture UV offset animation (done once for entire line).
 	*/
@@ -1394,12 +1393,21 @@ void StreakRendererClass::RenderStreak
 		} 
 		else 
 		{
+			DX8Wrapper::Apply_Render_State_Changes();
+			auto pipelines = DX8Wrapper::FindClosestPipelines(Verts.FVF_Info().FVF);
+			assert(pipelines.size() == 1);
+			switch (pipelines[0]) {
+			case 0:
+			default: assert(false);
+			}
+#ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles(0,triangleIndex,0,vnum);
+#endif
 		}
 		
 	}	// Chunking loop
 
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,view);
+	DX8Wrapper::Set_Transform(VkTS::VIEW,view);
 
 }
 

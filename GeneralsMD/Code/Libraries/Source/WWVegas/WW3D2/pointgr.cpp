@@ -86,7 +86,6 @@
 #include "rinfo.h"
 #include "camera.h"
 #include "dx8fvf.h"
-#include "D3DX9Math.h"
 #include "sortingrenderer.h"
 
 // Upgraded to DX8 2/2/01 HY
@@ -880,7 +879,7 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 
 	// Get the world and view matrices
 	Matrix4x4 view;
-	DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
+	DX8Wrapper::Get_Transform(VkTS::VIEW,view);
 
 	// Transform the point locations from worldspace to camera space if needed
 	// (i.e. if they are not already in camera space):
@@ -919,8 +918,8 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 	// so set world and view matrices to identity and render
 	
 	Matrix4x4 identity(true);
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,identity);	
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,identity);	
+	DX8Wrapper::Set_Transform(VkTS::WORLD,identity);	
+	DX8Wrapper::Set_Transform(VkTS::VIEW,identity);	
 
 	DX8Wrapper::Set_Material(PointMaterial);
 	DX8Wrapper::Set_Shader(Shader);
@@ -977,6 +976,7 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 
 		DX8Wrapper::Set_Index_Buffer (indexbuffer, 0);
 		DX8Wrapper::Set_Vertex_Buffer (PointVerts);
+		DX8Wrapper::Apply_Render_State_Changes();
 		
 		if ( sort ) 
 		{
@@ -984,14 +984,48 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 		}
 		else
 		{
+			auto pipelines = DX8Wrapper::FindClosestPipelines(PointVerts.FVF_Info().FVF);
+			WWVKDSV;
+			assert(pipelines.size() == 1);
+			switch (pipelines[0]) {
+			case PIPELINE_WWVK_FVF_NDUV2_NOL_AREF:
+			{
+				WorldMatrix_AlphaRef push;
+				DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.vert.world);
+				push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF) / 255.f;
+				WWVK_UpdateFVF_NDUV2_NOL_AREFDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				WWVK_DrawFVF_NDUV2_NOL_AREF(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, delta / verticesperprimitive * 3, 0,
+					VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+					0, (WorldMatrix_AlphaRef*)&push);
+				break;
+			}
+			case PIPELINE_WWVK_FVF_NDUV2_NOL_AREF_DROPTEX:
+			{
+				WorldMatrix_AlphaRef push;
+				DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.vert.world);
+				push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF) / 255.f;
+				WWVK_UpdateFVF_NDUV2_NOL_AREF_DROPTEXDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				WWVK_DrawFVF_NDUV2_NOL_AREF_DROPTEX(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, delta / verticesperprimitive * 3, 0,
+					VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+					0, (WorldMatrix_AlphaRef*)&push);
+				break;
+			}
+			default: assert(false);
+			}
+#ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles (0, delta / verticesperprimitive, 0, delta);
+#endif
 		}
 		
 		current+=delta;
 	} // loop while (current<vnum)							  
 
 	// restore the matrices
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,view);
+	DX8Wrapper::Set_Transform(VkTS::VIEW,view);
 }
 
 
@@ -1203,7 +1237,7 @@ void PointGroupClass::Update_Arrays(
 				Matrix4x4 view;
 				Vector4 result;
 				if (!Billboard) {
-					DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
+					DX8Wrapper::Get_Transform(VkTS::VIEW,view);
 				}
 
 				// Scale vertex offsets and add them to point locations to get vertex locations
@@ -1211,7 +1245,7 @@ void PointGroupClass::Update_Arrays(
 					if (!Billboard) {
 						// If we're not billboarding, then the coordinate we have is in screen space.
 						Matrix4x4 rotMat;
-						D3DXMatrixRotationZ(&(D3DXMATRIX&) rotMat, ((float)point_orientation[i] / 255.0f * 2 * D3DX_PI));
+						rotMat = DirectX::XMMatrixRotationZ((float)point_orientation[i] / 255.0f * 2 * DirectX::XM_PI);
 						
 						Vector4 orientedVecX = rotMat * GroundMultiplierX;
 						Vector4 orientedVecY = rotMat * GroundMultiplierY;
@@ -1690,7 +1724,7 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 
 		// Get the world and view matrices
 		Matrix4x4 view;
-		DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
+		DX8Wrapper::Get_Transform(VkTS::VIEW,view);
 
 
 
@@ -1828,8 +1862,8 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 		// so set world and view matrices to identity and render
 		
 		Matrix4x4 identity(true);
-		DX8Wrapper::Set_Transform(D3DTS_WORLD,identity);	
-		DX8Wrapper::Set_Transform(D3DTS_VIEW,identity);	
+		DX8Wrapper::Set_Transform(VkTS::WORLD,identity);	
+		DX8Wrapper::Set_Transform(VkTS::VIEW,identity);	
 
 		DX8Wrapper::Set_Material(PointMaterial);
 		DX8Wrapper::Set_Shader(Shader);
@@ -1891,6 +1925,7 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 
 			DX8Wrapper::Set_Index_Buffer (indexbuffer, 0);
 			DX8Wrapper::Set_Vertex_Buffer (PointVerts);
+			DX8Wrapper::Apply_Render_State_Changes();
 			
 			/// @todo lorenzen sez: precompute these params, above
 
@@ -1898,7 +1933,17 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 			if ( sort ) 
 					SortingRendererClass::Insert_Triangles (0, delta / verticesperprimitive, 0, delta);
 			else
-				DX8Wrapper::Draw_Triangles (0, delta / verticesperprimitive, 0, delta);
+			{
+				auto pipelines = DX8Wrapper::FindClosestPipelines(PointVerts.FVF_Info().FVF);
+				assert(pipelines.size() == 1);
+				switch (pipelines[0]) {
+				case 0:
+				default: assert(false);
+				}
+#ifdef INFO_VULKAN
+				DX8Wrapper::Draw_Triangles(0, delta / verticesperprimitive, 0, delta);
+#endif
+			}
 			
 
 			current+=delta;
@@ -1912,5 +1957,5 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 
 
 	// restore the matrices
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,view);
+	DX8Wrapper::Set_Transform(VkTS::VIEW,view);
 }

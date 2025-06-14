@@ -823,12 +823,6 @@ bool DX8Wrapper::Set_Render_Device(int dev, int width, int height, int bits, int
 	return ret;
 }
 
-bool DX8Wrapper::Set_Next_Render_Device(void)
-{
-	int new_dev = (DXS::G().CurRenderDevice + 1) % _RenderDeviceNameTable.Count();
-	return Set_Render_Device(new_dev);
-}
-
 bool DX8Wrapper::Toggle_Windowed(void)
 {
 #ifdef WW3D_DX8

@@ -99,9 +99,6 @@
     <ClCompile Include="dx8vertexbuffer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="dx8webbrowser.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="dx8wrapper.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -342,6 +339,18 @@
     <ClCompile Include="ww3dformat.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\VkBufferTools.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\VkRenderTarget.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\VkTexture.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\shaders\WWVK_shaderdef.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aabtree.h">
@@ -438,9 +447,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="dx8vertexbuffer.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="dx8webbrowser.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="dx8wrapper.h">
@@ -650,9 +656,6 @@
     <ClInclude Include="stripoptimizer.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="surfaceclass.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="texfcach.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -708,6 +711,24 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="ww3dtrig.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\VkBufferTools.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\VkRenderTarget.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\VkStructs.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\VkTexture.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="WWVKStructs.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\surfaceclass.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

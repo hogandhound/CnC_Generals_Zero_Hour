@@ -137,36 +137,36 @@ static unsigned Define_FVF(MeshModelClass* mmc,bool enable_lighting)
 		return dynamic_fvf_type;
 	}
 
-	unsigned fvf=D3DFVF_XYZ;
+	unsigned fvf=VKFVF_XYZ;
 
 	int tex_coord_count=mmc->Get_UV_Array_Count();
 
 	if (mmc->Get_Color_Array(0,false)) {
-		fvf|=D3DFVF_DIFFUSE;
+		fvf|=VKFVF_DIFFUSE;
 	}
 	if (mmc->Get_Color_Array(1,false)) {
-		fvf|=D3DFVF_SPECULAR;
+		fvf|=VKFVF_SPECULAR;
 	}
 	
 	switch (tex_coord_count) {
 	default:
 	case 0:
 		break;
-	case 1: fvf|=D3DFVF_TEX1; break;
-	case 2: fvf|=D3DFVF_TEX2; break;
-	case 3: fvf|=D3DFVF_TEX3; break;
-	case 4: fvf|=D3DFVF_TEX4; break;
-	case 5: fvf|=D3DFVF_TEX5; break;
-	case 6: fvf|=D3DFVF_TEX6; break;
-	case 7: fvf|=D3DFVF_TEX7; break;
-	case 8: fvf|=D3DFVF_TEX8; break;
+	case 1: fvf|=VKFVF_TEX1; break;
+	case 2: fvf|=VKFVF_TEX2; break;
+	case 3: fvf|=VKFVF_TEX3; break;
+	case 4: fvf|=VKFVF_TEX4; break;
+	case 5: fvf|=VKFVF_TEX5; break;
+	case 6: fvf|=VKFVF_TEX6; break;
+	case 7: fvf|=VKFVF_TEX7; break;
+	case 8: fvf|=VKFVF_TEX8; break;
 	}
 
 	if (!mmc->Needs_Vertex_Normals()) {  //enable_lighting || mmc->Get_Flag(MeshModelClass::PRELIT_MASK)) {
 		return fvf;
 	}
 
-	fvf|=D3DFVF_NORMAL;	// Realtime-lit
+	fvf|=VKFVF_NORMAL;	// Realtime-lit
 	return fvf;
 }
 
@@ -181,7 +181,7 @@ static unsigned Define_FVF(ShdSubMeshClass* ssm,bool enable_lighting)
 		return dynamic_fvf_type;
 	}
 
-	unsigned fvf=D3DFVF_XYZ;
+	unsigned fvf=VKFVF_XYZ;
 
 	int tex_coord_count=0;
 	for (tex_coord_count=0;tex_coord_count < MeshMatDescClass::MAX_TEX_STAGES; tex_coord_count++) {
@@ -191,25 +191,25 @@ static unsigned Define_FVF(ShdSubMeshClass* ssm,bool enable_lighting)
 	}
 
 	if (ssm->Get_Diffuse_Array() != NULL) {
-		fvf|=D3DFVF_DIFFUSE;
+		fvf|=VKFVF_DIFFUSE;
 	}
 	
 	switch (tex_coord_count) {
 	default:
 	case 0:
 		break;
-	case 1: fvf|=D3DFVF_TEX1; break;
-	case 2: fvf|=D3DFVF_TEX2; break;
-	case 3: fvf|=D3DFVF_TEX3; break;
-	case 4: fvf|=D3DFVF_TEX4; break;
-	case 5: fvf|=D3DFVF_TEX5; break;
-	case 6: fvf|=D3DFVF_TEX6; break;
-	case 7: fvf|=D3DFVF_TEX7; break;
-	case 8: fvf|=D3DFVF_TEX8; break;
+	case 1: fvf|=VKFVF_TEX1; break;
+	case 2: fvf|=VKFVF_TEX2; break;
+	case 3: fvf|=VKFVF_TEX3; break;
+	case 4: fvf|=VKFVF_TEX4; break;
+	case 5: fvf|=VKFVF_TEX5; break;
+	case 6: fvf|=VKFVF_TEX6; break;
+	case 7: fvf|=VKFVF_TEX7; break;
+	case 8: fvf|=VKFVF_TEX8; break;
 	}
 
 	if (ssm->Get_Vertex_Normal_Array() != NULL) {
-		fvf|=D3DFVF_NORMAL;	// Realtime-lit
+		fvf|=VKFVF_NORMAL;	// Realtime-lit
 	}
 
 	return fvf;

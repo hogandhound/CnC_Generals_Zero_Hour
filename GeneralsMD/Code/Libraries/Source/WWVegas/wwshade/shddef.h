@@ -49,8 +49,6 @@ class ShdInterfaceClass;
 enum SHDVER
 {
 	SHDVER_UNDEFINED=0,
-	SHDVER_6,
-	SHDVER_7,
 	SHDVER_8
 };
 

@@ -41,9 +41,7 @@
 
 #include "texture.h"
 
-#include <d3d9.h>
 #include <stdio.h>
-#include <D3dx9core.h>
 #include "dx8wrapper.h"
 #include "targa.h"
 #include <nstrdup.h>
@@ -58,6 +56,7 @@
 #include "meshmatdesc.h"
 #include "texturethumbnail.h"
 #include "wwprofile.h"
+#include "VkTexture.h"
 
 //#pragma optimize("", off)
 //#pragma MESSAGE("************************************** WARNING, optimization disabled for debugging purposes")
@@ -83,12 +82,11 @@ TextureBaseClass::TextureBaseClass
 	unsigned int width,
 	unsigned int height,
 	enum MipCountType mip_level_count,
-	enum PoolType pool,
 	bool rendertarget,
 	bool reducible
 )
 :	MipLevelCount(mip_level_count),
-	D3DTexture(NULL),
+	D3DTexture({}),
 	Initialized(false),
    Name(""),
 	FullPath(""),
@@ -103,7 +101,6 @@ TextureBaseClass::TextureBaseClass
 	LastAccessed(0),
 	Width(width),
 	Height(height),
-	Pool(pool),
 	Dirty(false),
 	TextureLoadTask(NULL),
 	ThumbnailLoadTask(NULL),
@@ -123,11 +120,15 @@ TextureBaseClass::~TextureBaseClass(void)
 	delete ThumbnailLoadTask;
 	ThumbnailLoadTask=NULL;
 
+#ifdef INFO_VULKAN
 	if (D3DTexture) 
 	{
 		D3DTexture->Release();
 		D3DTexture = NULL;
 	}
+#endif
+	WWVKRENDER.PushSingleTexture(D3DTexture);
+	D3DTexture = {};
 
 	DX8TextureManagerClass::Remove(this);
 }
@@ -205,11 +206,15 @@ void TextureBaseClass::Invalidate()
 		return;
 	}
 
+#ifdef INFO_VULKAN
 	if (D3DTexture) 
 	{
 		D3DTexture->Release();
 		D3DTexture = NULL;
 	}
+#endif
+	WWVKRENDER.PushSingleTexture(D3DTexture);
+	D3DTexture = {};
 
 	Initialized=false;
 
@@ -255,7 +260,7 @@ void TextureBaseClass::Invalidate()
 //! Returns a pointer to the d3d texture
 /*! 
 */
-IDirect3DBaseTexture9 * TextureBaseClass::Peek_D3D_Base_Texture() const 
+const VK::Texture& TextureBaseClass::Peek_D3D_Base_Texture() const 
 { 	
 	LastAccessed=WW3D::Get_Sync_Time(); 
 	return D3DTexture; 
@@ -265,12 +270,13 @@ IDirect3DBaseTexture9 * TextureBaseClass::Peek_D3D_Base_Texture() const
 //! Set the d3d texture pointer.  Handles ref counts properly.
 /*! 
 */
-void TextureBaseClass::Set_D3D_Base_Texture(IDirect3DBaseTexture9* tex) 
+void TextureBaseClass::Set_D3D_Base_Texture(VK::Texture tex) 
 { 
 	// (gth) Generals does stuff directly with the D3DTexture pointer so lets
 	// reset the access timer whenever someon messes with this pointer.
 	LastAccessed=WW3D::Get_Sync_Time();
-	
+
+#ifdef INFO_VULKAN
 	if (D3DTexture != NULL) {
 		D3DTexture->Release();
 	}
@@ -278,6 +284,9 @@ void TextureBaseClass::Set_D3D_Base_Texture(IDirect3DBaseTexture9* tex)
 	if (D3DTexture != NULL) {
 		D3DTexture->AddRef();
 	}
+#endif
+	WWVKRENDER.PushSingleTexture(D3DTexture);
+	D3DTexture = tex;
 }
 
 
@@ -288,33 +297,15 @@ void TextureBaseClass::Set_D3D_Base_Texture(IDirect3DBaseTexture9* tex)
 void TextureBaseClass::Load_Locked_Surface()
 {
 	WWPROFILE(("TextureClass::Load_Locked_Surface()"));
+#ifdef INFO_VULKAN
 	if (D3DTexture) D3DTexture->Release();
 	D3DTexture=0;
+#endif
+	WWVKRENDER.PushSingleTexture(D3DTexture);
+	D3DTexture = {};
 	TextureLoader::Request_Thumbnail(this);
 	Initialized=false;
 }
-
-
-//**********************************************************************************************
-//! Is missing texture
-/*! 
-*/
-bool TextureBaseClass::Is_Missing_Texture()
-{
-	bool flag = false;
-	IDirect3DBaseTexture9 *missing_texture = MissingTexture::_Get_Missing_Texture();
-
-	if (D3DTexture == missing_texture)
-		flag = true;
-
-	if (missing_texture)
-	{
-		missing_texture->Release();
-	}
-
-	return flag;
-}
-
 
 //**********************************************************************************************
 //! Set texture name
@@ -334,14 +325,18 @@ void TextureBaseClass::Set_Texture_Name(const char * name)
 */
 unsigned int TextureBaseClass::Get_Priority(void)
 {
-	if (!D3DTexture) 
+	if (!D3DTexture.image) 
 	{
 		WWASSERT_PRINT(0, "Get_Priority: D3DTexture is NULL!\n");
 		return 0;
 	}
 
+#ifdef INFO_VULKAN
 #ifndef _XBOX
 	return D3DTexture->GetPriority();
+#else
+	return 0;
+#endif
 #else
 	return 0;
 #endif
@@ -354,14 +349,18 @@ unsigned int TextureBaseClass::Get_Priority(void)
 */
 unsigned int TextureBaseClass::Set_Priority(unsigned int priority)
 {
-	if (!D3DTexture) 
+	if (!D3DTexture.image) 
 	{
 		WWASSERT_PRINT(0, "Set_Priority: D3DTexture is NULL!\n");
 		return 0;
 	}
 
+#ifdef INFO_VULKAN
 #ifndef _XBOX
 	return D3DTexture->SetPriority(priority);
+#else
+	return 0;
+#endif
 #else
 	return 0;
 #endif
@@ -400,7 +399,7 @@ unsigned TextureBaseClass::Get_Reduction() const
 void TextureBaseClass::Apply_Null(unsigned int stage)
 {
 	// This function sets the render states for a "NULL" texture
-	DX8Wrapper::Set_DX8_Texture(stage, NULL);
+	DX8Wrapper::Set_DX8_Texture(stage, {});
 }
 
 // ----------------------------------------------------------------------------
@@ -599,11 +598,9 @@ TextureClass::TextureClass
 	unsigned height, 
 	WW3DFormat format, 
 	MipCountType mip_level_count, 
-	PoolType pool,
-	bool rendertarget,
 	bool allow_reduction
 )
-:	TextureBaseClass(width, height, mip_level_count, pool, rendertarget,allow_reduction),
+:	TextureBaseClass(width, height, mip_level_count, false/*rendertarget*/, allow_reduction),
 	Filter(mip_level_count),
 	TextureFormat(format)
 {
@@ -622,15 +619,9 @@ TextureClass::TextureClass
 		break;
 	default : break;
 	}
-		
-	D3DPOOL d3dpool=(D3DPOOL)0;
-	switch(pool)
-	{
-	case POOL_DEFAULT		: d3dpool=D3DPOOL_DEFAULT; break;
-	case POOL_MANAGED		: d3dpool=D3DPOOL_MANAGED; break;
-	case POOL_SYSTEMMEM	: d3dpool=D3DPOOL_SYSTEMMEM; break;
-	default: WWASSERT(0);
-	}
+
+	surface = new SurfaceClass(width, height, format);
+#ifdef INFO_VULKAN
 
 	Poke_Texture
 	(
@@ -660,6 +651,7 @@ TextureClass::TextureClass
 		DX8TextureManagerClass::Add(track);
 	}
 	LastAccessed=WW3D::Get_Sync_Time();
+#endif
 }
 
 
@@ -697,7 +689,11 @@ TextureClass::TextureClass
 		// If requesting bumpmap format that isn't available we'll just return the surface in whatever color
 		// format the texture file is in. (This is illegal case, the format support should always be queried
 		// before creating a bump texture!)
-		if (!DX8Wrapper::Is_Initted() || !DX8Wrapper::Get_Current_Caps()->Support_Texture_Format(TextureFormat)) 
+		if (!DX8Wrapper::Is_Initted()
+#ifdef INFO_VULKAN
+			|| !DX8Wrapper::Get_Current_Caps()->Support_Texture_Format(TextureFormat)
+#endif
+			) 
 		{
 			TextureFormat=WW3D_FORMAT_UNKNOWN;
 		}
@@ -732,10 +728,10 @@ TextureClass::TextureClass
 	Set_Texture_Name(name);
 	Set_Full_Path(full_path);
 	WWASSERT(name[0]!='\0');
-	if (!WW3D::Is_Texturing_Enabled()) 
+	if (!WW3D::Is_Texturing_Enabled())
 	{
-		Initialized=true;
-		Poke_Texture(NULL);
+		Initialized = true;
+		Poke_Texture({});
 	}
 
 	// Find original size from the thumbnail (but don't create thumbnail texture yet!)
@@ -778,6 +774,8 @@ TextureClass::TextureClass
 
 	SurfaceClass::SurfaceDescription sd;
 	surface->Get_Description(sd);
+	this->surface = surface;
+	surface->Add_Ref();
 	Width=sd.Width;
 	Height=sd.Height;
 	switch (sd.Format) 
@@ -792,6 +790,7 @@ TextureClass::TextureClass
 	default: break;
 	}
 
+#ifdef INFO_VULKAN
 	Poke_Texture
 	(
 		DX8Wrapper::_Create_DX8_Texture
@@ -800,32 +799,43 @@ TextureClass::TextureClass
 			mip_level_count
 		)
 	);
+#endif
+	SurfaceClass::SurfaceDescription desc;
+	surface->Get_Description(desc);
+	VK::CreateTexture(&WWVKRENDER, this->Peek_D3D_Texture(), desc.Width, desc.Height, surface->Peek_D3D_Surface().data(), 
+		Filter.GetSamplerSettings(), WW3DFormat_To_D3DFormat(desc.Format));
 	LastAccessed=WW3D::Get_Sync_Time();
 }
 
 // ----------------------------------------------------------------------------
-TextureClass::TextureClass(IDirect3DBaseTexture9* d3d_texture)
+TextureClass::TextureClass(const VK::Texture& d3d_texture)
 :	TextureBaseClass
 	(
 		0,
-		0,
-		((MipCountType)d3d_texture->GetLevelCount())
-	),
-	Filter((MipCountType)d3d_texture->GetLevelCount())
+		0
+		,
+		((MipCountType)d3d_texture.mips)
+	)
+	,
+	Filter(
+		(MipCountType)d3d_texture.mips
+	)
 {
 	Initialized=true;
 	IsProcedural=true;
 	IsReducible=false;
 	
 	Set_D3D_Base_Texture(d3d_texture);
+#ifdef INFO_VULKAN
 	IDirect3DSurface9* surface;
 	DX8_ErrorCode(Peek_D3D_Texture()->GetSurfaceLevel(0,&surface));
 	D3DSURFACE_DESC d3d_desc;
 	::ZeroMemory(&d3d_desc, sizeof(D3DSURFACE_DESC));
 	DX8_ErrorCode(surface->GetDesc(&d3d_desc));
-	Width=d3d_desc.Width;
-	Height=d3d_desc.Height;
-	TextureFormat=D3DFormat_To_WW3DFormat(d3d_desc.Format);
+#endif
+	Width=d3d_texture.width;
+	Height=d3d_texture.height;
+	TextureFormat=D3DFormat_To_WW3DFormat(d3d_texture.format);
 	switch (TextureFormat) 
 	{
 	case WW3D_FORMAT_DXT1:
@@ -864,7 +874,7 @@ void TextureClass::Init()
 	}
 
 
-	if (!Peek_D3D_Base_Texture()) 
+	if (!Peek_D3D_Base_Texture().image) 
 	{
 		if (!WW3D::Get_Thumbnail_Enabled() || MipLevelCount==MIP_LEVELS_1) 
 		{
@@ -893,12 +903,14 @@ void TextureClass::Init()
 */
 void TextureClass::Apply_New_Surface
 (
-	IDirect3DBaseTexture9* d3d_texture,
+	VK::Texture d3d_texture,
 	bool initialized,
+	VK::Surface* surface,
 	bool disable_auto_invalidation
 )
 {
-	IDirect3DBaseTexture9* d3d_tex=Peek_D3D_Base_Texture();
+#ifdef INFO_VULKAN
+	VK::Texture d3d_tex=Peek_D3D_Base_Texture();
 
 	if (d3d_tex) d3d_tex->Release();
 
@@ -921,7 +933,34 @@ void TextureClass::Apply_New_Surface
 		Height=d3d_desc.Height;
 	}
 	surface->Release();
+#else
+	VK::Texture d3d_tex = Peek_D3D_Base_Texture();
+	DX8Wrapper::_GetRenderTarget().PushSingleTexture(d3d_tex);
 
+	if (surface)
+	{
+		if (this->surface)
+			REF_PTR_RELEASE(this->surface);
+		this->surface = new SurfaceClass(surface->width, surface->height, D3DFormat_To_WW3DFormat( surface->format));
+		this->surface->Copy(surface->buffer.data(), 0);
+	}
+
+	Poke_Texture(d3d_texture);//TextureLoadTask->Peek_D3D_Texture();
+
+	if (initialized) Initialized = true;
+	if (disable_auto_invalidation) InactivationTime = 0;
+
+	WWASSERT(d3d_texture.image);
+	if (initialized)
+	{
+		TextureFormat = D3DFormat_To_WW3DFormat(d3d_texture.format);
+		Width = d3d_texture.width;
+		Height = d3d_texture.height;
+	}
+#endif
+#ifdef INFO_VULKAN
+	REF_PTR_RELEASE(surface);
+#endif
 }
 
 
@@ -973,7 +1012,7 @@ void TextureClass::Apply(unsigned int stage)
 	}
 	else 
 	{
-		DX8Wrapper::Set_DX8_Texture(stage, NULL);
+		DX8Wrapper::Set_DX8_Texture(stage, {});
 	}
 
 	Filter.Apply(stage);
@@ -985,7 +1024,8 @@ void TextureClass::Apply(unsigned int stage)
 */
 SurfaceClass *TextureClass::Get_Surface_Level(unsigned int level)
 {
-	if (!Peek_D3D_Texture()) 
+#ifdef INFO_VULKAN
+	if (!Peek_D3D_Texture().image) 
 	{
 		WWASSERT_PRINT(0, "Get_Surface_Level: D3DTexture is NULL!\n");
 		return 0;
@@ -997,6 +1037,19 @@ SurfaceClass *TextureClass::Get_Surface_Level(unsigned int level)
 	d3d_surface->Release();
 
 	return surface;
+#else
+	assert(surface);
+	surface->Add_Ref();
+	return surface;
+#endif
+}
+
+void TextureClass::Upload()
+{
+	VK::Texture tex = {};
+	surface->Unlock(&tex, Get_Filter().GetSamplerSettings());
+	WWVKRENDER.PushSingleTexture(Peek_D3D_Texture());
+	Poke_Texture(tex);
 }
 
 //**********************************************************************************************
@@ -1005,28 +1058,19 @@ SurfaceClass *TextureClass::Get_Surface_Level(unsigned int level)
 */
 void TextureClass::Get_Level_Description( SurfaceClass::SurfaceDescription & desc, unsigned int level )
 {
+	auto& tex = Peek_D3D_Texture();
+	if (tex.width && tex.height && tex.format)
+	{
+		desc.Width = tex.width;
+		desc.Height = tex.height;
+		desc.Format = D3DFormat_To_WW3DFormat(tex.format);
+		return;
+	}
 	SurfaceClass * surf = Get_Surface_Level(level);
 	if (surf != NULL) {
 		surf->Get_Description(desc);
 	}
 	REF_PTR_RELEASE(surf);
-}
-
-//**********************************************************************************************
-//! Get D3D surface from mip level
-/*! 
-*/
-IDirect3DSurface9 *TextureClass::Get_D3D_Surface_Level(unsigned int level)
-{
-	if (!Peek_D3D_Texture()) 
-	{
-		WWASSERT_PRINT(0, "Get_D3D_Surface_Level: D3DTexture is NULL!\n");
-		return 0;
-	}
-
-	IDirect3DSurface9 *d3d_surface = NULL;
-	DX8_ErrorCode(Peek_D3D_Texture()->GetSurfaceLevel(level, &d3d_surface));
-	return d3d_surface;
 }
 
 //**********************************************************************************************
@@ -1036,12 +1080,10 @@ IDirect3DSurface9 *TextureClass::Get_D3D_Surface_Level(unsigned int level)
 unsigned TextureClass::Get_Texture_Memory_Usage() const
 {
 	int size=0;
-	if (!Peek_D3D_Texture()) return 0;
-	for (unsigned i=0;i<Peek_D3D_Texture()->GetLevelCount();++i) 
+	if (!Peek_D3D_Texture().image) return 0;
+	for (unsigned i=0;i<Peek_D3D_Texture().mips;++i) 
 	{
-		D3DSURFACE_DESC desc;
-		DX8_ErrorCode(Peek_D3D_Texture()->GetLevelDesc(i,&desc));
-		size+=desc.Width*desc.Height;
+		size+=VK::SizeOfFormat(Peek_D3D_Texture().format) * (Peek_D3D_Texture().width * Peek_D3D_Texture().height) >> (2*i);
 	}
 	return size;
 }
@@ -1130,6 +1172,7 @@ TextureClass* Load_Texture(ChunkLoadClass & cload)
 
 				case W3DTEXTURE_TYPE_BUMPMAP:
 				{
+#ifdef INFO_VULKAN
 					if (DX8Wrapper::Is_Initted() && DX8Wrapper::Get_Current_Caps()->Support_Bump_Envmap()) 
 					{
 						// No mipmaps to bumpmap for now
@@ -1139,6 +1182,10 @@ TextureClass* Load_Texture(ChunkLoadClass & cload)
 						else if (DX8Wrapper::Get_Current_Caps()->Support_Texture_Format(WW3D_FORMAT_X8L8V8U8)) format=WW3D_FORMAT_X8L8V8U8;
 						else if (DX8Wrapper::Get_Current_Caps()->Support_Texture_Format(WW3D_FORMAT_L6V5U5)) format=WW3D_FORMAT_L6V5U5;
 					}
+#else
+					mipcount = MIP_LEVELS_1;
+					format = WW3D_FORMAT_U8V8;;
+#endif
 					break;
 				}
 
@@ -1211,12 +1258,12 @@ ZTextureClass::ZTextureClass
 	unsigned width, 
 	unsigned height, 
 	WW3DZFormat zformat, 
-	MipCountType mip_level_count, 
-	PoolType pool
+	MipCountType mip_level_count
 )
-:	TextureBaseClass(width,height, mip_level_count, pool),
+:	TextureBaseClass(width,height, mip_level_count),
 	DepthStencilTextureFormat(zformat)
 {
+#ifdef INFO_VULKAN
 	D3DPOOL d3dpool=(D3DPOOL)0;
 	switch (pool)
 	{
@@ -1251,6 +1298,7 @@ ZTextureClass::ZTextureClass
 		);
 		DX8TextureManagerClass::Add(track);
 	}
+#endif
 	Initialized=true;
 	IsProcedural=true;
 	IsReducible=false;
@@ -1274,21 +1322,22 @@ void ZTextureClass::Apply(unsigned int stage)
 */
 void ZTextureClass::Apply_New_Surface
 (
-	IDirect3DBaseTexture9* d3d_texture,
+	VK::Texture d3d_texture,
 	bool initialized,
+	VK::Surface* surface,
 	bool disable_auto_invalidation
 )
 {
-	IDirect3DBaseTexture9* d3d_tex=Peek_D3D_Base_Texture();
+	VK::Texture d3d_tex=Peek_D3D_Base_Texture();
 
-	if (d3d_tex) d3d_tex->Release();
+	if (d3d_tex.image) DX8Wrapper::_GetRenderTarget().PushSingleTexture( d3d_tex);
 
 	Poke_Texture(d3d_texture);//TextureLoadTask->Peek_D3D_Texture();
-	d3d_texture->AddRef();
 
 	if (initialized) Initialized=true;
 	if (disable_auto_invalidation) InactivationTime = 0;
 
+#ifdef INFO_VULKAN
 	WWASSERT(Peek_D3D_Texture());
 	IDirect3DSurface9* surface;
 	DX8_ErrorCode(Peek_D3D_Texture()->GetSurfaceLevel(0,&surface));
@@ -1302,23 +1351,15 @@ void ZTextureClass::Apply_New_Surface
 		Height=d3d_desc.Height;
 	}
 	surface->Release();
-}
+#else
 
-//**********************************************************************************************
-//! Get D3D surface from mip level
-/*! 
-*/
-IDirect3DSurface9* ZTextureClass::Get_D3D_Surface_Level(unsigned int level)
-{
-	if (!Peek_D3D_Texture()) 
+	if (initialized)
 	{
-		WWASSERT_PRINT(0, "Get_D3D_Surface_Level: D3DTexture is NULL!\n");
-		return 0;
+		DepthStencilTextureFormat = D3DFormat_To_WW3DZFormat(d3d_texture.format);
+		Width = d3d_texture.width;
+		Height = d3d_texture.height;
 	}
-
-	IDirect3DSurface9 *d3d_surface = NULL;
-	DX8_ErrorCode(Peek_D3D_Texture()->GetSurfaceLevel(level, &d3d_surface));
-	return d3d_surface;
+#endif
 }
 
 //**********************************************************************************************
@@ -1327,586 +1368,14 @@ IDirect3DSurface9* ZTextureClass::Get_D3D_Surface_Level(unsigned int level)
 */
 unsigned ZTextureClass::Get_Texture_Memory_Usage() const
 {
-	int size=0;
-	if (!Peek_D3D_Texture()) return 0;
-	for (unsigned i=0;i<Peek_D3D_Texture()->GetLevelCount();++i) 
+	int size = 0;
+	if (!Peek_D3D_Texture().image) return 0;
+	for (unsigned i = 0; i < Peek_D3D_Texture().mips; ++i)
 	{
-		D3DSURFACE_DESC desc;
-		DX8_ErrorCode(Peek_D3D_Texture()->GetLevelDesc(i,&desc));
-		size+=desc.Width*desc.Height;
+		size += VK::SizeOfFormat(Peek_D3D_Texture().format) * (Peek_D3D_Texture().width * Peek_D3D_Texture().height) >> (2 * i);
 	}
 	return size;
 }
 
 
 
-/*************************************************************************
-**                             CubeTextureClass
-*************************************************************************/
-CubeTextureClass::CubeTextureClass
-(
-	unsigned width, 
-	unsigned height, 
-	WW3DFormat format, 
-	MipCountType mip_level_count, 
-	PoolType pool,
-	bool rendertarget,
-	bool allow_reduction
-)
-: TextureClass(width, height, format, mip_level_count, pool, rendertarget)
-{
-	Initialized=true;
-	IsProcedural=true;
-	IsReducible=false;
-
-	switch (format) 
-	{
-	case WW3D_FORMAT_DXT1:
-	case WW3D_FORMAT_DXT2:
-	case WW3D_FORMAT_DXT3:
-	case WW3D_FORMAT_DXT4:
-	case WW3D_FORMAT_DXT5:
-		IsCompressionAllowed=true;
-		break;
-	default : break;
-	}
-		
-	D3DPOOL d3dpool=(D3DPOOL)0;
-	switch(pool)
-	{
-	case POOL_DEFAULT		: d3dpool=D3DPOOL_DEFAULT; break;
-	case POOL_MANAGED		: d3dpool=D3DPOOL_MANAGED; break;
-	case POOL_SYSTEMMEM	: d3dpool=D3DPOOL_SYSTEMMEM; break;
-	default: WWASSERT(0);
-	}
-
-	Poke_Texture
-	(
-		DX8Wrapper::_Create_DX8_Cube_Texture
-		(
-			width, 
-			height, 
-			format, 
-			mip_level_count,
-			d3dpool,
-			rendertarget
-		)
-	);
-
-	if (pool==POOL_DEFAULT)
-	{
-		Set_Dirty();
-		DX8TextureTrackerClass *track=new DX8TextureTrackerClass
-		(
-			width, 
-			height, 
-			format, 
-			mip_level_count,
-			this,
-			rendertarget
-		);
-		DX8TextureManagerClass::Add(track);
-	}
-	LastAccessed=WW3D::Get_Sync_Time();
-}
-
-
-
-// ----------------------------------------------------------------------------
-CubeTextureClass::CubeTextureClass
-(
-	const char *name,
-	const char *full_path,
-	MipCountType mip_level_count,
-	WW3DFormat texture_format,
-	bool allow_compression,
-	bool allow_reduction
-)
-:	TextureClass(0,0,mip_level_count, POOL_MANAGED, false, texture_format)
-{
-	IsCompressionAllowed=allow_compression;
-	InactivationTime=DEFAULT_INACTIVATION_TIME;		// Default inactivation time 30 seconds
-
-	switch (TextureFormat) 
-	{
-	case WW3D_FORMAT_DXT1:
-	case WW3D_FORMAT_DXT2:
-	case WW3D_FORMAT_DXT3:
-	case WW3D_FORMAT_DXT4:
-	case WW3D_FORMAT_DXT5:
-		IsCompressionAllowed=true;
-		break;
-	case WW3D_FORMAT_U8V8:		// Bumpmap
-	case WW3D_FORMAT_L6V5U5:	// Bumpmap
-	case WW3D_FORMAT_X8L8V8U8:	// Bumpmap
-		// If requesting bumpmap format that isn't available we'll just return the surface in whatever color
-		// format the texture file is in. (This is illegal case, the format support should always be queried
-		// before creating a bump texture!)
-		if (!DX8Wrapper::Is_Initted() || !DX8Wrapper::Get_Current_Caps()->Support_Texture_Format(TextureFormat)) 
-		{
-			TextureFormat=WW3D_FORMAT_UNKNOWN;
-		}
-		// If bump format is valid, make sure compression is not allowed so that we don't even attempt to load
-		// from a compressed file (quality isn't good enough for bump map). Also disable mipmapping.
-		else 
-		{
-			IsCompressionAllowed=false;
-			MipLevelCount=MIP_LEVELS_1;
-			Filter.Set_Mip_Mapping(TextureFilterClass::FILTER_TYPE_NONE);
-		}
-		break;
-	default:	break;
-	}
-
-	WWASSERT_PRINT(name && name[0], "TextureClass CTor: NULL or empty texture name\n");
-	int len=(int)strlen(name);
-	for (int i=0;i<len;++i) 
-	{
-		if (name[i]=='+') 
-		{
-			IsLightmap=true;
-
-			// Set bilinear filtering for lightmaps (they are very stretched and
-			// low detail so we don't care for anisotropic or trilinear filtering...)
-			Filter.Set_Min_Filter(TextureFilterClass::FILTER_TYPE_FAST);
-			Filter.Set_Mag_Filter(TextureFilterClass::FILTER_TYPE_FAST);
-			if (mip_level_count!=MIP_LEVELS_1) Filter.Set_Mip_Mapping(TextureFilterClass::FILTER_TYPE_FAST);
-			break;
-		}
-	}
-	Set_Texture_Name(name);
-	Set_Full_Path(full_path);
-	WWASSERT(name[0]!='\0');
-	if (!WW3D::Is_Texturing_Enabled()) 
-	{
-		Initialized=true;
-		Poke_Texture(NULL);
-	}
-
-	// Find original size from the thumbnail (but don't create thumbnail texture yet!)
-	ThumbnailClass* thumb=ThumbnailManagerClass::Peek_Thumbnail_Instance_From_Any_Manager(Get_Full_Path());
-	if (thumb) 
-	{
-		Width=thumb->Get_Original_Texture_Width();
-		Height=thumb->Get_Original_Texture_Height();
- 		if (MipLevelCount!=MIP_LEVELS_1) {
- 			MipLevelCount=(MipCountType)thumb->Get_Original_Texture_Mip_Level_Count();
- 		}
-	}
-
-	LastAccessed=WW3D::Get_Sync_Time();
-
-	// If the thumbnails are not enabled, init the texture at this point to avoid stalling when the
-	// mesh is rendered.
-	if (!WW3D::Get_Thumbnail_Enabled()) 
-	{
-		if (TextureLoader::Is_DX8_Thread()) 
-		{
-			Init();
-		}
-	}
-}
-
-// don't know if these are needed
-#if 0
-// ----------------------------------------------------------------------------
-CubeTextureClass::CubeTextureClass
-(
-	SurfaceClass *surface, 
-	MipCountType mip_level_count
-)
-:	TextureClass(0,0,mip_level_count, POOL_MANAGED, false, surface->Get_Surface_Format())
-{
-	IsProcedural=true;
-	Initialized=true;
-	IsReducible=false;
-
-	SurfaceClass::SurfaceDescription sd;
-	surface->Get_Description(sd);
-	Width=sd.Width;
-	Height=sd.Height;
-	switch (sd.Format) 
-	{
-	case WW3D_FORMAT_DXT1:
-	case WW3D_FORMAT_DXT2:
-	case WW3D_FORMAT_DXT3:
-	case WW3D_FORMAT_DXT4:
-	case WW3D_FORMAT_DXT5:
-		IsCompressionAllowed=true;
-		break;
-	default: break;
-	}
-
-	Poke_Texture
-	(
-		DX8Wrapper::_Create_DX8_Cube_Texture
-		(
-			surface->Peek_D3D_Surface(), 
-			mip_level_count
-		)
-	);
-	LastAccessed=WW3D::Get_Sync_Time();
-}
-
-// ----------------------------------------------------------------------------
-CubeTextureClass::CubeTextureClass(IDirect3DBaseTexture9* d3d_texture)
-:	TextureBaseClass
-	(
-		0,
-		0,
-		((MipCountType)d3d_texture->GetLevelCount())
-	),
-	Filter((MipCountType)d3d_texture->GetLevelCount())
-{
-	Initialized=true;
-	IsProcedural=true;
-	IsReducible=false;
-
-	Peek_Texture()->AddRef();
-	IDirect3DSurface9* surface;
-	DX8_ErrorCode(Peek_D3D_Texture()->GetSurfaceLevel(0,&surface));
-	D3DSURFACE_DESC d3d_desc;
-	::ZeroMemory(&d3d_desc, sizeof(D3DSURFACE_DESC));
-	DX8_ErrorCode(surface->GetDesc(&d3d_desc));
-	Width=d3d_desc.Width;
-	Height=d3d_desc.Height;
-	TextureFormat=D3DFormat_To_WW3DFormat(d3d_desc.Format);
-	switch (TextureFormat) 
-	{
-	case WW3D_FORMAT_DXT1:
-	case WW3D_FORMAT_DXT2:
-	case WW3D_FORMAT_DXT3:
-	case WW3D_FORMAT_DXT4:
-	case WW3D_FORMAT_DXT5:
-		IsCompressionAllowed=true;
-		break;
-	default: break;
-	}
-
-	LastAccessed=WW3D::Get_Sync_Time();
-}
-#endif
-
-//**********************************************************************************************
-//! Apply new surface to texture
-/*! 
-*/
-void CubeTextureClass::Apply_New_Surface
-(
-	IDirect3DBaseTexture9* d3d_texture,
-	bool initialized,
-	bool disable_auto_invalidation
-)
-{
-	IDirect3DBaseTexture9* d3d_tex=Peek_D3D_Base_Texture();
-
-	if (d3d_tex) d3d_tex->Release();
-
-	Poke_Texture(d3d_texture);//TextureLoadTask->Peek_D3D_Texture();
-	d3d_texture->AddRef();
-
-	if (initialized) Initialized=true;
-	if (disable_auto_invalidation) InactivationTime = 0;
-
-	WWASSERT(d3d_texture);
-	D3DSURFACE_DESC d3d_desc;
-	::ZeroMemory(&d3d_desc, sizeof(D3DSURFACE_DESC));
-	DX8_ErrorCode(Peek_D3D_CubeTexture()->GetLevelDesc(0,&d3d_desc));
-
-	if (initialized) 
-	{
-		TextureFormat=D3DFormat_To_WW3DFormat(d3d_desc.Format);
-		Width=d3d_desc.Width;
-		Height=d3d_desc.Height;
-	}
-}
-
-
-/*************************************************************************
-**                             VolumeTextureClass
-*************************************************************************/
-VolumeTextureClass::VolumeTextureClass
-(
-	unsigned width, 
-	unsigned height, 
-	unsigned depth,
-	WW3DFormat format, 
-	MipCountType mip_level_count, 
-	PoolType pool,
-	bool rendertarget,
-	bool allow_reduction
-)
-: TextureClass(width, height, format, mip_level_count, pool, rendertarget),
-  Depth(depth)
-{
-	Initialized=true;
-	IsProcedural=true;
-	IsReducible=false;
-
-	switch (format) 
-	{
-	case WW3D_FORMAT_DXT1:
-	case WW3D_FORMAT_DXT2:
-	case WW3D_FORMAT_DXT3:
-	case WW3D_FORMAT_DXT4:
-	case WW3D_FORMAT_DXT5:
-		IsCompressionAllowed=true;
-		break;
-	default : break;
-	}
-		
-	D3DPOOL d3dpool=(D3DPOOL)0;
-	switch(pool)
-	{
-	case POOL_DEFAULT		: d3dpool=D3DPOOL_DEFAULT; break;
-	case POOL_MANAGED		: d3dpool=D3DPOOL_MANAGED; break;
-	case POOL_SYSTEMMEM	: d3dpool=D3DPOOL_SYSTEMMEM; break;
-	default: WWASSERT(0);
-	}
-
-	Poke_Texture
-	(
-		DX8Wrapper::_Create_DX8_Volume_Texture
-		(
-			width, 
-			height, 
-			depth,
-			format, 
-			mip_level_count,
-			d3dpool
-		)
-	);
-
-	if (pool==POOL_DEFAULT)
-	{
-		Set_Dirty();
-		DX8TextureTrackerClass *track=new DX8TextureTrackerClass
-		(
-			width, 
-			height, 
-			format, 
-			mip_level_count,
-			this,
-			rendertarget
-		);
-		DX8TextureManagerClass::Add(track);
-	}
-	LastAccessed=WW3D::Get_Sync_Time();
-}
-
-
-
-// ----------------------------------------------------------------------------
-VolumeTextureClass::VolumeTextureClass
-(
-	const char *name,
-	const char *full_path,
-	MipCountType mip_level_count,
-	WW3DFormat texture_format,
-	bool allow_compression,
-	bool allow_reduction
-)
-:	TextureClass(0,0,mip_level_count, POOL_MANAGED, false, texture_format),
-	Depth(0)
-{
-	IsCompressionAllowed=allow_compression;
-	InactivationTime=DEFAULT_INACTIVATION_TIME;		// Default inactivation time 30 seconds
-
-	switch (TextureFormat) 
-	{
-	case WW3D_FORMAT_DXT1:
-	case WW3D_FORMAT_DXT2:
-	case WW3D_FORMAT_DXT3:
-	case WW3D_FORMAT_DXT4:
-	case WW3D_FORMAT_DXT5:
-		IsCompressionAllowed=true;
-		break;
-	case WW3D_FORMAT_U8V8:		// Bumpmap
-	case WW3D_FORMAT_L6V5U5:	// Bumpmap
-	case WW3D_FORMAT_X8L8V8U8:	// Bumpmap
-		// If requesting bumpmap format that isn't available we'll just return the surface in whatever color
-		// format the texture file is in. (This is illegal case, the format support should always be queried
-		// before creating a bump texture!)
-		if (!DX8Wrapper::Is_Initted() || !DX8Wrapper::Get_Current_Caps()->Support_Texture_Format(TextureFormat)) 
-		{
-			TextureFormat=WW3D_FORMAT_UNKNOWN;
-		}
-		// If bump format is valid, make sure compression is not allowed so that we don't even attempt to load
-		// from a compressed file (quality isn't good enough for bump map). Also disable mipmapping.
-		else 
-		{
-			IsCompressionAllowed=false;
-			MipLevelCount=MIP_LEVELS_1;
-			Filter.Set_Mip_Mapping(TextureFilterClass::FILTER_TYPE_NONE);
-		}
-		break;
-	default:	break;
-	}
-
-	WWASSERT_PRINT(name && name[0], "TextureClass CTor: NULL or empty texture name\n");
-	int len=(int)strlen(name);
-	for (int i=0;i<len;++i) 
-	{
-		if (name[i]=='+') 
-		{
-			IsLightmap=true;
-
-			// Set bilinear filtering for lightmaps (they are very stretched and
-			// low detail so we don't care for anisotropic or trilinear filtering...)
-			Filter.Set_Min_Filter(TextureFilterClass::FILTER_TYPE_FAST);
-			Filter.Set_Mag_Filter(TextureFilterClass::FILTER_TYPE_FAST);
-			if (mip_level_count!=MIP_LEVELS_1) Filter.Set_Mip_Mapping(TextureFilterClass::FILTER_TYPE_FAST);
-			break;
-		}
-	}
-	Set_Texture_Name(name);
-	Set_Full_Path(full_path);
-	WWASSERT(name[0]!='\0');
-	if (!WW3D::Is_Texturing_Enabled()) 
-	{
-		Initialized=true;
-		Poke_Texture(NULL);
-	}
-
-	// Find original size from the thumbnail (but don't create thumbnail texture yet!)
-	ThumbnailClass* thumb=ThumbnailManagerClass::Peek_Thumbnail_Instance_From_Any_Manager(Get_Full_Path());
-	if (thumb) 
-	{
-		Width=thumb->Get_Original_Texture_Width();
-		Height=thumb->Get_Original_Texture_Height();
- 		if (MipLevelCount!=MIP_LEVELS_1) {
- 			MipLevelCount=(MipCountType)thumb->Get_Original_Texture_Mip_Level_Count();
- 		}
-	}
-
-	LastAccessed=WW3D::Get_Sync_Time();
-
-	// If the thumbnails are not enabled, init the texture at this point to avoid stalling when the
-	// mesh is rendered.
-	if (!WW3D::Get_Thumbnail_Enabled()) 
-	{
-		if (TextureLoader::Is_DX8_Thread()) 
-		{
-			Init();
-		}
-	}
-}
-
-// don't know if these are needed
-#if 0
-// ----------------------------------------------------------------------------
-CubeTextureClass::CubeTextureClass
-(
-	SurfaceClass *surface, 
-	MipCountType mip_level_count
-)
-:	TextureClass(0,0,mip_level_count, POOL_MANAGED, false, surface->Get_Surface_Format())
-{
-	IsProcedural=true;
-	Initialized=true;
-	IsReducible=false;
-
-	SurfaceClass::SurfaceDescription sd;
-	surface->Get_Description(sd);
-	Width=sd.Width;
-	Height=sd.Height;
-	switch (sd.Format) 
-	{
-	case WW3D_FORMAT_DXT1:
-	case WW3D_FORMAT_DXT2:
-	case WW3D_FORMAT_DXT3:
-	case WW3D_FORMAT_DXT4:
-	case WW3D_FORMAT_DXT5:
-		IsCompressionAllowed=true;
-		break;
-	default: break;
-	}
-
-	Poke_Texture
-	(
-		DX8Wrapper::_Create_DX8_Cube_Texture
-		(
-			surface->Peek_D3D_Surface(), 
-			mip_level_count
-		)
-	);
-	LastAccessed=WW3D::Get_Sync_Time();
-}
-
-// ----------------------------------------------------------------------------
-CubeTextureClass::CubeTextureClass(IDirect3DBaseTexture9* d3d_texture)
-:	TextureBaseClass
-	(
-		0,
-		0,
-		((MipCountType)d3d_texture->GetLevelCount())
-	),
-	Filter((MipCountType)d3d_texture->GetLevelCount())
-{
-	Initialized=true;
-	IsProcedural=true;
-	IsReducible=false;
-
-	Peek_Texture()->AddRef();
-	IDirect3DSurface9* surface;
-	DX8_ErrorCode(Peek_D3D_Texture()->GetSurfaceLevel(0,&surface));
-	D3DSURFACE_DESC d3d_desc;
-	::ZeroMemory(&d3d_desc, sizeof(D3DSURFACE_DESC));
-	DX8_ErrorCode(surface->GetDesc(&d3d_desc));
-	Width=d3d_desc.Width;
-	Height=d3d_desc.Height;
-	TextureFormat=D3DFormat_To_WW3DFormat(d3d_desc.Format);
-	switch (TextureFormat) 
-	{
-	case WW3D_FORMAT_DXT1:
-	case WW3D_FORMAT_DXT2:
-	case WW3D_FORMAT_DXT3:
-	case WW3D_FORMAT_DXT4:
-	case WW3D_FORMAT_DXT5:
-		IsCompressionAllowed=true;
-		break;
-	default: break;
-	}
-
-	LastAccessed=WW3D::Get_Sync_Time();
-}
-#endif
-
-
-
-
-//**********************************************************************************************
-//! Apply new surface to texture
-/*! 
-*/
-void VolumeTextureClass::Apply_New_Surface
-(
-	IDirect3DBaseTexture9* d3d_texture,
-	bool initialized,
-	bool disable_auto_invalidation
-)
-{
-	IDirect3DBaseTexture9* d3d_tex=Peek_D3D_Base_Texture();
-
-	if (d3d_tex) d3d_tex->Release();
-
-	Poke_Texture(d3d_texture);//TextureLoadTask->Peek_D3D_Texture();
-	d3d_texture->AddRef();
-
-	if (initialized) Initialized=true;
-	if (disable_auto_invalidation) InactivationTime = 0;
-
-	WWASSERT(d3d_texture);
-	D3DVOLUME_DESC d3d_desc;
-	::ZeroMemory(&d3d_desc, sizeof(D3DVOLUME_DESC));
-
-	DX8_ErrorCode(Peek_D3D_VolumeTexture()->GetLevelDesc(0,&d3d_desc));
-
-	if (initialized)
-	{
-		TextureFormat=D3DFormat_To_WW3DFormat(d3d_desc.Format);
-		Width=d3d_desc.Width;
-		Height=d3d_desc.Height;
-		Depth=d3d_desc.Depth;
-	}
-}

@@ -681,7 +681,7 @@ CBCommandStatus ControlBar::processCommandUI( GameWindow *control,
 		case GUI_COMMAND_EXIT_CONTAINER:
 		{
 			Int i;
-			ObjectID objID;
+			ObjectID objID = INVALID_ID;
 
 			//
 			// find the object ID that wants to exit by scanning through the transport data and looking

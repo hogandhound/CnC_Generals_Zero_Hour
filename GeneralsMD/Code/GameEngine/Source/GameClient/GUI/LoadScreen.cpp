@@ -578,6 +578,20 @@ void SinglePlayerLoadScreen::init( GameInfo *game )
 
 			// redraw all views, update the GUI
 			TheDisplay->draw();
+
+
+			// limit the framerate
+			DWORD now = timeGetTime();
+			DWORD limit = (1000.0f / TheGlobalData->m_framesPerSecondLimit) - 1;
+			while (TheGlobalData->m_useFpsLimit && (now - prevTime) < limit)
+			{
+				::Sleep(0);
+				now = timeGetTime();
+			}
+			//Int slept = now - prevTime;
+			//DEBUG_LOG(("delayed %d\n",slept));
+
+			prevTime = now;
 		}
 
 		// let the background image show through

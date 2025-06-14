@@ -432,14 +432,14 @@ DX8FVFCategoryContainer::DX8FVFCategoryContainer(unsigned FVF_,bool sorting_)
 	AnythingToRender(false),
 	AnyDelayedPassesToRender(false)
 {
-	if ((FVF&D3DFVF_TEX1)==D3DFVF_TEX1) uv_coordinate_channels=1;
-	if ((FVF&D3DFVF_TEX2)==D3DFVF_TEX2) uv_coordinate_channels=2;
-	if ((FVF&D3DFVF_TEX3)==D3DFVF_TEX3) uv_coordinate_channels=3;
-	if ((FVF&D3DFVF_TEX4)==D3DFVF_TEX4) uv_coordinate_channels=4;
-	if ((FVF&D3DFVF_TEX5)==D3DFVF_TEX5) uv_coordinate_channels=5;
-	if ((FVF&D3DFVF_TEX6)==D3DFVF_TEX6) uv_coordinate_channels=6;
-	if ((FVF&D3DFVF_TEX7)==D3DFVF_TEX7) uv_coordinate_channels=7;
-	if ((FVF&D3DFVF_TEX8)==D3DFVF_TEX8) uv_coordinate_channels=8;
+	if ((FVF&VKFVF_TEX1)==VKFVF_TEX1) uv_coordinate_channels=1;
+	if ((FVF&VKFVF_TEX2)==VKFVF_TEX2) uv_coordinate_channels=2;
+	if ((FVF&VKFVF_TEX3)==VKFVF_TEX3) uv_coordinate_channels=3;
+	if ((FVF&VKFVF_TEX4)==VKFVF_TEX4) uv_coordinate_channels=4;
+	if ((FVF&VKFVF_TEX5)==VKFVF_TEX5) uv_coordinate_channels=5;
+	if ((FVF&VKFVF_TEX6)==VKFVF_TEX6) uv_coordinate_channels=6;
+	if ((FVF&VKFVF_TEX7)==VKFVF_TEX7) uv_coordinate_channels=7;
+	if ((FVF&VKFVF_TEX8)==VKFVF_TEX8) uv_coordinate_channels=8;
 }
 
 // ----------------------------------------------------------------------------
@@ -704,36 +704,36 @@ unsigned DX8FVFCategoryContainer::Define_FVF(MeshModelClass* mmc,bool enable_lig
 		return dynamic_fvf_type;
 	}
 
-	unsigned fvf=D3DFVF_XYZ;
+	unsigned fvf=VKFVF_XYZ;
 
 	int tex_coord_count=mmc->Get_UV_Array_Count();
 
 	if (mmc->Get_Color_Array(0,false)) {
-		fvf|=D3DFVF_DIFFUSE;
+		fvf|=VKFVF_DIFFUSE;
 	}
 	if (mmc->Get_Color_Array(1,false)) {
-		fvf|=D3DFVF_SPECULAR;
+		fvf|=VKFVF_SPECULAR;
 	}
 	
 	switch (tex_coord_count) {
 	default:
 	case 0:
 		break;
-	case 1: fvf|=D3DFVF_TEX1; break;
-	case 2: fvf|=D3DFVF_TEX2; break;
-	case 3: fvf|=D3DFVF_TEX3; break;
-	case 4: fvf|=D3DFVF_TEX4; break;
-	case 5: fvf|=D3DFVF_TEX5; break;
-	case 6: fvf|=D3DFVF_TEX6; break;
-	case 7: fvf|=D3DFVF_TEX7; break;
-	case 8: fvf|=D3DFVF_TEX8; break;
+	case 1: fvf|=VKFVF_TEX1; break;
+	case 2: fvf|=VKFVF_TEX2; break;
+	case 3: fvf|=VKFVF_TEX3; break;
+	case 4: fvf|=VKFVF_TEX4; break;
+	case 5: fvf|=VKFVF_TEX5; break;
+	case 6: fvf|=VKFVF_TEX6; break;
+	case 7: fvf|=VKFVF_TEX7; break;
+	case 8: fvf|=VKFVF_TEX8; break;
 	}
 
 	if (!mmc->Needs_Vertex_Normals()) {  //enable_lighting || mmc->Get_Flag(MeshModelClass::PRELIT_MASK)) {
 		return fvf;
 	}
 
-	fvf|=D3DFVF_NORMAL;	// Realtime-lit
+	fvf|=VKFVF_NORMAL;	// Realtime-lit
 	return fvf;
 }
 
@@ -867,7 +867,10 @@ public:
 		npatch_enable(false),
 		allocated_polygon_array(false)
 	{
-		if (DX8Wrapper::Get_Current_Caps()->Support_NPatches() && mmc->Needs_Vertex_Normals()) {
+#ifdef INFO_VULKAN
+		if (DX8Wrapper::Get_Current_Caps()->Support_NPatches() && mmc->Needs_Vertex_Normals())
+#endif
+		{
 			if (mmc->Get_Flag(MeshGeometryClass::ALLOW_NPATCHES)) {
 				npatch_enable=true;
 			}
@@ -1018,10 +1021,19 @@ void DX8RigidFVFCategoryContainer::Add_Mesh(MeshModelClass* mmc_)
 			WWASSERT(vertex_buffer->FVF_Info().Get_FVF()==FVF);	// Only one sorting FVF type!
 		}
 		else {
+#ifdef INFO_VULKAN
 			vertex_buffer=NEW_REF(DX8VertexBufferClass,(
 				FVF,
 				vb_size,
-				(DX8Wrapper::Get_Current_Caps()->Support_NPatches() && WW3D::Get_NPatches_Level()>1) ? DX8VertexBufferClass::USAGE_NPATCHES : DX8VertexBufferClass::USAGE_DEFAULT));
+				(DX8Wrapper::Get_Current_Caps()->Support_NPatches() && WW3D::Get_NPatches_Level()>1) ? DX8VertexBufferClass::USAGE_NPATCHES : DX8VertexBufferClass::USAGE_DEFAULT
+			));
+#else
+			vertex_buffer = NEW_REF(DX8VertexBufferClass, (
+				FVF,
+				vb_size,
+				DX8VertexBufferClass::USAGE_NPATCHES
+				));
+#endif
 		}
 	}
 
@@ -1040,12 +1052,12 @@ void DX8RigidFVFCategoryContainer::Add_Mesh(MeshModelClass* mmc_)
 	for (i=0; i<split_table.Get_Vertex_Count(); i++)
 	{
 		*(Vector3*)(vb+fi.Get_Location_Offset())=locs[i];
-		
-		if ((FVF&D3DFVF_NORMAL)==D3DFVF_NORMAL && norms) {
+
+		if ((FVF&VKFVF_NORMAL)==VKFVF_NORMAL && norms) {
 			*(Vector3*)(vb+fi.Get_Normal_Offset())=norms[i];
 		}
 
-		if ((FVF&D3DFVF_DIFFUSE)==D3DFVF_DIFFUSE) {
+		if ((FVF&VKFVF_DIFFUSE)==VKFVF_DIFFUSE) {
 			if (diffuse) {
 				*(unsigned int*)(vb+fi.Get_Diffuse_Offset())=diffuse[i];
 			} else {
@@ -1053,14 +1065,13 @@ void DX8RigidFVFCategoryContainer::Add_Mesh(MeshModelClass* mmc_)
 			}
 		}
 		
-		if ((FVF&D3DFVF_SPECULAR)==D3DFVF_SPECULAR) {
+		if ((FVF&VKFVF_SPECULAR)==VKFVF_SPECULAR) {
 			if (specular) {
 				*(unsigned int*)(vb+fi.Get_Specular_Offset())=specular[i];
 			} else {
 				*(unsigned int*)(vb+fi.Get_Specular_Offset()) = 0xFFFFFFFF;
 			}
 		}
-
 		vb+=fi.Get_FVF_Size();
 	}
 	
@@ -1069,28 +1080,28 @@ void DX8RigidFVFCategoryContainer::Add_Mesh(MeshModelClass* mmc_)
 	** Append the UV coordinates to the vertex buffer
 	*/
 	int uvcount = 0;
-	if ((FVF&D3DFVF_TEX1) == D3DFVF_TEX1) {
+	if ((FVF&VKFVF_TEX1) == VKFVF_TEX1) {
 		uvcount = 1;
 	}
-	if ((FVF&D3DFVF_TEX2) == D3DFVF_TEX2) {
+	if ((FVF&VKFVF_TEX2) == VKFVF_TEX2) {
 		uvcount = 2;
 	}
-	if ((FVF&D3DFVF_TEX3) == D3DFVF_TEX3) {
+	if ((FVF&VKFVF_TEX3) == VKFVF_TEX3) {
 		uvcount = 3;
 	}
-	if ((FVF&D3DFVF_TEX4) == D3DFVF_TEX4) {
+	if ((FVF&VKFVF_TEX4) == VKFVF_TEX4) {
 		uvcount = 4;
 	}
-	if ((FVF&D3DFVF_TEX5) == D3DFVF_TEX5) {
+	if ((FVF&VKFVF_TEX5) == VKFVF_TEX5) {
 		uvcount = 5;
 	}
-	if ((FVF&D3DFVF_TEX6) == D3DFVF_TEX6) {
+	if ((FVF&VKFVF_TEX6) == VKFVF_TEX6) {
 		uvcount = 6;
 	}
-	if ((FVF&D3DFVF_TEX7) == D3DFVF_TEX7) {
+	if ((FVF&VKFVF_TEX7) == VKFVF_TEX7) {
 		uvcount = 7;
 	}
-	if ((FVF&D3DFVF_TEX8) == D3DFVF_TEX8) {
+	if ((FVF&VKFVF_TEX8) == VKFVF_TEX8) {
 		uvcount = 8;
 	}
 	
@@ -1218,8 +1229,7 @@ void DX8FVFCategoryContainer::Generate_Texture_Categories(Vertex_Split_Table& sp
 		}
 		else {
 			index_buffer=NEW_REF(DX8IndexBufferClass,(
-				ib_size,
-				(DX8Wrapper::Get_Current_Caps()->Support_NPatches() && WW3D::Get_NPatches_Level()>1) ? DX8IndexBufferClass::USAGE_NPATCHES : DX8IndexBufferClass::USAGE_DEFAULT));
+				ib_size));
 		}
 	}
 
@@ -1252,7 +1262,9 @@ void DX8FVFCategoryContainer::Generate_Texture_Categories(Vertex_Split_Table& sp
 
 DX8SkinFVFCategoryContainer::DX8SkinFVFCategoryContainer(bool sorting)
 	:
-	DX8FVFCategoryContainer(DX8_FVF_XYZNUV1,sorting),
+	DX8FVFCategoryContainer(
+		DX8_FVF_XYZNUV1
+		,sorting),
 	VisibleVertexCount(0),
 	VisibleSkinHead(NULL),
 	VisibleSkinTail(NULL)
@@ -1374,7 +1386,7 @@ void DX8SkinFVFCategoryContainer::Render(void)
 						verts[v].diffuse=*diffuse++;
 					}
 					else {
-						verts[v].diffuse=0;
+						verts[v].diffuse=0xFFFFFFFF;
 					}
 					if (uv0) {
 						verts[v].u1=(*uv0)[0];
@@ -1726,7 +1738,7 @@ void DX8TextureCategoryClass::Render(void)
 		//DX8Wrapper::Set_Material(material);
 		//REF_PTR_RELEASE(material);
 		DX8Wrapper::Apply_Render_State_Changes();
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND,D3DBLEND_DESTCOLOR);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND,VK_BLEND_FACTOR_DST_COLOR);
 	}
 
 
@@ -1863,13 +1875,13 @@ void DX8TextureCategoryClass::Render(void)
 		}
 		else {
 			SNAPSHOT_SAY(("Set_World_Transform\n"));
-			DX8Wrapper::Set_Transform(D3DTS_WORLD,*world_transform);
+			DX8Wrapper::Set_Transform(VkTS::WORLD,*world_transform);
 		}
 
 		
 //--------------------------------------------------------------------
 		if (mesh->Get_ObjectScale() != 1.0f)
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_NORMALIZENORMALS, TRUE);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_NORMALIZENORMALS, TRUE);
 //--------------------------------------------------------------------
 		/*
 		** Render mesh using either sorting or immediate pipeline
@@ -1911,9 +1923,9 @@ void DX8TextureCategoryClass::Render(void)
 					vmaterial->Set_Opacity(mesh->Get_Alpha_Override());
 					DX8Wrapper::Set_Shader(theAlphaShader);
 					DX8Wrapper::Apply_Render_State_Changes();
-					DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAREF,(int)((float)0x60*mesh->Get_Alpha_Override()));
+					DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAREF,(int)((float)0x60*mesh->Get_Alpha_Override()));
 					renderer->Render(mesh->Get_Base_Vertex_Offset());
-					DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAREF,0x60);
+					DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAREF,0x60);
 					vmaterial->Set_Opacity(oldOpacity);	//restore previous value
 					vmaterial->Set_Diffuse(oldDiffuse.X,oldDiffuse.Y,oldDiffuse.Z);
 					DX8Wrapper::Set_Shader(theShader);	//restore previous value
@@ -1933,7 +1945,7 @@ void DX8TextureCategoryClass::Render(void)
 		}
 //--------------------------------------------------------------------
 		if (mesh->Get_ObjectScale() != 1.0f)
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_NORMALIZENORMALS, FALSE);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_NORMALIZENORMALS, FALSE);
 //--------------------------------------------------------------------
 
 
@@ -2217,15 +2229,14 @@ void DX8MeshRendererClass::Render_Decal_Meshes(void)
 	DecalMeshClass * decal_mesh = visible_decal_meshes;
 	if (!decal_mesh) return;
 
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_DEPTHBIAS,8 * -0.000005f);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_DEPTHBIAS,8);
 	
 	while (decal_mesh != NULL) {
 		decal_mesh->Render();
 		decal_mesh = decal_mesh->Peek_Next_Visible();
 	}
 	visible_decal_meshes = NULL;
-
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_DEPTHBIAS,0);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_DEPTHBIAS,0);
 }
 
 // ----------------------------------------------------------------------------

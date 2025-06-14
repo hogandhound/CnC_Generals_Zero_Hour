@@ -892,7 +892,7 @@ void ModelConditionInfo::validateTurretInfo() const
 		{
 			if (findPristineBone(tur.m_turretPitchNameKey, &tur.m_turretPitchBone) == NULL)
 			{
-				DEBUG_CRASH(("*** ASSET ERROR: TurretBone %s not found! (%s)\n",KEYNAME(tur.m_turretPitchNameKey).str(),m_modelName.str()));
+				DEBUG_WARNING(("*** ASSET ERROR: TurretBone %s not found! (%s)\n",KEYNAME(tur.m_turretPitchNameKey).str(),m_modelName.str()));
 				tur.m_turretPitchBone = 0;
 			}
 		}
@@ -3755,7 +3755,7 @@ Bool W3DModelDraw::handleWeaponFireFX(WeaponSlotType wslot, Int specificBarrelTo
 		}
 		else
 		{
-			DEBUG_LOG(("*** no FXBone found for a non-null FXL\n"));
+			DEBUG_WARNING(("*** no FXBone found for a non-null FXL\n"));
 		}
 	}
 

@@ -138,7 +138,7 @@ void W3DTerrainBackground::doPartialUpdate(const IRegion2D &partialRange, WorldH
 	if (m_indexTerrainSize<requiredIndexSize || m_indexTerrain==NULL) {
 		m_indexTerrainSize = requiredIndexSize;
 		REF_PTR_RELEASE(m_indexTerrain);
-		m_indexTerrain=NEW_REF(DX8IndexBufferClass,(m_indexTerrainSize+4,DX8IndexBufferClass::USAGE_DEFAULT));
+		m_indexTerrain=NEW_REF(DX8IndexBufferClass,(m_indexTerrainSize+4));
 	}
 	Int minX = m_xOrigin;
 	Int minY = m_yOrigin;
@@ -553,7 +553,7 @@ void W3DTerrainBackground::doTesselatedUpdate(const IRegion2D &partialRange, Wor
 	if (m_indexTerrainSize<requiredIndex || m_indexTerrain==NULL) {
 		m_indexTerrainSize = requiredIndex;
 		REF_PTR_RELEASE(m_indexTerrain);
-		m_indexTerrain=NEW_REF(DX8IndexBufferClass,(m_indexTerrainSize+4,DX8IndexBufferClass::USAGE_DEFAULT));
+		m_indexTerrain=NEW_REF(DX8IndexBufferClass,(m_indexTerrainSize+4));
 	}
 
 	m_curNumTerrainIndices = 0;
@@ -759,48 +759,37 @@ void W3DTerrainBackground::updateTexture(void)
 // W3DTerrainBackground::renderTerrain
 //=============================================================================
 //=============================================================================
-void W3DTerrainBackground::drawVisiblePolys(RenderInfoClass & rinfo, Bool disableTextures)
+void W3DTerrainBackground::drawVisiblePolys(RenderInfoClass& rinfo, Bool disableTextures)
 {
-#if 1
 	if (m_curNumTerrainIndices == 0) {
 		return;
 	}
-	if (m_cullStatus==CULL_STATUS_INVISIBLE) {
+	if (m_cullStatus == CULL_STATUS_INVISIBLE) {
 		return;
 	}
 	// Setup the vertex buffer, shader & texture.
-	DX8Wrapper::Set_Index_Buffer(m_indexTerrain,0);
+	DX8Wrapper::Set_Index_Buffer(m_indexTerrain, 0);
 	DX8Wrapper::Set_Vertex_Buffer(m_vertexTerrain);
-  if (!disableTextures) {
+	if (!disableTextures) {
 		if (m_terrainTexture4X) {
 			DX8Wrapper::Set_Texture(1, m_terrainTexture4X);
-		}	else if (m_terrainTexture2X) {
+		}
+		else if (m_terrainTexture2X) {
 			DX8Wrapper::Set_Texture(1, m_terrainTexture2X);
-		}	else {
+		}
+		else {
 			DX8Wrapper::Set_Texture(1, m_terrainTexture);
 		}
 	}
-	DX8Wrapper::Draw_Triangles(	0, m_curNumTerrainIndices/3, 0,	m_curNumTerrainVertices);
-#else
-	if (m_curNumTerrainIndices == 0) {
-		return;
+	DX8Wrapper::Apply_Render_State_Changes();
+	auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexTerrain->FVF_Info().FVF);
+	assert(pipelines.size() == 1);
+	switch (pipelines[0]) {
+	case 0:
+	default: assert(false);
 	}
-	if (m_cullStatus==CULL_STATUS_INVISIBLE) {
-		return;
-	}
-	// Setup the vertex buffer, shader & texture.
-	DX8Wrapper::Set_Index_Buffer(m_indexTerrain,0);
-	DX8Wrapper::Set_Vertex_Buffer(m_vertexTerrain);
-  if (!disableTextures) {
-		if (m_terrainTexture4X) {
-			DX8Wrapper::Set_Texture(0, m_terrainTexture4X);
-		}	else if (m_terrainTexture2X) {
-			DX8Wrapper::Set_Texture(0, m_terrainTexture2X);
-		}	else {
-			DX8Wrapper::Set_Texture(0, m_terrainTexture);
-		}
-	}
-	DX8Wrapper::Draw_Triangles(	0, m_curNumTerrainIndices/3, 0,	m_curNumTerrainVertices);
+#ifdef INFO_VULKAN
+	DX8Wrapper::Draw_Triangles(0, m_curNumTerrainIndices / 3, 0, m_curNumTerrainVertices);
 #endif
 }
 

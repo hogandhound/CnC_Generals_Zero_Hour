@@ -328,10 +328,10 @@ public:
 	Int getCellX() const { return m_cellX; }
 	Int getCellY() const { return m_cellY; }
 
-	void addLooker( Int playerIndex );
-	void removeLooker( Int playerIndex );
-	void addShrouder( Int playerIndex );
-	void removeShrouder( Int playerIndex );
+	void addLooker( Int playerIndex, bool upload = true);
+	void removeLooker( Int playerIndex, bool upload = true);
+	void addShrouder( Int playerIndex, bool upload = true);
+	void removeShrouder( Int playerIndex);
 	CellShroudStatus getShroudStatusForPlayer( Int playerIndex ) const;
 
 	// @todo: All of these are inline candidates

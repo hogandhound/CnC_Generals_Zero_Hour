@@ -611,22 +611,22 @@ void Render2DClass::Render(void)
 	Matrix4x4 view,proj;
 	Matrix4x4 identity(true);
 
-	DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
-	DX8Wrapper::Get_Transform(D3DTS_PROJECTION,proj);
+	DX8Wrapper::Get_Transform(VkTS::VIEW,view);
+	DX8Wrapper::Get_Transform(VkTS::PROJECTION,proj);
 
 	//
 	//	Configure the viewport for entire screen
 	//
-	D3DVIEWPORT9 vp = { 0 };
+	VkViewport vp = { 0 };
 	int width, height, bits;
 	bool windowed;
 	WW3D::Get_Device_Resolution( width, height, bits, windowed );
-	vp.X			= 0;
-	vp.Y			= 0;
-	vp.Width		= width;
-	vp.Height	= height;
-	vp.MinZ		= 0;
-	vp.MaxZ		= 1;
+	vp.x			= 0;
+	vp.y			= 0;
+	vp.width		= width;
+	vp.height	= height;
+	vp.minDepth		= 0;
+	vp.maxDepth		= 1;
 	DX8Wrapper::Set_Viewport(&vp);
 	DX8Wrapper::Set_Texture(0,Texture);
 
@@ -636,9 +636,9 @@ void Render2DClass::Render(void)
 
 	DX8Wrapper::Set_World_Identity();
 	DX8Wrapper::Set_View_Identity();
-	DX8Wrapper::Set_Transform(D3DTS_PROJECTION,identity);
+	DX8Wrapper::Set_Transform(VkTS::PROJECTION,identity);
 
-	DynamicVBAccessClass vb(BUFFER_TYPE_DYNAMIC_DX8,dynamic_fvf_type,Vertices.Count());
+	DynamicVBAccessClass vb(BUFFER_TYPE_DYNAMIC_DX8, VKFVF_XYZ | VKFVF_TEX1 | VKFVF_DIFFUSE,Vertices.Count());
 	{
 		DynamicVBAccessClass::WriteLockClass Lock(&vb);
 		const FVFInfoClass &fi=vb.FVF_Info();
@@ -651,6 +651,10 @@ void Render2DClass::Render(void)
 			*(Vector3*)(va+fi.Get_Location_Offset())=temp;
 			*(unsigned int*)(va+fi.Get_Diffuse_Offset())=Colors[i];
 			*(Vector2*)(va+fi.Get_Tex_Offset(0))=UVCoordinates[i];
+			// This is to fix the gaps in the buttons in the intro
+			// No idea why this is necessary compared to the base
+			((Vector2*)(va + fi.Get_Tex_Offset(0)))->X += 0.001f;
+			((Vector2*)(va + fi.Get_Tex_Offset(0)))->Y += 0.001f;
 			va+=fi.Get_FVF_Size();
 		}		
 	}
@@ -670,39 +674,75 @@ void Render2DClass::Render(void)
 	DX8Wrapper::Set_Vertex_Buffer(vb);
 	DX8Wrapper::Set_Index_Buffer(ib,0);
 
+	WWVKDSV;
 	if (IsGrayScale)
 	{	//special case added to draw grayscale non-alpha blended images.
 		DX8Wrapper::Set_Shader(ShaderClass::_PresetOpaqueShader);
 		DX8Wrapper::Apply_Render_State_Changes();	//force update of all regular W3D states.
+#ifdef INFO_VULKAN
 		if (DX8Wrapper::Get_Current_Caps()->Support_Dot3())
+#endif
 		{	//Override W3D states with customizations for grayscale
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_TEXTUREFACTOR, 0x80A5CA8E);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG0, D3DTA_TFACTOR | D3DTA_ALPHAREPLICATE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_TFACTOR | D3DTA_ALPHAREPLICATE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP, D3DTOP_MULTIPLYADD);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_TEXTUREFACTOR, 0x80A5CA8E);
+#ifdef INFO_VULKAN
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG0, VKTA_TFACTOR | VKTA_ALPHAREPLICATE);
+#endif
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG1, VKTA_TEXTURE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG2, VKTA_TFACTOR | VKTA_ALPHAREPLICATE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLOROP, VKTOP_MULTIPLYADD);
 
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG1, D3DTA_CURRENT);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLOROP, D3DTOP_DOTPRODUCT3);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLORARG1, VKTA_CURRENT);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLORARG2, VKTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLOROP, VKTOP_DOTPRODUCT3);
 		}
+#ifdef INFO_VULKAN
 		else
 		{	//doesn't have DOT3 blend mode so fake it another way.
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_TEXTUREFACTOR, 0x60606060);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_TEXTUREFACTOR, 0x60606060);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG1, VKTA_TEXTURE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG2, VKTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLOROP, VKTOP_MODULATE);
 		}
+#endif
+		WWVK_UpdateFVF_DUV_GrayscaleDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),
+			DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
+		WWVK_DrawFVF_DUV_Grayscale(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
+			((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
 	}
 	else
+	{
 		DX8Wrapper::Set_Shader(Shader);
+		DX8Wrapper::Apply_Render_State_Changes();	//force update of all regular W3D states.
+		auto pipelines = DX8Wrapper::FindClosestPipelines(vb.FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0])
+		{
+		case PIPELINE_WWVK_FVF_DUV:
+			WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),//&Texture->Peek_D3D_Texture(),
+				DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
+			WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
+				((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
+			break;
+		case PIPELINE_WWVK_FVF_DUV_DropUV:
+			WWVK_UpdateFVF_DUV_DropUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+				DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
+			WWVK_DrawFVF_DUV_DropUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
+				((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
+			break;
+		default: assert(false);
+		}
+	}
+#ifdef INFO_VULKAN
 	DX8Wrapper::Draw_Triangles(0,Indices.Count()/3,0,Vertices.Count());	
+#endif
 
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,view);
-	DX8Wrapper::Set_Transform(D3DTS_PROJECTION,proj);
+	DX8Wrapper::Set_Transform(VkTS::VIEW,view);
+	DX8Wrapper::Set_Transform(VkTS::PROJECTION,proj);
 	if (IsGrayScale)
 		ShaderClass::Invalidate();	//force both stages to be reset.
-
 }
 
 

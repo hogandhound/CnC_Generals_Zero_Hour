@@ -113,6 +113,7 @@ W3DMouse::W3DMouse( void )
 
 W3DMouse::~W3DMouse( void )
 {
+#ifdef INFO_VULKAN
 	LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 	if (m_pDev)
@@ -120,6 +121,8 @@ W3DMouse::~W3DMouse( void )
 		m_pDev->ShowCursor(FALSE);	//kill DX8 cursor
 		Win32Mouse::setCursor(ARROW); //enable default windows cursor
 	}
+#endif
+	Win32Mouse::setCursor(ARROW); //enable default windows cursor
 
 	freeD3DAssets();
 	freeW3DAssets();
@@ -392,6 +395,8 @@ void W3DMouse::setCursor( MouseCursor cursor )
 	{
 		SetCursor(NULL);	//Kill Windows Cursor
 
+		assert(false);//I don't think this code should be hit
+#ifdef VERIFY_VULKAN
 		LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 		Bool doImageChange=FALSE;
 
@@ -423,6 +428,7 @@ void W3DMouse::setCursor( MouseCursor cursor )
 			m_currentD3DCursor = cursor;
 			m_lastAnimTime=timeGetTime();
 		}
+#endif
 	}
 	else if (m_currentRedrawMode == RM_POLYGON)
 	{
@@ -488,6 +494,8 @@ void W3DMouse::draw(void)
 	{
 		//called from upate thread or rendering loop.  Tells D3D where
 		//to draw the mouse cursor.
+		assert(false);//I don't think this code should be hit
+#ifdef VERIFY_VULKAN
 		LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 		if (m_pDev)
 		{	m_pDev->ShowCursor(TRUE);	//Enable DX8 cursor
@@ -515,6 +523,7 @@ void W3DMouse::draw(void)
 				}
 			}
 		}
+#endif
 	}
 	else if (m_currentRedrawMode == RM_POLYGON)
 	{	

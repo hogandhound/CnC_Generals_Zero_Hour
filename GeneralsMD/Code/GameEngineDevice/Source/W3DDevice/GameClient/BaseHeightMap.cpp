@@ -56,7 +56,6 @@
 #include <coltest.h>
 #include <rinfo.h>
 #include <camera.h>
-#include <d3dx9core.h>
 #include "Common/GlobalData.h"
 #include "Common/PerfTimer.h"
 
@@ -188,7 +187,16 @@ void BaseHeightMapRenderObjClass::drawScorches(void)
 
 	DX8Wrapper::Set_Texture(0,m_scorchTexture);
 	if (Is_Hidden() == 0) {
-		DX8Wrapper::Draw_Triangles(	0,m_curNumScorchIndices/3, 0,	m_curNumScorchVertices);
+		Matrix4x4 world;
+		DX8Wrapper::Apply_Render_State_Changes();
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, world);
+		//DX8Wrapper::Draw_Triangles(	0,m_curNumScorchIndices/3, 0,	m_curNumScorchVertices);
+		std::vector<VkDescriptorSet> sets;
+		WWVK_UpdateFVF_DUVDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets,
+			&m_scorchTexture->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		WWVK_DrawFVF_DUV(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets,
+			m_indexScorch->Get_DX8_Index_Buffer().buffer, (uint32_t)m_curNumScorchIndices, 0, VK_INDEX_TYPE_UINT16,
+			(VkBuffer)m_vertexScorch->Get_DX8_Vertex_Buffer().buffer, 0ULL, (WorldMatrix*)&world);
 	}
 }
 #endif
@@ -286,7 +294,6 @@ BaseHeightMapRenderObjClass::BaseHeightMapRenderObjClass(void)
 	m_depthFade.Y = 0.0f;
 	m_depthFade.Z = 0.0f;
 	m_useDepthFade = false;
-	m_disableTextures = false;
 	TheTerrainRenderObject = this;
 	m_treeBuffer = NULL; 
 
@@ -1443,16 +1450,19 @@ RenderObjClass *	 BaseHeightMapRenderObjClass::Clone(void) const
 	assert(false);
 	return NULL;
 }
-
 //=============================================================================
 // BaseHeightMapRenderObjClass::loadRoadsAndBridges
 //=============================================================================
 /** Loads the roads from the map objects. */
 //=============================================================================
 void BaseHeightMapRenderObjClass::loadRoadsAndBridges(W3DTerrainLogic *pTerrainLogic, Bool saveGame)
-{	
+{
+#ifdef INFO_VULKAN
 	if (DX8Wrapper::_Get_D3D_Device8() && (DX8Wrapper::_Get_D3D_Device8()->TestCooperativeLevel()) != D3D_OK)
 		return;	//device not ready to render anything
+#endif
+	if (!DX8Wrapper::_GetRenderTarget().device)
+		return;//device not ready to render anything
 
 #ifdef DO_ROADS
 	if (m_roadBuffer) {
@@ -1754,6 +1764,8 @@ void BaseHeightMapRenderObjClass::initDestAlphaLUT(void)
 
 		Int maxOpacity=(Int)(TheWaterTransparency->m_minWaterOpacity * 255.0f);
 		Int alpha;
+		m_destAlphaTexture->Get_Filter().Set_U_Addr_Mode(TextureFilterClass::TEXTURE_ADDRESS_CLAMP);
+		m_destAlphaTexture->Get_Filter().Set_V_Addr_Mode(TextureFilterClass::TEXTURE_ADDRESS_CLAMP);
 
 		if (pData)
 		{
@@ -1766,11 +1778,9 @@ void BaseHeightMapRenderObjClass::initDestAlphaLUT(void)
 				*pData=(alpha<<24)|0x00ffffff;
 				pData++;
 			}
-			surf->Unlock();
+			surf->Unlock(&m_destAlphaTexture->Peek_D3D_Texture(), m_destAlphaTexture->Get_Filter().GetSamplerSettings());
 		}
 
-		m_destAlphaTexture->Get_Filter().Set_U_Addr_Mode(TextureFilterClass::TEXTURE_ADDRESS_CLAMP);
-		m_destAlphaTexture->Get_Filter().Set_V_Addr_Mode(TextureFilterClass::TEXTURE_ADDRESS_CLAMP);
 		REF_PTR_RELEASE(surf);
 		m_currentMinWaterOpacity = TheWaterTransparency->m_minWaterOpacity;
 	}
@@ -1903,7 +1913,6 @@ void BaseHeightMapRenderObjClass::allocateScorchBuffers(void)
 	loc.X += 5*MAP_XY_FACTOR;
 	addScorch(loc, 3*MAP_XY_FACTOR, SCORCH_1);
 #endif
-
 }
 
 //=============================================================================
@@ -2462,20 +2471,20 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 		return;
 
 	//Check if video card is capable of using this effect
-	if (DX8Wrapper::getBackBufferFormat() != WW3D_FORMAT_A8R8G8B8)
-		return;	//can't apply effect on cards without destination alpha
+	//if (DX8Wrapper::getBackBufferFormat() != WW3D_FORMAT_A8R8G8B8)
+	//	return;	//can't apply effect on cards without destination alpha
 
 	Int vertexCount = 0;
 	Int indexCount = 0;
+	Int drawStartX = m_map->getDrawOrgX();
+	Int drawStartY = m_map->getDrawOrgY();
+	Int j = 0;
 	Int drawEdgeY=m_map->getDrawOrgY()+m_map->getDrawHeight()-1;
 	Int drawEdgeX=m_map->getDrawOrgX()+m_map->getDrawWidth()-1;
 	if (drawEdgeX > (m_map->getXExtent()-1))
 		drawEdgeX = m_map->getXExtent()-1;
 	if (drawEdgeY > (m_map->getYExtent()-1))
 		drawEdgeY = m_map->getYExtent()-1;
-	Int drawStartX=m_map->getDrawOrgX();
-	Int drawStartY=m_map->getDrawOrgY();
-	Int j=0;
 
 	ShaderClass unlitShader=ShaderClass::_PresetOpaque2DShader;
 	unlitShader.Set_Depth_Compare(ShaderClass::PASS_LEQUAL);
@@ -2484,11 +2493,10 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 	DX8Wrapper::Set_Material(vmat);
 	REF_PTR_RELEASE(vmat);
 	DX8Wrapper::Set_Texture(0,m_destAlphaTexture);
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,Matrix3D(1));
+	DX8Wrapper::Set_Transform(VkTS::WORLD,Matrix3D(1));
 	//Enabled writes to destination alpha only
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
-	DX8Wrapper::Set_DX8_Texture_Stage_State(0,  D3DTSS_TEXCOORDINDEX, 0);
-	
+	DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,1<<3);//(1<<3)
+	DX8Wrapper::Set_DX8_Texture_Stage_State(0,  VKTSS_TEXCOORDINDEX, 0);
 
 	while (j != m_numShoreLineTiles)
 	{
@@ -2501,7 +2509,8 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 			DynamicIBAccessClass::WriteLockClass lockib(&ib_access);
 			UnsignedShort *ib=lockib.Get_Index_Array();
 			if (!ib || !vb)
-			{	DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+			{	
+				DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<2)|(1<<1)|(1<<0));
 				return;
 			}
 
@@ -2603,9 +2612,27 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 
 		if (indexCount > 0 && vertexCount > 0)
 		{
+			Matrix4x4 push;
+			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, push);
 			DX8Wrapper::Set_Index_Buffer(ib_access,0);
 			DX8Wrapper::Set_Vertex_Buffer(vb_access);
+			DX8Wrapper::Apply_Render_State_Changes();
+			WWVKDSV;
+			auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
+			assert(pipelines.size() == 1);
+			switch (pipelines[0]) {
+			case PIPELINE_WWVK_FVF_NDUV2_NOL_OnlyTex1:
+				WWVK_UpdateFVF_NDUV2_NOL_OnlyTex1DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0),
+					DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				WWVK_DrawFVF_NDUV2_NOL_OnlyTex1(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
+					((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
+				break;
+			}
+#ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles(	0,indexCount/3, 0,	vertexCount);	//draw a quad, 2 triangles, 4 verts
+#endif
 			m_numVisibleShoreLineTiles += indexCount/6;
 		}
 
@@ -2614,7 +2641,7 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 	}//for all shore tiles
 
 	//Disable writes to destination alpha
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<2)|(1<<1)|(1<<0));
 	ShaderClass::Invalidate();
 }
 
@@ -2630,8 +2657,8 @@ void BaseHeightMapRenderObjClass::renderShoreLinesSorted(CameraClass *pCamera)
 		return;
 
 	//Check if video card is capable of using this effect
-	if (DX8Wrapper::getBackBufferFormat() != WW3D_FORMAT_A8R8G8B8)
-		return;	//can't apply effect on cards without destination alpha
+	//if (DX8Wrapper::getBackBufferFormat() != WW3D_FORMAT_A8R8G8B8)
+	//	return;	//can't apply effect on cards without destination alpha
 
 	Int vertexCount = 0;
 	Int indexCount = 0;
@@ -2673,10 +2700,10 @@ void BaseHeightMapRenderObjClass::renderShoreLinesSorted(CameraClass *pCamera)
 	DX8Wrapper::Set_Material(vmat);
 	REF_PTR_RELEASE(vmat);
 	DX8Wrapper::Set_Texture(0,m_destAlphaTexture);
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,Matrix3D(1));
+	DX8Wrapper::Set_Transform(VkTS::WORLD,Matrix3D(1));
 	//Enabled writes to destination alpha only
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
-	DX8Wrapper::Set_DX8_Texture_Stage_State(0,  D3DTSS_TEXCOORDINDEX, 0);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,1<<3);//(1<<3)
+	DX8Wrapper::Set_DX8_Texture_Stage_State(0,  VKTSS_TEXCOORDINDEX, 0);
 
 	Bool isDone=FALSE;
 	Int lastRenderedTile=0;
@@ -2692,7 +2719,8 @@ void BaseHeightMapRenderObjClass::renderShoreLinesSorted(CameraClass *pCamera)
 			DynamicIBAccessClass::WriteLockClass lockib(&ib_access);
 			UnsignedShort *ib=lockib.Get_Index_Array();
 			if (!ib || !vb)
-			{	DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+			{	
+				DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<2)|(1<<1)|(1<<0));
 				return;
 			}
 
@@ -2950,7 +2978,28 @@ flushVertexBuffer1:
 		{
 			DX8Wrapper::Set_Index_Buffer(ib_access,0);
 			DX8Wrapper::Set_Vertex_Buffer(vb_access);
+			Matrix4x4 push;
+			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, push);
+			DX8Wrapper::Set_Index_Buffer(ib_access, 0);
+			DX8Wrapper::Set_Vertex_Buffer(vb_access);
+			DX8Wrapper::Apply_Render_State_Changes();
+			auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
+			assert(pipelines.size() == 1);
+			WWVKDSV;
+			switch (pipelines[0]) {
+			case PIPELINE_WWVK_FVF_NDUV2_NOL_OnlyTex1:
+				WWVK_UpdateFVF_NDUV2_NOL_OnlyTex1DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0),
+					DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				WWVK_DrawFVF_NDUV2_NOL_OnlyTex1(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
+					((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
+				break;
+			default: assert(false);
+			}
+#ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles(	0,indexCount/3, 0,	vertexCount);	//draw a quad, 2 triangles, 4 verts
+#endif
 			m_numVisibleShoreLineTiles += indexCount/6;
 		}
 
@@ -2959,7 +3008,7 @@ flushVertexBuffer1:
 	}//for all shore tiles
 
 	//Disable writes to destination alpha
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<2)|(1<<1)|(1<<0));
 	ShaderClass::Invalidate();
 }
 
@@ -2980,7 +3029,7 @@ void BaseHeightMapRenderObjClass::renderTrees(CameraClass * camera)
 	if (Scene==NULL) return;
 	if (m_treeBuffer) {
 		Matrix3D tm(Transform);
-		DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
+		DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 		DX8Wrapper::Set_Material(m_vertexMaterialClass);
 		RTS3DScene *pMyScene = (RTS3DScene *)Scene;
 		RefRenderObjListIterator pDynamicLightsIterator(pMyScene->getDynamicLights());

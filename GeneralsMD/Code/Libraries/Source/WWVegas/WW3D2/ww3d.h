@@ -117,7 +117,6 @@ public:
 	static int					Get_Render_Device(void);
 	static WW3DErrorType		Set_Render_Device( int dev=-1, int resx=-1, int resy=-1, int bits=-1, int windowed=-1, bool resize_window = false, bool reset_device=false, bool restore_assets=true);
 	static WW3DErrorType		Set_Render_Device( const char *dev_name, int resx=-1, int resy=-1, int bits=-1, int windowed=-1, bool resize_window = false  );
-	static WW3DErrorType		Set_Next_Render_Device(void);
 	static WW3DErrorType		Set_Any_Render_Device( void );
 
 	static void					Get_Pixel_Center(float &x, float &y);
@@ -133,15 +132,10 @@ public:
 	static WW3DErrorType		On_Activate_App( void );
 	static WW3DErrorType		On_Deactivate_App( void );
 
-	static WW3DErrorType		Registry_Save_Render_Device( const char * sub_key );
-	static WW3DErrorType		Registry_Save_Render_Device( const char * sub_key, int device, int width, int height, int depth, bool windowed, int texture_depth );
-	static WW3DErrorType		Registry_Load_Render_Device( const char * sub_key, bool resize_window = false );
-	static bool					Registry_Load_Render_Device( const char * sub_key, char *device, int device_len, int &width, int &height, int &depth, int &windowed, int& texture_depth);
-
 	// 0 = bilinear, 1 = trilinear, 2 = anisotropic
 	static void					Set_Texture_Filter(int filter);
 	static int					Get_Texture_Filter() { return TextureFilter; }
-
+	
 	/*
 	** Rendering functions
 	** Each frame should be bracketed by a Begin_Render and End_Render call.  Between these two calls you will
@@ -160,7 +154,6 @@ public:
 
 	static bool					Is_Rendering( void ) { return( IsRendering ); }
 
-	static void Flip_To_Primary(void);
 
 
 	/*
@@ -194,10 +187,8 @@ public:
 
    /*
 	** Set_Ext_Swap_Interval - how many vertical retraces to wait before flipping frames
-	** Get_Ext_Swap_Interval - what is our current setting for the swap interval?
 	*/
 	static void             Set_Ext_Swap_Interval(long swap);
-   static long             Get_Ext_Swap_Interval(void);
 
 	/*
 	** Texture Reduction - all currently loaded textures can be de-resed on the fly

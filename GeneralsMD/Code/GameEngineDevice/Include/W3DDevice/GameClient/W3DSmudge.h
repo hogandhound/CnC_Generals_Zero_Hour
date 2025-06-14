@@ -49,7 +49,6 @@ public:
 	void ReAcquireResources(void);
 
 private:
-	Bool testHardwareSupport(void);		///<test if video card supports the effect.
 
 	enum { MAX_POINTS_PER_GROUP = 512 };
 

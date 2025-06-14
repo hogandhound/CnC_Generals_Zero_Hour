@@ -132,22 +132,22 @@ FORCE_DWORD           = 0x7fffffff
 
 Variables
 
-_D3DTRANSFORMSTATETYPE {
-    D3DTS_VIEW            =  2, Pointgroup (restores), Camera
-    D3DTS_PROJECTION      =  3, Camera
-    D3DTS_TEXTURE0        = 16,
-    D3DTS_TEXTURE1        = 17,
-    D3DTS_TEXTURE2        = 18,
-    D3DTS_TEXTURE3        = 19,
-    D3DTS_TEXTURE4        = 20,
-    D3DTS_TEXTURE5        = 21,
-    D3DTS_TEXTURE6        = 22,
-    D3DTS_TEXTURE7        = 23,
+_VkTransformState {
+    VkTS::VIEW            =  2, Pointgroup (restores), Camera
+    VkTS::PROJECTION      =  3, Camera
+    VkTS::TEXTURE0        = 16,
+    VkTS::TEXTURE1        = 17,
+    VkTS::TEXTURE2        = 18,
+    VkTS::TEXTURE3        = 19,
+    VkTS::TEXTURE4        = 20,
+    VkTS::TEXTURE5        = 21,
+    VkTS::TEXTURE6        = 22,
+    VkTS::TEXTURE7        = 23,
 
-    D3DTS_FORCE_DWORD     = 0x7fffffff
+    VkTS::FORCE_DWORD     = 0x7fffffff
 
-    D3DTS_WORLDMATRIX(0)  = box, pointgroup, camera
-} D3DTRANSFORMSTATETYPE;
+    VkTS::WORLDMATRIX(0)  = box, pointgroup, camera
+} VkTransformState;
 
 Clip Planes		= 
 Clip Status		=

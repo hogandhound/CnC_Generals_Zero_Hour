@@ -188,8 +188,7 @@ void DebugHintObject::initData(void)
 		ib[2]=2;
 	}
 
-	m_vertexBufferTile = NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV1,3,DX8VertexBufferClass::USAGE_DEFAULT));
-
+	m_vertexBufferTile = NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZD,3,DX8VertexBufferClass::USAGE_DEFAULT));
 	//go with a preset material for now.
 	m_vertexMaterialClass = VertexMaterialClass::Get_Preset(VertexMaterialClass::PRELIT_DIFFUSE);
 
@@ -211,7 +210,7 @@ void DebugHintObject::setLocAndColorAndSize(const Coord3D *loc, Int argb, Int si
 	if (m_vertexBufferTile)
 	{
 		DX8VertexBufferClass::WriteLockClass lockVtxBuffer(m_vertexBufferTile);
-		VertexFormatXYZDUV1 *vb = (VertexFormatXYZDUV1*)lockVtxBuffer.Get_Vertex_Array();
+		VertexFormatXYZD*vb = (VertexFormatXYZD*)lockVtxBuffer.Get_Vertex_Array();
 
 		Real x1 = m_mySize * 0.866;	// cos(30)
 		Real y1 = m_mySize * 0.5;		// sin(30)
@@ -221,22 +220,16 @@ void DebugHintObject::setLocAndColorAndSize(const Coord3D *loc, Int argb, Int si
 		vb[0].y = m_mySize;
 		vb[0].z = 0;
 		vb[0].diffuse = m_myColor;
-		vb[0].u1 = 0;
-		vb[0].v1 = 0;
 
 		vb[1].x = -x1;
 		vb[1].y = -y1;
 		vb[1].z = 0;
 		vb[1].diffuse = m_myColor;
-		vb[1].u1 = 0;
-		vb[1].v1 = 0;
 
 		vb[2].x = x1;
 		vb[2].y = -y1;
 		vb[2].z = 0;
 		vb[2].diffuse = m_myColor;
-		vb[2].u1 = 0;
-		vb[2].v1 = 0;
 	}
 }
 
@@ -254,9 +247,17 @@ void DebugHintObject::Render(RenderInfoClass & rinfo)
 		Matrix3D tm(Transform);
 		Vector3 vec(m_myLoc.x, m_myLoc.y, m_myLoc.z);
 		tm.Set_Translation(vec);
-		DX8Wrapper::Set_Transform(D3DTS_WORLD, tm);
+		DX8Wrapper::Set_Transform(VkTS::WORLD, tm);
+		Matrix4x4 tm2;
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, tm2);
+		//DX8Wrapper::Draw_Triangles(	0, 1, 0, 3);
 
-		DX8Wrapper::Draw_Triangles(	0, 1, 0, 3);
+		std::vector<VkDescriptorSet> sets;
+		WWVK_UpdateFVF_DDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets, DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		//void WWVK_DrawFVF_D(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, 
+		// uint32_t vertexCount, VkBuffer diffuse, VkDeviceSize offset_diffuse, WorldMatrix* push);
+		WWVK_DrawFVF_D_NI(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets, 
+			(uint32_t)3U, m_vertexBufferTile->Get_DX8_Vertex_Buffer().buffer, (VkDeviceSize)0ULL, (WorldMatrix*) &tm2);
 	}
 }
 #endif // _DEBUG

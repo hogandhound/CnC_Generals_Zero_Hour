@@ -48,8 +48,11 @@
 #include "wwdebug.h"
 #include "refcount.h"
 #include "dx8fvf.h"
+#include <vector>
+#include <VkRenderTarget.h>
 
-const unsigned dynamic_fvf_type=D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX2|D3DFVF_DIFFUSE;
+
+const unsigned dynamic_fvf_type = VKFVF_XYZ|VKFVF_NORMAL|VKFVF_TEX2|VKFVF_DIFFUSE;
 
 class DX8Wrapper;
 class SortingRendererClass;
@@ -90,7 +93,8 @@ protected:
 public:
 
 	inline const FVFInfoClass& FVF_Info() const { return *fvf_info; }
-	inline unsigned short Get_Vertex_Count() const { return VertexCount; }
+	inline unsigned short Get_Vertex_Count() const { return (uint16_t)Vertices.size(); }
+	inline const unsigned char* Get_Vertices() const { return (unsigned char*)Vertices.data(); }
 	inline unsigned Type() const { return type; }
 
 	void Add_Engine_Ref() const;
@@ -116,8 +120,8 @@ public:
 	static unsigned Get_Total_Allocated_Memory();
 
 protected:
+	std::vector<VertexFormatXYZNDUV2> Vertices;
 	unsigned							type;
-	unsigned short					VertexCount;
 	mutable int						engine_refs;
 	FVFInfoClass*					fvf_info;
 };
@@ -141,7 +145,7 @@ class DynamicVBAccessClass
 	friend DX8Wrapper;
 	friend SortingRendererClass;
 
-	const FVFInfoClass& FVFInfo;
+	FVFInfoClass FVFInfo;
 	unsigned Type;
 	unsigned short VertexCount;
 	unsigned short VertexBufferOffset;
@@ -163,6 +167,7 @@ public:
 	const FVFInfoClass& FVF_Info() const { return FVFInfo; }
 	unsigned Get_Type() const { return Type; }
 	unsigned short Get_Vertex_Count() const { return VertexCount; }
+	VertexBufferClass* Get_Vertex_Buffer() { return VertexBuffer; };
 
 	// Call at the end of the execution, or at whatever time you wish to release
 	// the recycled dynamic vertex buffer.
@@ -194,7 +199,7 @@ public:
 inline VertexFormatXYZNDUV2 * DynamicVBAccessClass::WriteLockClass::Get_Formatted_Vertex_Array()
 {
 	// assert that the format of the dynamic vertex buffer is still what we think it is.
-	WWASSERT(DynamicVBAccess->VertexBuffer->FVF_Info().Get_FVF() == (D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX2|D3DFVF_DIFFUSE));
+	//WWASSERT(DynamicVBAccess->VertexBuffer->FVF_Info().Get_FVF() == (VKFVF_XYZ|VKFVF_NORMAL|VKFVF_TEX2|VKFVF_DIFFUSE));
 	return Vertices;
 }
 
@@ -221,19 +226,20 @@ public:
 	DX8VertexBufferClass(const Vector3* vertices, const Vector3* normals, const Vector2* tex_coords, unsigned short VertexCount,UsageType usage=USAGE_DEFAULT);
 	DX8VertexBufferClass(const Vector3* vertices, const Vector3* normals, const Vector4* diffuse, const Vector2* tex_coords, unsigned short VertexCount,UsageType usage=USAGE_DEFAULT);
 	DX8VertexBufferClass(const Vector3* vertices, const Vector4* diffuse, const Vector2* tex_coords, unsigned short VertexCount,UsageType usage=USAGE_DEFAULT);
-	DX8VertexBufferClass(const Vector3* vertices, const Vector2* tex_coords, unsigned short VertexCount,UsageType usage=USAGE_DEFAULT);
+	//DX8VertexBufferClass(const Vector3* vertices, const Vector2* tex_coords, unsigned short VertexCount,UsageType usage=USAGE_DEFAULT);
 
-	IDirect3DVertexBuffer9* Get_DX8_Vertex_Buffer() { return VertexBuffer; }
+	const VK::Buffer& Get_DX8_Vertex_Buffer() { return VertexBuffer; }
+	void Upload(size_t count, size_t offset);
 
 	void Copy(const Vector3* loc, unsigned first_vertex, unsigned count);
-	void Copy(const Vector3* loc, const Vector2* uv, unsigned first_vertex, unsigned count);
-	void Copy(const Vector3* loc, const Vector3* norm, unsigned first_vertex, unsigned count);
+	//void Copy(const Vector3* loc, const Vector2* uv, unsigned first_vertex, unsigned count);
+	//void Copy(const Vector3* loc, const Vector3* norm, unsigned first_vertex, unsigned count);
 	void Copy(const Vector3* loc, const Vector3* norm, const Vector2* uv, unsigned first_vertex, unsigned count);
 	void Copy(const Vector3* loc, const Vector3* norm, const Vector2* uv, const Vector4* diffuse, unsigned first_vertex, unsigned count);
 	void Copy(const Vector3* loc, const Vector2* uv, const Vector4* diffuse, unsigned first_vertex, unsigned count);
 
 protected:
-	IDirect3DVertexBuffer9*		VertexBuffer;
+	VK::Buffer VertexBuffer;
 
 	void Create_Vertex_Buffer(UsageType usage);
 };
@@ -252,8 +258,6 @@ class SortingVertexBufferClass : public VertexBufferClass
 	friend VertexBufferClass::WriteLockClass;
 	friend VertexBufferClass::AppendLockClass;
 	friend DynamicVBAccessClass::WriteLockClass;
-
-	VertexFormatXYZNDUV2* VertexBuffer;
 
 protected:
 	~SortingVertexBufferClass();

@@ -281,10 +281,10 @@ void	LineGroupClass::Render(RenderInfoClass &rinfo)
 
 	// Save off the view matrix
 	Matrix4x4 view;
-	DX8Wrapper::Get_Transform(D3DTS_VIEW, view);
+	DX8Wrapper::Get_Transform(VkTS::VIEW, view);
 
 	Matrix4x4 identity(true);
-	DX8Wrapper::Set_Transform(D3DTS_WORLD, identity);	
+	DX8Wrapper::Set_Transform(VkTS::WORLD, identity);	
 
 	// if the points are in world space, transform the offsets
 	if (Get_Flag(TRANSFORM)) {
@@ -296,7 +296,7 @@ void	LineGroupClass::Render(RenderInfoClass &rinfo)
 			Matrix3D::Transform_Vector(xform_mat, offset[i], &offset[i]);
 		}
 	} else {
-		DX8Wrapper::Set_Transform(D3DTS_VIEW, identity);
+		DX8Wrapper::Set_Transform(VkTS::VIEW, identity);
 	}
 	
 	int num_tris=0;
@@ -472,15 +472,24 @@ void	LineGroupClass::Render(RenderInfoClass &rinfo)
 
 	DX8Wrapper::Set_Index_Buffer(iba, 0);
 	DX8Wrapper::Set_Vertex_Buffer(vba);
+	DX8Wrapper::Apply_Render_State_Changes();
 	
 	if (sort) {
 		SortingRendererClass::Insert_Triangles(0, num_tris, 0, num_vertices);
 	} else {
+		auto pipelines = DX8Wrapper::FindClosestPipelines(vba.FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(0, num_tris, 0, num_vertices);
+#endif
 	}		
 	
 	// restore the matrices
-	DX8Wrapper::Set_Transform(D3DTS_VIEW, view);
+	DX8Wrapper::Set_Transform(VkTS::VIEW, view);
 }
 
 int LineGroupClass::Get_Polygon_Count(void)

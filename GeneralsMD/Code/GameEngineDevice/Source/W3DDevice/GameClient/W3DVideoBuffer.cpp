@@ -191,7 +191,7 @@ void		W3DVideoBuffer::unlock( void )
 {
 	if ( m_surface != NULL )
 	{
-		m_surface->Unlock();
+		m_surface->Unlock(&m_texture->Peek_D3D_Texture(), {});
 		m_surface->Release_Ref();
 		m_surface = NULL;
 	}

@@ -943,8 +943,8 @@ void DazzleRenderObjClass::Render(RenderInfoClass & rinfo)
 //			visibility = _VisibilityHandler->Compute_Dazzle_Visibility(rinfo,this,position);
 
 			Matrix4x4 view_transform,projection_transform;
-			DX8Wrapper::Get_Transform(D3DTS_VIEW,view_transform);
-			DX8Wrapper::Get_Transform(D3DTS_PROJECTION,projection_transform);
+			DX8Wrapper::Get_Transform(VkTS::VIEW,view_transform);
+			DX8Wrapper::Get_Transform(VkTS::PROJECTION,projection_transform);
 			Vector3 camera_loc(rinfo.Camera.Get_Position());
 			Vector3 camera_dir(-view_transform[2][0],-view_transform[2][1],-view_transform[2][2]);
 //			Matrix3D cam(rinfo.Camera.Get_Transform());
@@ -1021,9 +1021,9 @@ void DazzleRenderObjClass::Render_Dazzle(CameraClass* camera)
 	Matrix4x4 view_transform;
 	Matrix4x4 world_transform;
 	Matrix4x4 projection_transform;
-	DX8Wrapper::Get_Transform(D3DTS_VIEW,view_transform);
-	DX8Wrapper::Get_Transform(D3DTS_WORLD,world_transform);
-	DX8Wrapper::Get_Transform(D3DTS_PROJECTION,projection_transform);
+	DX8Wrapper::Get_Transform(VkTS::VIEW,view_transform);
+	DX8Wrapper::Get_Transform(VkTS::WORLD,world_transform);
+	DX8Wrapper::Get_Transform(VkTS::PROJECTION,projection_transform);
 	old_view_transform=view_transform;
 	old_world_transform=world_transform;
 	old_projection_transform=projection_transform;
@@ -1073,10 +1073,10 @@ void DazzleRenderObjClass::Render_Dazzle(CameraClass* camera)
 		lens_max_verts=4*lensflare->lic.flare_count;
 	}
 
-	DynamicVBAccessClass vb_access(BUFFER_TYPE_DYNAMIC_DX8,dynamic_fvf_type,vertex_count*2+lens_max_verts);
+	DynamicVBAccessClass vb_access(BUFFER_TYPE_DYNAMIC_DX8, dynamic_fvf_type,vertex_count*2+lens_max_verts);
 	{
 		DynamicVBAccessClass::WriteLockClass lock(&vb_access);
-		VertexFormatXYZNDUV2* verts=lock.Get_Formatted_Vertex_Array();
+		VertexFormatXYZNDUV2* verts=(VertexFormatXYZNDUV2*)lock.Get_Formatted_Vertex_Array();
 
 		float halo_size=1.0f;
 
@@ -1223,16 +1223,34 @@ void DazzleRenderObjClass::Render_Dazzle(CameraClass* camera)
 	}
 
 	DX8Wrapper::Set_World_Identity();
-	DX8Wrapper::Set_View_Identity();
-	DX8Wrapper::Set_Transform(D3DTS_PROJECTION,Matrix4x4(true));
+	//DX8Wrapper::Set_View_Identity();
+	auto ident = Matrix4x4(true);
+	//DX8Wrapper::Set_Transform(VkTS::PROJECTION,ident);
 
+	WWVKDSV;
 	if (halo_poly_count) {
 		DX8Wrapper::Set_Index_Buffer(ib_access,dazzle_vertex_count);
 		DX8Wrapper::Set_Shader(default_halo_shader);
 		DX8Wrapper::Set_Texture(0,types[type]->Get_Halo_Texture());
 		SphereClass sphere(Get_Position(),0.1f);
-
+		/*
+	default_halo_shader.Set_Cull_Mode( ShaderClass::CULL_MODE_DISABLE );
+	default_halo_shader.Set_Depth_Mask( ShaderClass::DEPTH_WRITE_DISABLE );
+	default_halo_shader.Set_Depth_Compare( ShaderClass::PASS_LEQUAL );
+	default_halo_shader.Set_Dst_Blend_Func( ShaderClass::DSTBLEND_ONE );
+	default_halo_shader.Set_Src_Blend_Func( ShaderClass::SRCBLEND_ONE );
+	default_halo_shader.Set_Fog_Func( ShaderClass::FOG_DISABLE );
+	default_halo_shader.Set_Primary_Gradient( ShaderClass::GRADIENT_MODULATE );
+	default_halo_shader.Set_Texturing( ShaderClass::TEXTURING_ENABLE );
+		*/
+		WWVK_UpdateHaloDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &types[type]->Get_Halo_Texture()->Peek_D3D_Texture(),
+			DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+		WWVK_DrawHalo(WWVKPIPES, WWVKRENDER.currentCmd, sets, ((DX8IndexBufferClass*)&ib_access)->Get_DX8_Index_Buffer().buffer,
+			halo_poly_count, 0, VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+			dazzle_vertex_count*sizeof(VertexFormatXYZDUV1), (WorldMatrix*)&ident);
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(0,halo_poly_count,0,vertex_count);
+#endif
 	}
 
 	if (dazzle_poly_count) {
@@ -1240,20 +1258,43 @@ void DazzleRenderObjClass::Render_Dazzle(CameraClass* camera)
 		DX8Wrapper::Set_Shader(default_dazzle_shader);
 		DX8Wrapper::Set_Texture(0,types[type]->Get_Dazzle_Texture());
 		SphereClass sphere(Vector3(0.0f,0.0f,0.0f),0.0f);
+		/*
+	default_dazzle_shader.Set_Cull_Mode( ShaderClass::CULL_MODE_DISABLE );
+	default_dazzle_shader.Set_Depth_Mask( ShaderClass::DEPTH_WRITE_DISABLE );
+	default_dazzle_shader.Set_Depth_Compare( ShaderClass::PASS_ALWAYS );
+	default_dazzle_shader.Set_Dst_Blend_Func( ShaderClass::DSTBLEND_ONE );
+	default_dazzle_shader.Set_Src_Blend_Func( ShaderClass::SRCBLEND_ONE );
+	default_dazzle_shader.Set_Fog_Func( ShaderClass::FOG_DISABLE );
+	default_dazzle_shader.Set_Primary_Gradient( ShaderClass::GRADIENT_MODULATE );
+	default_dazzle_shader.Set_Texturing( ShaderClass::TEXTURING_ENABLE );
+		*/
+		WWVK_UpdateHaloDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &types[type]->Get_Dazzle_Texture()->Peek_D3D_Texture(), 
+			DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+		WWVK_DrawDazzle(WWVKPIPES, WWVKRENDER.currentCmd, sets, ((DX8IndexBufferClass*)&ib_access)->Get_DX8_Index_Buffer().buffer,
+			dazzle_poly_count, 0, VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+			0, (WorldMatrix*)&ident);
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(0,dazzle_poly_count,0,vertex_count);
+#endif
 	}
 
 	if (lensflare_poly_count) {
 		DX8Wrapper::Set_Index_Buffer(ib_access,dazzle_vertex_count+halo_vertex_count);
 		DX8Wrapper::Set_Shader(default_dazzle_shader);
 		DX8Wrapper::Set_Texture(0,lensflare->Get_Texture());
-		SphereClass sphere(Vector3(0.0f,0.0f,0.0f),0.0f);
+		WWVK_UpdateHaloDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &lensflare->Get_Texture()->Peek_D3D_Texture(),
+			DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+		WWVK_DrawDazzle(WWVKPIPES, WWVKRENDER.currentCmd, sets, ((DX8IndexBufferClass*)&ib_access)->Get_DX8_Index_Buffer().buffer,
+			dazzle_poly_count, 0, VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+			(dazzle_vertex_count + halo_vertex_count)* sizeof(VertexFormatXYZDUV1), (WorldMatrix*)&ident);
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(0,lensflare_poly_count,0,vertex_count);
+#endif
 	}
 
-	DX8Wrapper::Set_Transform(D3DTS_PROJECTION,old_projection_transform);
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,old_view_transform);
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,old_world_transform);
+	DX8Wrapper::Set_Transform(VkTS::PROJECTION,old_projection_transform);
+	DX8Wrapper::Set_Transform(VkTS::VIEW,old_view_transform);
+	DX8Wrapper::Set_Transform(VkTS::WORLD,old_world_transform);
 }
 
 // ----------------------------------------------------------------------------

@@ -431,13 +431,6 @@ ShdDX8RendererNodeClass::ShdDX8RendererNodeClass
 	REF_PTR_SET(SubMesh,sub_mesh);
 
 	// create usage depending on associated shader's processing behaviour KM
-	DX8IndexBufferClass::UsageType ib_usage=DX8IndexBufferClass::USAGE_DEFAULT;
-
-	if (!SubMesh->Peek_Shader()->Use_HW_Vertex_Processing())
-	{
-		ib_usage=DX8IndexBufferClass::USAGE_SOFTWAREPROCESSING;
-	}
-
 	int count=SubMesh->Get_Visible_Polygon_Count();
 	if (!count) count=SubMesh->Get_Polygon_Count();
 	unsigned index_count=count*3;
@@ -445,7 +438,7 @@ ShdDX8RendererNodeClass::ShdDX8RendererNodeClass
 		IndexBuffer=new SortingIndexBufferClass(index_count);
 	}
 	else {
-		IndexBuffer=new DX8IndexBufferClass(index_count,ib_usage);
+		IndexBuffer=new DX8IndexBufferClass(index_count);
 	}
 	IndexBufferClass::WriteLockClass ilock(IndexBuffer);
 	const TriIndex* indices=SubMesh->Get_Polygon_Array();
@@ -630,7 +623,7 @@ void ShdDX8RendererNodeClass::Flush(int cur_pass)
 		DX8Wrapper::Set_Vertex_Buffer(vb);//stream 0
 
 		DX8Wrapper::Set_Index_Buffer(IndexBuffer,0);
-		DX8Wrapper::Set_Transform(D3DTS_WORLD,Matrix3D(true));//Mesh->Get_Transform());
+		DX8Wrapper::Set_Transform(VkTS::WORLD, Matrix3D(true));//Mesh->Get_Transform());
 
 		DX8Wrapper::Set_Light_Environment(&LightEnvironment);
 		SubMesh->Peek_Shader()->Apply_Instance(cur_pass, *RenderInfo);
@@ -645,6 +638,14 @@ void ShdDX8RendererNodeClass::Flush(int cur_pass)
 			);
 		}
 		else {
+			DX8Wrapper::Apply_Render_State_Changes();
+			auto pipelines = DX8Wrapper::FindClosestPipelines(vb.FVF_Info().FVF);
+			assert(pipelines.size() == 1);
+			switch (pipelines[0]) {
+			case 0:
+			default: assert(false);
+			}
+#ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles
 			(
 				0,
@@ -652,6 +653,7 @@ void ShdDX8RendererNodeClass::Flush(int cur_pass)
 				0,
 				SubMesh->Get_Vertex_Count()
 			);
+#endif
 		}
 
 		return;
@@ -666,7 +668,7 @@ void ShdDX8RendererNodeClass::Flush(int cur_pass)
 	}
 
 	DX8Wrapper::Set_Index_Buffer(IndexBuffer,0);
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,Mesh->Get_Transform());
+	DX8Wrapper::Set_Transform(VkTS::WORLD,Mesh->Get_Transform());\
 
 	DX8Wrapper::Set_Light_Environment(&LightEnvironment);
 	SubMesh->Peek_Shader()->Apply_Instance(cur_pass, *RenderInfo);
@@ -681,6 +683,14 @@ void ShdDX8RendererNodeClass::Flush(int cur_pass)
 		);
 	}
 	else {
+		DX8Wrapper::Apply_Render_State_Changes();
+		auto pipelines = DX8Wrapper::FindClosestPipelines(VertexBuffers[0]->FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles
 		(
 			0,
@@ -688,6 +698,7 @@ void ShdDX8RendererNodeClass::Flush(int cur_pass)
 			0,
 			SubMesh->Get_Vertex_Count()
 		);
+#endif
 	}
 
 }

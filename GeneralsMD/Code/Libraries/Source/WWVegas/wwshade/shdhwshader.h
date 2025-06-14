@@ -42,11 +42,11 @@
 #define SHDHWSHADER_H
 
 #ifndef _D3D8_H_
-#include <d3d9.h>
+//#include <d3d9.h>
 #endif
 
 #ifndef __D3DX8_H__
-#include <d3dx9.h>
+//#include <d3dx9.h>
 #endif
 
 #ifndef SHDHW_CONSTANTS_H
@@ -72,14 +72,18 @@ protected:
 
 	void Preprocess_And_Assemble_Shader_From_File
 	(
-		char*				file_name,
+		char*				file_name
+#ifdef INFO_VULKAN
+		,
 		LPD3DXBUFFER*	constants,
 		LPD3DXBUFFER*	shader_code
+#endif
 	);
 
 	T* Shader;
 };
 
+#ifdef INFO_VULKAN
 class ShdHWVertexShader : public ShdHWShader<IDirect3DVertexShader9>
 {
 public:
@@ -130,5 +134,6 @@ public:
 
 	void Destroy();
 };
+#endif
 
 #endif

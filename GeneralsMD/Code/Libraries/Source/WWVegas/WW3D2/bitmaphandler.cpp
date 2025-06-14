@@ -26,25 +26,25 @@ void Bitmap_Assert(bool condition)
 }
 
 void BitmapHandlerClass::Create_Mipmap_B8G8R8A8(
-	unsigned char* dest_surface, 
+	unsigned char* dest_surface,
 	unsigned dest_surface_pitch,
 	unsigned char* src_surface,
 	unsigned src_surface_pitch,
 	unsigned width,
 	unsigned height)
 {
-	unsigned src_pitch=src_surface_pitch/4;
-	for (unsigned y=0;y<height;y+=2) {
-		unsigned* dest=(unsigned*)dest_surface;
-		dest_surface+=dest_surface_pitch;
-		unsigned* src=(unsigned*)src_surface;
-		src_surface+=src_surface_pitch;
-		for (unsigned x=0;x<width;x+=2) {
-			unsigned bgra3=src[src_pitch];
-			unsigned bgra1=*src++;
-			unsigned bgra4=src[src_pitch];
-			unsigned bgra2=*src++;
-			*dest++=Combine_A8R8G8B8(bgra1,bgra2,bgra3,bgra4);
+	unsigned src_pitch = src_surface_pitch / 4;
+	for (unsigned y = 0; y < height; y += 2) {
+		unsigned* dest = (unsigned*)dest_surface;
+		dest_surface += dest_surface_pitch;
+		unsigned* src = (unsigned*)src_surface;
+		src_surface += src_surface_pitch;
+		for (unsigned x = 0; x < width; x += 2) {
+			unsigned bgra3 = src[src_pitch];
+			unsigned bgra1 = *src++;
+			unsigned bgra4 = src[src_pitch];
+			unsigned bgra2 = *src++;
+			*dest++ = Combine_A8R8G8B8(bgra1, bgra2, bgra3, bgra4);
 		}
 	}
 }
@@ -63,38 +63,42 @@ void BitmapHandlerClass::Copy_Image_Generate_Mipmap(
 	const Vector3& hsv_shift)
 {
 	// Optimized loop if source and destination are 32 bit
-	bool has_hsv_shift = hsv_shift[0]!=0.0f || hsv_shift[1]!=0.0f || hsv_shift[2]!=0.0f;
-	if (src_format==dest_format && src_format==WW3D_FORMAT_A8R8G8B8) {
-		dest_pitch/=4;
-		src_pitch/=4;
-		mip_pitch/=4;
-		for (unsigned y=0;y<height/2;++y) {
-			unsigned* dest_ptr=(unsigned*)dest_surface;
-			dest_ptr+=2*y*dest_pitch;
-			unsigned* src_ptr=(unsigned*)src_surface;
-			src_ptr+=y*2*src_pitch;
-			unsigned* mip_ptr=(unsigned*)mip_surface;
-			mip_ptr+=y*mip_pitch;
+	bool has_hsv_shift = hsv_shift[0] != 0.0f || hsv_shift[1] != 0.0f || hsv_shift[2] != 0.0f;
+	if (src_format == dest_format && src_format == WW3D_FORMAT_A8R8G8B8) {
+		dest_pitch /= 4;
+		src_pitch /= 4;
+		mip_pitch /= 4;
+		for (unsigned y = 0; y < height / 2; ++y) {
+			unsigned* dest_ptr = (unsigned*)dest_surface;
+			dest_ptr += 2 * y * dest_pitch;
+			unsigned* src_ptr = (unsigned*)src_surface;
+			src_ptr += y * 2 * src_pitch;
+			unsigned* mip_ptr = (unsigned*)mip_surface;
+			if (mip_surface)
+				mip_ptr += y * mip_pitch;
 			unsigned b8g8r8a8_00;
 			unsigned b8g8r8a8_01;
 			unsigned b8g8r8a8_10;
 			unsigned b8g8r8a8_11;
-			for (unsigned x=0;x<width/2;x++) {
-				b8g8r8a8_10=src_ptr[src_pitch];
-				dest_ptr[dest_pitch]=b8g8r8a8_10;
-				b8g8r8a8_00=*src_ptr++;
-				*dest_ptr++=b8g8r8a8_00;
+			for (unsigned x = 0; x < width / 2; x++) {
+				b8g8r8a8_10 = src_ptr[src_pitch];
+				dest_ptr[dest_pitch] = b8g8r8a8_10;
+				b8g8r8a8_00 = *src_ptr++;
+				*dest_ptr++ = b8g8r8a8_00;
 
-				b8g8r8a8_11=src_ptr[src_pitch];
-				dest_ptr[dest_pitch]=b8g8r8a8_11;
-				b8g8r8a8_01=*src_ptr++;
-				*dest_ptr++=b8g8r8a8_01;
+				b8g8r8a8_11 = src_ptr[src_pitch];
+				dest_ptr[dest_pitch] = b8g8r8a8_11;
+				b8g8r8a8_01 = *src_ptr++;
+				*dest_ptr++ = b8g8r8a8_01;
 
-				unsigned b8g8r8a8=Combine_A8R8G8B8(b8g8r8a8_00,b8g8r8a8_01,b8g8r8a8_10,b8g8r8a8_11);
-				if (has_hsv_shift) {
-					Recolor(b8g8r8a8,hsv_shift);
+				if (mip_surface)
+				{
+					unsigned b8g8r8a8 = Combine_A8R8G8B8(b8g8r8a8_00, b8g8r8a8_01, b8g8r8a8_10, b8g8r8a8_11);
+					if (has_hsv_shift) {
+						Recolor(b8g8r8a8, hsv_shift);
+					}
+					*mip_ptr++ = b8g8r8a8;
 				}
-				*mip_ptr++=b8g8r8a8;
 			}
 		}
 		return;
@@ -125,12 +129,15 @@ void BitmapHandlerClass::Copy_Image_Generate_Mipmap(
 			Read_B8G8R8A8(b8g8r8a8_11,src_ptr+src_bpp+src_pitch,src_format,NULL,0);
 			Write_B8G8R8A8(dest_ptr+dest_bpp+dest_pitch,dest_format,b8g8r8a8_11);
 
-			unsigned b8g8r8a8=Combine_A8R8G8B8(b8g8r8a8_00,b8g8r8a8_01,b8g8r8a8_10,b8g8r8a8_11);
-			if (has_hsv_shift) {
-				Recolor(b8g8r8a8,hsv_shift);
-			}
+			if (mip_surface)
+			{
+				unsigned b8g8r8a8 = Combine_A8R8G8B8(b8g8r8a8_00, b8g8r8a8_01, b8g8r8a8_10, b8g8r8a8_11);
+				if (has_hsv_shift) {
+					Recolor(b8g8r8a8, hsv_shift);
+				}
 
-			Write_B8G8R8A8(mip_ptr,dest_format,b8g8r8a8);
+				Write_B8G8R8A8(mip_ptr, dest_format, b8g8r8a8);
+			}
 		}
 	}
 }

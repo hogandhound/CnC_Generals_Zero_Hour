@@ -900,15 +900,40 @@ Try improving the fit to vertical surfaces like cliffs.
 
 		trackStartIndex=0;
 		mod=m_usedModules;
-		Matrix3D tm(mod->Transform);
-		DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
+		Matrix4x4 tm(mod->Transform);
+		DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
+		DX8Wrapper::Apply_Render_State_Changes();
+		auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBuffer->FVF_Info().FVF);
+		assert(pipelines.size() == 1);
 		while (mod)
 		{
 			if (mod->m_activeEdgeCount >= 2 && mod->Is_Really_Visible())
 			{
+				if (mod->m_stageZeroTexture->Peek_D3D_Texture().image == 0)
+				{
+					mod->m_stageZeroTexture->Upload();
+				}
 				DX8Wrapper::Set_Texture(0,mod->m_stageZeroTexture);
 				DX8Wrapper::Set_Index_Buffer_Index_Offset(trackStartIndex);
+				switch (pipelines[0])
+				{
+				case PIPELINE_WWVK_FVF_DUV:
+				{
+					WWVKDSV;
+					WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+						&mod->m_stageZeroTexture->Peek_D3D_Texture(),
+						DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+					WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+						m_indexBuffer->Get_DX8_Index_Buffer().buffer, (mod->m_activeEdgeCount - 1) * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
+						m_vertexBuffer->Get_DX8_Vertex_Buffer().buffer, trackStartIndex * sizeof(VertexFormatXYZDUV1),
+						(WorldMatrix*)&tm);
+					break;
+				}
+				default: assert(false);
+				}
+#ifdef INFO_VULKAN
 				DX8Wrapper::Draw_Triangles(	0,(mod->m_activeEdgeCount-1)*2, 0, mod->m_activeEdgeCount*2);
+#endif
 
 				trackStartIndex += mod->m_activeEdgeCount*2;
 			}

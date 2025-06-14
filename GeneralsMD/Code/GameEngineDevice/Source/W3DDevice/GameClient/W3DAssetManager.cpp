@@ -660,7 +660,7 @@ void W3DAssetManager::Remap_Palette(SurfaceClass *surface, const int color, Bool
 		}
 	}
 
-	surface->Unlock();
+	surface->Unlock(0, {});
 }
 
 //---------------------------------------------------------------------
@@ -686,7 +686,7 @@ TextureClass * W3DAssetManager::Recolor_Texture_One_Time(TextureClass *texture, 
 	oldsurf=texture->Get_Surface_Level();
 
 	newsurf=NEW_REF(SurfaceClass,(desc.Width,desc.Height,desc.Format));
-	newsurf->Copy(0,0,0,0,desc.Width,desc.Height,oldsurf);
+	newsurf->Copy(0,0,0,0,desc.Width,desc.Height,oldsurf, 0);
 
 	if (*(name+3) == 'D' || *(name+3) == 'd')
 		Remap_Palette(newsurf,color, true, false );	//texture only contains a palette stored in top row.

@@ -55,7 +55,7 @@
     <SccLocalPath>.</SccLocalPath>
     <Keyword>MFCProj</Keyword>
     <ProjectGuid>{19A2B671-9039-4EA9-8059-80F1A9261B2D}</ProjectGuid>
-    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">
@@ -98,9 +98,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -223,7 +224,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(VULKAN_SDK)/Include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release\wwshade.pch</PrecompiledHeaderOutputFile>
@@ -252,7 +253,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(VULKAN_SDK)/Include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release\wwshade.pch</PrecompiledHeaderOutputFile>
@@ -282,7 +283,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;..\wwsaveload;..\ww3d2;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;..\wwsaveload;..\ww3d2;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(VULKAN_SDK)/Include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WINVER=0x400;WWDEBUG;NDEBUG;WIN32;_WINDOWS;_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Internal\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -313,7 +314,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;..\wwsaveload;..\ww3d2;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;..\wwsaveload;..\ww3d2;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(VULKAN_SDK)/Include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WINVER=0x400;WWDEBUG;NDEBUG;WIN32;_WINDOWS;_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Internal\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -344,7 +345,7 @@
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(VULKAN_SDK)/Include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_LIB;WWDEBUG;_DEBUG;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -375,14 +376,15 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_LIB;WWDEBUG;_DEBUG;WIN32;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(VULKAN_SDK)/Include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_LIB;WWDEBUG;_DEBUG;WIN32;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_DISABLE_VECTOR_ANNOTATION;_DISABLE_STRING_ANNOTATION</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
       <PrecompiledHeaderOutputFile>.\Debug\wwshade.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\Debug\</ObjectFileName>
       <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>
@@ -406,7 +408,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\DirectX\include;$(ProjectDir)DXSDK\INCLUDE;..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;../STLPORT;../../../../DXSDK/INCLUDE;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\DirectX\include;$(ProjectDir)DXSDK\INCLUDE;..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;../STLPORT;../../../../DXSDK/INCLUDE;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(VULKAN_SDK)/Include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Profile\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Profile\wwshade.pch</PrecompiledHeaderOutputFile>
@@ -436,7 +438,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\DirectX\include;$(ProjectDir)DXSDK\INCLUDE;..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;../STLPORT;../../../../DXSDK/INCLUDE;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\DirectX\include;$(ProjectDir)DXSDK\INCLUDE;..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;../STLPORT;../../../../DXSDK/INCLUDE;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(VULKAN_SDK)/Include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Profile\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Profile\wwshade.pch</PrecompiledHeaderOutputFile>
@@ -467,7 +469,7 @@
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(VULKAN_SDK)/Include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_LIB;WWDEBUG;_DEBUG;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\DebugW3D\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -498,7 +500,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(VULKAN_SDK)/Include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_LIB;WWDEBUG;_DEBUG;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\DebugW3D\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -522,31 +524,15 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>;$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>;$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(VULKAN_SDK)/Include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>;$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(SolutionDir)\Libraries\DX90SDK\include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>;$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(VULKAN_SDK)/Include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="shd6bumpdiff.cpp">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="shd6bumpspec.cpp">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="shd7bumpdiff.cpp">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="shd7bumpspec.cpp">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="shd8bumpdiff.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
@@ -615,24 +601,12 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="shdsimple.cpp">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="shdsubmesh.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="shd6bumpdiff.h" />
-    <ClInclude Include="shd6bumpdiff_constants.h" />
-    <ClInclude Include="shd6bumpspec.h" />
-    <ClInclude Include="shd6bumpspec_constants.h" />
-    <ClInclude Include="shd7bumpdiff.h" />
-    <ClInclude Include="shd7bumpdiff_constants.h" />
-    <ClInclude Include="shd7bumpspec.h" />
-    <ClInclude Include="shd7bumpspec_constants.h" />
     <ClInclude Include="shd8bumpdiff.h" />
     <ClInclude Include="shd8bumpdiff_constants.h" />
     <ClInclude Include="shd8bumpspec.h" />
@@ -653,262 +627,7 @@
     <ClInclude Include="shdloader.h" />
     <ClInclude Include="shdmesh.h" />
     <ClInclude Include="shdrenderer.h" />
-    <ClInclude Include="shdsimple.h" />
     <ClInclude Include="shdsubmesh.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="shd6bumpdiff.vsh">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="shd6bumpspec.vsh">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="shd7bumpdiffpass0.vsh">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="shd7bumpdiffpass1.vsh">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="shd7bumpspecpass0.vsh">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="shd7bumpspecpass1.vsh">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="shd8bumpdiff.psh">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="shd8bumpdiff.vsh">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="shd8bumpspec.psh">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="shd8bumpspec.vsh">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="shd8ssbumpdiff.psh">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="shd8ssbumpdiff.vsh">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="shd8ssbumpspec.psh">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="shd8ssbumpspec.vsh">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Internal|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">shdpp %(FullPath)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">shdpp %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|Win32'">$(InputPath)_code.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugW3D|x64'">$(InputPath)_code.h;%(Outputs)</Outputs>
-    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

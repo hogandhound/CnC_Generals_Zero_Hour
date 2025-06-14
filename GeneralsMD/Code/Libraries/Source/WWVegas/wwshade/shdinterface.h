@@ -110,6 +110,11 @@ public:
 
 	virtual void				Apply_Shared(int cur_pass, RenderInfoClass& rinfo) = 0;
 	virtual void				Apply_Instance(int cur_pass, RenderInfoClass& rinfo) = 0;
+	virtual void                Draw(int cur_pass, RenderInfoClass& rinfo, unsigned short start_index,
+		unsigned short polygon_count,
+		unsigned short min_vertex_index,
+		unsigned short vertex_count,
+		bool isStrip) = 0;
 
 	// The shader needs to tell how many vertex streams it needs and what are the sizes of vertices
 	// in each stream.

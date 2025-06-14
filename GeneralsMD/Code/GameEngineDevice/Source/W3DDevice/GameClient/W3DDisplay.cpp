@@ -92,7 +92,6 @@ static void drawFramerateBar(void);
 #include "WW3D2/Render2DSentence.h"
 #include "WW3D2/SortingRenderer.h"
 #include "WW3D2/Textureloader.h"
-#include "WW3D2/DX8WebBrowser.h"
 #include "WW3D2/Mesh.h"
 #include "WW3D2/HLOD.h"
 #include "WW3D2/Meshmatdesc.h"
@@ -462,7 +461,6 @@ W3DDisplay::~W3DDisplay()
 	delete m_assetManager;
 	WW3D::Shutdown();
 	WWMath::Shutdown();
-	DX8WebBrowser::Shutdown();
 	delete TheW3DFileSystem;
 	TheW3DFileSystem = NULL;
 
@@ -825,8 +823,6 @@ void W3DDisplay::init( void )
 		m_nativeDebugDisplay->setFontHeight( 13 );
 		m_nativeDebugDisplay->setFontWidth( 9 );
 	}
-
-	DX8WebBrowser::Initialize();
 
 	// we're now online
 	m_initialized = true;
@@ -1847,7 +1843,11 @@ AGAIN:
 		}
 
 		// update all views of the world - recomputes data which will affect drawing
+#ifdef INFO_VULKAN
 		if (DX8Wrapper::_Get_D3D_Device8() && (DX8Wrapper::_Get_D3D_Device8()->TestCooperativeLevel()) == D3D_OK)
+#else
+		if (DX8Wrapper::_GetRenderTarget().device)
+#endif
 		{	//Checking if we have the device before updating views because the heightmap crashes otherwise while
 			//trying to refresh the visible terrain geometry.
 //			if(TheGlobalData->m_loadScreenRender != TRUE)
@@ -2824,17 +2824,22 @@ VideoBuffer*	W3DDisplay::createVideoBuffer( void )
 
 	WW3DFormat displayFormat = DX8Wrapper::getBackBufferFormat();
 
+#ifdef INFO_VULKAN
 	if ( DX8Wrapper::Get_Current_Caps()->Support_Texture_Format( displayFormat ))
+#endif
 	{
 		format = W3DVideoBuffer::W3DFormatToType( displayFormat );
 	}
 
 	if ( format == VideoBuffer::TYPE_UNKNOWN )
 	{
+#ifdef INFO_VULKAN
 		if ( DX8Wrapper::Get_Current_Caps()->Support_Texture_Format( WW3D_FORMAT_X8R8G8B8 ))
+#endif
 		{
 			format = VideoBuffer::TYPE_X8R8G8B8;
 		}
+#ifdef INFO_VULKAN
 		else if ( DX8Wrapper::Get_Current_Caps()->Support_Texture_Format( WW3D_FORMAT_R8G8B8 ))
 		{
 			format = VideoBuffer::TYPE_R8G8B8;
@@ -2852,6 +2857,7 @@ VideoBuffer*	W3DDisplay::createVideoBuffer( void )
 			// card does not support any of the formats we need
 			return NULL;
 		}
+#endif
 	}
 	// on low mem machines, render every video in 16bit except for the EA Logo movie
 	if(!TheGlobalData->m_playIntro )//&& TheGameLODManager && (!TheGameLODManager->didMemPass() || W3DShaderManager::getChipset() == DC_GEFORCE2))
@@ -3030,6 +3036,7 @@ void W3DDisplay::takeScreenShot(void)
 
 	// Lock front buffer and copy
 
+#ifdef TODO_VULKAN
 	IDirect3DSurface9 *fb;
 	fb=DX8Wrapper::_Get_DX8_Front_Buffer();
 	D3DSURFACE_DESC desc;
@@ -3134,6 +3141,7 @@ void W3DDisplay::takeScreenShot(void)
 	UnicodeString ufileName;
 	ufileName.translate(leafname);
 	TheInGameUI->message(TheGameText->fetch("GUI:ScreenCapture"), ufileName.str());
+#endif
 }
 
 /** Start/Stop campturing an AVI movie*/

@@ -150,7 +150,6 @@ public:
 	enum ExtraPassPolyRenderType
 	{
 		EXTRA_PASS_DISABLE,
-		EXTRA_PASS_LINE,
 		EXTRA_PASS_CLEAR_LINE
 	};
 

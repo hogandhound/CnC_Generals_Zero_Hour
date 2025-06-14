@@ -114,7 +114,7 @@ SurfaceClass *Font3DDataClass::Minimize_Font_Image( SurfaceClass *surface )
 	//SurfaceClass	*new_surface0 = NEW_REF(SurfaceClass,(new_width, new_height,sd.Format));
 
 	// fill with transparent black	
-	new_surface->Clear();
+	new_surface->Clear(0);
 
 	// indices for the location of each added char
 	int	new_x = 0;
@@ -148,7 +148,7 @@ SurfaceClass *Font3DDataClass::Minimize_Font_Image( SurfaceClass *surface )
 
 			// blit from original image to new image
 
-			new_surface->Copy(new_x, new_y,src_x,src_y,width,height,surface);											
+			new_surface->Copy(new_x, new_y,src_x,src_y,width,height,surface,0);											
 
 		}
 

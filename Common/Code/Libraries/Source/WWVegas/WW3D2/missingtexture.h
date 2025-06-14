@@ -24,9 +24,10 @@
 #define DX8_MISSING_TEXTURE_H
 
 #include "always.h"
+#include <VkRenderTarget.h>
+#include <WWVKStructs.h>
 
 struct IDirect3DTexture9;
-struct IDirect3DSurface9;
 
 class MissingTexture
 {
@@ -34,8 +35,8 @@ public:
 	static void _Init();
 	static void _Deinit();
 
-	static IDirect3DTexture9* _Get_Missing_Texture();		// Return a reference to missing texture
-	static IDirect3DSurface9* _Create_Missing_Surface();	// Create new surface which contain missing texture image
+	static VK::Texture _Get_Missing_Texture();		// Return a reference to missing texture
+	static VK::Surface _Create_Missing_Surface();	// Create new surface which contain missing texture image
 };
 
 

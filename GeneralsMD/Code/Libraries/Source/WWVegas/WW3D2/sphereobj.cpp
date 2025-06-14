@@ -355,7 +355,7 @@ void SphereRenderObjClass::Init_Material (void)
 	SphereMaterial->Set_Specular(0,0,0);
 	SphereMaterial->Set_Emissive(1,1,1);
 	SphereMaterial->Set_Opacity(0.25f);	
-	SphereMaterial->Set_Shininess(0.0f);
+	SphereMaterial-> Set_Shininess(0.0f);
 	SphereMaterial->Set_Lighting(true);
 
 	// Texturing, zbuffer, primary gradient, alpha blending
@@ -525,7 +525,16 @@ void SphereRenderObjClass::render_sphere()
 	if (sort) {
 		SortingRendererClass::Insert_Triangles(Get_Bounding_Sphere(), 0, mesh.face_ct, 0, mesh.Vertex_ct);
 	} else {
+		DX8Wrapper::Apply_Render_State_Changes();
+		auto pipelines = DX8Wrapper::FindClosestPipelines(vb.FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(0,mesh.face_ct,0,mesh.Vertex_ct);
+#endif
 	}
 
 } // render_sphere
@@ -661,7 +670,7 @@ void SphereRenderObjClass::Render(RenderInfoClass & rinfo)
 		// Camera Align
 		if (Flags & USE_CAMERA_ALIGN) {
 			Matrix4x4 view,ident(true);
-			DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
+			DX8Wrapper::Get_Transform(VkTS::VIEW,view);
 
 			Vector4 wpos(Transform[0][3],Transform[1][3],Transform[2][3],1);
 			Vector4 cpos;
@@ -672,14 +681,14 @@ void SphereRenderObjClass::Render(RenderInfoClass & rinfo)
 							1.0f, 0.0f, 0.0f, cpos.Z);
 
 			tm.Scale(real_scale);
-			DX8Wrapper::Set_Transform(D3DTS_WORLD,ident);
-			DX8Wrapper::Set_Transform(D3DTS_VIEW,tm); 
+			DX8Wrapper::Set_Transform(VkTS::WORLD,ident);
+			DX8Wrapper::Set_Transform(VkTS::VIEW,tm); 
 			render_sphere();
-			DX8Wrapper::Set_Transform(D3DTS_VIEW,view);
+			DX8Wrapper::Set_Transform(VkTS::VIEW,view);
 		} else {
-			DX8Wrapper::Set_Transform(D3DTS_WORLD,temp);	
+			DX8Wrapper::Set_Transform(VkTS::WORLD,temp);	
 			render_sphere();
-		}		
+		}
 	}
 }
 

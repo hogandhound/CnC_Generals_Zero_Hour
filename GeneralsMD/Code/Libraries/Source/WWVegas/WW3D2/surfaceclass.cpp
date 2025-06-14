@@ -54,7 +54,7 @@
 #include "vector2i.h"
 #include "colorspace.h"
 #include "bound.h"
-#include <d3dx9.h>
+#include "VkTexture.h"
 
 /***********************************************************************************************
  * PixelSize -- Helper Function to find the size in bytes of a pixel                           *
@@ -208,67 +208,98 @@ void Convert_Pixel(unsigned char * pixel,const SurfaceClass::SurfaceDescription 
 		WWASSERT(0);
 	}
 }
-
 /*************************************************************************
 **                             SurfaceClass
 *************************************************************************/
 SurfaceClass::SurfaceClass(unsigned width, unsigned height, WW3DFormat format):
+#ifdef INFO_VULKAN
 	D3DSurface(NULL),
+#endif
 	SurfaceFormat(format)
 {
+	surface.width = width;
+	surface.height = height;
+	surface.format = WW3DFormat_To_D3DFormat(format);
+	surface.buffer.resize(VK::SizeOfFormat(surface.format) * surface.width * surface.height);
 	WWASSERT(width);
 	WWASSERT(height);
+#ifdef INFO_VULKAN
 	D3DSurface = DX8Wrapper::_Create_DX8_Surface(width, height, format);
+#endif
 }
 
-SurfaceClass::SurfaceClass(const char *filename):
-	D3DSurface(NULL)
+SurfaceClass::SurfaceClass(const char *filename)
+#ifdef INFO_VULKAN
+	: D3DSurface(NULL)
+#endif
 {
-	D3DSurface = DX8Wrapper::_Create_DX8_Surface(filename);
-	SurfaceDescription desc;
-	Get_Description(desc);
-	SurfaceFormat=desc.Format;
+	surface = DX8Wrapper::_Create_DX8_Surface(filename);
+	SurfaceFormat= D3DFormat_To_WW3DFormat(surface.format);
 }
 
-SurfaceClass::SurfaceClass(IDirect3DSurface9 *d3d_surface)	:
-	D3DSurface (NULL)
+#ifdef INFO_VULKAN
+SurfaceClass::SurfaceClass(VK::Surface& d3d_surface)
+#ifdef INFO_VULKAN
+	: D3DSurface (NULL)
+#endif
 {
 	Attach (d3d_surface);
 	SurfaceDescription desc;
 	Get_Description(desc);
 	SurfaceFormat=desc.Format;
 }
+#endif
 
 SurfaceClass::~SurfaceClass(void)
 {
+#ifdef INFO_VULKAN
 	if (D3DSurface) {
 		D3DSurface->Release();
 		D3DSurface = NULL;
 	}
+#endif
 }
 
 void SurfaceClass::Get_Description(SurfaceDescription &surface_desc)
 {
+#ifdef INFO_VULKAN
 	D3DSURFACE_DESC d3d_desc;
 	::ZeroMemory(&d3d_desc, sizeof(D3DSURFACE_DESC));
 	DX8_ErrorCode(D3DSurface->GetDesc(&d3d_desc));
 	surface_desc.Format = D3DFormat_To_WW3DFormat(d3d_desc.Format);
 	surface_desc.Height = d3d_desc.Height;
 	surface_desc.Width = d3d_desc.Width;
+#endif
+	surface_desc.Format = SurfaceFormat;
+	surface_desc.Width = surface.width;
+	surface_desc.Height = surface.height;
 }
 
 void * SurfaceClass::Lock(int * pitch)
 {
+#ifdef INFO_VULKAN
 	D3DLOCKED_RECT lock_rect;	
 	::ZeroMemory(&lock_rect, sizeof(D3DLOCKED_RECT));
 	DX8_ErrorCode(D3DSurface->LockRect(&lock_rect, 0, 0));
 	*pitch = lock_rect.Pitch;
 	return (void *)lock_rect.pBits;
+#else
+	*pitch = surface.width * VK::SizeOfFormat(surface.format);
+	return surface.buffer.data();
+#endif
 }
 
-void SurfaceClass::Unlock(void)
+void SurfaceClass::Unlock(VK::Texture* tex, VK::SamplerSettings samp)
 {
+#ifdef INFO_VULKAN
 	DX8_ErrorCode(D3DSurface->UnlockRect());
+#endif
+	if (tex)
+	{
+		WWVKRENDER.PushSingleTexture(*tex);
+		VK::CreateTexture(&WWVKRENDER, *tex, surface.width, surface.height, surface.buffer.data(),
+			samp, surface.format);
+	}
 }
 
 /***********************************************************************************************
@@ -286,7 +317,7 @@ void SurfaceClass::Unlock(void)
  * HISTORY:                                                                                    *
  *   2/13/2001  hy : Created.                                                                  *
  *=============================================================================================*/
-void SurfaceClass::Clear()
+void SurfaceClass::Clear(VK::Texture* texture)
 {
 	SurfaceDescription sd;
 	Get_Description(sd);
@@ -294,6 +325,14 @@ void SurfaceClass::Clear()
 	// size of each pixel in bytes
 	unsigned int size=PixelSize(sd);
 
+	memset(surface.buffer.data(), 0, surface.width * surface.height * VK::SizeOfFormat(surface.format));
+	if (texture)
+	{
+		WWVKRENDER.PushSingleTexture(*texture);
+		VK::CreateTexture(&WWVKRENDER, *texture, surface.width, surface.height, surface.buffer.data(),
+			texture->sampSettings, surface.format);
+	}
+#ifdef INFO_VULKAN
 	D3DLOCKED_RECT lock_rect;	
 	::ZeroMemory(&lock_rect, sizeof(D3DLOCKED_RECT));
 	DX8_ErrorCode(D3DSurface->LockRect(&lock_rect,0,0));
@@ -307,6 +346,7 @@ void SurfaceClass::Clear()
 	}
 	
 	DX8_ErrorCode(D3DSurface->UnlockRect());
+#endif
 }
 
 
@@ -325,7 +365,7 @@ void SurfaceClass::Clear()
  * HISTORY:                                                                                    *
  *   3/15/2001  hy : Created.                                                                  *
  *=============================================================================================*/
-void SurfaceClass::Copy(const unsigned char *other)
+void SurfaceClass::Copy(const unsigned char *other, VK::Texture* texture)
 {
 	SurfaceDescription sd;
 	Get_Description(sd);
@@ -333,6 +373,13 @@ void SurfaceClass::Copy(const unsigned char *other)
 	// size of each pixel in bytes
 	unsigned int size=PixelSize(sd);
 
+	memcpy(surface.buffer.data(), other, surface.width * surface.height * VK::SizeOfFormat(surface.format));
+	if (texture)
+	{
+		VK::CreateTexture(&WWVKRENDER, *texture, surface.width, surface.height, surface.buffer.data(),
+			texture->sampSettings, surface.format);
+	}
+#ifdef INFO_VULKAN
 	D3DLOCKED_RECT lock_rect;	
 	::ZeroMemory(&lock_rect, sizeof(D3DLOCKED_RECT));
 	DX8_ErrorCode(D3DSurface->LockRect(&lock_rect,0,0));
@@ -346,6 +393,7 @@ void SurfaceClass::Copy(const unsigned char *other)
 	}
 	
 	DX8_ErrorCode(D3DSurface->UnlockRect());
+#endif
 }
 
 
@@ -364,7 +412,7 @@ void SurfaceClass::Copy(const unsigned char *other)
  * HISTORY:                                                                                    *
  *   5/2/2001   hy : Created.                                                                  *
  *=============================================================================================*/
-void SurfaceClass::Copy(Vector2i &min,Vector2i &max, const unsigned char *other)
+void SurfaceClass::Copy(Vector2i &min,Vector2i &max, const unsigned char *other, VK::Texture* texture)
 {
 	SurfaceDescription sd;
 	Get_Description(sd);
@@ -372,6 +420,7 @@ void SurfaceClass::Copy(Vector2i &min,Vector2i &max, const unsigned char *other)
 	// size of each pixel in bytes
 	unsigned int size=PixelSize(sd);
 
+#ifdef INFO_VULKAN
 	D3DLOCKED_RECT lock_rect;	
 	::ZeroMemory(&lock_rect, sizeof(D3DLOCKED_RECT));
 	RECT rect;
@@ -391,6 +440,21 @@ void SurfaceClass::Copy(Vector2i &min,Vector2i &max, const unsigned char *other)
 	}
 	
 	DX8_ErrorCode(D3DSurface->UnlockRect());
+#else
+
+	int i;
+	unsigned char* mem = (unsigned char*)surface.buffer.data();
+	int dx = max.I - min.I;
+
+	for (i = min.J; i < max.J; i++)
+	{
+		memcpy(mem, &other[(i * sd.Width + min.I) * size], size * dx);
+		mem += surface.width * VK::SizeOfFormat(surface.format);
+	}
+	if (texture)
+		VK::CreateTexture(&WWVKRENDER, *texture, surface.width, surface.height, surface.buffer.data(),
+			texture->sampSettings, surface.format);
+#endif
 }
 
 
@@ -409,7 +473,7 @@ void SurfaceClass::Copy(Vector2i &min,Vector2i &max, const unsigned char *other)
  * HISTORY:                                                                                    *
  *   3/16/2001  hy : Created.                                                                  *
  *=============================================================================================*/
-unsigned char *SurfaceClass::CreateCopy(int *width,int *height,int*size,bool flip)
+std::vector<uint8_t> SurfaceClass::CreateCopy(int *width,int *height,int*size,bool flip)
 {
 	SurfaceDescription sd;
 	Get_Description(sd);
@@ -421,6 +485,7 @@ unsigned char *SurfaceClass::CreateCopy(int *width,int *height,int*size,bool fli
 	*height=sd.Height;
 	*size=mysize;
 
+#ifdef INFO_VULKAN
 	unsigned char *other=W3DNEWARRAY unsigned char [sd.Height*sd.Width*mysize];
 
 	D3DLOCKED_RECT lock_rect;	
@@ -442,6 +507,24 @@ unsigned char *SurfaceClass::CreateCopy(int *width,int *height,int*size,bool fli
 	}
 	
 	DX8_ErrorCode(D3DSurface->UnlockRect());
+#else
+	std::vector<uint8_t> other = this->surface.buffer;
+	unsigned char* mem = surface.buffer.data();
+	unsigned int i;
+	for (i = 0; i < sd.Height; i++)
+	{
+		if (flip)
+		{
+			memcpy(&other[(sd.Height - i - 1) * sd.Width * mysize], mem, mysize * sd.Width);
+		}
+		else
+		{
+			memcpy(&other[i * sd.Width * mysize], mem, mysize * sd.Width);
+		}
+		mem += sd.Width * VK::SizeOfFormat(surface.format);
+	}
+	
+#endif
 
 	return other;
 }
@@ -466,7 +549,7 @@ void SurfaceClass::Copy(
 	unsigned int dstx, unsigned int dsty,
 	unsigned int srcx, unsigned int srcy, 
 	unsigned int width, unsigned int height,
-	const SurfaceClass *other)
+	const SurfaceClass *other, VK::Texture* texture)
 {
 	WWASSERT(other);
 	WWASSERT(width);
@@ -502,50 +585,26 @@ void SurfaceClass::Copy(
 
 		if (dest.right>int(sd.Width)) dest.right=int(sd.Width);
 		if (dest.bottom>int(sd.Height)) dest.bottom=int(sd.Height);
-
+		
+		uint32_t formatSize = VK::SizeOfFormat(surface.format);
+		auto& o = other->Peek_D3D_Surface();
+		for (uint32_t y = 0; y + dsty < (uint32_t)dest.bottom; ++y)
+		{
+			for (uint32_t x = 0; x + dstx < (uint32_t)dest.right * formatSize; ++x)
+			{
+				surface.buffer[(y + dsty) * surface.width * formatSize + x + dstx] =
+					o[(y + srcy) * osd.Width * formatSize + x + srcx];
+			}
+		}
+		if (texture)
+		{
+			VK::CreateTexture(&WWVKRENDER, *texture, surface.width, surface.height, surface.buffer.data(),
+				texture->sampSettings, surface.format);
+		}
+#ifdef INFO_VULKAN
 		DX8_ErrorCode(D3DXLoadSurfaceFromSurface(D3DSurface,NULL,&dest,other->D3DSurface,NULL,&src,D3DX_FILTER_NONE,0));
+#endif
 	}
-}
-
-/***********************************************************************************************
- * SurfaceClass::Copy -- Copies a region from one surface to another                           *
- *                                                                                             *
- *                                                                                             *
- *                                                                                             *
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   2/13/2001  hy : Created.                                                                  *
- *=============================================================================================*/
-void SurfaceClass::Stretch_Copy(
-	unsigned int dstx, unsigned int dsty, unsigned int dstwidth, unsigned int dstheight,
-	unsigned int srcx, unsigned int srcy, unsigned int srcwidth, unsigned int srcheight,
-	const SurfaceClass *other)
-{
-	WWASSERT(other);
-
-	SurfaceDescription sd,osd;
-	Get_Description(sd);
-	const_cast <SurfaceClass*>(other)->Get_Description(osd);
-
-	RECT src;
-	src.left=srcx;
-	src.right=srcx+srcwidth;
-	src.top=srcy;	
-	src.bottom=srcy+srcheight;
-
-	RECT dest;
-	dest.left=dstx;
-	dest.right=dstx+dstwidth;
-	dest.top=dsty;
-	dest.bottom=dsty+dstheight;
-
-	DX8_ErrorCode(D3DXLoadSurfaceFromSurface(D3DSurface,NULL,&dest,other->D3DSurface,NULL,&src,D3DX_FILTER_TRIANGLE ,0));
 }
 
 /***********************************************************************************************
@@ -582,8 +641,6 @@ void SurfaceClass::FindBB(Vector2i *min,Vector2i*max)
 		break;
 	}
 
-	D3DLOCKED_RECT lock_rect;
-	::ZeroMemory(&lock_rect, sizeof(D3DLOCKED_RECT));
 	RECT rect;
 	::ZeroMemory(&rect, sizeof(RECT));
 
@@ -592,19 +649,24 @@ void SurfaceClass::FindBB(Vector2i *min,Vector2i*max)
 	rect.left=min->I;
 	rect.right=max->I;
 
+#ifdef INFO_VULKAN
+	D3DLOCKED_RECT lock_rect;
+	::ZeroMemory(&lock_rect, sizeof(D3DLOCKED_RECT));
 	DX8_ErrorCode(D3DSurface->LockRect(&lock_rect,&rect,D3DLOCK_READONLY));
+#endif
 
 	int x,y;
 	unsigned int size=PixelSize(sd);
 	Vector2i realmin=*max;
 	Vector2i realmax=*min;	
+	uint32_t pitch = surface.width * VK::SizeOfFormat(surface.format);
 	
 	// the assumption here is that whenever a pixel has alpha it's in the MSB
 	for (y = min->J; y < max->J; y++) {
 		for (x = min->I; x < max->I; x++) {
 
 			// HY - this is not endian safe
-			unsigned char *alpha=(unsigned char*) ((uintptr_t)lock_rect.pBits+(y-min->J)*lock_rect.Pitch+(x-min->I)*size);
+			unsigned char *alpha=(unsigned char*) ((uintptr_t)surface.buffer.data() + (y - min->J) * pitch + (x - min->I) * size);
 			unsigned char myalpha=alpha[size-1];
 			myalpha=(myalpha>>(8-alphabits)) & mask;
 			if (myalpha) {
@@ -616,8 +678,9 @@ void SurfaceClass::FindBB(Vector2i *min,Vector2i*max)
 		}
 	}
 
+#ifdef INFO_VULKAN
 	DX8_ErrorCode(D3DSurface->UnlockRect());
-
+#endif
 	*max=realmax;
 	*min=realmin;
 }
@@ -660,8 +723,11 @@ bool SurfaceClass::Is_Transparent_Column(unsigned int column)
 
 	unsigned int size=PixelSize(sd);
 
+#ifdef INFO_VULKAN
 	D3DLOCKED_RECT lock_rect;
 	::ZeroMemory(&lock_rect, sizeof(D3DLOCKED_RECT));
+	DX8_ErrorCode(D3DSurface->LockRect(&lock_rect,&rect,D3DLOCK_READONLY));
+#endif
 	RECT rect;
 	::ZeroMemory(&rect, sizeof(RECT));
 
@@ -670,24 +736,28 @@ bool SurfaceClass::Is_Transparent_Column(unsigned int column)
 	rect.left=column;
 	rect.right=column+1;
 
-	DX8_ErrorCode(D3DSurface->LockRect(&lock_rect,&rect,D3DLOCK_READONLY));
 
 	int y;	
 	
+	uint32_t pitch = VK::SizeOfFormat(surface.format)* surface.width;
 	// the assumption here is that whenever a pixel has alpha it's in the MSB
 	for (y = 0; y < (int) sd.Height; y++)
 	{
 		// HY - this is not endian safe
-		unsigned char *alpha=(unsigned char*) ((uintptr_t)lock_rect.pBits+y*lock_rect.Pitch);		
+		unsigned char *alpha=(unsigned char*) ((uintptr_t)surface.buffer.data() + y * pitch);
 		unsigned char myalpha=alpha[size-1];		
 		myalpha=(myalpha>>(8-alphabits)) & mask;		
 		if (myalpha) {
+#ifdef INFO_VULKAN
 			DX8_ErrorCode(D3DSurface->UnlockRect());
+#endif
 			return false;			
 		}		
 	}
 
+#ifdef INFO_VULKAN
 	DX8_ErrorCode(D3DSurface->UnlockRect());
+#endif
 	return true;
 }
 
@@ -714,6 +784,7 @@ void SurfaceClass::Get_Pixel(Vector3 &rgb, int x,int y)
 	x = min(x,(int)sd.Width - 1);
 	y = min(y,(int)sd.Height - 1);
 
+#ifdef INFO_VULKAN
 	D3DLOCKED_RECT lock_rect;
 	::ZeroMemory(&lock_rect, sizeof(D3DLOCKED_RECT));
 	RECT rect;
@@ -727,6 +798,10 @@ void SurfaceClass::Get_Pixel(Vector3 &rgb, int x,int y)
 	DX8_ErrorCode(D3DSurface->LockRect(&lock_rect,&rect,D3DLOCK_READONLY));	
 	Convert_Pixel(rgb,sd,(unsigned char *) lock_rect.pBits);
 	DX8_ErrorCode(D3DSurface->UnlockRect());	
+#else
+	uint32_t pitch = VK::SizeOfFormat(surface.format) * surface.width;
+	Convert_Pixel(rgb, sd, surface.buffer.data() + y * pitch + x);
+#endif
 }
 
 /***********************************************************************************************
@@ -744,6 +819,7 @@ void SurfaceClass::Get_Pixel(Vector3 &rgb, int x,int y)
  * HISTORY:                                                                                    *
  *   3/27/2001  pds : Created.                                                                 *
  *=============================================================================================*/
+#ifdef INFO_VULKAN
 void SurfaceClass::Attach (IDirect3DSurface9 *surface)
 {
 	Detach ();
@@ -758,6 +834,7 @@ void SurfaceClass::Attach (IDirect3DSurface9 *surface)
 
 	return ;
 }
+#endif
 
 
 /***********************************************************************************************
@@ -775,6 +852,7 @@ void SurfaceClass::Attach (IDirect3DSurface9 *surface)
  * HISTORY:                                                                                    *
  *   3/27/2001  pds : Created.                                                                 *
  *=============================================================================================*/
+#ifdef INFO_VULKAN
 void SurfaceClass::Detach (void)
 {
 	//
@@ -787,6 +865,7 @@ void SurfaceClass::Detach (void)
 	D3DSurface = NULL;
 	return ;
 }
+#endif
 
 
 /***********************************************************************************************
@@ -810,6 +889,7 @@ void SurfaceClass::DrawPixel(const unsigned int x,const unsigned int y, unsigned
 
 	unsigned int size=PixelSize(sd);
 
+#ifdef INFO_VULKAN
 	D3DLOCKED_RECT lock_rect;
 	::ZeroMemory(&lock_rect, sizeof(D3DLOCKED_RECT));
 	RECT rect;
@@ -839,6 +919,29 @@ void SurfaceClass::DrawPixel(const unsigned int x,const unsigned int y, unsigned
 	}
 
 	DX8_ErrorCode(D3DSurface->UnlockRect());
+#else
+	uint32_t pitch = //VK::SizeOfFormat(surface.format) * 
+		surface.width;
+	unsigned char* cptr = (unsigned char*)surface.buffer.data() + y * pitch + x;
+	unsigned char* c3ptr = (unsigned char*)surface.buffer.data() + y * pitch*3 + x*3;
+	unsigned short* sptr = (unsigned short*)surface.buffer.data() + y * pitch + x;
+	unsigned int* lptr = (unsigned int*)surface.buffer.data() + y * pitch + x;
+	switch (size)
+	{
+	case 1:
+		*cptr = (unsigned char)(color & 0xFF);
+		break;
+	case 2:
+		*sptr = (unsigned short)(color & 0xFFFF);
+		break;
+	case 3:
+		memcpy(c3ptr, &color, sizeof(char) * 3);
+		break;
+	case 4:
+		*lptr = color;
+		break;
+	}
+#endif
 }
 
 /***********************************************************************************************
@@ -864,6 +967,7 @@ void SurfaceClass::DrawHLine(const unsigned int y,const unsigned int x1, const u
 
 	unsigned int size=PixelSize(sd);
 
+#ifdef INFO_VULKAN
 	D3DLOCKED_RECT lock_rect;
 	::ZeroMemory(&lock_rect, sizeof(D3DLOCKED_RECT));
 	RECT rect;
@@ -898,6 +1002,33 @@ void SurfaceClass::DrawHLine(const unsigned int y,const unsigned int x1, const u
 	}
 
 	DX8_ErrorCode(D3DSurface->UnlockRect());
+#else
+	uint32_t pitch = //VK::SizeOfFormat(surface.format) * 
+		surface.width;
+	unsigned char* cptr = (unsigned char*)surface.buffer.data() + y * pitch + x1;
+	unsigned char* c3ptr = (unsigned char*)surface.buffer.data() + y * pitch*3 + x1*3;
+	unsigned short* sptr = (unsigned short*)surface.buffer.data() + y * pitch + x1;
+	unsigned int* lptr = (unsigned int*)surface.buffer.data() + y * pitch + x1;
+	for (uint32_t x = x1; x <= x2; x++)
+	{
+		switch (size)
+		{
+		case 1:
+			*cptr++ = (unsigned char)(color & 0xFF);
+			break;
+		case 2:
+			*sptr++ = (unsigned short)(color & 0xFFFF);
+			break;
+		case 3:
+			memcpy(c3ptr, &color, sizeof(char) * 3);
+			c3ptr+=3;
+			break;
+		case 4:
+			*lptr++ = color;
+			break;
+		}
+	}
+#endif
 }
 
 
@@ -955,7 +1086,7 @@ bool SurfaceClass::Is_Monochrome(void)
 	if (is_compressed) {
 		WW3DFormat new_format = Get_Valid_Texture_Format(sd.Format, false);
 		SurfaceClass *new_surf = NEW_REF( SurfaceClass, (sd.Width, sd.Height, new_format) );
-		new_surf->Copy(0, 0, 0, 0, sd.Width, sd.Height, this);
+		new_surf->Copy(0, 0, 0, 0, sd.Width, sd.Height, this, 0);
 		bool result = new_surf->Is_Monochrome();
 		REF_PTR_RELEASE(new_surf);
 		return result;
@@ -979,14 +1110,14 @@ bool SurfaceClass::Is_Monochrome(void)
 			mono&=(rgb.Z==rgb.Y);
 			if (!mono)
 			{
-				Unlock();
+				Unlock(0, {});
 				return false;
 			}
 		}
 		bits+=pitch;
 	}
 
-	Unlock();
+	Unlock(0, {});
 
 	return true;
 }
@@ -1032,5 +1163,5 @@ void SurfaceClass::Hue_Shift(const Vector3 &hsv_shift)
 		bits+=pitch;
 	}
 
-	Unlock();
+	Unlock(0, {});
 }

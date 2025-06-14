@@ -54,6 +54,7 @@
 #include "always.h"
 #include "wwmath.h"
 #include <math.h>
+#include <xmmintrin.h>
 
 /*
 ** Vector4 - 4 dimensional vectors
@@ -76,7 +77,9 @@ public:
 	WWINLINE Vector4(const float vector[4]) { X = vector[0]; Y = vector[1]; Z = vector[2]; W = vector[3]; }
 	
 	// Assignment
-	WWINLINE Vector4 & operator = (const Vector4 & v) { X = v.X; Y = v.Y; Z = v.Z; W = v.W; return *this; }	
+	WWINLINE Vector4& operator = (const Vector4& v) { X = v.X; Y = v.Y; Z = v.Z; W = v.W; return *this; }
+	WWINLINE Vector4 & operator = (const __m128& v)
+		{ X = v.m128_f32[0]; Y = v.m128_f32[1]; Z = v.m128_f32[2]; W = v.m128_f32[3]; return *this; }
 	WWINLINE void	Set(float x, float y, float z, float w) { X = x; Y = y; Z = z; W = w; }
 	
 	// Array access

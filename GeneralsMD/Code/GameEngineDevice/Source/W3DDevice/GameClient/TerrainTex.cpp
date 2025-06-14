@@ -52,7 +52,8 @@
 #include "W3DDevice/GameClient/TileData.h"
 #include "common/GlobalData.h"
 #include "WW3D2/dx8wrapper.h"
-#include "d3dx9tex.h"
+#include <VkTexture.h>
+#include <formconv.h>
 
 /******************************************************************************
 						TerrainTextureClass
@@ -97,6 +98,7 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 {
 	// D3DTexture is our texture;
 
+#ifdef INFO_VULKAN
 	IDirect3DSurface9 *surface_level;
 	D3DSURFACE_DESC surface_desc;
 	D3DLOCKED_RECT locked_rect;
@@ -107,6 +109,16 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 	}
 
 	DX8_ErrorCode(surface_level->LockRect(&locked_rect, NULL, 0));
+#endif
+	SurfaceClass* surface = Get_Surface_Level(0);
+	if (!surface)
+		return 0;
+	SurfaceClass::SurfaceDescription surface_desc;
+	surface->Get_Description(surface_desc);
+	if (surface_desc.Width < TEXTURE_WIDTH) {
+		return 0;
+	}
+	auto& buffer = surface->Peek_D3D_Surface();
 
 	Int tilePixelExtent = TILE_PIXEL_EXTENT;		 
 	Int tilesPerRow = surface_desc.Width/(2*TILE_PIXEL_EXTENT+TILE_OFFSET);
@@ -116,7 +128,7 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 	//DEBUG_ASSERTCRASH(tilesPerRow*numRows >= htMap->m_numBitmapTiles, ("Too many tiles."));
 	DEBUG_ASSERTCRASH((Int)surface_desc.Width >= tilePixelExtent*tilesPerRow, ("Bitmap too small."));
 #endif
-	if (surface_desc.Format == D3DFMT_A1R5G5B5) {
+	if (WW3DFormat_To_D3DFormat( surface_desc.Format) == VK_FORMAT_A1R5G5B5_UNORM_PACK16) {
 #if 0
 		UnsignedInt cellX, cellY;
 		for (cellX = 0; cellX < surface_desc.Width; cellX++) {
@@ -139,7 +151,7 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 				UnsignedByte *pBGR = pTile->getRGBDataForWidth(tilePixelExtent);
 				pBGR += (tilePixelExtent-1-j)*TILE_BYTES_PER_PIXEL*tilePixelExtent; // invert to match.
 				Int row = position.y+j;
-				UnsignedByte *pBGRX = ((UnsignedByte*)locked_rect.pBits) +
+				UnsignedByte *pBGRX = ((UnsignedByte*)buffer.data()) +
 							(row)*surface_desc.Width*pixelBytes;
 
 				Int column = position.x;
@@ -162,7 +174,7 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 			Int j;
 			for (j=0; j<width; j++) {
 				Int row = origin.y+j;
-				UnsignedByte *pBGRX = ((UnsignedByte*)locked_rect.pBits) +
+				UnsignedByte *pBGRX = ((UnsignedByte*)buffer.data()) +
 							(row)*surface_desc.Width*pixelBytes;
 
 				Int column = origin.x;
@@ -177,13 +189,13 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 			for (j=0; j<4; j++) {
 				// copy before.
 				Int row = origin.y-j-1;
-				UnsignedByte *pBGRX = ((UnsignedByte*)locked_rect.pBits) +
+				UnsignedByte *pBGRX = ((UnsignedByte*)buffer.data()) +
 							(row)*surface_desc.Width*pixelBytes;
 				UnsignedByte *target = pBGRX+(origin.x-4)*pixelBytes; 
 				memcpy(target, target+width*surface_desc.Width*pixelBytes, (width+8)*pixelBytes);
 				// copy after.
 				row = origin.y+j;
-				pBGRX = ((UnsignedByte*)locked_rect.pBits) +
+				pBGRX = ((UnsignedByte*)buffer.data()) +
 							(row)*surface_desc.Width*pixelBytes;
 				target = pBGRX+(origin.x-4)*pixelBytes; 
 				memcpy(target+width*surface_desc.Width*pixelBytes, target, (width+8)*pixelBytes);
@@ -192,12 +204,19 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 		}
 
 	}
+#ifdef INFO_VULKAN
 	surface_level->UnlockRect();
 	surface_level->Release();
 	DX8_ErrorCode(D3DXFilterTexture(Peek_D3D_Texture(), NULL, 0, D3DX_FILTER_BOX));	
 	if (TheWritableGlobalData->m_textureReductionFactor) {
 		Peek_D3D_Texture()->SetLOD(TheWritableGlobalData->m_textureReductionFactor);
 	}
+#endif
+	WWVKRENDER.PushSingleTexture(Peek_D3D_Texture());
+	VK::Texture tex = {};
+	VK::CreateTexture(&WWVKRENDER, tex, surface_desc.Width, surface_desc.Height, buffer.data(), 
+		Filter.GetSamplerSettings(), WW3DFormat_To_D3DFormat(surface_desc.Format));
+	Poke_Texture(tex);
 	return(surface_desc.Height);
 }
 
@@ -363,7 +382,10 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 //=============================================================================
 void TerrainTextureClass::setLOD(Int LOD)
 {
+	//Not sure setting LOD manually is a thing anymore?
+#ifdef INFO_VULKAN
 	if (Peek_D3D_Texture()) Peek_D3D_Texture()->SetLOD(LOD);
+#endif
 }
 //=============================================================================
 // TerrainTextureClass::update
@@ -376,6 +398,7 @@ Bool TerrainTextureClass::updateFlat(WorldHeightMap *htMap, Int xCell, Int yCell
 {
 	// D3DTexture is our texture;
 
+#ifdef INFO_VULKAN
 	IDirect3DSurface9 *surface_level;
 	D3DSURFACE_DESC surface_desc;
 	D3DLOCKED_RECT locked_rect;
@@ -383,14 +406,22 @@ Bool TerrainTextureClass::updateFlat(WorldHeightMap *htMap, Int xCell, Int yCell
 	DX8_ErrorCode(surface_level->GetDesc(&surface_desc));
 	DEBUG_ASSERTCRASH((Int)surface_desc.Width == cellWidth*pixelsPerCell, ("Bitmap too small."));
 	DEBUG_ASSERTCRASH((Int)surface_desc.Height == cellWidth*pixelsPerCell, ("Bitmap too small."));
+#endif
+	SurfaceClass* surface = this->Get_Surface_Level(0);
+	if (!surface)
+		return false;
+	SurfaceClass::SurfaceDescription surface_desc;
+	surface->Get_Description(surface_desc);
 	if (surface_desc.Width != cellWidth*pixelsPerCell) {
 		return false;
 	}
+	auto& buffer = surface->Peek_D3D_Surface();
 
+#ifdef INFO_VULKAN
 	DX8_ErrorCode(surface_level->LockRect(&locked_rect, NULL, 0));
+#endif
 
-
-	if (surface_desc.Format == D3DFMT_A1R5G5B5) {
+	if (WW3DFormat_To_D3DFormat( surface_desc.Format) == VK_FORMAT_A1B5G5R5_UNORM_PACK16_KHR) {//D3DFMT_A1R5G5B5
 
 		Int pixelBytes = 2;
 		Int cellX, cellY;
@@ -405,7 +436,7 @@ Bool TerrainTextureClass::updateFlat(WorldHeightMap *htMap, Int xCell, Int yCell
 #endif
 		for (cellX = 0; cellX < cellWidth; cellX++) {
 			for (cellY = 0; cellY < cellWidth; cellY++) {
-				UnsignedByte *pBGRX_data = ((UnsignedByte*)locked_rect.pBits);
+				UnsignedByte *pBGRX_data = ((UnsignedByte*)buffer.data());
 				UnsignedByte *pBGR = htMap->getPointerToTileData(xCell+cellX, yCell+cellY, pixelsPerCell);
 				if (pBGR == NULL) continue; // past end of defined terrain. [3/24/2003]
 				Int k, l;
@@ -421,10 +452,16 @@ Bool TerrainTextureClass::updateFlat(WorldHeightMap *htMap, Int xCell, Int yCell
 			}
 		}
 	}
-
+	WW3DFormat_To_D3DFormat(surface_desc.Format);
+#ifdef INFO_VULKAN
 	surface_level->UnlockRect();
 	surface_level->Release();
 	DX8_ErrorCode(D3DXFilterTexture(Peek_D3D_Texture(), NULL, 0, D3DX_FILTER_BOX));	
+#endif
+	WWVKRENDER.PushSingleTexture(Peek_D3D_Texture());
+	VK::Texture tex = {};
+	VK::CreateTexture(&WWVKRENDER, tex, surface_desc.Width, surface_desc.Height, buffer.data(), 
+		Filter.GetSamplerSettings(), WW3DFormat_To_D3DFormat(surface_desc.Format));
 	return(surface_desc.Height);
 }
 
@@ -438,35 +475,6 @@ void TerrainTextureClass::Apply(unsigned int stage)
 {
 	// Do the base apply.
 	TextureClass::Apply(stage);
-#if 0 // obsolete [4/1/2003]
-	if (TheGlobalData && TheGlobalData->m_bilinearTerrainTex || TheGlobalData->m_trilinearTerrainTex) {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	} else {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MINFILTER, D3DTEXF_POINT);
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
-	}
-	if (TheGlobalData && TheGlobalData->m_trilinearTerrainTex) {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-	} else {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MIPFILTER, D3DTEXF_POINT);
-	}
-	// Now setup the texture pipeline.
-	if (stage==0) {
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
-
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_TEXCOORDINDEX, 0 );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE,false);
-
-	}
-#endif
 }
 
 /******************************************************************************
@@ -489,8 +497,17 @@ AlphaTerrainTextureClass::AlphaTerrainTextureClass( TextureClass *pBaseTex ):
 		WW3D_FORMAT_A1R5G5B5, MIP_LEVELS_1 )
 { 
 	// Attach the base texture's d3d texture.
-	IDirect3DTexture9 * d3d_tex = pBaseTex->Peek_D3D_Texture();
-	Set_D3D_Base_Texture(d3d_tex);
+	SurfaceClass* sur = pBaseTex->Get_Surface_Level();
+	if (sur)
+	{
+		surface = sur;
+		sur->Add_Ref();
+		Upload();
+	}
+	else
+	{
+		Set_D3D_Base_Texture(pBaseTex->Peek_D3D_Texture());
+	}
 }
 
 
@@ -511,35 +528,36 @@ void AlphaTerrainTextureClass::Apply(unsigned int stage)
 	
 	// Set the bilinear or trilinear filtering.
 	if (TheGlobalData && TheGlobalData->m_bilinearTerrainTex || TheGlobalData->m_trilinearTerrainTex) {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, VKSAMP_MINFILTER, VK_FILTER_LINEAR);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, VKSAMP_MAGFILTER, VK_FILTER_LINEAR);
 	} else {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MINFILTER, D3DTEXF_POINT);
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, VKSAMP_MINFILTER, VK_FILTER_NEAREST);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, VKSAMP_MAGFILTER, VK_FILTER_NEAREST);
 	}
 	if (TheGlobalData && TheGlobalData->m_trilinearTerrainTex) {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, VKSAMP_MIPFILTER, VK_FILTER_LINEAR);
 	} else {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MIPFILTER, D3DTEXF_POINT);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, VKSAMP_MIPFILTER, VK_FILTER_NEAREST);
 	}
 	// Since we are using multiple distinct tiles, the textures doesn't wrap, so clamp it.
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, VKSAMP_ADDRESSU, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, VKSAMP_ADDRESSV, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+
 	// Now setup the texture pipeline.
 	if (stage==0) {
 		// Modulate the diffuse color with the texture as lighting comes from diffuse.
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_TEXCOORDINDEX, 1 );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG1, VKTA_TEXTURE );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG2, VKTA_DIFFUSE );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLOROP,   VKTOP_MODULATE );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_ALPHAOP,   VKTOP_MODULATE );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_TEXCOORDINDEX, 1 );
 		// Blend the result using the alpha. (came from diffuse mod texture)
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE,true);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND,D3DBLEND_SRCALPHA);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND,D3DBLEND_INVSRCALPHA);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE,true);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND,VK_BLEND_FACTOR_SRC_ALPHA);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND,VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA);
 		// Disable stage 2.
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLOROP,   VKTOP_DISABLE );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_ALPHAOP,   VKTOP_DISABLE );
 	}	else if (stage==1) {
 
 		if (TheGlobalData && !TheGlobalData->m_multiPassTerrain)
@@ -547,88 +565,89 @@ void AlphaTerrainTextureClass::Apply(unsigned int stage)
 			///@todo: Remove 8-Stage Nvidia hack after drivers are fixed.
 			//This method is a backdoor specific to Nvidia based cards.  It will fail on
 			//other hardware.  Allows single pass blend of 2 textures and post modulate diffuse.
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_TEXCOORDINDEX, 0);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLOROP, VKTOP_MODULATE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_TEXCOORDINDEX, 0);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG1, VKTA_TEXTURE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG2, VKTA_DIFFUSE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_ALPHAOP,   VKTOP_MODULATE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_ALPHAARG1, VKTA_TEXTURE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_ALPHAARG2, VKTA_DIFFUSE);
 
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLOROP, D3DTOP_ADD);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_TEXCOORDINDEX, 1);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG1, D3DTA_DIFFUSE | D3DTA_COMPLEMENT | D3DTA_ALPHAREPLICATE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAOP,   D3DTOP_ADD);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAARG1, D3DTA_TFACTOR | D3DTA_COMPLEMENT);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLOROP, VKTOP_ADD);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_TEXCOORDINDEX, 1);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLORARG1, VKTA_DIFFUSE | VKTA_COMPLEMENT | VKTA_ALPHAREPLICATE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLORARG2, VKTA_DIFFUSE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_ALPHAOP,   VKTOP_ADD);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_ALPHAARG1, VKTA_TFACTOR | VKTA_COMPLEMENT);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_ALPHAARG2, VKTA_TFACTOR);
 
-			DX8Wrapper::Set_DX8_Texture(2, NULL);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 2, D3DTSS_COLOROP, D3DTOP_MODULATE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 2, D3DTSS_TEXCOORDINDEX, 2);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 2, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 2, D3DTSS_COLORARG2, D3DTA_TEXTURE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 2, D3DTSS_ALPHAOP,   D3DTOP_MODULATE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 2, D3DTSS_ALPHAARG1, D3DTA_TFACTOR);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 2, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 2, VKTSS_COLOROP, VKTOP_MODULATE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 2, VKTSS_TEXCOORDINDEX, 2);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 2, VKTSS_COLORARG1, VKTA_TEXTURE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 2, VKTSS_COLORARG2, VKTA_TEXTURE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 2, VKTSS_ALPHAOP,   VKTOP_MODULATE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 2, VKTSS_ALPHAARG1, VKTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 2, VKTSS_ALPHAARG2, VKTA_TFACTOR);
 
-			DX8Wrapper::Set_DX8_Texture(3, NULL);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 3, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 3, D3DTSS_TEXCOORDINDEX, 3);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 3, D3DTSS_COLORARG1, D3DTA_DIFFUSE | 0 | D3DTA_ALPHAREPLICATE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 3, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 3, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 3, D3DTSS_ALPHAARG1, D3DTA_TFACTOR);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 3, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 3, VKTSS_COLOROP, VKTOP_SELECTARG1);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 3, VKTSS_TEXCOORDINDEX, 3);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 3, VKTSS_COLORARG1, VKTA_DIFFUSE | 0 | VKTA_ALPHAREPLICATE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 3, VKTSS_COLORARG2, VKTA_DIFFUSE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 3, VKTSS_ALPHAOP,   VKTOP_SELECTARG1);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 3, VKTSS_ALPHAARG1, VKTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 3, VKTSS_ALPHAARG2, VKTA_TFACTOR);
 
-			DX8Wrapper::Set_DX8_Texture(4, NULL);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 4, D3DTSS_COLOROP, D3DTOP_MODULATE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 4, D3DTSS_TEXCOORDINDEX, 4);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 4, D3DTSS_COLORARG1, D3DTA_CURRENT);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 4, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 4, D3DTSS_ALPHAOP,   D3DTOP_MODULATE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 4, D3DTSS_ALPHAARG1, D3DTA_CURRENT);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 4, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 4, VKTSS_COLOROP, VKTOP_MODULATE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 4, VKTSS_TEXCOORDINDEX, 4);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 4, VKTSS_COLORARG1, VKTA_CURRENT);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 4, VKTSS_COLORARG2, VKTA_DIFFUSE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 4, VKTSS_ALPHAOP,   VKTOP_MODULATE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 4, VKTSS_ALPHAARG1, VKTA_CURRENT);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 4, VKTSS_ALPHAARG2, VKTA_DIFFUSE);
 
-			DX8Wrapper::Set_DX8_Texture(5, NULL);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 5, D3DTSS_COLOROP, D3DTOP_ADD);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 5, D3DTSS_TEXCOORDINDEX, 5);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 5, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 5, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 5, D3DTSS_ALPHAOP,   D3DTOP_ADD);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 5, D3DTSS_ALPHAARG1, D3DTA_TFACTOR | D3DTA_COMPLEMENT);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 5, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 5, VKTSS_COLOROP, VKTOP_ADD);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 5, VKTSS_TEXCOORDINDEX, 5);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 5, VKTSS_COLORARG1, VKTA_DIFFUSE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 5, VKTSS_COLORARG2, VKTA_DIFFUSE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 5, VKTSS_ALPHAOP,   VKTOP_ADD);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 5, VKTSS_ALPHAARG1, VKTA_TFACTOR | VKTA_COMPLEMENT);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 5, VKTSS_ALPHAARG2, VKTA_TFACTOR);
 
-			DX8Wrapper::Set_DX8_Texture(6, NULL);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 6, D3DTSS_COLOROP, D3DTOP_MODULATE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 6, D3DTSS_TEXCOORDINDEX, 6);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 6, D3DTSS_COLORARG1, D3DTA_TFACTOR);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 6, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 6, D3DTSS_ALPHAOP,   D3DTOP_MODULATE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 6, D3DTSS_ALPHAARG1, D3DTA_TFACTOR);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 6, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 6, VKTSS_COLOROP, VKTOP_MODULATE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 6, VKTSS_TEXCOORDINDEX, 6);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 6, VKTSS_COLORARG1, VKTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 6, VKTSS_COLORARG2, VKTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 6, VKTSS_ALPHAOP,   VKTOP_MODULATE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 6, VKTSS_ALPHAARG1, VKTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 6, VKTSS_ALPHAARG2, VKTA_TFACTOR);
 
-			DX8Wrapper::Set_DX8_Texture(7, NULL);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 7, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 7, D3DTSS_TEXCOORDINDEX, 7);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 7, D3DTSS_COLORARG1, D3DTA_TFACTOR);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 7, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 7, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 7, D3DTSS_ALPHAARG1, D3DTA_TFACTOR);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 7, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 7, VKTSS_COLOROP, VKTOP_SELECTARG1);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 7, VKTSS_TEXCOORDINDEX, 7);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 7, VKTSS_COLORARG1, VKTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 7, VKTSS_COLORARG2, VKTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 7, VKTSS_ALPHAOP,   VKTOP_SELECTARG1);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 7, VKTSS_ALPHAARG1, VKTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 7, VKTSS_ALPHAARG2, VKTA_TFACTOR);
+
+			DX8Wrapper::Set_Texture(2, NULL);
+			DX8Wrapper::Set_Texture(3, NULL);
+			DX8Wrapper::Set_Texture(4, NULL);
+			DX8Wrapper::Set_Texture(5, NULL);
+			DX8Wrapper::Set_Texture(6, NULL);
+			DX8Wrapper::Set_Texture(7, NULL);
 		}
 		else
 		{
-  			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
+  			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG1, VKTA_TEXTURE );
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLOROP,   VKTOP_SELECTARG1 );
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_ALPHAARG1, VKTA_TEXTURE );
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_ALPHAOP,   VKTOP_SELECTARG1 );
 
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLORARG1, VKTA_TEXTURE );
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLOROP,   VKTOP_MODULATE );
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLORARG2, VKTA_CURRENT );
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_ALPHAARG1, VKTA_TEXTURE );
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_ALPHAOP,   VKTOP_SELECTARG1 );
 		}
 	}
 }
@@ -674,65 +693,6 @@ yet another set of uv coordinates.
 void LightMapTerrainTextureClass::Apply(unsigned int stage)
 {
 	TextureClass::Apply(stage);
-#if 0 // obsolete [4/1/2003]
-	// Do the base apply.
-	/* previous setup */
-	if (TheGlobalData && TheGlobalData->m_trilinearTerrainTex) {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-	} else {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MIPFILTER, D3DTEXF_POINT);
-	}
-
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MINFILTER, D3DTEXF_POINT);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-
-	// Disable 3rd stage just in case.
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 2, D3DTSS_COLOROP,   D3DTOP_DISABLE );
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 2, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
-
-	// Now setup the texture pipeline.
-	DX8Wrapper::Set_DX8_Texture_Stage_State( stage, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-	DX8Wrapper::Set_DX8_Texture_Stage_State( stage, D3DTSS_COLORARG2, D3DTA_CURRENT );
-	if (stage == 0) {
-		DX8Wrapper::Set_DX8_Texture_Stage_State( stage, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
-		//Disable second stage
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
-	} else {
-		DX8Wrapper::Set_DX8_Texture_Stage_State( stage, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-	}
-	DX8Wrapper::Set_DX8_Texture_Stage_State( stage, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
-	DX8Wrapper::Set_DX8_Texture_Stage_State(stage, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_CAMERASPACEPOSITION);
-	// Two output coordinates are used.
-	DX8Wrapper::Set_DX8_Texture_Stage_State(stage, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);	
-
-
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-
-	Matrix4x4 curView;
-	DX8Wrapper::_Get_DX8_Transform(D3DTS_VIEW, curView);
-
-
-	D3DXMATRIX inv;
-	float det;
-	D3DXMatrixInverse(&inv, &det, (D3DXMATRIX*)&curView);
-	D3DXMATRIX scale;
-	D3DXMatrixScaling(&scale, STRETCH_FACTOR, STRETCH_FACTOR,1);
-	inv *=scale;
-	if (stage==0) {
-		DX8Wrapper::_Set_DX8_Transform(D3DTS_TEXTURE0, *((Matrix4x4*)&inv));
-	}	if (stage==1) {
-		DX8Wrapper::_Set_DX8_Transform(D3DTS_TEXTURE1, *((Matrix4x4*)&inv));
-	}
-		
-		
-	if (stage==0) {
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE,true);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND,D3DBLEND_DESTCOLOR);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND,D3DBLEND_ZERO);
-	} 
-#endif
 }
 
 
@@ -769,6 +729,7 @@ int AlphaEdgeTextureClass::update256(WorldHeightMap *htMap)
 int AlphaEdgeTextureClass::update(WorldHeightMap *htMap)
 {
 	// D3DTexture is our texture;
+#ifdef INFO_VULKAN
 
 	IDirect3DSurface9 *surface_level;
 	D3DSURFACE_DESC surface_desc;
@@ -776,19 +737,26 @@ int AlphaEdgeTextureClass::update(WorldHeightMap *htMap)
 	DX8_ErrorCode(Peek_D3D_Texture()->GetSurfaceLevel(0, &surface_level));
 	DX8_ErrorCode(surface_level->LockRect(&locked_rect, NULL, 0));
 	DX8_ErrorCode(surface_level->GetDesc(&surface_desc));
+#endif
+	SurfaceClass* surface = Get_Surface_Level(0);
+	if (!surface)
+		return 0;
+	auto& buffer = surface->Peek_D3D_Surface();
+	SurfaceClass::SurfaceDescription surface_desc;
+	surface->Get_Description(surface_desc);
 
 	Int tilePixelExtent = TILE_PIXEL_EXTENT; // blend tiles are 1/4 tiles.
 //	Int tilesPerRow = surface_desc.Width / (tilePixelExtent+8);
 
 //	Int numRows = surface_desc.Height/(tilePixelExtent+8);
 
-	if (surface_desc.Format == D3DFMT_A8R8G8B8) {
+	if (surface_desc.Format == VK_FORMAT_A8B8G8R8_UINT_PACK32) {//D3DFMT_A8R8G8B8
 #if 1
 #if 1
 		Int cellX, cellY;
 		for (cellX = 0; (UnsignedInt)cellX < (int)surface_desc.Width; cellX++) {
 			for (cellY = 0; cellY < (int)surface_desc.Height; cellY++) {
-				UnsignedByte *pBGR = ((UnsignedByte *)locked_rect.pBits)+(cellY*surface_desc.Width+cellX)*4;
+				UnsignedByte *pBGR = ((UnsignedByte *)buffer.data())+(cellY*surface_desc.Width+cellX)*4;
 				pBGR[2] = 255-cellY/2;
 				pBGR[0] = cellX/2;
 				pBGR[3] = cellX/2;  // alpha.
@@ -810,7 +778,7 @@ int AlphaEdgeTextureClass::update(WorldHeightMap *htMap)
 				Int row = position.y+j;
 				UnsignedByte *pBGR = htMap->getEdgeTile(tileNdx)->getRGBDataForWidth(tilePixelExtent);
 				pBGR += (tilePixelExtent-1-j)*TILE_BYTES_PER_PIXEL*tilePixelExtent; // invert to match.
-				UnsignedByte *pBGRX = ((UnsignedByte*)locked_rect.pBits) +
+				UnsignedByte *pBGRX = ((UnsignedByte*)buffer.data()) +
 							(row)*surface_desc.Width*pixelBytes;
 				pBGRX += column*pixelBytes;
 
@@ -834,9 +802,15 @@ int AlphaEdgeTextureClass::update(WorldHeightMap *htMap)
 #endif
 #endif
 	}
+#ifdef INFO_VULKAN
 	surface_level->UnlockRect();
 	surface_level->Release();
 	DX8_ErrorCode(D3DXFilterTexture(Peek_D3D_Texture(), NULL, 0, D3DX_FILTER_BOX));
+#endif
+	WWVKRENDER.PushSingleTexture(Peek_D3D_Texture());
+	VK::Texture tex = {};
+	VK::CreateTexture(&WWVKRENDER, tex, surface_desc.Width, surface_desc.Height, buffer.data(), 
+		Filter.GetSamplerSettings(), WW3DFormat_To_D3DFormat(surface_desc.Format));
 	return(surface_desc.Height);
 }
 
@@ -844,57 +818,6 @@ void AlphaEdgeTextureClass::Apply(unsigned int stage)
 {
 	// Do the base apply.
 	TextureClass::Apply(stage);
-#if 0 // obsolete [4/1/2003]
-	
-	if (TheGlobalData && TheGlobalData->m_bilinearTerrainTex || TheGlobalData->m_trilinearTerrainTex) {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	} else {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MINFILTER, D3DTEXF_POINT);
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
-	}
-	if (TheGlobalData && TheGlobalData->m_trilinearTerrainTex) {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-	} else {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MIPFILTER, D3DTEXF_POINT);
-	}
-
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
-	// Now setup the texture pipeline.
-	if (stage==0) {
-
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAARG1,   D3DTA_TEXTURE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_TEXCOORDINDEX, 1 );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE,true);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND,D3DBLEND_SRCALPHA);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND,D3DBLEND_INVSRCALPHA);
-
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
-
-	} else if (stage==1) {
-		// Drawing texture through the mask.
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAARG1,   D3DTA_CURRENT );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
-
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG1, D3DTA_CURRENT );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG2, D3DTA_TEXTURE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAARG1,   D3DTA_CURRENT );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAARG2,   D3DTA_TEXTURE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG2 );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_TEXCOORDINDEX, 1 );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE,true);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND,D3DBLEND_ONE);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND,D3DBLEND_ZERO);
-
-	}
-#endif
 }
 
 
@@ -945,82 +868,6 @@ void CloudMapTerrainTextureClass::Apply(unsigned int stage)
 	// Do the base apply.
 	TextureClass::Apply(stage);
 	return;
-#if 0   // obsolete
-	/* previous setup */
-	if (TheGlobalData && TheGlobalData->m_trilinearTerrainTex) {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-	} else {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MIPFILTER, D3DTEXF_POINT);
-	}
-
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-
-	// Now setup the texture pipeline.
-	DX8Wrapper::Set_DX8_Texture_Stage_State(stage,  D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_CAMERASPACEPOSITION);
-	// Two output coordinates are used.
-	DX8Wrapper::Set_DX8_Texture_Stage_State(stage,  D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);	
-
-
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-
-	Matrix4x4 curView;
-	DX8Wrapper::_Get_DX8_Transform(D3DTS_VIEW, curView);
-
-
-	D3DXMATRIX inv;
-	float det;
-	D3DXMatrixInverse(&inv, &det, (D3DXMATRIX*)&curView);
-	D3DXMATRIX scale;
-	D3DXMatrixScaling(&scale, STRETCH_FACTOR, STRETCH_FACTOR,1);
-	inv *=scale;
-	D3DXMATRIX offset;
-
-	Int delta = m_curTick;
-	m_curTick = ::GetTickCount();
-	delta = m_curTick-delta;
-	m_xOffset += m_xSlidePerSecond*delta/1000;
-	m_yOffset += m_ySlidePerSecond*delta/1000;
-
-	if (m_xOffset > 1) m_xOffset -= 1;
-	if (m_yOffset > 1) m_yOffset -= 1;
-	if (m_xOffset < -1) m_xOffset += 1;
-	if (m_yOffset < -1) m_yOffset += 1;
-
-
-	D3DXMatrixTranslation(&offset, m_xOffset, m_yOffset,0);
-
-	inv *= offset;
-
-	if (stage==0) {
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
-
-		DX8Wrapper::_Set_DX8_Transform(D3DTS_TEXTURE0, *((Matrix4x4*)&inv));
-		
-		// Disable 3rd stage just in case.
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 2, D3DTSS_COLOROP,   D3DTOP_DISABLE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 2, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
-
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
-
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE,true);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND,D3DBLEND_DESTCOLOR);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND,D3DBLEND_ZERO);
-	}	else if (stage==1) {
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAARG1, D3DTA_CURRENT );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
-
-		DX8Wrapper::_Set_DX8_Transform(D3DTS_TEXTURE1, *((Matrix4x4*)&inv));
-	}
-#endif
 }
 
 //=============================================================================
@@ -1031,28 +878,28 @@ understood by w3d. */
 //=============================================================================
 void CloudMapTerrainTextureClass::restore(void)
 {
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG1, VKTA_TEXTURE );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG2, VKTA_DIFFUSE );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLOROP,   VKTOP_MODULATE );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_ALPHAOP,   VKTOP_DISABLE );
 
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_TEXCOORDINDEX, 0 );
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
+	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, VKSAMP_ADDRESSU, VK_SAMPLER_ADDRESS_MODE_REPEAT);
+	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, VKSAMP_ADDRESSV, VK_SAMPLER_ADDRESS_MODE_REPEAT);
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_TEXCOORDINDEX, 0 );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_DISABLE);
 
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLORARG1, VKTA_TEXTURE );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLORARG2, VKTA_DIFFUSE );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLOROP,   VKTOP_MODULATE );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_ALPHAOP,   VKTOP_DISABLE );
 
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 1, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 1, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_TEXCOORDINDEX, 0 );
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE,false);
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND,D3DBLEND_SRCALPHA);
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND,D3DBLEND_INVSRCALPHA);
+	DX8Wrapper::Set_DX8_Sampler_Stage_State( 1, VKSAMP_ADDRESSU, VK_SAMPLER_ADDRESS_MODE_REPEAT);
+	DX8Wrapper::Set_DX8_Sampler_Stage_State( 1, VKSAMP_ADDRESSV, VK_SAMPLER_ADDRESS_MODE_REPEAT);
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_TEXCOORDINDEX, 0 );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_DISABLE);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE,false);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND,VK_BLEND_FACTOR_SRC_ALPHA);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND,VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA);
 
 
 	if (TheGlobalData && !TheGlobalData->m_multiPassTerrain)
@@ -1062,15 +909,15 @@ void CloudMapTerrainTextureClass::restore(void)
 		//other hardware.  Allows single pass blend of 2 textures and post modulate diffuse.
 		Int i;
 		for (i=0; i<8; i++) {
-			DX8Wrapper::Set_DX8_Texture_Stage_State( i, D3DTSS_COLOROP, D3DTOP_DISABLE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( i, D3DTSS_TEXCOORDINDEX, i);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( i, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( i, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( i, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( i, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( i, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( i, VKTSS_COLOROP, VKTOP_DISABLE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( i, VKTSS_TEXCOORDINDEX, i);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( i, VKTSS_COLORARG1, VKTA_TEXTURE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( i, VKTSS_COLORARG2, VKTA_DIFFUSE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( i, VKTSS_ALPHAOP,   VKTOP_DISABLE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( i, VKTSS_ALPHAARG1, VKTA_TEXTURE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( i, VKTSS_ALPHAARG2, VKTA_DIFFUSE);
 
-			DX8Wrapper::Set_DX8_Texture(i, NULL);
+			DX8Wrapper::Set_DX8_Texture(i, {});
 		}
 	}
 }
@@ -1109,34 +956,34 @@ void ScorchTextureClass::Apply(unsigned int stage)
 	TextureClass::Apply(stage);
 	// Setup bilinear or trilinear filtering as specified in global data.
 	if (TheGlobalData && TheGlobalData->m_bilinearTerrainTex || TheGlobalData->m_trilinearTerrainTex) {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, VKSAMP_MINFILTER, VK_FILTER_LINEAR);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, VKSAMP_MAGFILTER, VK_FILTER_LINEAR);
 	} else {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MINFILTER, D3DTEXF_POINT);
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, VKSAMP_MINFILTER, VK_FILTER_NEAREST);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, VKSAMP_MAGFILTER, VK_FILTER_NEAREST);
 	}
 	if (TheGlobalData && TheGlobalData->m_trilinearTerrainTex) {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, VKSAMP_MIPFILTER, VK_FILTER_LINEAR);
 	} else {
-		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MIPFILTER, D3DTEXF_POINT);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, VKSAMP_MIPFILTER, VK_FILTER_NEAREST);
 	}
 
-	DX8Wrapper::Set_DX8_Texture_Stage_State(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);	
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+	DX8Wrapper::Set_DX8_Texture_Stage_State(0, VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_DISABLE);	
+	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, VKSAMP_ADDRESSU, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, VKSAMP_ADDRESSV, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
 	// Now setup the texture pipeline.
 
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_TEXCOORDINDEX, 0 );
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE,true);
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND,D3DBLEND_SRCALPHA);
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND,D3DBLEND_INVSRCALPHA);
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG1, VKTA_TEXTURE );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG2, VKTA_DIFFUSE );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLOROP,   VKTOP_MODULATE );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_ALPHAOP,   VKTOP_SELECTARG1 );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_TEXCOORDINDEX, 0 );
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE,true);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND,VK_BLEND_FACTOR_SRC_ALPHA);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND,VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA);
 
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLOROP,   VKTOP_DISABLE );
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_ALPHAOP,   VKTOP_DISABLE );
 }
 
 

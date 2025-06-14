@@ -57,7 +57,6 @@
 #include <coltest.h>
 #include <rinfo.h>
 #include <camera.h>
-#include <d3dx9core.h>
 #include "Common/GlobalData.h"
 #include "Common/PerfTimer.h"
 
@@ -494,7 +493,7 @@ void FlatHeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 	ShaderClass::Invalidate();
 
 	//	tm.Scale(ObjSpaceExtent);
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
+	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 
 	
 	DX8Wrapper::Set_Material(m_vertexMaterialClass);
@@ -526,12 +525,9 @@ void FlatHeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 	//Find number of passes required to render current shader
  	devicePasses=W3DShaderManager::getShaderPasses(st);
 
- 	if (m_disableTextures)
- 		devicePasses=1;	//force to 1 lighting-only pass
-
  	//Specify all textures that this shader may need.
  	W3DShaderManager::setTexture(0,m_stageZeroTexture);
-	if (m_shroud && rinfo.Additional_Pass_Count() && !m_disableTextures)
+	if (m_shroud && rinfo.Additional_Pass_Count())
 	{
 		W3DShaderManager::setTexture(0,TheTerrainRenderObject->getShroud()->getShroudTexture());
 	}	
@@ -540,8 +536,9 @@ void FlatHeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
  	W3DShaderManager::setTexture(2,m_stageTwoTexture);	//cloud
  	W3DShaderManager::setTexture(3,m_stageThreeTexture);//noise
 	//Disable writes to destination alpha channel (if there is one)
-	if (DX8Wrapper::getBackBufferFormat() == WW3D_FORMAT_A8R8G8B8) {
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+	//if (DX8Wrapper::getBackBufferFormat() == WW3D_FORMAT_A8R8G8B8)
+	{
+		DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<0)|(1<<1)|(1<<2));//(1<<2)|(1<<1)|(1<<0)
 	}
 
 	Int pass;
@@ -550,13 +547,8 @@ void FlatHeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 	Int xCoordMax = 0;
 	Int xCoordMin = m_map->getYExtent();	
  	for (pass=0; pass<devicePasses; pass++) {
-		Bool disableTex = m_disableTextures;
-		if (m_disableTextures ) {
-			DX8Wrapper::Set_Shader(ShaderClass::_PresetOpaque2DShader);
-			DX8Wrapper::Set_Texture(0,NULL);
-		} else {
-			W3DShaderManager::setShader(st, pass);
-		}
+		Bool disableTex = false;
+		W3DShaderManager::setShader(st, pass);
 
 		Int i, j;
 		for	(i=0; i<m_tilesWidth; i++) {
@@ -603,7 +595,7 @@ void FlatHeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 			RTS3DScene *pMyScene = (RTS3DScene *)Scene;
 			RefRenderObjListIterator pDynamicLightsIterator(pMyScene->getDynamicLights());
 			m_roadBuffer->drawRoads(&rinfo.Camera, doCloud?m_stageTwoTexture:NULL, TheGlobalData->m_useLightMap?m_stageThreeTexture:NULL,
-				m_disableTextures,xCoordMin-m_map->getBorderSizeInline(), xCoordMax-m_map->getBorderSizeInline(), yCoordMin-m_map->getBorderSizeInline(), yCoordMax-m_map->getBorderSizeInline(), &pDynamicLightsIterator);
+				false,xCoordMin-m_map->getBorderSizeInline(), xCoordMax-m_map->getBorderSizeInline(), yCoordMin-m_map->getBorderSizeInline(), yCoordMax-m_map->getBorderSizeInline(), &pDynamicLightsIterator);
 		}
 	}
 #endif
@@ -624,7 +616,7 @@ void FlatHeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 	ShaderClass::Invalidate();
 	DX8Wrapper::Apply_Render_State_Changes();
 
-	m_bridgeBuffer->drawBridges(&rinfo.Camera, m_disableTextures, m_stageTwoTexture);
+	m_bridgeBuffer->drawBridges(&rinfo.Camera, false, m_stageTwoTexture);
 
 	if (TheTerrainTracksRenderObjClassSystem)
 		TheTerrainTracksRenderObjClassSystem->flush();

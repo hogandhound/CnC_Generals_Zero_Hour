@@ -134,12 +134,61 @@ W3DBridge::~W3DBridge(void)
 /** Renders the bride.  It is assumed that the shared vertex and index buffers
 are already set.  */
 //=============================================================================
-void W3DBridge::renderBridge(Bool wireframe)
+void W3DBridge::renderBridge(Bool wireframe, VK::Buffer index, VK::Buffer vertex)
 {
 	if (m_visible && m_numPolygons && m_numVertex) {
 		if (!wireframe) DX8Wrapper::Set_Texture(0,m_bridgeTexture);
 		// Draw all the bridges.
+		WWVKDSV;
+		DX8Wrapper::Apply_Render_State_Changes();
+		auto pipelines = DX8Wrapper::FindClosestPipelines(DX8Wrapper::Get_Vertex_Buffer()->FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case PIPELINE_WWVK_FVF_NDUV_DropUV_CAMUVT_NoDiffuse_NOL:
+		{
+			WorldMatrixUvt push;
+			DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE0, *(Matrix4x4*)&push.uvt);
+			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)push.world);
+			WWVK_UpdateFVF_NDUV_DropUV_CAMUVT_NoDiffuse_NOLDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),
+				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+			WWVK_DrawFVF_NDUV_DropUV_CAMUVT_NoDiffuse_NOL(WWVKPIPES, WWVKRENDER.currentCmd, sets, index.buffer, m_numPolygons * 3, m_firstIndex,
+				VK_INDEX_TYPE_UINT16, vertex.buffer, 0, (WorldMatrixUVT*)&push);
+			break;
+		}
+		case PIPELINE_WWVK_FVF_NDUV_CAMUVT_NOL:
+		{
+			WorldMatrixUvt push;
+			DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE0, *(Matrix4x4*)&push.uvt);
+			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)push.world);
+			WWVK_UpdateFVF_NDUV_CAMUVT_NOLDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),
+				&DX8Wrapper::Get_DX8_Texture(1), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+			WWVK_DrawFVF_NDUV_CAMUVT_NOL(WWVKPIPES, WWVKRENDER.currentCmd, sets, index.buffer, m_numPolygons * 3, m_firstIndex,
+				VK_INDEX_TYPE_UINT16, vertex.buffer, 0, (WorldMatrixUVT*)&push);
+			break;
+		}
+		case PIPELINE_WWVK_FVF_NDUV_CAMUVT_NOL_AREF:
+		{
+			UVT2 uvt2;
+			VK::Buffer temp;
+			DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE0, *(Matrix4x4*)&uvt2.m1);
+			DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE1, *(Matrix4x4*)&uvt2.m2);
+			VkBufferTools::CreateUniformBuffer(&WWVKRENDER, sizeof(UVT2), &uvt2, temp);
+
+			WorldMatrix_AlphaRef push;
+			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.vert.world);
+			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF) / 255.f;
+			WWVK_UpdateFVF_NDUV_CAMUVT_NOL_AREFDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),
+				&DX8Wrapper::Get_DX8_Texture(1), DX8Wrapper::UboProj(), DX8Wrapper::UboView(), temp);
+			WWVK_DrawFVF_NDUV_CAMUVT_NOL_AREF(WWVKPIPES, WWVKRENDER.currentCmd, sets, index.buffer, m_numPolygons * 3, m_firstIndex,
+				VK_INDEX_TYPE_UINT16, vertex.buffer, 0, (WorldMatrix_AlphaRef*)&push);
+			WWVKRENDER.PushSingleFrameBuffer(temp);
+			break;
+		}
+		default:assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(	m_firstIndex, m_numPolygons, m_firstVertex,	m_numVertex);
+#endif
 	}
 }
 
@@ -694,11 +743,11 @@ void W3DBridgeBuffer::loadBridgesInVertexAndIndexBuffers(RefRenderObjListIterato
 	}
 	m_curNumBridgeVertices = 0;
 	m_curNumBridgeIndices = 0;
+	// Lock the buffers.
 	VertexFormatXYZNDUV1 *vb;
 	UnsignedShort *ib;
-	// Lock the buffers.
-	DX8IndexBufferClass::WriteLockClass lockIdxBuffer(m_indexBridge, D3DLOCK_DISCARD);
-	DX8VertexBufferClass::WriteLockClass lockVtxBuffer(m_vertexBridge, D3DLOCK_DISCARD);
+	DX8IndexBufferClass::WriteLockClass lockIdxBuffer(m_indexBridge);
+	DX8VertexBufferClass::WriteLockClass lockVtxBuffer(m_vertexBridge);
 	vb=(VertexFormatXYZNDUV1*)lockVtxBuffer.Get_Vertex_Array();
 	ib = lockIdxBuffer.Get_Index_Array();
 
@@ -774,7 +823,7 @@ void W3DBridgeBuffer::freeBridgeBuffers(void)
 void W3DBridgeBuffer::allocateBridgeBuffers(void)
 {
 	m_vertexBridge=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZNDUV1,MAX_BRIDGE_VERTEX+4,DX8VertexBufferClass::USAGE_DYNAMIC));
-	m_indexBridge=NEW_REF(DX8IndexBufferClass,(MAX_BRIDGE_INDEX+4, DX8IndexBufferClass::USAGE_DYNAMIC));
+	m_indexBridge=NEW_REF(DX8IndexBufferClass,(MAX_BRIDGE_INDEX+4));
 	m_vertexMaterial=VertexMaterialClass::Get_Preset(VertexMaterialClass::PRELIT_DIFFUSE);
 #ifdef USE_BRIDGE_NORMALS
 	m_vertexMaterial= new VertexMaterialClass();
@@ -1176,7 +1225,7 @@ void W3DBridgeBuffer::drawBridges(CameraClass * camera, Bool wireframe, TextureC
 
 	for (curBridge=0; curBridge<m_numBridges; curBridge++) {
 		if (m_bridges[curBridge].isEnabled() && m_bridges[curBridge].isVisible()) {
-			m_bridges[curBridge].renderBridge(wireframe);
+			m_bridges[curBridge].renderBridge(wireframe, m_indexBridge->Get_DX8_Index_Buffer(), m_vertexBridge->Get_DX8_Vertex_Buffer());
 		}
 	}
 
@@ -1200,7 +1249,7 @@ void W3DBridgeBuffer::drawBridges(CameraClass * camera, Bool wireframe, TextureC
 		for (curBridge=0; curBridge<m_numBridges; curBridge++) {
 			if (m_bridges[curBridge].isEnabled() && m_bridges[curBridge].isVisible()) {
 				//Pretend we're in wireframe so function doesn't reset the shroud texture.
-				m_bridges[curBridge].renderBridge(TRUE);
+				m_bridges[curBridge].renderBridge(TRUE, m_indexBridge->Get_DX8_Index_Buffer(), m_vertexBridge->Get_DX8_Vertex_Buffer());
 			}
 		}
 		W3DShaderManager::resetShader(W3DShaderManager::ST_SHROUD_TEXTURE);

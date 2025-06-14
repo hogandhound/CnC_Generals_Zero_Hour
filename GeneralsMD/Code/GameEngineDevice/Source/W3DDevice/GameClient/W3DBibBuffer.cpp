@@ -92,21 +92,21 @@ void W3DBibBuffer::loadBibsInVertexAndIndexBuffers(void)
 	if (!m_anythingChanged) {
 		return;
 	}
-
 	m_curNumBibVertices = 0;
 	m_curNumBibIndices = 0;
 	m_curNumNormalBibIndices = 0;
 	m_curNumNormalBibVertex = 0;
 
-	if (m_numBibs==0) {
-		return;	
+	if (m_numBibs == 0) {
+		return;
 	}
 
-	VertexFormatXYZDUV1 *vb;
-	UnsignedShort *ib;
+	VertexFormatXYZDUV1* vb;
+	UnsignedShort* ib;
+
 	// Lock the buffers.
-	DX8IndexBufferClass::WriteLockClass lockIdxBuffer(m_indexBib, D3DLOCK_DISCARD);
-	DX8VertexBufferClass::WriteLockClass lockVtxBuffer(m_vertexBib, D3DLOCK_DISCARD);
+	DX8IndexBufferClass::WriteLockClass lockIdxBuffer(m_indexBib);
+	DX8VertexBufferClass::WriteLockClass lockVtxBuffer(m_vertexBib);
 	vb=(VertexFormatXYZDUV1*)lockVtxBuffer.Get_Vertex_Array();
 	ib = lockIdxBuffer.Get_Index_Array();
 	// Add to the index buffer & vertex buffer.
@@ -266,7 +266,7 @@ void W3DBibBuffer::freeBibBuffers(void)
 void W3DBibBuffer::allocateBibBuffers(void)
 {
 	m_vertexBib=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV1,m_vertexBibSize+4,DX8VertexBufferClass::USAGE_DYNAMIC));
-	m_indexBib=NEW_REF(DX8IndexBufferClass,(m_indexBibSize+4, DX8IndexBufferClass::USAGE_DYNAMIC));
+	m_indexBib=NEW_REF(DX8IndexBufferClass,(m_indexBibSize+4));
 	m_curNumBibVertices=0;
 	m_curNumBibIndices=0;
 }
@@ -435,12 +435,32 @@ void W3DBibBuffer::renderBibs()
 	DX8Wrapper::Set_Shader(detailAlphaShader);
 	if (m_curNumNormalBibIndices) {
 		DX8Wrapper::Set_Texture(0,m_bibTexture);
+		Matrix4x4 push;
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, push);
+		WWVKDSV;
+		WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, 
+			&m_bibTexture->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			m_indexBib->Get_DX8_Index_Buffer().buffer, m_curNumNormalBibIndices, 0, VK_INDEX_TYPE_UINT16,
+			m_vertexBib->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(	0, m_curNumNormalBibIndices/3, 0,	m_curNumNormalBibVertex);
+#endif
 	}
 	if (m_curNumBibIndices>m_curNumNormalBibIndices) {
 		DX8Wrapper::Set_Texture(0,m_highlightBibTexture);
+		Matrix4x4 push;
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, push);
+		WWVKDSV;
+		WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+			&m_highlightBibTexture->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			m_indexBib->Get_DX8_Index_Buffer().buffer, (m_curNumBibIndices - m_curNumNormalBibIndices), m_curNumNormalBibIndices, VK_INDEX_TYPE_UINT16,
+			m_vertexBib->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(	m_curNumNormalBibIndices, (m_curNumBibIndices-m_curNumNormalBibIndices)/3, 
 						m_curNumNormalBibVertex,	m_curNumBibVertices-m_curNumNormalBibVertex);
+#endif
 	}
 }
 

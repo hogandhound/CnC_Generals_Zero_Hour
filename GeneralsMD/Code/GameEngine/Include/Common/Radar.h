@@ -218,7 +218,8 @@ public:
 	virtual void clearShroud() = 0;
 
 	/// set the shroud level at shroud cell x,y
-	virtual void setShroudLevel( Int x, Int y, CellShroudStatus setting ) = 0;
+	virtual void setShroudLevel( Int x, Int y, CellShroudStatus setting, bool upload = true ) = 0;
+	virtual void uploadShroud() = 0;
 
 protected:
 

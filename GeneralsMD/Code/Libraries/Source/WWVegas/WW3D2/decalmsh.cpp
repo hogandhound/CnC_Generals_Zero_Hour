@@ -298,7 +298,7 @@ void RigidDecalMeshClass::Render(void)
 	** transform between the time that the mesh is rendered and the time that the decal
 	** mesh is rendered...  It shouldn't happen though.
 	*/
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,Parent->Get_Transform());
+	DX8Wrapper::Set_Transform(VkTS::WORLD,Parent->Get_Transform());
 
 	/*
 	** Copy the vertices into the dynamic vb
@@ -356,10 +356,19 @@ void RigidDecalMeshClass::Render(void)
 
 		DX8Wrapper::Set_Index_Buffer(dynamic_ib,0);
 		DX8Wrapper::Set_Vertex_Buffer(dynamic_vb);
+		DX8Wrapper::Apply_Render_State_Changes();
+		auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_vb.FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(	3*cur_poly_index,
 												(next_poly_index - cur_poly_index), // poly count
 												Polys[cur_poly_index].I, 
 												1 + Polys[next_poly_index-1].K - Polys[cur_poly_index].I);
+#endif
 		cur_poly_index = next_poly_index;
 	}
 		
@@ -423,8 +432,11 @@ bool RigidDecalMeshClass::Create_Decal
 	// the decal polygons along the normal of the decal generator.  If we could instead rely
 	// on hardware "polygon offset" we could remove this code and we could make decals non-sorting
 	Vector3 zbias_offset(0.0f,0.0f,0.0f);
-	
-	if (!DX8Wrapper::Get_Current_Caps()->Support_ZBias()) {
+
+#ifdef INFO_VULKAN
+	if (!DX8Wrapper::Get_Current_Caps()->Support_ZBias())
+#endif
+	{
 		const float ZBIAS_DISTANCE = 0.01f;
 		generator->Get_Transform().Get_Z_Vector(&zbias_offset);
 		Matrix3D invtm;
@@ -788,7 +800,7 @@ void SkinDecalMeshClass::Render(void)
 	/*
 	** Skin decals coordinates are in world space
 	*/
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,Matrix3D::Identity);
+	DX8Wrapper::Set_Transform(VkTS::WORLD,Matrix3D::Identity);
 
 	/*
 	** Skin decals have to get the deformed vertices of their parent meshes.  For this
@@ -854,10 +866,19 @@ void SkinDecalMeshClass::Render(void)
 
 		DX8Wrapper::Set_Index_Buffer(dynamic_ib,0);
 		DX8Wrapper::Set_Vertex_Buffer(dynamic_vb);
+		DX8Wrapper::Apply_Render_State_Changes();
+		auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_vb.FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(3*cur_poly_index,
 											(next_poly_index - cur_poly_index), // poly count
 											Polys[cur_poly_index].I, 
 											1 + Polys[next_poly_index-1].K - Polys[cur_poly_index].I);
+#endif
 		
 		cur_poly_index = next_poly_index;
 	}

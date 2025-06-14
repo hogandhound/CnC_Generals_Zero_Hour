@@ -96,8 +96,8 @@ public:
 
 	enum ColorSourceType {
 		MATERIAL = 0,				// D3DMCS_MATERIAL - the color source should be taken from the material setting
-		COLOR1,						// D3DMCS_COLOR1 - the color should be taken from per-vertex color array 1 (aka D3DFVF_DIFFUSE)
-		COLOR2,						// D3DMCS_COLOR2 - the color should be taken from per-vertex color array 2 (aka D3DFVF_SPECULAR)
+		COLOR1,						// D3DMCS_COLOR1 - the color should be taken from per-vertex color array 1 (aka VKFVF_DIFFUSE)
+		COLOR2,						// D3DMCS_COLOR2 - the color should be taken from per-vertex color array 2 (aka VKFVF_SPECULAR)
 	};
 
 	enum PresetType
@@ -251,9 +251,9 @@ private:
 	_D3DMATERIAL9 *				MaterialOld;
 #endif
 	unsigned int					Flags;
-	unsigned int					AmbientColorSource;
-	unsigned int					EmissiveColorSource;
-	unsigned int					DiffuseColorSource;
+	ColorSourceType	 AmbientColorSource;
+	ColorSourceType EmissiveColorSource;
+	ColorSourceType DiffuseColorSource;
 	StringClass						Name;
 	TextureMapperClass *	Mapper[MeshBuilderClass::MAX_STAGES];
 	unsigned int					UVSource[MeshBuilderClass::MAX_STAGES];

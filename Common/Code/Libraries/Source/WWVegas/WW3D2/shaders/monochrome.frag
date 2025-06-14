@@ -1,0 +1,72 @@
+//
+//	Command & Conquer Generals Zero Hour(tm)
+//	Copyright 2025 Electronic Arts Inc.
+//
+//	This program is free software: you can redistribute it and/or modify
+//	it under the terms of the GNU General Public License as published by
+//	the Free Software Foundation, either version 3 of the License, or
+//	(at your option) any later version.
+//
+//	This program is distributed in the hope that it will be useful,
+//	but WITHOUT ANY WARRANTY; without even the implied warranty of
+//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//	GNU General Public License for more details.
+//
+//	You should have received a copy of the GNU General Public License
+//	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+
+//////////////////////////////////////////////////////////////////////////////////
+////																																						 //
+////  (c) 2001-2003 Electronic Arts Inc.																				 //
+////																																						 //
+//////////////////////////////////////////////////////////////////////////////////
+
+// Terrain pixel shader
+// Created:   Mark Wilczynski, August 2001
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
+
+layout( push_constant ) uniform Monochrome {
+  layout ( offset = 64)vec4 c0;
+  vec4 c1;
+  vec4 c2;
+} push;
+
+layout(binding = 4) uniform sampler2D tex;
+
+layout(location = 1) in vec2 fragUv;
+layout(location = 0) in vec4 fragDiffuse;
+
+layout(location = 0) out vec4 finalColor;
+
+void main() {
+	vec4 t0 = texture(tex, fragUv);
+	vec4 r1 = dot(t0.rgb, push.c0.rgb) * push.c1;
+    finalColor = mix(r1, t0, 1-push.c2);
+}
+
+// Declare pixel shader version 1.1
+#if 0
+ps.1.1
+
+tex t0	; get texture 0
+//dp3  r1, c1, t0
+//add	r0,r1,-c2
+//mul r0,r0,c3
+//mov r0,t0				;do nothing
+
+dp3 r1, t0, c0			;black & white conversion
+mul	r1, r1, c1			;modulate by filter color
+lrp r0, c2, r1, t0	;blend modified image into original image so smooth fade in/out
+
+//Code to clamp and expand dynamic range
+//add_sat	r1,r1,-c7		;clamp out low values - 30
+//add_sat r1,r1,c5		;clamp out upper values +60
+//add		r1,r1,-c6		;shift to center range at 0
+
+
+//add r0,r0,-c5
+//mul_x4 r0,r0,c6
+
+#endif

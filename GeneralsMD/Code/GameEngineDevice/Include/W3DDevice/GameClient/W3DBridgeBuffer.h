@@ -139,7 +139,7 @@ public:
 	Bool isVisible(void) {return m_visible;};
 	Bool isEnabled(void) {return m_enabled;};
 	void setEnabled(Bool enable) {m_enabled = enable;};
-	void renderBridge(Bool wireframe);
+	void renderBridge(Bool wireframe, VK::Buffer index, VK::Buffer vertex);
 	void getBridgeInfo(BridgeInfo *pInfo);
 };
 

@@ -48,27 +48,68 @@
 #define DX8_FVF_H
 
 #include "always.h"
-#include <d3d9.h>
 #ifdef WWDEBUG
 #include "wwdebug.h"
 #endif
 
 class StringClass;
 
+#define VKFVF_RESERVED0        0x001
+#define VKFVF_POSITION_MASK    0x400E
+#define VKFVF_XYZ              0x002
+#define VKFVF_XYZRHW           0x004
+#define VKFVF_XYZB1            0x006
+#define VKFVF_XYZB2            0x008
+#define VKFVF_XYZB3            0x00a
+#define VKFVF_XYZB4            0x00c
+#define VKFVF_XYZB5            0x00e
+#define VKFVF_XYZW             0x4002
+
+#define VKFVF_NORMAL           0x010
+#define VKFVF_PSIZE            0x020
+#define VKFVF_DIFFUSE          0x040
+#define VKFVF_SPECULAR         0x080
+
+#define VKFVF_TEXCOUNT_MASK    0xf00
+#define VKFVF_TEXCOUNT_SHIFT   8
+#define VKFVF_TEX0             0x000
+#define VKFVF_TEX1             0x100
+#define VKFVF_TEX2             0x200
+#define VKFVF_TEX3             0x300
+#define VKFVF_TEX4             0x400
+#define VKFVF_TEX5             0x500
+#define VKFVF_TEX6             0x600
+#define VKFVF_TEX7             0x700
+#define VKFVF_TEX8             0x800
+
+#define VKFVF_LASTBETA_UBYTE4   0x1000
+#define VKFVF_LASTBETA_D3DCOLOR 0x8000
+
+#define VKFVF_TEXTUREFORMAT2 0         // Two floating point values
+#define VKFVF_TEXTUREFORMAT1 3         // One floating point value
+#define VKFVF_TEXTUREFORMAT3 1         // Three floating point values
+#define VKFVF_TEXTUREFORMAT4 2         // Four floating point values
+#define VKFVF_TEXCOORDSIZE3(CoordIndex) (VKFVF_TEXTUREFORMAT3 << (CoordIndex*2 + 16))
+#define VKFVF_TEXCOORDSIZE2(CoordIndex) (VKFVF_TEXTUREFORMAT2)
+#define VKFVF_TEXCOORDSIZE4(CoordIndex) (VKFVF_TEXTUREFORMAT4 << (CoordIndex*2 + 16))
+#define VKFVF_TEXCOORDSIZE1(CoordIndex) (VKFVF_TEXTUREFORMAT1 << (CoordIndex*2 + 16))
+
+#define VKFVF_RESERVED2         0x6000  // 2 reserved bits
 enum {
-	DX8_FVF_XYZ				= D3DFVF_XYZ,
-	DX8_FVF_XYZN			= D3DFVF_XYZ|D3DFVF_NORMAL,
-	DX8_FVF_XYZNUV1		= D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX1,
-	DX8_FVF_XYZNUV2		= D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX2,
-	DX8_FVF_XYZNDUV1		= D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX1|D3DFVF_DIFFUSE,
-	DX8_FVF_XYZNDUV2		= D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX2|D3DFVF_DIFFUSE,
-	DX8_FVF_XYZDUV1		= D3DFVF_XYZ|D3DFVF_TEX1|D3DFVF_DIFFUSE,
-	DX8_FVF_XYZDUV2		= D3DFVF_XYZ|D3DFVF_TEX2|D3DFVF_DIFFUSE,
-	DX8_FVF_XYZUV1			= D3DFVF_XYZ|D3DFVF_TEX1,
-	DX8_FVF_XYZUV2			= D3DFVF_XYZ|D3DFVF_TEX2,
- 	DX8_FVF_XYZNDUV1TG3	= (D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_DIFFUSE|D3DFVF_TEX4|D3DFVF_TEXCOORDSIZE2(0)|D3DFVF_TEXCOORDSIZE3(1)|D3DFVF_TEXCOORDSIZE3(2)|D3DFVF_TEXCOORDSIZE3(3)),
- 	DX8_FVF_XYZNUV2DMAP	= (D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX3 | D3DFVF_TEXCOORDSIZE1(0) | D3DFVF_TEXCOORDSIZE4(1) | D3DFVF_TEXCOORDSIZE2(2) ),
-	DX8_FVF_XYZNDCUBEMAP	= D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_DIFFUSE //|D3DFVF_TEX1|D3DFVF_TEXCOORDSIZE3(0)
+	//DX8_FVF_XYZ				= VKFVF_XYZ,
+	//DX8_FVF_XYZN			= VKFVF_XYZ|VKFVF_NORMAL,
+	DX8_FVF_XYZD			= VKFVF_XYZ|VKFVF_DIFFUSE,
+	DX8_FVF_XYZNUV1		= VKFVF_XYZ|VKFVF_NORMAL|VKFVF_TEX1,
+	DX8_FVF_XYZNUV2		= VKFVF_XYZ|VKFVF_NORMAL|VKFVF_TEX2,
+	DX8_FVF_XYZNDUV1		= VKFVF_XYZ|VKFVF_NORMAL|VKFVF_TEX1|VKFVF_DIFFUSE,
+	DX8_FVF_XYZNDUV2		= VKFVF_XYZ|VKFVF_NORMAL|VKFVF_TEX2|VKFVF_DIFFUSE,
+	DX8_FVF_XYZDUV1		= VKFVF_XYZ|VKFVF_TEX1|VKFVF_DIFFUSE,
+	DX8_FVF_XYZDUV2		= VKFVF_XYZ|VKFVF_TEX2|VKFVF_DIFFUSE,
+	//DX8_FVF_XYZUV1			= VKFVF_XYZ|VKFVF_TEX1,
+	//DX8_FVF_XYZUV2			= VKFVF_XYZ|VKFVF_TEX2,
+ 	//DX8_FVF_XYZNDUV1TG3	= (VKFVF_XYZ|VKFVF_NORMAL|VKFVF_DIFFUSE|VKFVF_TEX4|VKFVF_TEXCOORDSIZE2(0)|VKFVF_TEXCOORDSIZE3(1)|VKFVF_TEXCOORDSIZE3(2)|VKFVF_TEXCOORDSIZE3(3)),
+ 	//DX8_FVF_XYZNUV2DMAP	= (VKFVF_XYZ|VKFVF_NORMAL|VKFVF_TEX3 | VKFVF_TEXCOORDSIZE1(0) | VKFVF_TEXCOORDSIZE4(1) | VKFVF_TEXCOORDSIZE2(2) ),
+	DX8_FVF_XYZNDCUBEMAP	= VKFVF_XYZ|VKFVF_NORMAL|VKFVF_DIFFUSE //|VKFVF_TEX1|VKFVF_TEXCOORDSIZE3(0)
 };
 
 // ----------------------------------------------------------------------------
@@ -157,6 +198,14 @@ struct VertexFormatXYZDUV1
 	unsigned diffuse;
 	float u1;
 	float v1;
+};
+
+struct VertexFormatXYZD
+{
+	float x;
+	float y;
+	float z;
+	unsigned diffuse;
 };
 
 struct VertexFormatXYZDUV2
@@ -260,7 +309,11 @@ class FVFInfoClass : public W3DMPO
 	unsigned							location_offset;
 	unsigned							normal_offset;
 	unsigned							blend_offset;
+#ifdef INFO_VULKAN
 	unsigned							texcoord_offset[D3DDP_MAXTEXCOORD];	
+#else
+	unsigned							texcoord_offset[8];	
+#endif
 	unsigned							diffuse_offset;
 	unsigned							specular_offset;
 public:
@@ -269,7 +322,11 @@ public:
 	inline unsigned Get_Location_Offset() const { return location_offset; }
 	inline unsigned Get_Normal_Offset() const { return normal_offset; }
 #ifdef WWDEBUG
-	inline unsigned Get_Tex_Offset(unsigned int n) const { WWASSERT(n<D3DDP_MAXTEXCOORD); return texcoord_offset[n]; }	
+	inline unsigned Get_Tex_Offset(unsigned int n) const {
+#ifdef INFO_VULKAN
+		WWASSERT(n<D3DDP_MAXTEXCOORD); 
+#endif
+		return texcoord_offset[n]; }	
 #else
 	inline unsigned Get_Tex_Offset(unsigned int n) const { return texcoord_offset[n]; }	
 #endif

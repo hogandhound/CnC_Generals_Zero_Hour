@@ -223,8 +223,10 @@ private:
 	enum {PARTITION_WIDTH_HEIGHT = 100};
 	DX8VertexBufferClass	*m_vertexTree[MAX_BUFFERS];	///<Tree vertex buffer.
 	DX8IndexBufferClass			*m_indexTree[MAX_BUFFERS];	///<indices defining a triangles for the tree drawing.
+#ifdef INFO_VULKAN
 	IDirect3DPixelShader9* m_dwTreePixelShader;	///<handle to D3D pixel shader
 	IDirect3DVertexShader9* m_dwTreeVertexShader;	///<handle to D3D vertex shader
+#endif
 
 	Short		m_areaPartition[PARTITION_WIDTH_HEIGHT*PARTITION_WIDTH_HEIGHT];
 	Region2D m_bounds;

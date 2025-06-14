@@ -20,7 +20,8 @@
 #include "missingtexture.h"
 #include "texture.h"
 #include "dx8wrapper.h"
-#include <D3dx9core.h>
+#include "formconv.h"
+#include "VkTexture.h"
 
 static unsigned missing_image_width=128;
 static unsigned missing_image_height=128;
@@ -29,17 +30,30 @@ static unsigned missing_image_depth=24;
 extern unsigned int missing_image_palette[];
 extern unsigned int missing_image_pixels[];
 
-static IDirect3DTexture9 * _MissingTexture = NULL;
+//static VK::Texture _MissingTexture = NULL;
 
-IDirect3DTexture9* MissingTexture::_Get_Missing_Texture()
+VK::Texture MissingTexture::_Get_Missing_Texture()
 {
+#ifdef INFO_VULKAN
 	WWASSERT(_MissingTexture);
 	_MissingTexture->AddRef();
 	return _MissingTexture;
+#else
+	//I don't want to create a ref-count system for textures right now, so each missing texture is going to be unique
+	VK::Texture ret = {};
+	uint32_t buffer[128*128]; //missing_image_width * missing_image_height 
+	for (int i = 0; i < 128 * 128; ++i)
+	{
+		buffer[i] = 0x7FFF00FF;
+	}
+	VK::CreateTexture(&WWVKRENDER, ret, missing_image_width, missing_image_height, (uint8_t*)buffer);
+	return ret;
+#endif
 }
 
-IDirect3DSurface9* MissingTexture::_Create_Missing_Surface()
+VK::Surface MissingTexture::_Create_Missing_Surface()
 {
+#ifdef INFO_VULKAN
 	IDirect3DSurface9 *texture_surface = NULL;
 	DX8_ErrorCode(_MissingTexture->GetSurfaceLevel(0, &texture_surface));
 	D3DSURFACE_DESC texture_surface_desc;
@@ -51,10 +65,22 @@ IDirect3DSurface9* MissingTexture::_Create_Missing_Surface()
 	DX8CALL(UpdateSurface(texture_surface, NULL, surface, NULL));
 	texture_surface->Release();
 	return surface;
+#else
+	VK::Surface ret = {};
+	ret.width = missing_image_width;
+	ret.height = missing_image_height;
+	ret.format = WW3DFormat_To_D3DFormat(WW3D_FORMAT_A8R8G8B8);
+	ret.buffer.resize(missing_image_width * missing_image_height * sizeof(uint32_t));
+	uint32_t* bufpix = (uint32_t*)ret.buffer.data();
+	for (uint32_t i = 0; i < missing_image_width * missing_image_height; ++i)
+		bufpix[i] = 0x7FFF00FF;
+	return ret;
+#endif
 }
 
 void MissingTexture::_Init()
 {
+#if 0
 	WWASSERT(!_MissingTexture);
 
 	IDirect3DTexture9* tex=DX8Wrapper::_Create_DX8_Texture
@@ -113,49 +139,15 @@ void MissingTexture::_Init()
 	}
 
 	_MissingTexture=tex;
-/*
-	//Load an 8-bit tga and generate text representation
-	FILE *fp;
-	fp=fopen("missing.tga","rb");
-	if (fp)
-	{
-		char image[128*128];	//make enough storage for image and palette
-		char palette[256*3];
-		fread(image,18,1,fp);	//skip over the header
-		fread(palette,256,3,fp);	//read the palette
-		fread(image,1,128*128,fp);
-		FILE *output=fopen("missing.txt","w");
-		fprintf(output,"palette:\n");
-		for (int i=0; i<256; i++)
-		{	int color=(((int)palette[i*3+0] & 0x000000ff)|(((int)palette[i*3+1] << 8)&0x0000ff00)|(((int)palette[i*3+2] << 16)&0x00ff0000)) | 0x7f000000;
-			fprintf(output,"0x%.8X",color);
-			if ((i&7) == 7)	//check for end of 8 element line
-				fprintf(output,",\n");	//new line
-			else
-				fprintf(output,",");	//continue existing line
-		}
-		fprintf(output,"image:\n");
-		for (int y=0; y<128; y++)
-		{
-			for (int x=0; x<32; x++)
-			{	int color=*((int *)(&image[y*128+x*4]));
-				fprintf(output,"0x%.8X",color);
-				if ((x&7)==7)	//check for end of 8 element line
-					fprintf(output,",\n");	//new line
-				else
-					fprintf(output,",");	//continue existing line
-			}
-		}
-		fclose(output);
-		fclose(fp);
-	}
-*/
+#endif
 }
 
 void MissingTexture::_Deinit()
 {
+#ifdef INFO_VULKAN
 	_MissingTexture->Release();
 	_MissingTexture=0;
+#endif
 }
 
 static unsigned int missing_image_palette[]={

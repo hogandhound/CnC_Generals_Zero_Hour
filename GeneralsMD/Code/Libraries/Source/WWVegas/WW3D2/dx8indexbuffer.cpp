@@ -44,6 +44,7 @@
 #include "sphere.h"
 #include "thread.h"
 #include "wwmemlog.h"
+#include "VkBufferTools.h"
 
 #define DEFAULT_IB_SIZE 5000
 
@@ -76,6 +77,7 @@ IndexBufferClass::IndexBufferClass(unsigned type_, unsigned short index_count_)
 	WWASSERT(type==BUFFER_TYPE_DX8 || type==BUFFER_TYPE_SORTING);
 	WWASSERT(index_count);
 
+	buffer.resize(index_count);
 	_IndexBufferCount++;
 	_IndexBufferTotalIndices+=index_count;
 	_IndexBufferTotalSize+=index_count*sizeof(unsigned short);
@@ -188,22 +190,7 @@ IndexBufferClass::WriteLockClass::WriteLockClass(IndexBufferClass* index_buffer_
 	WWASSERT(index_buffer);
 	WWASSERT(!index_buffer->Engine_Refs());
 	index_buffer->Add_Ref();
-	switch (index_buffer->Type()) {
-	case BUFFER_TYPE_DX8:
-		DX8_Assert();
-		DX8_ErrorCode(static_cast<DX8IndexBufferClass*>(index_buffer)->Get_DX8_Index_Buffer()->Lock(
-			0,
-			index_buffer->Get_Index_Count()*sizeof(WORD),
-			(void**)&indices,
-			flags));
-		break;
-	case BUFFER_TYPE_SORTING:
-		indices=static_cast<SortingIndexBufferClass*>(index_buffer)->index_buffer;
-		break;
-	default:
-		WWASSERT(0);
-		break;
-	}
+	indices = index_buffer->Get_Indices();
 }
 
 // ----------------------------------------------------------------------------
@@ -217,7 +204,7 @@ IndexBufferClass::WriteLockClass::~WriteLockClass()
 	switch (index_buffer->Type()) {
 	case BUFFER_TYPE_DX8:
 		DX8_Assert();
-		DX8_ErrorCode(static_cast<DX8IndexBufferClass*>(index_buffer)->index_buffer->Unlock());
+		static_cast<DX8IndexBufferClass*>(index_buffer)->Upload(0,0);
 		break;
 	case BUFFER_TYPE_SORTING:
 		break;
@@ -235,26 +222,11 @@ IndexBufferClass::AppendLockClass::AppendLockClass(IndexBufferClass* index_buffe
 	index_buffer(index_buffer_)
 {
 	DX8_THREAD_ASSERT();
-	WWASSERT(start_index+index_range<=index_buffer->Get_Index_Count());
+	WWASSERT(start_index + index_range <= index_buffer->Get_Index_Count());
 	WWASSERT(index_buffer);
 	WWASSERT(!index_buffer->Engine_Refs());
 	index_buffer->Add_Ref();
-	switch (index_buffer->Type()) {
-	case BUFFER_TYPE_DX8:
-		DX8_Assert();
-		DX8_ErrorCode(static_cast<DX8IndexBufferClass*>(index_buffer)->index_buffer->Lock(
-			start_index*sizeof(unsigned short),
-			index_range*sizeof(unsigned short),
-			(void**)&indices,
-			0));
-		break;
-	case BUFFER_TYPE_SORTING:
-		indices=static_cast<SortingIndexBufferClass*>(index_buffer)->index_buffer+start_index;
-		break;
-	default:
-		WWASSERT(0);
-		break;
-	}
+	indices = index_buffer->Get_Indices() + start_index;
 }
 
 // ----------------------------------------------------------------------------
@@ -265,7 +237,7 @@ IndexBufferClass::AppendLockClass::~AppendLockClass()
 	switch (index_buffer->Type()) {
 	case BUFFER_TYPE_DX8:
 		DX8_Assert();
-		DX8_ErrorCode(static_cast<DX8IndexBufferClass*>(index_buffer)->index_buffer->Unlock());
+		static_cast<DX8IndexBufferClass*>(index_buffer)->Upload(0,0);
 		break;
 	case BUFFER_TYPE_SORTING:
 		break;
@@ -282,63 +254,28 @@ IndexBufferClass::AppendLockClass::~AppendLockClass()
 //
 // ----------------------------------------------------------------------------
 
-DX8IndexBufferClass::DX8IndexBufferClass(unsigned short index_count_,UsageType usage)
+DX8IndexBufferClass::DX8IndexBufferClass(unsigned short index_count_)
 	:
 	IndexBufferClass(BUFFER_TYPE_DX8,index_count_)
 {
 	DX8_THREAD_ASSERT();
 	WWASSERT(index_count);
-	unsigned usage_flags=
-		D3DUSAGE_WRITEONLY|
-		((usage&USAGE_DYNAMIC) ? D3DUSAGE_DYNAMIC : 0)|
-		((usage&USAGE_NPATCHES) ? D3DUSAGE_NPATCHES : 0)|
-		((usage&USAGE_SOFTWAREPROCESSING) ? D3DUSAGE_SOFTWAREPROCESSING : 0);
-	if (!DX8Wrapper::Get_Current_Caps()->Support_TnL()) {
-		usage_flags|=D3DUSAGE_SOFTWAREPROCESSING;
-	}
-
-	HRESULT ret=DX8Wrapper::_Get_D3D_Device8()->CreateIndexBuffer(
-		sizeof(WORD)*index_count,
-		usage_flags,
-		D3DFMT_INDEX16,
-		(usage&USAGE_DYNAMIC) ? D3DPOOL_DEFAULT : D3DPOOL_MANAGED,
-		&index_buffer, nullptr);
-
-	if (SUCCEEDED(ret)) {
-		return;
-	}
-
-	WWDEBUG_SAY(("Index buffer creation failed, trying to release assets...\n"));
-
-	// Vertex buffer creation failed, so try releasing least used textures and flushing the mesh cache.
-
-	// Free all textures that haven't been used in the last 5 seconds
-	TextureClass::Invalidate_Old_Unused_Textures(5000);
-
-	// Invalidate the mesh cache
-	WW3D::_Invalidate_Mesh_Cache();
-
-	// Try again...
-	ret=DX8Wrapper::_Get_D3D_Device8()->CreateIndexBuffer(
-		sizeof(WORD)*index_count,
-		usage_flags,
-		D3DFMT_INDEX16,
-		(usage&USAGE_DYNAMIC) ? D3DPOOL_DEFAULT : D3DPOOL_MANAGED,
-		&index_buffer, nullptr);
-
-	if (SUCCEEDED(ret)) {
-		WWDEBUG_SAY(("...Index buffer creation succesful\n"));
-	}
-
-	// If it still fails it is fatal
-	DX8_ErrorCode(ret);
 }
 
 // ----------------------------------------------------------------------------
 
 DX8IndexBufferClass::~DX8IndexBufferClass()
 {
-	index_buffer->Release();
+	DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(index_buffer);
+}
+
+void DX8IndexBufferClass::Upload(size_t size, size_t offset)
+{
+	if (index_buffer.buffer)
+		DX8Wrapper::target.PushSingleFrameBuffer(index_buffer);
+	if (size == 0)
+		size = buffer.size();
+	VkBufferTools::CreateIndexBuffer(&DX8Wrapper::target, size * sizeof(uint16_t), buffer.data() + offset, index_buffer);
 }
 
 // ----------------------------------------------------------------------------
@@ -353,15 +290,13 @@ SortingIndexBufferClass::SortingIndexBufferClass(unsigned short index_count_)
 {
 	WWMEMLOG(MEM_RENDERER);
 	WWASSERT(index_count);
-
-	index_buffer=W3DNEWARRAY unsigned short[index_count];
+	buffer.resize(index_count);
 }
 
 // ----------------------------------------------------------------------------
 
 SortingIndexBufferClass::~SortingIndexBufferClass()
 {
-	delete[] index_buffer;
 }
 
 // ----------------------------------------------------------------------------
@@ -425,26 +360,7 @@ DynamicIBAccessClass::WriteLockClass::WriteLockClass(DynamicIBAccessClass* ib_ac
 {
 	DX8_THREAD_ASSERT();
 	DynamicIBAccess->IndexBuffer->Add_Ref();
-	switch (DynamicIBAccess->Get_Type()) {
-	case BUFFER_TYPE_DYNAMIC_DX8:
-		WWASSERT(DynamicIBAccess);
-//		WWASSERT(!dynamic_dx8_index_buffer->Engine_Refs());
-		DX8_Assert();
-		DX8_ErrorCode(
-			static_cast<DX8IndexBufferClass*>(DynamicIBAccess->IndexBuffer)->Get_DX8_Index_Buffer()->Lock(
-			DynamicIBAccess->IndexBufferOffset*sizeof(WORD),
-			DynamicIBAccess->Get_Index_Count()*sizeof(WORD),
-			(void**)&Indices,
-			!DynamicIBAccess->IndexBufferOffset ? D3DLOCK_DISCARD : D3DLOCK_NOOVERWRITE));
-		break;
-	case BUFFER_TYPE_DYNAMIC_SORTING:
-		Indices=static_cast<SortingIndexBufferClass*>(DynamicIBAccess->IndexBuffer)->index_buffer;
-		Indices+=DynamicIBAccess->IndexBufferOffset;
-		break;
-	default:
-		WWASSERT(0);
-		break;
-	}
+	Indices = DynamicIBAccess->IndexBuffer->Get_Indices() + DynamicIBAccess->IndexBufferOffset;
 }
 
 DynamicIBAccessClass::WriteLockClass::~WriteLockClass()
@@ -452,8 +368,7 @@ DynamicIBAccessClass::WriteLockClass::~WriteLockClass()
 	DX8_THREAD_ASSERT();
 	switch (DynamicIBAccess->Get_Type()) {
 	case BUFFER_TYPE_DYNAMIC_DX8:
-		DX8_Assert();
-		DX8_ErrorCode(static_cast<DX8IndexBufferClass*>(DynamicIBAccess->IndexBuffer)->Get_DX8_Index_Buffer()->Unlock());
+		static_cast<DX8IndexBufferClass*>(DynamicIBAccess->IndexBuffer)->Upload(DynamicIBAccess->IndexCount, DynamicIBAccess->IndexBufferOffset);
 		break;
 	case BUFFER_TYPE_DYNAMIC_SORTING:
 		break;
@@ -486,14 +401,9 @@ void DynamicIBAccessClass::Allocate_DX8_Dynamic_Buffer()
 
 	// Create a new vb if one doesn't exist currently
 	if (!_DynamicDX8IndexBuffer) {
-		unsigned usage=DX8IndexBufferClass::USAGE_DYNAMIC;
-		if (DX8Wrapper::Get_Current_Caps()->Support_NPatches()) {
-			usage|=DX8IndexBufferClass::USAGE_NPATCHES;
-		}
 
 		_DynamicDX8IndexBuffer=NEW_REF(DX8IndexBufferClass,(
-			_DynamicDX8IndexBufferSize,
-			(DX8IndexBufferClass::UsageType)usage));
+			_DynamicDX8IndexBufferSize));
 		_DynamicDX8IndexBufferOffset=0;
 	}
 

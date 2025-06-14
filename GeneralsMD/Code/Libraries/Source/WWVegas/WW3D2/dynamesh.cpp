@@ -327,13 +327,22 @@ void DynamicMeshModel::Render(RenderInfoClass & rinfo)
 		SphereClass sphere(Vector3(0.0f,0.0f,0.0f),0.0f);
 		Get_Bounding_Sphere(&sphere); 
 
+		DX8Wrapper::Apply_Render_State_Changes();
 		// If no texture, shader or material arrays for this pass just draw and go to next pass
 		if (!texture_array0 && !texture_array1 && !material_array && !shader_array) {
 			if (buffer_type==BUFFER_TYPE_DYNAMIC_SORTING) {
 				SortingRendererClass::Insert_Triangles(sphere,0, DynamicMeshPNum, 0, DynamicMeshVNum);
 			}
 			else {
+				auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_vb.FVF_Info().FVF);
+				assert(pipelines.size() == 1);
+				switch (pipelines[0]) {
+				case 0:
+				default: assert(false);
+				}
+#ifdef INFO_VULKAN
 				DX8Wrapper::Draw_Triangles(0, DynamicMeshPNum, 0, DynamicMeshVNum);
+#endif
 			}
 			continue;
 		}
@@ -373,11 +382,19 @@ void DynamicMeshModel::Render(RenderInfoClass & rinfo)
 						1 + max_vert_idx - min_vert_idx);
 				}
 				else {
+					auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_vb.FVF_Info().FVF);
+					assert(pipelines.size() == 1);
+					switch (pipelines[0]) {
+					case 0:
+					default: assert(false);
+					}
+#ifdef INFO_VULKAN
 					DX8Wrapper::Draw_Triangles(
 						(start_tri_idx * 3),
 						(1 + cur_tri_idx - start_tri_idx), 
 						min_vert_idx, 
 						1 + max_vert_idx - min_vert_idx);
+#endif
 				}
 				start_tri_idx = next_tri_idx;
 				min_vert_idx = DynamicMeshVNum - 1;
@@ -431,7 +448,7 @@ void DynamicMeshClass::Render(RenderInfoClass & rinfo)
 		const FrustumClass & frustum = rinfo.Camera.Get_Frustum();
 
 		if (CollisionMath::Overlap_Test(frustum, Get_Bounding_Box()) != CollisionMath::OUTSIDE) {
-			DX8Wrapper::Set_Transform(D3DTS_WORLD, Transform);
+			DX8Wrapper::Set_Transform(VkTS::WORLD, Transform);
 			Model->Render(rinfo);
 		}
 	}

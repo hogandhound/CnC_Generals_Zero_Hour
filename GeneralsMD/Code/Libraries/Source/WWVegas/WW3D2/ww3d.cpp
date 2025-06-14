@@ -39,7 +39,6 @@
  *   WW3D::Init -- Initialize the WW3D Library                                                 *
  *   WW3D::Shutdown -- shutdown the WW3D Library                                               *
  *   WW3D::Set_Render_Device -- set the render device being currently used                     *
- *   WW3D::Set_Next_Render_Device -- just go to the next device in the list                    *
  *   WW3D::Set_Device_Resolution -- set the current resolution and bitdepth                    *
  *   WW3D::Get_Render_Device -- Get the index of the current render device                     *
  *   WW3D::Get_Render_Device_Desc -- returns description of the current render device          *
@@ -453,28 +452,6 @@ WW3DErrorType WW3D::Set_Render_Device(int dev, int width, int height, int bits, 
 
 
 /***********************************************************************************************
- * WW3D::Set_Next_Render_Device -- just go to the next device in the list                      *
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   3/26/98    GTH : Created.                                                                 *
- *=============================================================================================*/
-WW3DErrorType WW3D::Set_Next_Render_Device(void)
-{
-	bool success = DX8Wrapper::Set_Next_Render_Device();
-	if (success) {
-		return WW3D_ERROR_OK;
-	} else {
-		return WW3D_ERROR_INITIALIZATION_FAILED;
-	}
-}
-
-/***********************************************************************************************
  * WW3D::Get_Window -- returns the handle of the render window.										  *
  *                                                                                             *
  * INPUT:                                                                                      *
@@ -672,80 +649,6 @@ void WW3D::Get_Device_Resolution(int & set_w,int & set_h,int & set_bits,bool & s
 	DX8Wrapper::Get_Device_Resolution(set_w,set_h,set_bits,set_windowed);
 }
 
-
-/***********************************************************************************************
- * WW3D::Registry_Save_Render_Device -- Saves settings to Registry
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   12/3/98    BMG : Created.                                                                 *
- *   1/25/2001  gth : converted to dx8                                                         *
- *=============================================================================================*/
-WW3DErrorType WW3D::Registry_Save_Render_Device( const char * sub_key )
-{
-	bool success = DX8Wrapper::Registry_Save_Render_Device(sub_key);
-	if (success) {
-		return WW3D_ERROR_OK;
-	} else {
-		return WW3D_ERROR_INITIALIZATION_FAILED;
-	}
-}
-
-/***********************************************************************************************
- * WW3D::Registry_Save_Render_Device -- Saves settings to Registry
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   12/3/98    BMG : Created.                                                                 *
- *=============================================================================================*/
-WW3DErrorType WW3D::Registry_Save_Render_Device( const char *sub_key, int device, int width, int height, int depth, bool windowed, int texture_depth )
-{
-	bool success = DX8Wrapper::Registry_Save_Render_Device(sub_key,device,width,height,depth,windowed,texture_depth);
-	if (success) {
-		return WW3D_ERROR_OK;
-	} else {
-		return WW3D_ERROR_INITIALIZATION_FAILED;
-	}
-}
-
-
-/***********************************************************************************************
- * WW3D::Registry_Load_Render_Device -- Loads settings from Registry
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   12/3/98    BMG : Created.                                                                 *
- *=============================================================================================*/
-WW3DErrorType WW3D::Registry_Load_Render_Device( const char * sub_key, bool resize_window )
-{
-	bool success = DX8Wrapper::Registry_Load_Render_Device(sub_key,resize_window);
-	if (success) {
-		return WW3D_ERROR_OK;
-	} else {
-		return WW3D_ERROR_INITIALIZATION_FAILED;
-	}
-}
-
-bool WW3D::Registry_Load_Render_Device( const char * sub_key, char *device, int device_len, int &width, int &height, int &depth, int &windowed, int &texture_depth)
-{
-	return DX8Wrapper::Registry_Load_Render_Device(sub_key,device,device_len,width,height,depth,windowed,texture_depth);
-}
-
 void WW3D::_Invalidate_Mesh_Cache()
 {
 	TheDX8MeshRenderer.Invalidate();
@@ -796,14 +699,22 @@ WW3DErrorType WW3D::Begin_Render(bool clear,bool clearz,const Vector3 & color, f
 
 	WWPROFILE("WW3D::Begin_Render");
 	WWASSERT(IsInitted);
+#ifdef INFO_VULKAN
 	HRESULT hr;
+#endif
 
 	SNAPSHOT_SAY(("==========================================\r\n"));
 	SNAPSHOT_SAY(("========== WW3D::Begin_Render ============\r\n"));
 	SNAPSHOT_SAY(("==========================================\r\n\r\n"));
 
+	DX8Wrapper::_GetRenderTarget().StartRender();
+#ifdef INFO_VULKAN
 	if (DX8Wrapper::_Get_D3D_Device8() && (hr=DX8Wrapper::_Get_D3D_Device8()->TestCooperativeLevel()) != D3D_OK)
+#else
+	if (!DX8Wrapper::_GetRenderTarget().currentCmd)
+#endif
 	{
+#ifdef INFO_VULKAN
         // If the device was lost, do not render until we get it back
         if( D3DERR_DEVICELOST == hr )
             return WW3D_ERROR_GENERIC;	//other app has the device
@@ -813,6 +724,7 @@ WW3DErrorType WW3D::Begin_Render(bool clear,bool clearz,const Vector3 & color, f
         {
 			DX8Wrapper::Reset_Device();
         }
+#endif
 
 		return WW3D_ERROR_GENERIC;
 	}
@@ -841,16 +753,16 @@ WW3DErrorType WW3D::Begin_Render(bool clear,bool clearz,const Vector3 & color, f
 
 	// If we want to clear the screen, we need to set the viewport to include the entire screen:
 	if (clear || clearz) {
-		D3DVIEWPORT9 vp;
+		VkViewport vp;
 		int width, height, bits;
 		bool windowed;
 		WW3D::Get_Render_Target_Resolution(width, height, bits, windowed);
-		vp.X = 0;
-		vp.Y = 0;
-		vp.Width = width;
-		vp.Height = height;
-		vp.MinZ = 0.0f;;
-		vp.MaxZ = 1.0f;
+		vp.x = 0;
+		vp.y = 0;
+		vp.width = width;
+		vp.height = height;
+		vp.minDepth = 0.0f;;
+		vp.maxDepth = 1.0f;
 		DX8Wrapper::Set_Viewport(&vp);
 		DX8Wrapper::Clear(clear, clearz, color, dest_alpha);
 	}
@@ -959,13 +871,13 @@ WW3DErrorType WW3D::Render(SceneClass * scene,CameraClass * cam,bool clear,bool 
 	// set the rendering mode
 	switch(scene->Get_Polygon_Mode()) {
 		case SceneClass::POINT:
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_POINT);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,VK_POLYGON_MODE_POINT);
 			break;
 		case SceneClass::LINE:
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE, VK_POLYGON_MODE_LINE);
 			break;
 		case SceneClass::FILL:
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_SOLID);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE, VK_POLYGON_MODE_FILL);
 			break;
 	}
 
@@ -1019,7 +931,7 @@ WW3DErrorType WW3D::Render(
 	rinfo.Camera.Apply();
 
 	// set the rendering mode
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_SOLID);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE, VK_POLYGON_MODE_FILL);
 
 	// Install the lighting environment if one is supplied
 	if (rinfo.light_environment != NULL) {
@@ -1124,23 +1036,6 @@ WW3DErrorType WW3D::End_Render(bool flip_frame)
 }
 
 
-/***********************************************************************************************
- * WW3D::Flip_To_Primary                                                                       *
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   6/20/01    DEL : Created.                                                                 *
- *=============================================================================================*/
-void WW3D::Flip_To_Primary(void)
-{
-	DX8Wrapper::Flip_To_Primary();
-}
-
 
 /***********************************************************************************************
  * WW3D::Get_Last_Frame_Poly_Count -- returns the number of polys submitted in the previous fr *
@@ -1199,24 +1094,6 @@ void WW3D::Sync(unsigned int sync_time)
 void WW3D::Set_Ext_Swap_Interval(long swap)
 {
 	DX8Wrapper::Set_Swap_Interval(swap);
-}
-
-
-/***********************************************************************************************
- * WW3D::Get_Ext_Swap_Interval -- Queries the swap interval the device is aiming sync for.     *
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:   Not supported by all rendering devices.                                         *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   5/07/98    NH : Created.                                                                  *
- *=============================================================================================*/
-long WW3D::Get_Ext_Swap_Interval(void)
-{
-	return DX8Wrapper::Get_Swap_Interval();
 }
 
 
@@ -1343,6 +1220,7 @@ void WW3D::Make_Screen_Shot( const char * filename_base , const float gamma, con
 	for (i = 0; i < 256; i++) {
 		gamma_lut[i] = (unsigned char) (256.0f * powf(i / 256.0f, recip));
 	}
+#ifdef LOWP_VULKAN
 
 	// Lock front buffer and copy
 
@@ -1455,6 +1333,7 @@ void WW3D::Make_Screen_Shot( const char * filename_base , const float gamma, con
 	}
 
 	delete [] image;
+#endif
 }
 
 
@@ -1680,6 +1559,7 @@ void WW3D::Update_Movie_Capture( void )
 	WWDEBUG_SAY(( "Updating\n"));
 
 		// Lock front buffer and copy
+#ifdef LOWP_VULKAN
 
 	IDirect3DSurface9 *fb;
 	fb=DX8Wrapper::_Get_DX8_Front_Buffer();
@@ -1718,6 +1598,7 @@ void WW3D::Update_Movie_Capture( void )
 	fb->Release();
 
 	Movie->Grab(image);
+#endif
 #endif
 }
 

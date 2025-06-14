@@ -47,6 +47,8 @@
 
 #include "always.h"
 #include "texture.h"
+#include "WWVKStructs.h"
+#include "formconv.h"
 
 class StringClass;
 struct IDirect3DTexture9;
@@ -61,11 +63,11 @@ public:
 	// Modify given texture size to nearest valid size on current hardware.
 	static void Validate_Texture_Size(unsigned& width, unsigned& height, unsigned& depth);
 
-	static IDirect3DTexture9* Load_Thumbnail(
+	static VK::Texture Load_Thumbnail(
 		const StringClass& filename,const Vector3& hsv_shift);
 //		WW3DFormat texture_format);	// Pass WW3D_FORMAT_UNKNOWN if you don't care
 
-	static IDirect3DSurface9* Load_Surface_Immediate(
+	static VK::Surface Load_Surface_Immediate(
 		const StringClass& filename,
 		WW3DFormat surface_format,		// Pass WW3D_FORMAT_UNKNOWN if you don't care
 		bool allow_compression);
@@ -220,7 +222,7 @@ class TextureLoadTaskClass : public TextureLoadTaskListNodeClass
 		PriorityType			Get_Priority				(void) const		{ return Priority;		}
 		StateType				Get_State					(void) const		{ return State;			}
 
-		WW3DFormat				Get_Format					(void) const		{ return Format;			}
+		WW3DFormat				Get_Format					(void) const		{ return D3DFormat_To_WW3DFormat( Surface.format); }
 		unsigned int			Get_Width					(void) const		{ return Width;			}
 		unsigned int			Get_Height					(void) const		{ return Height;			}
 		unsigned int			Get_Mip_Level_Count		(void) const		{ return MipLevelCount; }
@@ -230,7 +232,7 @@ class TextureLoadTaskClass : public TextureLoadTaskListNodeClass
 		unsigned int			Get_Locked_Surface_Pitch(unsigned int level) const;
 
 		TextureBaseClass *	Peek_Texture				(void)				{ return Texture;			}
-		IDirect3DTexture9	*	Peek_D3D_Texture			(void)				{ return (IDirect3DTexture9*)D3DTexture;		}
+		VK::Texture	Peek_D3D_Texture			(void)				{ return D3DTexture;		}
 
 		void						Set_Type						(TaskType t)		{ Type		= t;			}
 		void						Set_Priority				(PriorityType p)	{ Priority	= p;			}
@@ -255,8 +257,13 @@ class TextureLoadTaskClass : public TextureLoadTaskListNodeClass
 		void						Apply							(bool initialize);
 		
 		TextureBaseClass*		Texture;
+#ifdef INFO_VULKAN
 		IDirect3DBaseTexture9*	D3DTexture;
-		WW3DFormat				Format;
+#else
+		VK::Texture D3DTexture = {};
+		VK::Surface Surface = {};
+#endif
+		//WW3DFormat				Format;
 
 		unsigned int			Width;
 		unsigned	int			Height;
@@ -270,65 +277,6 @@ class TextureLoadTaskClass : public TextureLoadTaskListNodeClass
 		TaskType					Type;
 		PriorityType			Priority;
 		StateType				State;
-};
-
-class CubeTextureLoadTaskClass : public TextureLoadTaskClass
-{
-public:
-	CubeTextureLoadTaskClass();
-
-	virtual void			Destroy						(void);
-	virtual void			Init							(TextureBaseClass *tc, TaskType type, PriorityType priority);
-	virtual void			Deinit						(void);
-
-protected:
-	virtual bool			Begin_Compressed_Load	(void);
-	virtual bool			Begin_Uncompressed_Load	(void);
-
-	virtual bool			Load_Compressed_Mipmap	(void);
-//	virtual bool			Load_Uncompressed_Mipmap(void);
-
-	virtual void			Lock_Surfaces				(void);
-	virtual void			Unlock_Surfaces			(void);
-
-private:
-	unsigned char*			Get_Locked_CubeMap_Surface_Pointer(unsigned int face, unsigned int level);
-	unsigned int			Get_Locked_CubeMap_Surface_Pitch(unsigned int face, unsigned int level) const;
-
-	IDirect3DCubeTexture9*	Peek_D3D_Cube_Texture(void)				{ return (IDirect3DCubeTexture9*)D3DTexture;		}
-
-	unsigned char*			LockedCubeSurfacePtr[6][MIP_LEVELS_MAX];
-	unsigned int			LockedCubeSurfacePitch[6][MIP_LEVELS_MAX];
-};
-
-class VolumeTextureLoadTaskClass : public TextureLoadTaskClass
-{
-public:
-	VolumeTextureLoadTaskClass();
-
-	virtual void			Destroy						(void);
-	virtual void			Init							(TextureBaseClass *tc, TaskType type, PriorityType priority);
-
-protected:
-	virtual bool			Begin_Compressed_Load	(void);
-	virtual bool			Begin_Uncompressed_Load	(void);
-
-	virtual bool			Load_Compressed_Mipmap	(void);
-//	virtual bool			Load_Uncompressed_Mipmap(void);
-
-	virtual void			Lock_Surfaces				(void);
-	virtual void			Unlock_Surfaces			(void);
-
-private:
-	unsigned char*			Get_Locked_Volume_Pointer(unsigned int level);
-	unsigned int			Get_Locked_Volume_Row_Pitch(unsigned int level);
-	unsigned int			Get_Locked_Volume_Slice_Pitch(unsigned int level);
-
-	IDirect3DVolumeTexture9*	Peek_D3D_Volume_Texture(void)				{ return (IDirect3DVolumeTexture9*)D3DTexture;		}
-
-	unsigned	int			LockedSurfaceSlicePitch[MIP_LEVELS_MAX];
-
-	unsigned int		Depth;
 };
 
 #endif

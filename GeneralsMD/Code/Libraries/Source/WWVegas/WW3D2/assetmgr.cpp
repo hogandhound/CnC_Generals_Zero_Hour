@@ -114,7 +114,6 @@
 #include <ini.h>
 #include <windows.h>
 #include <stdio.h>
-#include <D3dx9core.h>
 #include "texture.h"
 #include "wwprofile.h"
 #include "assetstatus.h"
@@ -316,7 +315,8 @@ static void Log_Textures(bool inited,unsigned& total_count, unsigned& total_mem)
 	for (ite.First();!ite.Is_Done();ite.Next()) {
 		TextureClass * tex=ite.Peek_Value();
 		if (tex->Is_Initialized()!=inited) continue;
-
+		//Not planning on actually implementing this
+#ifdef INFO_VULKAN
 		D3DSURFACE_DESC desc;
 		IDirect3DTexture9* d3d_texture=tex->Peek_D3D_Texture();
 		if (!d3d_texture) continue;
@@ -378,6 +378,7 @@ static void Log_Textures(bool inited,unsigned& total_count, unsigned& total_mem)
 			number,
 			tex->Num_Refs()));
 
+#endif
 	}	
 }
 
@@ -1120,14 +1121,6 @@ TextureClass * WW3DAssetManager::Get_Texture
 		if (type==TextureBaseClass::TEX_REGULAR)
 		{
 			tex = NEW_REF (TextureClass, (lower_case_name, NULL, mip_level_count, texture_format, allow_compression, allow_reduction));
-		}
-		else if (type==TextureBaseClass::TEX_CUBEMAP)
-		{
-			tex = NEW_REF (CubeTextureClass, (lower_case_name, NULL, mip_level_count, texture_format, allow_compression, allow_reduction));
-		}
-		else if (type==TextureBaseClass::TEX_VOLUME)
-		{
-			tex = NEW_REF (VolumeTextureClass, (lower_case_name, NULL, mip_level_count, texture_format, allow_compression, allow_reduction));
 		}
 		TextureHash.Insert(tex->Get_Texture_Name(),tex);
 	}

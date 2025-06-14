@@ -102,7 +102,6 @@
 #include "GameClient/GUICallbacks.h"
 
 #include "GameNetwork/NetworkInterface.h"
-#include "GameNetwork/WOLBrowser/WebBrowser.h"
 #include "GameNetwork/LANAPI.h"
 #include "GameNetwork/GameSpy/GameResultsThread.h"
 
@@ -169,7 +168,6 @@ void initSubsystem(SUBSYSTEM*& sysref, AsciiString name, SUBSYSTEM* sys, Xfer *p
 
 //-------------------------------------------------------------------------------------------------
 extern HINSTANCE ApplicationHInstance;  ///< our application instance
-extern CComModule _Module;
 
 //-------------------------------------------------------------------------------------------------
 static void updateTGAtoDDS();
@@ -189,8 +187,6 @@ GameEngine::GameEngine( void )
 	m_maxFPS = 0;
 	m_quitting = FALSE;
 	m_isActive = FALSE;
-
-	_Module.Init(NULL, ApplicationHInstance);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -227,8 +223,6 @@ GameEngine::~GameEngine()
 		delete TheGameLODManager;
 
 	Drawable::killStaticImages();
-
-	_Module.Term();
 
 #ifdef PERF_TIMERS
 	PerfGather::termPerfDump();
@@ -531,7 +525,6 @@ void GameEngine::init( int argc, char *argv[] )
 
 
 		initSubsystem(TheActionManager,"TheActionManager", new ActionManager(), NULL);
-		//initSubsystem((CComObject<WebBrowser> *)TheWebBrowser,"(CComObject<WebBrowser> *)TheWebBrowser", (CComObject<WebBrowser> *)createWebBrowser(), NULL);
 		initSubsystem(TheGameStateMap,"TheGameStateMap", new GameStateMap, NULL, NULL, NULL );
 		initSubsystem(TheGameState,"TheGameState", new GameState, NULL, NULL, NULL );
 
@@ -839,6 +832,15 @@ void GameEngine::execute( void )
 						RELEASE_CRASH((e.mFailureMessage));
 					else
 						RELEASE_CRASH(("Uncaught Exception in GameEngine::update"));
+				}
+				catch (const std::exception& ex) {
+					// ...
+					OutputDebugStringA(ex.what());
+
+				}
+				catch (const std::string& ex) {
+					// ...
+					OutputDebugStringA(ex.c_str());
 				}
 				catch (...)
 				{

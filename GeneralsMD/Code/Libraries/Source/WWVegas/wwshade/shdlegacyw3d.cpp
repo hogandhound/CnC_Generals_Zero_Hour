@@ -36,7 +36,6 @@
  * Functions:                                                                                  *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#include <d3dx9math.h>
 #include "dx8fvf.h"
 #include "dx8wrapper.h"
 #include "assetmgr.h"
@@ -484,7 +483,7 @@ void Shd6LegacyW3DClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 {
 	SNAPSHOT_SAY(("Shd6LegacyW3DClass::Apply_Shared(pass: %d)\n",pass));
 	// fixed function uses pass through by default
-	DX8Wrapper::Set_DX8_Texture_Stage_State(0, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_PASSTHRU);
+	DX8Wrapper::Set_DX8_Texture_Stage_State(0, VKTSS_TEXCOORDINDEX, VKTSS_TCI_PASSTHRU);
 }
 
 //**********************************************************************************************
@@ -500,7 +499,15 @@ void Shd6LegacyW3DClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 	SNAPSHOT_SAY(("legacyshader:DX8Wrapper::Set_Shader(%s)\n",Shaders[cur_pass].Get_Description(str)));
 	DX8Wrapper::Set_Shader(Shaders[cur_pass]);
 
-	DX8Wrapper::Set_Vertex_Shader(FVF);
+
+	//DX8Wrapper::Set_Vertex_Shader(FVF);
+	switch (FVF)
+	{
+	case DX8_FVF_XYZNDUV2:
+		DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_FVF_NDUV2);
+		break;
+	default: assert(false);
+	}
 
 	SNAPSHOT_SAY(("legacyshader:DX8Wrapper::Set_Material(%s)\n",Materials[cur_pass] ? Materials[cur_pass]->Get_Name() : "NULL"));
 	DX8Wrapper::Set_Material(Materials[cur_pass]);
@@ -508,6 +515,33 @@ void Shd6LegacyW3DClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 	for (int stage=0;stage<MeshMatDescClass::MAX_TEX_STAGES;++stage) {
 		SNAPSHOT_SAY(("legacyshader:DX8Wrapper::Set_Texture(%d,%s)\n",stage,Textures[cur_pass][stage] ? Textures[cur_pass][stage]->Get_Full_Path() : "NULL"));
 		DX8Wrapper::Set_Texture(stage, Textures[cur_pass][stage]);
+	}
+}
+
+void Shd6LegacyW3DClass::Draw(int cur_pass, RenderInfoClass& rinfo, unsigned short start_index,
+	unsigned short polygon_count,
+	unsigned short min_vertex_index,
+	unsigned short vertex_count,
+	bool isStrip)
+{
+	assert(FVF & VKFVF_XYZ);
+	if ((FVF & VKFVF_DIFFUSE) && (FVF & VKFVF_NORMAL))
+	{
+
+	}
+	else if ((FVF & VKFVF_DIFFUSE))
+	{
+		assert(FVF & VKFVF_TEX1);
+		WorldMatrix push = {};
+		std::vector<VkDescriptorSet> sets;
+		WWVK_UpdateFVF_DUVDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(),
+			sets, &Textures[cur_pass][0]->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		//WWVK_DrawFVF_DUV_NI(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets, vertexCount, uv, uvOffset, push);;
+		
+	}
+	else if ((FVF & VKFVF_NORMAL))
+	{
+		assert(FVF & VKFVF_TEX1);
 	}
 }
 
@@ -536,28 +570,28 @@ void Shd6LegacyW3DClass::Copy_Vertex_Stream
 	** Append the UV coordinates to the vertex buffer
 	*/
 	int uvcount = 0;
-	if ((FVF&D3DFVF_TEX1) == D3DFVF_TEX1) {
+	if ((FVF&VKFVF_TEX1) == VKFVF_TEX1) {
 		uvcount = 1;
 	}
-	if ((FVF&D3DFVF_TEX2) == D3DFVF_TEX2) {
+	if ((FVF&VKFVF_TEX2) == VKFVF_TEX2) {
 		uvcount = 2;
 	}
-	if ((FVF&D3DFVF_TEX3) == D3DFVF_TEX3) {
+	if ((FVF&VKFVF_TEX3) == VKFVF_TEX3) {
 		uvcount = 3;
 	}
-	if ((FVF&D3DFVF_TEX4) == D3DFVF_TEX4) {
+	if ((FVF&VKFVF_TEX4) == VKFVF_TEX4) {
 		uvcount = 4;
 	}
-	if ((FVF&D3DFVF_TEX5) == D3DFVF_TEX5) {
+	if ((FVF&VKFVF_TEX5) == VKFVF_TEX5) {
 		uvcount = 5;
 	}
-	if ((FVF&D3DFVF_TEX6) == D3DFVF_TEX6) {
+	if ((FVF&VKFVF_TEX6) == VKFVF_TEX6) {
 		uvcount = 6;
 	}
-	if ((FVF&D3DFVF_TEX7) == D3DFVF_TEX7) {
+	if ((FVF&VKFVF_TEX7) == VKFVF_TEX7) {
 		uvcount = 7;
 	}
-	if ((FVF&D3DFVF_TEX8) == D3DFVF_TEX8) {
+	if ((FVF&VKFVF_TEX8) == VKFVF_TEX8) {
 		uvcount = 8;
 	}
 
@@ -565,7 +599,7 @@ void Shd6LegacyW3DClass::Copy_Vertex_Stream
 
 	for (unsigned i=0; i<vertex_count; ++i) 
 	{
-		if ((FVF&D3DFVF_XYZ)==D3DFVF_XYZ) {
+		if ((FVF&VKFVF_XYZ)==VKFVF_XYZ) {
 			if (vss.Locations) 
 			{
 				*(Vector3*)(vb+fi.Get_Location_Offset())=vss.Locations[i];
@@ -576,7 +610,7 @@ void Shd6LegacyW3DClass::Copy_Vertex_Stream
 			}
 		}
 
-		if ((FVF&D3DFVF_DIFFUSE)==D3DFVF_DIFFUSE) {
+		if ((FVF&VKFVF_DIFFUSE)==VKFVF_DIFFUSE) {
 			if (vss.DiffuseInt) 
 			{
 				*(unsigned int*)(vb+fi.Get_Diffuse_Offset())=vss.DiffuseInt[i];
@@ -587,7 +621,7 @@ void Shd6LegacyW3DClass::Copy_Vertex_Stream
 			}
 		}
 	
-		if ((FVF&D3DFVF_NORMAL)==D3DFVF_NORMAL) {
+		if ((FVF&VKFVF_NORMAL)==VKFVF_NORMAL) {
 			if (vss.Normals) 
 			{
 				*(Vector3*)(vb+fi.Get_Normal_Offset())=vss.Normals[i];

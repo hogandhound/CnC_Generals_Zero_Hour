@@ -949,15 +949,25 @@ void MeshClass::Render_Material_Pass(MaterialPassClass * pass,IndexBufferClass *
 			*/
 			int vertex_offset = Model->PolygonRendererList.Peek_Head()->Get_Vertex_Offset();
 			pass->Install_Materials();
-			
-			DX8Wrapper::Set_Transform(D3DTS_WORLD,Get_Transform());
-			DX8Wrapper::Set_Index_Buffer(dynamic_ib,vertex_offset);
 
+			DX8Wrapper::Set_Transform(VkTS::WORLD,Get_Transform());
+
+			DX8Wrapper::Set_Index_Buffer(dynamic_ib,vertex_offset);
+			DX8Wrapper::Apply_Render_State_Changes();
+
+			auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
+			assert(pipelines.size() == 1);
+			switch (pipelines[0]) {
+			case 0:
+			default: assert(false);
+			}
+#ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles(
 				0,
 				temp_apt.Count(),
 				min_v,
 				max_v-min_v+1);
+#endif
 			//MW: Need uninstall custom materials in case they leave D3D in unknown state
 			pass->UnInstall_Materials();
 		}
@@ -986,7 +996,7 @@ void MeshClass::Render_Material_Pass(MaterialPassClass * pass,IndexBufferClass *
 		DX8Wrapper::Set_Index_Buffer(ib,0);
 
 		SNAPSHOT_SAY(("Set_World_Transform\n"));
-		DX8Wrapper::Set_Transform(D3DTS_WORLD,Transform);
+		DX8Wrapper::Set_Transform(VkTS::WORLD,Transform);
 
 		DX8PolygonRendererListIterator it(&Model->PolygonRendererList);
 		while (!it.Is_Done()) {

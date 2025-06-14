@@ -54,10 +54,12 @@
 #include "shd8ssbumpdiff.psh_code.h"
 
 
+#ifdef INFO_VULKAN
 ShdHWVertexShader		Shd8BumpDiffClass::Vertex_Shader;
 ShdHWPixelShader		Shd8BumpDiffClass::Pixel_Shader;
 ShdHWPixelShader		Shd8BumpDiffClass::Self_Shadow_Pixel_Shader;
 ShdHWVertexShader		Shd8BumpDiffClass::Self_Shadow_Vertex_Shader;
+#endif
 Matrix4x4				Shd8BumpDiffClass::View_Projection_Matrix;
 
 Shd8BumpDiffClass::Shd8BumpDiffClass(const ShdDefClass* def)
@@ -113,6 +115,7 @@ void Shd8BumpDiffClass::Init(void)
 #endif
 	};
 
+#ifdef INFO_VULKAN
 	Pixel_Shader.Create(shd8bumpdiff_psh_code);
 
 	Vertex_Shader.Create
@@ -127,18 +130,23 @@ void Shd8BumpDiffClass::Init(void)
 		shd8ssbumpdiff_vsh_code,
 		vertex_shader_declaration
 	);
+#endif
 }
 
 void Shd8BumpDiffClass::Shutdown(void)
 {
+#ifdef INFO_VULKAN
 	Vertex_Shader.Destroy();
 	Pixel_Shader.Destroy();
 	Self_Shadow_Pixel_Shader.Destroy();
 	Self_Shadow_Vertex_Shader.Destroy();
+#endif
 }
 
 void Shd8BumpDiffClass::Apply_Shared(int cur_pass, RenderInfoClass& rinfo)
 {
+	DX8Wrapper::Set_Pipeline(cur_pass == 0 ? PIPELINE_WWVK_BumpDiff : PIPELINE_WWVK_SSBumpDiff);
+#ifdef INFO_VULKAN
 	// set vertex shader
 	if (cur_pass==0)
 	{
@@ -164,13 +172,16 @@ void Shd8BumpDiffClass::Apply_Shared(int cur_pass, RenderInfoClass& rinfo)
 
 	// set constants
 	DX8Wrapper::Set_Vertex_Shader_Constant(CV_CONST, D3DXVECTOR4(0.0f, 1.0f, 0.5f, 2.0f), 1);
+#else
+	DX8Wrapper::Set_Pipeline(cur_pass == 0 ? PIPELINE_WWVK_BumpDiff : PIPELINE_WWVK_SSBumpDiff);
+#endif
 
 	// calculate shader view projection matrix
 	Matrix4x4 view_matrix;
-	DX8Wrapper::Get_Transform(D3DTS_VIEW, view_matrix);
+	DX8Wrapper::Get_Transform(VkTS::VIEW, view_matrix);
 
 	Matrix4x4 proj_matrix;
-	DX8Wrapper::Get_Transform(D3DTS_PROJECTION, proj_matrix);
+	DX8Wrapper::Get_Transform(VkTS::PROJECTION, proj_matrix);
 
 	Matrix4x4::Multiply(proj_matrix, view_matrix, &View_Projection_Matrix);
 }
@@ -194,12 +205,13 @@ void Shd8BumpDiffClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 
 	// set vertex shader constants
 	Matrix4x4 world;
-	DX8Wrapper::Get_Transform(D3DTS_WORLD, world);
+	DX8Wrapper::Get_Transform(VkTS::WORLD, world);
 
 	Matrix4x4 world_view_proj_matrix;
 
 	Matrix4x4::Multiply(View_Projection_Matrix,world,&world_view_proj_matrix);
 
+#ifdef INFO_VULKAN
 	DX8Wrapper::Set_Vertex_Shader_Constant(CV_WORLD_VIEW_PROJECTION, &world_view_proj_matrix, 4);
 	DX8Wrapper::Set_Vertex_Shader_Constant(CV_WORLD, &world, 4);
 
@@ -211,6 +223,15 @@ void Shd8BumpDiffClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 	);
 
 	DX8Wrapper::Set_Vertex_Shader_Constant(CV_BUMPINESS, &Bumpiness, 1);
+#endif
+}
+
+void Shd8BumpDiffClass::Draw(int cur_pass, RenderInfoClass& rinfo, unsigned short start_index,
+	unsigned short polygon_count,
+	unsigned short min_vertex_index,
+	unsigned short vertex_count,
+	bool isStrip)
+{
 }
 
 unsigned Shd8BumpDiffClass::Get_Vertex_Stream_Count() const

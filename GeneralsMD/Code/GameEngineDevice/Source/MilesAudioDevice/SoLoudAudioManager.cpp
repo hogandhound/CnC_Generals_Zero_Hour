@@ -2414,6 +2414,21 @@ void SoLoudAudioManager::processPlayingList(void)
 		}
 	}
 
+
+	for (int i = 0; i < playQueue_.size(); ++i)
+	{
+		if (!m_binkHandle->queue.isCurrentlyPlaying(*playQueue_[i]))
+		{
+			delete playQueue_[i];
+			playQueue_.erase(playQueue_.begin());
+			i--;
+		}
+		else
+		{
+			break;
+		}
+	}
+
 	if (m_volumeHasChanged) {
 		m_volumeHasChanged = false;
 	}
@@ -3019,7 +3034,7 @@ void SoLoudAudioManager::playBinkStream(uint8_t* data, size_t len, float sampleR
 	}
 
 	SoLoud::Wav* wav = new SoLoud::Wav();
-	wav->loadRawWave((float*)data, (uint32_t)len, sampleRate, channels, true, false);
+	wav->loadRawWave((float*)data, (uint32_t)len, sampleRate, channels, true, true);
 	m_binkHandle->queue.play(*wav);
 	if (!m_digitalHandle.isValidVoiceHandle(m_binkHandle->m_handle))
 	{
@@ -3030,7 +3045,7 @@ void SoLoudAudioManager::playBinkStream(uint8_t* data, size_t len, float sampleR
 		if (!m_binkHandle->queue.isCurrentlyPlaying(*playQueue_[i]))
 		{
 			delete playQueue_[i];
-			playQueue_.erase(playQueue_.begin());
+			playQueue_.erase(playQueue_.begin() + i);
 			i--;
 		}
 		else

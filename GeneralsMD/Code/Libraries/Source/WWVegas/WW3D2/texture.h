@@ -55,6 +55,7 @@
 #include "wwstring.h"
 #include "vector3.h"
 #include "texturefilter.h"
+#include <VkRenderTarget.h>
 
 struct IDirect3DBaseTexture9;
 struct IDirect3DTexture9;
@@ -77,19 +78,9 @@ class TextureBaseClass : public RefCountClass
 	friend class DX8ZTextureTrackerClass;
 
 public:
-
-	enum PoolType 
-	{
-		POOL_DEFAULT=0,
-		POOL_MANAGED,
-		POOL_SYSTEMMEM
-	};
-
 	enum TexAssetType
 	{
-		TEX_REGULAR,
-		TEX_CUBEMAP,
-		TEX_VOLUME
+		TEX_REGULAR
 	};
 
 	// base constructor for derived classes
@@ -98,7 +89,6 @@ public:
 		unsigned width, 
 		unsigned height, 
 		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		PoolType pool=POOL_MANAGED,
 		bool rendertarget=false,
 		bool reducible=true
 	);
@@ -163,16 +153,12 @@ public:
 	void Invalidate();
 
 	// texture accessors (dx8)
-	IDirect3DBaseTexture9 *Peek_D3D_Base_Texture() const;
-	void Set_D3D_Base_Texture(IDirect3DBaseTexture9* tex);
-
-	PoolType Get_Pool() const { return Pool; }
-
-	bool Is_Missing_Texture();
+	const VK::Texture& Peek_D3D_Base_Texture() const;
+	void Set_D3D_Base_Texture(VK::Texture tex);
 
 	// Support for self managed textures
-	bool Is_Dirty() { WWASSERT(Pool==POOL_DEFAULT); return Dirty; };
-	void Set_Dirty() { WWASSERT(Pool==POOL_DEFAULT); Dirty=true; }
+	bool Is_Dirty() { return Dirty; };
+	void Set_Dirty() { Dirty=true; }
 	void Clean() { Dirty=false; };
 
 	void Set_HSV_Shift(const Vector3 &hsv_shift);
@@ -183,7 +169,7 @@ public:
 	unsigned Get_Reduction() const;
 
 	// Background texture loader will call this when texture has been loaded
-	virtual void Apply_New_Surface(IDirect3DBaseTexture9* tex, bool initialized, bool disable_auto_invalidation = false)=0;	// If the parameter is true, the texture will be flagged as initialised
+	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, VK::Surface* surface, bool disable_auto_invalidation = false)=0;	// If the parameter is true, the texture will be flagged as initialised
 
 	MipCountType MipLevelCount;
 
@@ -203,14 +189,14 @@ public:
 	virtual CubeTextureClass* As_CubeTextureClass() { return NULL; }
 	virtual VolumeTextureClass* As_VolumeTextureClass() { return NULL; }
 
-	IDirect3DTexture9* Peek_D3D_Texture() const { return (IDirect3DTexture9*)Peek_D3D_Base_Texture(); }
-	IDirect3DVolumeTexture9* Peek_D3D_VolumeTexture() const { return (IDirect3DVolumeTexture9*)Peek_D3D_Base_Texture(); }
-	IDirect3DCubeTexture9* Peek_D3D_CubeTexture() const { return (IDirect3DCubeTexture9*)Peek_D3D_Base_Texture(); }
+	VK::Texture& Peek_D3D_Texture() const { return (VK::Texture&)Peek_D3D_Base_Texture(); }
+	VK::Texture& Peek_D3D_VolumeTexture() const { return (VK::Texture&)Peek_D3D_Base_Texture(); }
+	VK::Texture& Peek_D3D_CubeTexture() const { return (VK::Texture&)Peek_D3D_Base_Texture(); }
 
 protected:
 
 	void Load_Locked_Surface();
-	void Poke_Texture(IDirect3DBaseTexture9* tex) { D3DTexture = tex; }
+	void Poke_Texture(VK::Texture tex) { D3DTexture = tex; }
 
 	bool Initialized;
 
@@ -237,7 +223,7 @@ protected:
 private:
 
 	// Direct3D texture object
-	IDirect3DBaseTexture9 *D3DTexture;
+	VK::Texture D3DTexture = {};
 
 	// Name
 	StringClass Name;
@@ -247,12 +233,9 @@ private:
 	unsigned texture_id;
 
 	// Support for self-managed textures
-
-	PoolType Pool;
 	bool Dirty;
 
 	friend class TextureLoadTaskClass;
-	friend class CubeTextureLoadTaskClass;
 	friend class VolumeTextureLoadTaskClass;
 	TextureLoadTaskClass* TextureLoadTask;
 	TextureLoadTaskClass* ThumbnailLoadTask;
@@ -282,8 +265,6 @@ public:
 		unsigned height, 
 		WW3DFormat format,
 		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		PoolType pool=POOL_MANAGED,
-		bool rendertarget=false,
 		bool allow_reduction=true
 	);
 
@@ -307,7 +288,7 @@ public:
 		MipCountType mip_level_count=MIP_LEVELS_ALL
 	);		
 
-	TextureClass(IDirect3DBaseTexture9* d3d_texture);
+	TextureClass(const VK::Texture& d3d_texture);
 
 	// defualt constructors for derived classes (cube & vol)
 	TextureClass
@@ -315,23 +296,25 @@ public:
 		unsigned width,
 		unsigned height,
 		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		PoolType pool=POOL_MANAGED,
 		bool rendertarget=false,
 		WW3DFormat format=WW3D_FORMAT_UNKNOWN,
 		bool allow_reduction=true
 	)
-	: TextureBaseClass(width,height,mip_level_count,pool,rendertarget,allow_reduction), TextureFormat(format), Filter(mip_level_count) { }
+	: TextureBaseClass(width,height,mip_level_count,rendertarget,allow_reduction), TextureFormat(format), Filter(mip_level_count) { }
 
 	virtual TexAssetType Get_Asset_Type() const { return TEX_REGULAR; }
 
 	virtual void Init();
 
 	// Background texture loader will call this when texture has been loaded
-	virtual void Apply_New_Surface(IDirect3DBaseTexture9* tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
+	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, VK::Surface* surface, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
 
 	// Get the surface of one of the mipmap levels (defaults to highest-resolution one)
 	SurfaceClass *Get_Surface_Level(unsigned int level = 0);
+	void Upload();
+#ifdef INFO_VULKAN
 	IDirect3DSurface9 *Get_D3D_Surface_Level(unsigned int level = 0);
+#endif
 	void Get_Level_Description( SurfaceClass::SurfaceDescription & desc, unsigned int level = 0 );
 	
 	TextureFilterClass& Get_Filter() { return Filter; }
@@ -345,7 +328,7 @@ public:
 	virtual TextureClass* As_TextureClass() { return this; }
 
 protected:
-
+	SurfaceClass* surface;
 	WW3DFormat				TextureFormat;
 
 	// legacy
@@ -361,8 +344,7 @@ public:
 		unsigned width,
 		unsigned height,
 		WW3DZFormat zformat,
-		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		PoolType pool=POOL_MANAGED
+		MipCountType mip_level_count=MIP_LEVELS_ALL
 	);
 
 	WW3DZFormat Get_Texture_Format() const { return DepthStencilTextureFormat; }
@@ -372,110 +354,18 @@ public:
 	virtual void Init() {}
 
 	// Background texture loader will call this when texture has been loaded
-	virtual void Apply_New_Surface(IDirect3DBaseTexture9* tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
+	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, VK::Surface* surface, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
 
 	virtual void Apply(unsigned int stage);
 
+#ifdef INFO_VULKAN
 	IDirect3DSurface9 *Get_D3D_Surface_Level(unsigned int level = 0);
+#endif
 	virtual unsigned Get_Texture_Memory_Usage() const;
 
 private:
 
 	WW3DZFormat DepthStencilTextureFormat;
-};
-
-class CubeTextureClass : public TextureClass
-{
-public:
-	// Create texture with desired height, width and format.
-	CubeTextureClass
-	(
-		unsigned width, 
-		unsigned height, 
-		WW3DFormat format,
-		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		PoolType pool=POOL_MANAGED,
-		bool rendertarget=false,
-		bool allow_reduction=true
-	);
-
-	// Create texture from a file. If format is specified the texture is converted to that format.
-	// Note that the format must be supported by the current device and that a texture can't exist
-	// in the system with the same name in multiple formats.
-	CubeTextureClass
-	(
-		const char *name,
-		const char *full_path=NULL,
-		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		WW3DFormat texture_format=WW3D_FORMAT_UNKNOWN,
-		bool allow_compression=true,
-		bool allow_reduction=true
-	);
-
-	// Create texture from a surface.
-	CubeTextureClass
-	(
-		SurfaceClass *surface, 
-		MipCountType mip_level_count=MIP_LEVELS_ALL
-	);		
-
-	CubeTextureClass(IDirect3DBaseTexture9* d3d_texture);
-
-	virtual void Apply_New_Surface(IDirect3DBaseTexture9* tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
-
-	virtual TexAssetType Get_Asset_Type() const { return TEX_CUBEMAP; }
-
-	virtual CubeTextureClass* As_CubeTextureClass() { return this; }
-
-};
-
-class VolumeTextureClass : public TextureClass
-{
-public:
-	// Create texture with desired height, width and format.
-	VolumeTextureClass
-	(
-		unsigned width, 
-		unsigned height, 
-		unsigned depth,
-		WW3DFormat format,
-		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		PoolType pool=POOL_MANAGED,
-		bool rendertarget=false,
-		bool allow_reduction=true
-	);
-
-	// Create texture from a file. If format is specified the texture is converted to that format.
-	// Note that the format must be supported by the current device and that a texture can't exist
-	// in the system with the same name in multiple formats.
-	VolumeTextureClass
-	(
-		const char *name,
-		const char *full_path=NULL,
-		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		WW3DFormat texture_format=WW3D_FORMAT_UNKNOWN,
-		bool allow_compression=true,
-		bool allow_reduction=true
-	);
-
-	// Create texture from a surface.
-	VolumeTextureClass
-	(
-		SurfaceClass *surface, 
-		MipCountType mip_level_count=MIP_LEVELS_ALL
-	);		
-
-	VolumeTextureClass(IDirect3DBaseTexture9* d3d_texture);
-
-	virtual void Apply_New_Surface(IDirect3DBaseTexture9* tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
-
-	virtual TexAssetType Get_Asset_Type() const { return TEX_VOLUME; }
-
-	virtual VolumeTextureClass* As_VolumeTextureClass() { return this; }
-
-protected:
-
-	int Depth;
 };
 
 // Utility functions for loading and saving texture descriptions from/to W3D files

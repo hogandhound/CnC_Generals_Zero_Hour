@@ -590,11 +590,20 @@ void RingRenderObjClass::render_ring(RenderInfoClass & rinfo,const Vector3 & cen
 
 	DX8Wrapper::Set_Vertex_Buffer(vb);
 	DX8Wrapper::Set_Index_Buffer(ib,0);
+	DX8Wrapper::Apply_Render_State_Changes();
 	
 	if (sort) {
 		SortingRendererClass::Insert_Triangles(Get_Bounding_Sphere(), 0, ring.face_ct, 0, ring.Vertex_ct);
 	} else {
+		auto pipelines = DX8Wrapper::FindClosestPipelines(vb.FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(0, ring.face_ct, 0, ring.Vertex_ct);
+#endif
 	}
 
 } // render_ring
@@ -724,9 +733,9 @@ void RingRenderObjClass::Render(RenderInfoClass & rinfo)
 
 			Matrix3D temp;
 			temp.Look_At(obj_position, obj_position + camera_z_vector, 0.0f);
-			DX8Wrapper::Set_Transform(D3DTS_WORLD, temp);	
+			DX8Wrapper::Set_Transform(VkTS::WORLD, temp);	
 		} else {
-			DX8Wrapper::Set_Transform(D3DTS_WORLD, Transform);	
+			DX8Wrapper::Set_Transform(VkTS::WORLD, Transform);	
 		}
 
 		//

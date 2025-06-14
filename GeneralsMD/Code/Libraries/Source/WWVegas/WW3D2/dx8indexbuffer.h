@@ -47,6 +47,8 @@
 #include "wwdebug.h"
 #include "refcount.h"
 #include "sphere.h"
+#include <vector>
+#include <VkRenderTarget.h>
 
 class DX8Wrapper;
 class SortingRendererClass;
@@ -69,6 +71,7 @@ public:
 	void Copy(unsigned short* indices,unsigned start_index,unsigned index_count);
 
 	inline unsigned short Get_Index_Count() const { return index_count; }
+	uint16_t* Get_Indices() { return buffer.data(); };
 
 	inline unsigned Type() const { return type; }
 
@@ -103,6 +106,7 @@ public:
 	static unsigned Get_Total_Allocated_Memory();
 
 protected:
+	std::vector<uint16_t> buffer;
 	mutable int					engine_refs;
 	unsigned short				index_count;		// number of indices
 	unsigned						type;
@@ -166,23 +170,17 @@ class DX8IndexBufferClass : public IndexBufferClass
 	friend IndexBufferClass::WriteLockClass;
 	friend IndexBufferClass::AppendLockClass;
 public:
-	enum UsageType {
-		USAGE_DEFAULT=0,
-		USAGE_DYNAMIC=1,
-		USAGE_SOFTWAREPROCESSING=2,
-		USAGE_NPATCHES=4
-	};
-
-	DX8IndexBufferClass(unsigned short index_count,UsageType usage=USAGE_DEFAULT);
+	DX8IndexBufferClass(unsigned short index_count);
 	~DX8IndexBufferClass();
 
-	void Copy(unsigned int* indices,unsigned start_index,unsigned index_count);
-	void Copy(unsigned short* indices,unsigned start_index,unsigned index_count);
-
-	inline IDirect3DIndexBuffer9* Get_DX8_Index_Buffer()	{ return index_buffer; }
+	void Upload(size_t size, size_t offset);
+	inline VK::Buffer Get_DX8_Index_Buffer()	{ return index_buffer; }
 	
 private:
+	VK::Buffer index_buffer;
+#ifdef INFO_VULKAN
 	IDirect3DIndexBuffer9*	index_buffer;		// actual dx8 index buffer
+#endif
 };
 
 
@@ -201,7 +199,6 @@ public:
 	~SortingIndexBufferClass();
 
 protected:
-	unsigned short* index_buffer;
 };
 
 extern int IndexBufferExceptionFunc(void);

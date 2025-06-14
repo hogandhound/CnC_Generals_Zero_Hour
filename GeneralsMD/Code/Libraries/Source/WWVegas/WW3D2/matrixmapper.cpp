@@ -227,39 +227,39 @@ void MatrixMapperClass::Apply(int uv_array_index)
 {
 	Matrix4x4 m;
 
-	switch (Type) 
+	switch (Type)
 	{
 	case ORTHO_PROJECTION:
 		/*
 		** Orthographic projection
 		*/
-		DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE)(D3DTS_TEXTURE0 + Stage),ViewToPixel);
-		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXCOORDINDEX,D3DTSS_TCI_CAMERASPACEPOSITION);		
-		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2);
+		DX8Wrapper::Set_Transform((VkTransformState)((int)VkTS::TEXTURE0 + Stage), ViewToPixel);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXCOORDINDEX, VKTSS_TCI_CAMERASPACEPOSITION);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_COUNT2);
 		break;
 	case PERSPECTIVE_PROJECTION:
 		/*
 		** Perspective projection
 		*/
-		m[0]=ViewToPixel[0];
-		m[1]=ViewToPixel[1];
-		m[2]=ViewToPixel[3];
-		DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE)(D3DTS_TEXTURE0 + Stage),m);
-		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXCOORDINDEX,D3DTSS_TCI_CAMERASPACEPOSITION);		
-		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_PROJECTED|D3DTTFF_COUNT3);
+		m[0] = ViewToPixel[0];
+		m[1] = ViewToPixel[1];
+		m[2] = ViewToPixel[3];
+		DX8Wrapper::Set_Transform((VkTransformState)((int)VkTS::TEXTURE0 + Stage), m);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXCOORDINDEX, VKTSS_TCI_CAMERASPACEPOSITION);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_PROJECTED | VKTTFF_COUNT3);
 		break;
 	case DEPTH_GRADIENT:
 		/*
-		** Depth gradient, Set up second stage texture coordinates to 
-		** apply a depth gradient to the projection.  Note that the 
+		** Depth gradient, Set up second stage texture coordinates to
+		** apply a depth gradient to the projection.  Note that the
 		** depth values have been set up to vary from 0 to 1 in the
 		** Update_View_To_Pixel_Transform function.
 		*/
-		m[0].Set(0,0,0,GradientUCoord);
-		m[1]=ViewToPixel[2];
-		DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE)(D3DTS_TEXTURE0 + Stage),m);
-		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXCOORDINDEX,D3DTSS_TCI_CAMERASPACEPOSITION);
-		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2);
+		m[0].Set(0, 0, 0, GradientUCoord);
+		m[1] = ViewToPixel[2];
+		DX8Wrapper::Set_Transform((VkTransformState)((int)VkTS::TEXTURE0 + Stage), m);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXCOORDINDEX, VKTSS_TCI_CAMERASPACEPOSITION);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_COUNT2);
 		break;
 	case NORMAL_GRADIENT:
 		/*
@@ -268,15 +268,13 @@ void MatrixMapperClass::Apply(int uv_array_index)
 		** and the projection direction.  (NOTE: this is basically texture-
 		** based diffuse lighting!)
 		*/
-		m[0].Set(0,0,0,GradientUCoord);
-		m[1].Set(ViewSpaceProjectionNormal.X,ViewSpaceProjectionNormal.Y,ViewSpaceProjectionNormal.Z, 0);
-		DX8Wrapper::Set_Transform((D3DTRANSFORMSTATETYPE)(D3DTS_TEXTURE0 + Stage),m);
-		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXCOORDINDEX,D3DTSS_TCI_CAMERASPACENORMAL);		
-		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2);
+		m[0].Set(0, 0, 0, GradientUCoord);
+		m[1].Set(ViewSpaceProjectionNormal.X, ViewSpaceProjectionNormal.Y, ViewSpaceProjectionNormal.Z, 0);
+		DX8Wrapper::Set_Transform((VkTransformState)((int)VkTS::TEXTURE0 + Stage), m);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXCOORDINDEX, VKTSS_TCI_CAMERASPACENORMAL);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_COUNT2);
 		break;
 	}
-
-
 }
 
 /***********************************************************************************************
@@ -403,7 +401,8 @@ void CompositeMatrixMapperClass::Apply(int uv_array_index)
 
 		MatrixMapperClass::Apply(uv_array_index);
 		ViewToPixel = view_to_pixel_copy;
-	} else {
+	}
+	else {
 		MatrixMapperClass::Apply(uv_array_index);
 	}
 }

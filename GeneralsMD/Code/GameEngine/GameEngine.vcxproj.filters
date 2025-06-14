@@ -471,9 +471,6 @@
     <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIWeapon.cpp">
       <Filter>Source Files\Common\INI</Filter>
     </ClCompile>
-    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIWebpageURL.cpp">
-      <Filter>Source Files\Common\INI</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Common\Audio\AudioEventRTS.cpp">
       <Filter>Source Files\Common\Audio</Filter>
     </ClCompile>
@@ -1835,9 +1832,6 @@
     </ClCompile>
     <ClCompile Include="Source\GameClient\Water.cpp">
       <Filter>Source Files\GameClient</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\WOLBrowser\WebBrowser.cpp">
-      <Filter>Source Files\GameNetwork\WOLBrowser</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameNetwork\GameSpy\Thread\BuddyThread.cpp">
       <Filter>Source Files\GameNetwork\GameSpy\Thread</Filter>
@@ -3474,9 +3468,6 @@
       <Filter>Header Files\GameClient H</Filter>
     </ClInclude>
     <ClInclude Include="Include\GameNetwork\WOLBrowser\FEBDispatch.h">
-      <Filter>Header Files\GameNetwork.H\WOLBrowser H</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\GameNetwork\WOLBrowser\WebBrowser.h">
       <Filter>Header Files\GameNetwork.H\WOLBrowser H</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Source\GameSpy\GameSpy\md5.h">

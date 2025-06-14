@@ -3,3 +3,10 @@
 Common/Code/Libraries/Include/FFMPEG
 Common/Code/Libraries/Include/SoLoud
 **.lib
+Common/Code/Libraries/Source/WWVegas/WW3D2/shaders/*spv
+Common/Code/Libraries/Source/WWVegas/WW3D2/shaders/*bak
+Common/Code/Libraries/Source/WWVegas/WW3D2/shaders/*frag.json
+Common/Code/Libraries/Source/WWVegas/WW3D2/shaders/*vert.json
+Common/Code/Libraries/Source/WWVegas/WW3D2/shaders/New Folder
+Common/Code/Libraries/Source/Compression/ZLib
+Common/Code/Libraries/Source/Compression/LZHCompress

@@ -111,9 +111,12 @@ void ShdHWShader<T>::Shell_Run(char* cmd)
 template<class T>
 void ShdHWShader<T>::Preprocess_And_Assemble_Shader_From_File
 (	
-	char*				file_name,	
+	char*				file_name
+#ifdef INFO_VULKAN
+	,	
 	LPD3DXBUFFER*	constants,	
 	LPD3DXBUFFER*	shader_code
+#endif
 )
 {
 	char shell_command[_MAX_PATH];
@@ -149,6 +152,7 @@ void ShdHWShader<T>::Preprocess_And_Assemble_Shader_From_File
 	WWASSERT_PRINT(result==D3D_OK,"Failed to assemble shader from file");
 }
 
+#ifdef INFO_VULKAN
 // 06/06/02 KM added software vertex shader fallback check
 bool	ShdHWVertexShader::Using_Hardware=true;
 
@@ -169,7 +173,7 @@ void ShdHWVertexShader::Destroy()
 {
 	if (Shader) 
 	{
-		DX8Wrapper::_Get_D3D_Device8()->SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE);
+		DX8Wrapper::_Get_D3D_Device8()->SetFVF(VKFVF_XYZ|VKFVF_DIFFUSE);
 		Shader->Release();
 		Shader=0;
 	}
@@ -286,11 +290,13 @@ IDirect3DVertexShader9* ShdHWVertexShader::Create
 
 	return Shader;
 }
+#endif
 
 //**********************************************************************************************
 //! Destruct this pixel shader
 /*! 5/27/02 5:39p KJM Created
 */
+#ifdef INFO_VULKAN
 ShdHWPixelShader::~ShdHWPixelShader()
 {
 	Destroy();
@@ -514,4 +520,4 @@ void ShdHWVertexShader::Light
 	Vector4 specular(0,0,0,0);
 	Light(rinfo,ambient,diffuse,specular);
 }
-
+#endif

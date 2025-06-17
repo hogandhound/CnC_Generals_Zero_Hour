@@ -318,10 +318,8 @@ void W3DCustomEdging::freeEdgingBuffers(void)
 //=============================================================================
 void W3DCustomEdging::allocateEdgingBuffers(void)
 {
-#ifdef TODO_VULKAN
 	m_vertexEdging=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV2,MAX_EDGE_VERTEX+4,DX8VertexBufferClass::USAGE_DYNAMIC));
 	m_indexEdging=NEW_REF(DX8IndexBufferClass,(2*MAX_EDGE_INDEX+4, DX8IndexBufferClass::USAGE_DYNAMIC));
-#endif
 	m_curNumEdgingVertices=0;
 	m_curNumEdgingIndices=0;
 	//m_edgeTexture = MSGNEW("TextureClass") TextureClass("EdgingTemplate.tga","EdgingTemplate.tga", TextureClass::MIP_LEVELS_3);

@@ -274,7 +274,7 @@ void Line3DClass::Render(RenderInfoClass & rinfo)
 	REF_PTR_RELEASE(vm);
 
 #ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,Transform);	
+	DX8Wrapper::Set_Transform(VkTS::WORLD,Transform);	
 #endif
 
 	DynamicVBAccessClass vb(BUFFER_TYPE_DYNAMIC_DX8,dynamic_fvf_type,8);

@@ -109,7 +109,7 @@ struct SHADOW_DECAL_VERTEX	//vertex structure passed to D3D
 		float u,v;
 }; 
 
-#define SHADOW_DECAL_FVF	D3DFVF_XYZ|D3DFVF_TEX1|D3DFVF_DIFFUSE
+#define SHADOW_DECAL_FVF	VKFVF_XYZ|VKFVF_TEX1|VKFVF_DIFFUSE
 
 #ifdef TODO_VULKAN
 LPDIRECT3DVERTEXBUFFER9 shadowDecalVertexBufferD3D=NULL;		///<D3D vertex buffer
@@ -371,7 +371,7 @@ Int W3DProjectedShadowManager::renderProjectedTerrainShadow(W3DProjectedShadow *
 	Bool flipForBlend;
 
 
-	#define SHADOW_VOLUME_FVF	D3DFVF_XYZ
+	#define SHADOW_VOLUME_FVF	VKFVF_XYZ
 
 	if (TheTerrainRenderObject)
 	{
@@ -507,7 +507,7 @@ Int W3DProjectedShadowManager::renderProjectedTerrainShadow(W3DProjectedShadow *
 
 		m_pDev->SetIndices(shadowIndexBufferD3D);
 			
-		m_pDev->SetTransform(D3DTS_WORLD,(_D3DMATRIX *)&mWorld);
+		m_pDev->SetTransform(VkTS::WORLD,(_DirectX::XMMATRIX *)&mWorld);
 
 		m_pDev->SetStreamSource(0,shadowVertexBufferD3D,0,sizeof(SHADOW_VOLUME_VERTEX));
 		m_pDev->SetFVF(SHADOW_VOLUME_FVF);
@@ -676,7 +676,7 @@ void TestBlendRender(RenderInfoClass & rinfo)
 	DX8Wrapper::Set_Shader(ShaderClass::_PresetOpaqueShader);
 
 	Matrix3D tm(1);	//identity
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
+	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 
 	//grass
 	RenderVBTile(grass,580.0f,480.0f,0.0f,0.0f);	RenderVBTile(grass,590.0f,480.0f,0.25f,0.0f);
@@ -752,8 +752,8 @@ void W3DProjectedShadowManager::flushDecals(W3DShadowTexture *texture, ShadowTyp
 	 
 
 #ifdef TODO_VULKAN
+	m_pDev->SetTransform(VkTS::WORLD,(DirectX::XMMATRIX *)&mWorld);
 	m_pDev->SetIndices(shadowDecalIndexBufferD3D);
-	m_pDev->SetTransform(D3DTS_WORLD,(_D3DMATRIX *)&mWorld);
 
 	m_pDev->SetStreamSource(0,shadowDecalVertexBufferD3D,0,sizeof(SHADOW_DECAL_VERTEX));
 	m_pDev->SetFVF(SHADOW_DECAL_FVF);

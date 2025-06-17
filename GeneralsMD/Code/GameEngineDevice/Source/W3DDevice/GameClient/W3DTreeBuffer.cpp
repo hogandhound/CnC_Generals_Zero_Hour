@@ -1246,7 +1246,6 @@ void W3DTreeBuffer::allocateTreeBuffers(void)
 {
 	Int i;
 	for	(i=0; i<MAX_BUFFERS; i++) {
-#ifdef TODO_VULKAN
 	#ifdef USE_STATIC
 		m_vertexTree[i]=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZNDUV1,MAX_TREE_VERTEX+4,DX8VertexBufferClass::USAGE_DEFAULT));
 		m_indexTree[i]=NEW_REF(DX8IndexBufferClass,(MAX_TREE_INDEX+4, DX8IndexBufferClass::USAGE_DEFAULT));
@@ -1254,7 +1253,6 @@ void W3DTreeBuffer::allocateTreeBuffers(void)
 		m_vertexTree[i]=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZNDUV1,MAX_TREE_VERTEX+4,DX8VertexBufferClass::USAGE_DYNAMIC));
 		m_indexTree[i]=NEW_REF(DX8IndexBufferClass,(MAX_TREE_INDEX+4, DX8IndexBufferClass::USAGE_DYNAMIC));
 	#endif
-#endif
 		m_curNumTreeVertices[i]=0;
 		m_curNumTreeIndices[i]=0;
 	}
@@ -1734,7 +1732,7 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 	DX8Wrapper::Set_Vertex_Buffer(vb_access);
 
 	Matrix3D tm(1);
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
+	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 
 	DX8Wrapper::Draw_Triangles(	0,2, 0,	4);	//draw a quad, 2 triangles, 4 verts
 #endif
@@ -1757,9 +1755,9 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
  
 	if (m_dwTreeVertexShader) {
 		D3DXMATRIX matProj, matView, matWorld;
-		DX8Wrapper::_Get_DX8_Transform(D3DTS_WORLD, *(Matrix4x4*)&matWorld);
-		DX8Wrapper::_Get_DX8_Transform(D3DTS_VIEW, *(Matrix4x4*)&matView);
-		DX8Wrapper::_Get_DX8_Transform(D3DTS_PROJECTION, *(Matrix4x4*)&matProj);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&matWorld);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::VIEW, *(Matrix4x4*)&matView);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::PROJECTION, *(Matrix4x4*)&matProj);
 		D3DXMATRIX mat;
 		D3DXMatrixMultiply( &mat, &matView, &matProj );
 		D3DXMatrixMultiply( &mat, &matWorld, &mat );

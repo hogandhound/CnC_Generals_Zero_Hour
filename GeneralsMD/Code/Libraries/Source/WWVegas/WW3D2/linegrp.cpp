@@ -282,10 +282,10 @@ void	LineGroupClass::Render(RenderInfoClass &rinfo)
 	// Save off the view matrix
 #ifdef TODO_VULKAN
 	Matrix4x4 view;
-	DX8Wrapper::Get_Transform(D3DTS_VIEW, view);
+	DX8Wrapper::Get_Transform(VkTS::VIEW, view);
 
 	Matrix4x4 identity(true);
-	DX8Wrapper::Set_Transform(D3DTS_WORLD, identity);	
+	DX8Wrapper::Set_Transform(VkTS::WORLD, identity);	
 #endif
 
 	// if the points are in world space, transform the offsets
@@ -299,7 +299,7 @@ void	LineGroupClass::Render(RenderInfoClass &rinfo)
 		}
 	} else {
 #ifdef TODO_VULKAN
-		DX8Wrapper::Set_Transform(D3DTS_VIEW, identity);
+		DX8Wrapper::Set_Transform(VkTS::VIEW, identity);
 #endif
 	}
 	
@@ -485,7 +485,7 @@ void	LineGroupClass::Render(RenderInfoClass &rinfo)
 	
 	// restore the matrices
 #ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_VIEW, view);
+	DX8Wrapper::Set_Transform(VkTS::VIEW, view);
 #endif
 }
 

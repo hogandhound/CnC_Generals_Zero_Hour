@@ -505,7 +505,7 @@ void ShaderClass::Apply()
 
 #ifdef TODO_VULKAN
 			BOOL fm = FALSE;
-			D3DCOLOR fogColor = DX8Wrapper::Get_Fog_Color();
+			uint32_t fogColor = DX8Wrapper::Get_Fog_Color();
 			
 			switch(Get_Fog_Func())
 			{

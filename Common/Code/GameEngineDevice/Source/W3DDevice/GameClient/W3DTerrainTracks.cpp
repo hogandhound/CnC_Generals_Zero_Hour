@@ -618,9 +618,7 @@ void TerrainTracksRenderObjClassSystem::ReAcquireResources(void)
 
 	DEBUG_ASSERTCRASH(numModules*m_maxTankTrackEdges*2 < 65535, ("Too many terrain track edges"));
 
-#ifdef TODO_VULKAN
 	m_vertexBuffer=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV1,numModules*m_maxTankTrackEdges*2,DX8VertexBufferClass::USAGE_DYNAMIC));
-#endif
 }
 
 //=============================================================================
@@ -903,9 +901,7 @@ Try improving the fit to vertical surfaces like cliffs.
 		trackStartIndex=0;
 		mod=m_usedModules;
 		Matrix3D tm(mod->Transform);
-#ifdef TODO_VULKAN
-		DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
-#endif
+		DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 		while (mod)
 		{
 			if (mod->m_activeEdgeCount >= 2 && mod->Is_Really_Visible())

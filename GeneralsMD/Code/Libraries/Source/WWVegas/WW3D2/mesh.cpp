@@ -951,7 +951,7 @@ void MeshClass::Render_Material_Pass(MaterialPassClass * pass,IndexBufferClass *
 			pass->Install_Materials();
 
 #ifdef TODO_VULKAN
-			DX8Wrapper::Set_Transform(D3DTS_WORLD,Get_Transform());
+			DX8Wrapper::Set_Transform(VkTS::WORLD,Get_Transform());
 #endif
 			DX8Wrapper::Set_Index_Buffer(dynamic_ib,vertex_offset);
 
@@ -989,7 +989,7 @@ void MeshClass::Render_Material_Pass(MaterialPassClass * pass,IndexBufferClass *
 
 		SNAPSHOT_SAY(("Set_World_Transform\n"));
 #ifdef TODO_VULKAN
-		DX8Wrapper::Set_Transform(D3DTS_WORLD,Transform);
+		DX8Wrapper::Set_Transform(VkTS::WORLD,Transform);
 #endif
 
 		DX8PolygonRendererListIterator it(&Model->PolygonRendererList);

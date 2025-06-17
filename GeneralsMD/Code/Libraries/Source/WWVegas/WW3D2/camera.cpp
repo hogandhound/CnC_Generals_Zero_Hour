@@ -724,20 +724,20 @@ void CameraClass::Apply(void)
 	bool windowed;
 	WW3D::Get_Render_Target_Resolution(width,height,bits,windowed);
 
-#ifdef TODO_VULKAN
-	D3DVIEWPORT9 vp;
-	vp.X = (DWORD)(Viewport.Min.X * (float)width);
-	vp.Y = (DWORD)(Viewport.Min.Y * (float)height);
-	vp.Width = (DWORD)((Viewport.Max.X - Viewport.Min.X) * (float)width);
-	vp.Height = (DWORD)((Viewport.Max.Y - Viewport.Min.Y) * (float)height);
-	vp.MinZ = ZBufferMin;
-	vp.MaxZ = ZBufferMax;
+	VkViewport vp;
+	vp.x = (DWORD)(Viewport.Min.X * (float)width);
+	vp.y = (DWORD)(Viewport.Min.Y * (float)height);
+	vp.width = (DWORD)((Viewport.Max.X - Viewport.Min.X) * (float)width);
+	vp.height = (DWORD)((Viewport.Max.Y - Viewport.Min.Y) * (float)height);
+	vp.minDepth = ZBufferMin;
+	vp.maxDepth = ZBufferMax;
 	DX8Wrapper::Set_Viewport(&vp);
 
+#ifdef TODO_VULKAN
 	Matrix4x4 d3dprojection;
 	Get_D3D_Projection_Matrix(&d3dprojection);
 	DX8Wrapper::Set_Projection_Transform_With_Z_Bias(d3dprojection,ZNear,ZFar);
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,CameraInvTransform);
+	DX8Wrapper::Set_Transform(VkTS::VIEW,CameraInvTransform);
 #endif
 }
 

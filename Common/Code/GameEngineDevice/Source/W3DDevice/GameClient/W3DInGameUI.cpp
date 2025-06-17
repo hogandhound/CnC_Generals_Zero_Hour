@@ -188,9 +188,7 @@ void DebugHintObject::initData(void)
 		ib[2]=2;
 	}
 
-#ifdef TODO_VULKAN
 	m_vertexBufferTile = NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV1,3,DX8VertexBufferClass::USAGE_DEFAULT));
-#endif
 	//go with a preset material for now.
 	m_vertexMaterialClass = VertexMaterialClass::Get_Preset(VertexMaterialClass::PRELIT_DIFFUSE);
 
@@ -255,9 +253,7 @@ void DebugHintObject::Render(RenderInfoClass & rinfo)
 		Matrix3D tm(Transform);
 		Vector3 vec(m_myLoc.x, m_myLoc.y, m_myLoc.z);
 		tm.Set_Translation(vec);
-#ifdef TODO_VULKAN
-		DX8Wrapper::Set_Transform(D3DTS_WORLD, tm);
-#endif
+		DX8Wrapper::Set_Transform(VkTS::WORLD, tm);
 		DX8Wrapper::Draw_Triangles(	0, 1, 0, 3);
 	}
 }

@@ -246,7 +246,7 @@ void WaterRenderObjClass::setupJbaWaterShader(void)
 		float det;
 
 		Matrix4x4 curView;
-		DX8Wrapper::_Get_DX8_Transform(D3DTS_VIEW, curView);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::VIEW, curView);
 		D3DXMatrixInverse(&inv, &det, (D3DXMATRIX*)&curView);
 		D3DXMATRIX scale;
 
@@ -254,7 +254,7 @@ void WaterRenderObjClass::setupJbaWaterShader(void)
 		D3DXMATRIX destMatrix = inv * scale;
 		D3DXMatrixTranslation(&scale, m_riverVOrigin, m_riverVOrigin,0);
 		destMatrix = destMatrix*scale;
-		DX8Wrapper::_Set_DX8_Transform(D3DTS_TEXTURE2, *(Matrix4x4*)&destMatrix);
+		DX8Wrapper::_Set_DX8_Transform(VkTS::TEXTURE2, *(Matrix4x4*)&destMatrix);
 		
 	}
 	m_pDev->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
@@ -1626,7 +1626,7 @@ void WaterRenderObjClass::Render(RenderInfoClass & rinfo)
 				Matrix4x4 curView;
 
 				//get current view matrix
-				DX8Wrapper::_Get_DX8_Transform(D3DTS_VIEW, curView);
+				DX8Wrapper::_Get_DX8_Transform(VkTS::VIEW, curView);
 
 				//get inverse of view matrix(= view to world matrix)
 				D3DXMatrixInverse(&inv, &det, (D3DXMATRIX*)&curView);
@@ -1649,7 +1649,7 @@ void WaterRenderObjClass::Render(RenderInfoClass & rinfo)
 				DX8Wrapper::Set_DX8_Texture_Stage_State(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);	
 
 				// Set texture generation matrix for stage 1
-				DX8Wrapper::_Set_DX8_Transform(D3DTS_TEXTURE1, *((Matrix4*)&inv));
+				DX8Wrapper::_Set_DX8_Transform(VkTS::TEXTURE1, *((Matrix4*)&inv));
 
 				// Disable bilinear filtering
 				DX8Wrapper::Set_DX8_Sampler_Stage_State( 1, D3DSAMP_MINFILTER, D3DTEXF_POINT);
@@ -1808,7 +1808,7 @@ void WaterRenderObjClass::drawSea(RenderInfoClass & rinfo)
 	D3DXMATRIX matProj, matView, matWW3D;
 
 	//create a transform which will flip the y and z coordinates to fit our system
-	memset(&matWW3D,0,sizeof(D3DMATRIX));
+	memset(&matWW3D,0,sizeof(DirectX::XMMATRIX));
 	matWW3D._11=1.0f;
 	matWW3D._32=1.0f;
 	matWW3D._23=1.0f;
@@ -1816,7 +1816,7 @@ void WaterRenderObjClass::drawSea(RenderInfoClass & rinfo)
 
 	Matrix3D tm(Transform);
 
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);	//position the water surface
+	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);	//position the water surface
 	DX8Wrapper::Set_Texture(0,NULL);	//we'll be setting our own textures, so reset W3D
 	DX8Wrapper::Set_Texture(1,NULL);	//we'll be setting our own textures, so reset W3D
 
@@ -1827,8 +1827,8 @@ void WaterRenderObjClass::drawSea(RenderInfoClass & rinfo)
 
 	rinfo.Camera.Get_Transform().Get_Translation(&camTran);
 
-	DX8Wrapper::_Get_DX8_Transform(D3DTS_VIEW, *(Matrix4x4*)&matView);
-	DX8Wrapper::_Get_DX8_Transform(D3DTS_PROJECTION, *(Matrix4x4*)&matProj);
+	DX8Wrapper::_Get_DX8_Transform(VkTS::VIEW, *(Matrix4x4*)&matView);
+	DX8Wrapper::_Get_DX8_Transform(VkTS::PROJECTION, *(Matrix4x4*)&matProj);
 
 	//default setup from Kenny's demo
 	m_pDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
@@ -1968,8 +1968,8 @@ void WaterRenderObjClass::drawSea(RenderInfoClass & rinfo)
 	m_pDev->SetTextureStageState( 2, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
 
 	//Restore old transforms
-	DX8Wrapper::_Set_DX8_Transform(D3DTS_VIEW, *(Matrix4x4*)&matView);
-	DX8Wrapper::_Set_DX8_Transform(D3DTS_PROJECTION, *(Matrix4x4*)&matProj);
+	DX8Wrapper::_Set_DX8_Transform(VkTS::VIEW, *(Matrix4x4*)&matView);
+	DX8Wrapper::_Set_DX8_Transform(VkTS::PROJECTION, *(Matrix4x4*)&matProj);
 
 	m_pDev->SetPixelShader(0);	//turn off pixel shader
 	m_pDev->SetFVF(0);	//turn off custom vertex shader
@@ -1993,7 +1993,7 @@ void WaterRenderObjClass::drawSea(RenderInfoClass & rinfo)
 
 				D3DXMatrixMultiply(&matTemp, &patchMatrix, &matWW3D);
 
-				DX8Wrapper::_Set_DX8_Transform(D3DTS_WORLD, *(Matrix4x4*)&matTemp);
+				DX8Wrapper::_Set_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&matTemp);
 
 				m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,0,0,m_numVertices,0,m_numIndices);
 			}
@@ -2136,9 +2136,7 @@ void WaterRenderObjClass::renderSky(void)
 
 	Matrix3D tm(1);
 	tm.Set_Translation(Vector3(0,0,0));
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
-#endif
+	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 
 	DX8Wrapper::Draw_Triangles(	0,2, 0,	4);	//draw a quad, 2 triangles, 4 verts
 }
@@ -2180,10 +2178,10 @@ void WaterRenderObjClass::renderSkyBody(Matrix3D *mat)
 	tm.Adjust_Translation(Vector3(SKYBODY_X,SKYBODY_Y,SKYBODY_HEIGHT));
 
 
+	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
+
+
 #ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
-
-
 	VertexMaterialClass *vmat=VertexMaterialClass::Get_Preset(VertexMaterialClass::PRELIT_DIFFUSE);
 	DX8Wrapper::Set_Material(vmat);
 	REF_PTR_RELEASE(vmat);
@@ -2396,7 +2394,7 @@ void WaterRenderObjClass::renderWaterMesh(void)
 
 	Matrix3D tm(Transform);
 
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);	//position the water surface
+	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);	//position the water surface
 	DX8Wrapper::Set_Material(m_meshVertexMaterialClass);
 
 	ShaderClass::CullModeType oldCullMode=m_shaderClass.Get_Cull_Mode();
@@ -2915,8 +2913,8 @@ void WaterRenderObjClass::drawRiverWater(PolygonTrigger *pTrig)
 
 	Matrix3D tm(1);
 
+	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);	//position the water surface
 #ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);	//position the water surface
 	DX8Wrapper::Set_Index_Buffer(ib_access,0);
 	DX8Wrapper::Set_Vertex_Buffer(vb_access);
 	DX8Wrapper::Set_Texture(0,m_riverTexture);	//set to blue
@@ -3040,7 +3038,7 @@ void WaterRenderObjClass::setupFlatWaterShader(void)
 		float det;
 
 		Matrix4x4 curView;
-		DX8Wrapper::_Get_DX8_Transform(D3DTS_VIEW, curView);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::VIEW, curView);
 		D3DXMatrixInverse(&inv, &det, (D3DXMATRIX*)&curView);
 		D3DXMATRIX scale;
 
@@ -3048,7 +3046,7 @@ void WaterRenderObjClass::setupFlatWaterShader(void)
 		D3DXMATRIX destMatrix = inv * scale;
 		D3DXMatrixTranslation(&scale, m_riverVOrigin, m_riverVOrigin,0);
 		destMatrix = destMatrix*scale;
-		DX8Wrapper::_Set_DX8_Transform(D3DTS_TEXTURE2, *(Matrix4x4*)&destMatrix);
+		DX8Wrapper::_Set_DX8_Transform(VkTS::TEXTURE2, *(Matrix4x4*)&destMatrix);
 
 	}
 	m_pDev->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
@@ -3295,8 +3293,8 @@ void WaterRenderObjClass::drawTrapezoidWater(Vector3 points[4])
 
 	Matrix3D tm(1);
 
+	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);	//position the water surface
 #ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);	//position the water surface
 	DX8Wrapper::Set_Index_Buffer(ib_access,0);
 	DX8Wrapper::Set_Vertex_Buffer(vb_access);
 
@@ -3460,7 +3458,7 @@ void WaterRenderObjClass::renderSkyBody(Matrix3D *mat)
 	Matrix3D tm(1);
 	//set postion of skybody in world
 //	tm.Set_Translation(Vector3(40,0,0));
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
+	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 
 	DX8Wrapper::Draw_Triangles(	0,2, 0,	4);	//draw a quad, 2 triangles, 4 verts
 }

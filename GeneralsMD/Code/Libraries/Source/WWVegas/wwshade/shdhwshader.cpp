@@ -173,7 +173,7 @@ void ShdHWVertexShader::Destroy()
 {
 	if (Shader) 
 	{
-		DX8Wrapper::_Get_D3D_Device8()->SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE);
+		DX8Wrapper::_Get_D3D_Device8()->SetFVF(VKFVF_XYZ|VKFVF_DIFFUSE);
 		Shader->Release();
 		Shader=0;
 	}

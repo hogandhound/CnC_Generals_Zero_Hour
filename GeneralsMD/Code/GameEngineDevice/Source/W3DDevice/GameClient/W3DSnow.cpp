@@ -33,7 +33,7 @@
 //#pragma MESSAGE("************************************** WARNING, optimization disabled for debugging purposes")
 #endif
 
-#define D3DFVF_POINTVERTEX (D3DFVF_XYZ)
+#define VKFVF_POINTVERTEX (VKFVF_XYZ)
 #define SNOW_BUFFER_SIZE 4096	//size of vertex buffer holding particles.
 #define SNOW_BATCH_SIZE	2048	//we render at most this many particles per drawprimitive call.  This number * 6 must be less than 65536 to fit into index buffer.
 
@@ -96,7 +96,7 @@ Bool W3DSnowManager::ReAcquireResources(void)
 			(
 				SNOW_BUFFER_SIZE*sizeof(POINTVERTEX),
 				D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC|D3DUSAGE_POINTS, 
-				D3DFVF_POINTVERTEX,
+				VKFVF_POINTVERTEX,
 				D3DPOOL_DEFAULT, 
 				&m_VertexBufferD3D, nullptr
 			)))
@@ -407,9 +407,7 @@ void W3DSnowManager::render(RenderInfoClass &rinfo)
 	m_heightTraveled=m_time*m_velocity+cameraOffset;	//height that snow flake traveled this frame.
 
 	Matrix4x4 identity(true);
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,identity);	
-#endif
+	DX8Wrapper::Set_Transform(VkTS::WORLD,identity);	
 
 	DX8Wrapper::Set_Shader(ShaderClass::_PresetAlphaShader);
 
@@ -448,7 +446,7 @@ void W3DSnowManager::render(RenderInfoClass &rinfo)
     DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSCALE_C,  FtoDW(1.00f) );
 
 	DX8Wrapper::_Get_D3D_Device8()->SetStreamSource( 0, m_VertexBufferD3D, 0, sizeof(POINTVERTEX) );
-    DX8Wrapper::_Get_D3D_Device8()->SetFVF( D3DFVF_POINTVERTEX );
+    DX8Wrapper::_Get_D3D_Device8()->SetFVF( VKFVF_POINTVERTEX );
 	m_dwBase = SNOW_BUFFER_SIZE;	//start with a new vertex buffer each frame.
 
 	m_leafDim = 45;	//cull boxes that are 20x20 emitters in size. Making them much smaller will result in too many draw calls.
@@ -502,9 +500,7 @@ void W3DSnowManager::renderAsQuads(RenderInfoClass &rinfo, Int cubeOriginX, Int 
 	}
 
 	Matrix4x4 identity(true);
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,identity);	
-#endif
+	DX8Wrapper::Set_Transform(VkTS::VIEW,identity);	
 
 	DX8Wrapper::Set_Index_Buffer(m_indexBuffer,0);
 

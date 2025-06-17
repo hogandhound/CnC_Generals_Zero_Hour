@@ -704,9 +704,7 @@ void AABoxRenderObjClass::Render(RenderInfoClass & rinfo)
 {
 	Matrix3D temp(1);
 	temp.Translate(Transform.Get_Translation());
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,temp);
-#endif
+	DX8Wrapper::Set_Transform(VkTS::WORLD,temp);
 	render_box(rinfo,ObjSpaceCenter,ObjSpaceExtent);
 }
 
@@ -1090,9 +1088,7 @@ int OBBoxRenderObjClass::Class_ID(void) const
  *=============================================================================================*/
 void OBBoxRenderObjClass::Render(RenderInfoClass & rinfo)
 {
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,Transform);
-#endif
+	DX8Wrapper::Set_Transform(VkTS::WORLD,Transform);
 	render_box(rinfo,ObjSpaceCenter,ObjSpaceExtent);
 }
 

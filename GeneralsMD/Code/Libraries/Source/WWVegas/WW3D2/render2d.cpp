@@ -612,13 +612,13 @@ void Render2DClass::Render(void)
 	Matrix4x4 identity(true);
 
 #ifdef TODO_VULKAN
-	DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
-	DX8Wrapper::Get_Transform(D3DTS_PROJECTION,proj);
+	DX8Wrapper::Get_Transform(VkTS::VIEW,view);
+	DX8Wrapper::Get_Transform(VkTS::PROJECTION,proj);
 
 	//
 	//	Configure the viewport for entire screen
 	//
-	D3DVIEWPORT9 vp = { 0 };
+	VkViewport vp = { 0 };
 	int width, height, bits;
 	bool windowed;
 	WW3D::Get_Device_Resolution( width, height, bits, windowed );
@@ -637,7 +637,7 @@ void Render2DClass::Render(void)
 
 	DX8Wrapper::Set_World_Identity();
 	DX8Wrapper::Set_View_Identity();
-	DX8Wrapper::Set_Transform(D3DTS_PROJECTION,identity);
+	DX8Wrapper::Set_Transform(VkTS::PROJECTION,identity);
 
 	DynamicVBAccessClass vb(BUFFER_TYPE_DYNAMIC_DX8,dynamic_fvf_type,Vertices.Count());
 	{
@@ -699,8 +699,8 @@ void Render2DClass::Render(void)
 		DX8Wrapper::Set_Shader(Shader);
 	DX8Wrapper::Draw_Triangles(0,Indices.Count()/3,0,Vertices.Count());	
 
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,view);
-	DX8Wrapper::Set_Transform(D3DTS_PROJECTION,proj);
+	DX8Wrapper::Set_Transform(VkTS::VIEW,view);
+	DX8Wrapper::Set_Transform(VkTS::PROJECTION,proj);
 	if (IsGrayScale)
 		ShaderClass::Invalidate();	//force both stages to be reset.
 #endif

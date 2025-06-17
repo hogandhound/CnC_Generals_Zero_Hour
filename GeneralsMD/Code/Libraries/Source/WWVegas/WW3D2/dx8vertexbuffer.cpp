@@ -332,11 +332,7 @@ DX8VertexBufferClass::DX8VertexBufferClass(
 	UsageType usage)
 	:
 	VertexBufferClass(BUFFER_TYPE_DX8,
-#ifdef TODO_VULKAN
-		D3DFVF_XYZ|D3DFVF_TEX1|D3DFVF_NORMAL
-#else
-		0
-#endif
+		VKFVF_XYZ|VKFVF_TEX1|VKFVF_NORMAL
 		, VertexCount),
 	VertexBuffer(NULL)
 {
@@ -359,11 +355,7 @@ DX8VertexBufferClass::DX8VertexBufferClass(
 	UsageType usage)
 	:
 	VertexBufferClass(BUFFER_TYPE_DX8,
-#ifdef TODO_VULKAN
-		D3DFVF_XYZ|D3DFVF_TEX1|D3DFVF_NORMAL|D3DFVF_DIFFUSE
-#else
-		0
-#endif
+		VKFVF_XYZ|VKFVF_TEX1|VKFVF_NORMAL|VKFVF_DIFFUSE
 		, VertexCount),
 	VertexBuffer(NULL)
 {
@@ -386,11 +378,7 @@ DX8VertexBufferClass::DX8VertexBufferClass(
 	UsageType usage)
 	:
 	VertexBufferClass(BUFFER_TYPE_DX8,
-#ifdef TODO_VULKAN
-		D3DFVF_XYZ|D3DFVF_TEX1|D3DFVF_DIFFUSE
-#else
-		0
-#endif
+		VKFVF_XYZ|VKFVF_TEX1|VKFVF_DIFFUSE
 		, VertexCount),
 	VertexBuffer(NULL)
 {
@@ -411,11 +399,7 @@ DX8VertexBufferClass::DX8VertexBufferClass(
 	UsageType usage)
 	:
 	VertexBufferClass(BUFFER_TYPE_DX8,
-#ifdef TODO_VULKAN
-		D3DFVF_XYZ|D3DFVF_TEX1
-#else
-		0
-#endif
+		VKFVF_XYZ|VKFVF_TEX1
 		, VertexCount),
 	VertexBuffer(NULL)
 {
@@ -537,7 +521,6 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, const V
 	WWASSERT(norm);
 	WWASSERT(uv);
 	WWASSERT(count<=VertexCount);
-#ifdef TODO_VULKAN
 	WWASSERT(FVF_Info().Get_FVF()==DX8_FVF_XYZNUV1);
 
 	if (first_vertex) {
@@ -568,7 +551,6 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, const V
 			verts[v].v1=(*uv++)[1];
 		}
 	}
-#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -577,7 +559,6 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, unsigned first_vertex, unsig
 {
 	WWASSERT(loc);
 	WWASSERT(count<=VertexCount);
-#ifdef TODO_VULKAN
 	WWASSERT(FVF_Info().Get_FVF()==DX8_FVF_XYZ);
 
 	if (first_vertex) {
@@ -598,7 +579,6 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, unsigned first_vertex, unsig
 			verts[v].z=(*loc++)[2];
 		}
 	}
-#endif
 
 }
 
@@ -609,7 +589,6 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector2* uv, unsigned 
 	WWASSERT(loc);
 	WWASSERT(uv);
 	WWASSERT(count<=VertexCount);
-#ifdef TODO_VULKAN
 	WWASSERT(FVF_Info().Get_FVF()==DX8_FVF_XYZUV1);
 
 	if (first_vertex) {
@@ -634,7 +613,6 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector2* uv, unsigned 
 			verts[v].v1=(*uv++)[1];
 		}
 	}
-#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -644,7 +622,6 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, unsigne
 	WWASSERT(loc);
 	WWASSERT(norm);
 	WWASSERT(count<=VertexCount);
-#ifdef TODO_VULKAN
 	WWASSERT(FVF_Info().Get_FVF()==DX8_FVF_XYZN);
 
 	if (first_vertex) {
@@ -671,7 +648,6 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, unsigne
 			verts[v].nz=(*norm++)[2];
 		}
 	}
-#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -683,7 +659,6 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, const V
 	WWASSERT(uv);
 	WWASSERT(diffuse);
 	WWASSERT(count<=VertexCount);
-#ifdef TODO_VULKAN
 	WWASSERT(FVF_Info().Get_FVF()==DX8_FVF_XYZNDUV1);
 
 	if (first_vertex) {
@@ -716,7 +691,6 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, const V
 			verts[v].diffuse=DX8Wrapper::Convert_Color(diffuse[v]);
 		}
 	}
-#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -727,7 +701,6 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector2* uv, const Vec
 	WWASSERT(uv);
 	WWASSERT(diffuse);
 	WWASSERT(count<=VertexCount);
-#ifdef TODO_VULKAN
 	WWASSERT(FVF_Info().Get_FVF()==DX8_FVF_XYZDUV1);
 
 	if (first_vertex) {
@@ -754,7 +727,6 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector2* uv, const Vec
 			verts[v].diffuse=DX8Wrapper::Convert_Color(diffuse[v]);
 		}
 	}
-#endif
 }
 
 // ----------------------------------------------------------------------------

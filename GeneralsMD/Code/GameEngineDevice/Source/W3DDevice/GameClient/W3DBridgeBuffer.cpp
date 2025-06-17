@@ -777,10 +777,8 @@ void W3DBridgeBuffer::freeBridgeBuffers(void)
 //=============================================================================
 void W3DBridgeBuffer::allocateBridgeBuffers(void)
 {
-#ifdef TODO_VULKAN
 	m_vertexBridge=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZNDUV1,MAX_BRIDGE_VERTEX+4,DX8VertexBufferClass::USAGE_DYNAMIC));
 	m_indexBridge=NEW_REF(DX8IndexBufferClass,(MAX_BRIDGE_INDEX+4, DX8IndexBufferClass::USAGE_DYNAMIC));
-#endif
 	m_vertexMaterial=VertexMaterialClass::Get_Preset(VertexMaterialClass::PRELIT_DIFFUSE);
 #ifdef USE_BRIDGE_NORMALS
 	m_vertexMaterial= new VertexMaterialClass();

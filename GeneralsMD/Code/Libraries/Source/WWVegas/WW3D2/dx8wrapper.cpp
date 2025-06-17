@@ -109,12 +109,12 @@ int								DX8Wrapper::ResolutionHeight							= DEFAULT_RESOLUTION_HEIGHT;
 int								DX8Wrapper::BitDepth										= DEFAULT_BIT_DEPTH;
 int								DX8Wrapper::TextureBitDepth							= DEFAULT_TEXTURE_BIT_DEPTH;
 bool								DX8Wrapper::IsWindowed									= false;
+
+DirectX::XMMATRIX						DX8Wrapper::old_world;
+DirectX::XMMATRIX						DX8Wrapper::old_view;
+DirectX::XMMATRIX						DX8Wrapper::old_prj;
 #ifdef TODO_VULKAN
 D3DFORMAT					DX8Wrapper::DisplayFormat	= D3DFMT_UNKNOWN;
-
-D3DMATRIX						DX8Wrapper::old_world;
-D3DMATRIX						DX8Wrapper::old_view;
-D3DMATRIX						DX8Wrapper::old_prj;
 
 // shader system additions KJM v
 DWORD								DX8Wrapper::Vertex_Shader_FVF = 0;
@@ -143,8 +143,8 @@ RenderStateStruct				DX8Wrapper::render_state;
 unsigned							DX8Wrapper::render_state_changed;
 
 bool								DX8Wrapper::FogEnable									= false;
+uint32_t							DX8Wrapper::FogColor										= 0;
 #ifdef TODO_VULKAN
-D3DCOLOR							DX8Wrapper::FogColor										= 0;
 
 IDirect3D9 *					DX8Wrapper::D3DInterface								= NULL;
 IDirect3DDevice9 *			DX8Wrapper::D3DDevice									= NULL;
@@ -171,7 +171,7 @@ int								DX8Wrapper::ZBias;
 float								DX8Wrapper::ZNear;
 float								DX8Wrapper::ZFar;
 Matrix4x4						DX8Wrapper::ProjectionMatrix;
-Matrix4x4						DX8Wrapper::DX8Transforms[D3DTS_WORLD+1];
+Matrix4x4						DX8Wrapper::DX8Transforms[((int)VkTS::WORLD) + 1];//VkTS::WORLD+1
 
 DX8Caps*							DX8Wrapper::CurrentCaps = 0;
 
@@ -276,10 +276,9 @@ bool DX8Wrapper::Init(void * hwnd, bool lite)
 
 	for (int light=0;light<4;++light) CurrentDX8LightEnables[light]=false;
 
-#ifdef TODO_VULKAN
-	::ZeroMemory(&old_world, sizeof(D3DMATRIX));
-	::ZeroMemory(&old_view, sizeof(D3DMATRIX));
-	::ZeroMemory(&old_prj, sizeof(D3DMATRIX));
+	::ZeroMemory(&old_world, sizeof(DirectX::XMMATRIX));
+	::ZeroMemory(&old_view, sizeof(DirectX::XMMATRIX));
+	::ZeroMemory(&old_prj, sizeof(DirectX::XMMATRIX));
 
 	//old_vertex_shader; TODO
 	//old_sr_shader;
@@ -288,6 +287,7 @@ bool DX8Wrapper::Init(void * hwnd, bool lite)
 	//world_identity;
 	//CurrentFogColor;
 
+#ifdef TODO_VULKAN
 	D3DInterface = NULL;
 	D3DDevice = NULL;
 
@@ -468,7 +468,7 @@ void DX8Wrapper::Invalidate_Cached_Render_States(void)
 	Release_Render_State();
 
 	// (gth) clear the matrix shadows too
-	for (int i=0; i<D3DTS_WORLD+1; i++) {
+	for (int i=0; i<((int)VkTS::WORLD)+1; i++) {
 		DX8Transforms[i][0].Set(0,0,0,0);
 		DX8Transforms[i][1].Set(0,0,0,0);
 		DX8Transforms[i][2].Set(0,0,0,0);
@@ -1888,7 +1888,7 @@ void DX8Wrapper::Clear(bool clear_color, bool clear_z_stencil, const Vector3 &co
 }
 
 #ifdef TODO_VULKAN
-void DX8Wrapper::Set_Viewport(CONST D3DVIEWPORT9* pViewport)
+void DX8Wrapper::Set_Viewport(CONST VkViewport* pViewport)
 {
 	DX8_THREAD_ASSERT();
 	DX8CALL(SetViewport(pViewport));
@@ -2363,11 +2363,11 @@ void DX8Wrapper::Apply_Render_State_Changes()
 
 	if (render_state_changed&WORLD_CHANGED) {
 		SNAPSHOT_SAY(("DX8 - apply world matrix\n"));
-		_Set_DX8_Transform(D3DTS_WORLD,render_state.world);
+		_Set_DX8_Transform(VkTS::WORLD,render_state.world);
 	}
 	if (render_state_changed&VIEW_CHANGED) {
 		SNAPSHOT_SAY(("DX8 - apply view matrix\n"));
-		_Set_DX8_Transform(D3DTS_VIEW,render_state.view);
+		_Set_DX8_Transform(VkTS::VIEW,render_state.view);
 	}
 	if (render_state_changed&VERTEX_BUFFER_CHANGED) {
 		SNAPSHOT_SAY(("DX8 - apply vb change\n"));
@@ -3714,37 +3714,6 @@ void DX8Wrapper::Set_Render_Target
 
 	IsRenderToTexture=true;
 //#endif // XBOX
-}
-#endif
-
-#ifdef TODO_VULKAN
-IDirect3DSwapChain9 *
-DX8Wrapper::Create_Additional_Swap_Chain (HWND render_window)
-{
-	DX8_Assert();
-
-	//
-	//	Configure the presentation parameters for a windowed render target
-	//
-	D3DPRESENT_PARAMETERS params				= { 0 };
-	params.BackBufferFormat						= _PresentParameters.BackBufferFormat;
-	params.BackBufferCount						= 1;
-	params.MultiSampleType						= D3DMULTISAMPLE_NONE;
-	params.SwapEffect								= D3DSWAPEFFECT_COPY;
-	params.hDeviceWindow							= render_window;
-	params.Windowed								= TRUE;
-	params.EnableAutoDepthStencil				= TRUE;
-	params.AutoDepthStencilFormat				= _PresentParameters.AutoDepthStencilFormat;
-	params.Flags									= 0;
-	params.FullScreen_RefreshRateInHz		= D3DPRESENT_RATE_DEFAULT;
-	params.PresentationInterval	= D3DPRESENT_INTERVAL_DEFAULT;
-
-	//
-	//	Create the swap chain
-	//
-	IDirect3DSwapChain9 *swap_chain = NULL;
-	DX8CALL(CreateAdditionalSwapChain(&params, &swap_chain));
-	return swap_chain;
 }
 #endif
 

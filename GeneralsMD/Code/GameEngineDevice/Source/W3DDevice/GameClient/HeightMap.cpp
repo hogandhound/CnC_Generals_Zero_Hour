@@ -1378,12 +1378,10 @@ Int HeightMapRenderObjClass::initHeightData(Int x, Int y, WorldHeightMap *pMap, 
 		Int numVertex = VERTEX_BUFFER_TILE_LENGTH*2*VERTEX_BUFFER_TILE_LENGTH*2;
 
 		for (i=0; i<m_numVertexBufferTiles; i++) {
-#ifdef TODO_VULKAN
 #ifdef USE_NORMALS	 
 			m_vertexBufferTiles[i]=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZNUV2,numVertex,DX8VertexBufferClass::USAGE_DEFAULT));
 #else
 			m_vertexBufferTiles[i]=NEW_REF(DX8VertexBufferClass,(DX8_VERTEX_FORMAT,numVertex,DX8VertexBufferClass::USAGE_DEFAULT));
-#endif
 #endif
 			m_vertexBufferBackup[i] = new char[numVertex*sizeof(VERTEX_FORMAT)];
 		} 
@@ -1965,9 +1963,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 	ShaderClass::Invalidate();
 
 	//	tm.Scale(ObjSpaceExtent);
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
-#endif
+	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 
 	//Apply the shader and material
 
@@ -2102,8 +2098,8 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 					DX8Wrapper::_Get_D3D_Device8()->SetStreamSource(
 						0,
 						m_xformedVertexBuffer[j*m_numVBTilesX+i],
-						D3DXGetFVFVertexSize(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2));
-					DX8Wrapper::_Get_D3D_Device8()->SetFVF(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2);
+						D3DXGetFVFVertexSize(VKFVF_XYZRHW |VKFVF_DIFFUSE|VKFVF_TEX2));
+					DX8Wrapper::_Get_D3D_Device8()->SetFVF(VKFVF_XYZRHW |VKFVF_DIFFUSE|VKFVF_TEX2);
 				}
 #endif				
 				if (Is_Hidden() == 0) {
@@ -2209,9 +2205,9 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 ///Performs additional terrain rendering pass, blending in the black shroud texture.
 void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 {
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,Matrix3D(1));
+	DX8Wrapper::Set_Transform(VkTS::WORLD,Matrix3D(1));
 
+#ifdef TODO_VULKAN
 	//Apply the shader and material
 	
 	DX8Wrapper::Set_Index_Buffer(m_indexBuffer,0);
@@ -2241,8 +2237,8 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 				DX8Wrapper::_Get_D3D_Device8()->SetStreamSource(
 					0,
 					m_xformedVertexBuffer[j*m_numVBTilesX+i],
-					D3DXGetFVFVertexSize(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2));
-				DX8Wrapper::_Get_D3D_Device8()->SetFVF(D3DFVF_XYZRHW |D3DFVF_DIFFUSE|D3DFVF_TEX2);
+					D3DXGetFVFVertexSize(VKFVF_XYZRHW |VKFVF_DIFFUSE|VKFVF_TEX2));
+				DX8Wrapper::_Get_D3D_Device8()->SetFVF(VKFVF_XYZRHW |VKFVF_DIFFUSE|VKFVF_TEX2);
 			}
 #endif				
 			if (Is_Hidden() == 0) {
@@ -2259,7 +2255,6 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 blended together.  Used primarily for corner cases where 3 different textures meet.*/
 void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 {
-#ifdef TODO_VULKAN
 	Int vertexCount = 0;
 	Int indexCount = 0;
 	Int xExtent = m_map->getXExtent();
@@ -2470,6 +2465,5 @@ void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 			W3DShaderManager::resetShader(st);
 		}
 	}
-#endif
 }
 #endif

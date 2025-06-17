@@ -69,6 +69,7 @@
 #include "vector4.h"
 #include "matrix3d.h"
 #include "matrix3.h"
+#include "DirectXMath.h"
 
 
 class Matrix4x4
@@ -122,6 +123,7 @@ public:
 	/*
 	** Assignment operators
 	*/
+	WWINLINE Matrix4x4& operator = (const DirectX::XMMATRIX& m);
 	WWINLINE Matrix4x4 & operator = (const Matrix4x4 & m);
 	WWINLINE Matrix4x4 & operator += (const Matrix4x4 & m);
 	WWINLINE Matrix4x4 & operator -= (const Matrix4x4 & m);
@@ -595,6 +597,11 @@ WWINLINE Matrix4x4 & Matrix4x4::operator = (const Matrix4x4 & m)
 {
 	Row[0] = m.Row[0]; Row[1] = m.Row[1]; Row[2] = m.Row[2]; Row[3] = m.Row[3];
 	return *this; 
+}
+WWINLINE Matrix4x4& Matrix4x4::operator = (const DirectX::XMMATRIX& m)
+{
+	Row[0] = m.r[0]; Row[1] = m.r[1]; Row[2] = m.r[2]; Row[3] = m.r[3];
+	return *this;
 }
 
 /*********************************************************************************************** 

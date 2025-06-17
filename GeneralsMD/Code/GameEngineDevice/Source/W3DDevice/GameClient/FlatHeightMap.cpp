@@ -493,9 +493,7 @@ void FlatHeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 	ShaderClass::Invalidate();
 
 	//	tm.Scale(ObjSpaceExtent);
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,tm);
-#endif
+	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 
 	
 	DX8Wrapper::Set_Material(m_vertexMaterialClass);

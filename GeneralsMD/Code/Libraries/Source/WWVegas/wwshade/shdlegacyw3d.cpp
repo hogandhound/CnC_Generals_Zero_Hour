@@ -538,28 +538,28 @@ void Shd6LegacyW3DClass::Copy_Vertex_Stream
 	** Append the UV coordinates to the vertex buffer
 	*/
 	int uvcount = 0;
-	if ((FVF&D3DFVF_TEX1) == D3DFVF_TEX1) {
+	if ((FVF&VKFVF_TEX1) == VKFVF_TEX1) {
 		uvcount = 1;
 	}
-	if ((FVF&D3DFVF_TEX2) == D3DFVF_TEX2) {
+	if ((FVF&VKFVF_TEX2) == VKFVF_TEX2) {
 		uvcount = 2;
 	}
-	if ((FVF&D3DFVF_TEX3) == D3DFVF_TEX3) {
+	if ((FVF&VKFVF_TEX3) == VKFVF_TEX3) {
 		uvcount = 3;
 	}
-	if ((FVF&D3DFVF_TEX4) == D3DFVF_TEX4) {
+	if ((FVF&VKFVF_TEX4) == VKFVF_TEX4) {
 		uvcount = 4;
 	}
-	if ((FVF&D3DFVF_TEX5) == D3DFVF_TEX5) {
+	if ((FVF&VKFVF_TEX5) == VKFVF_TEX5) {
 		uvcount = 5;
 	}
-	if ((FVF&D3DFVF_TEX6) == D3DFVF_TEX6) {
+	if ((FVF&VKFVF_TEX6) == VKFVF_TEX6) {
 		uvcount = 6;
 	}
-	if ((FVF&D3DFVF_TEX7) == D3DFVF_TEX7) {
+	if ((FVF&VKFVF_TEX7) == VKFVF_TEX7) {
 		uvcount = 7;
 	}
-	if ((FVF&D3DFVF_TEX8) == D3DFVF_TEX8) {
+	if ((FVF&VKFVF_TEX8) == VKFVF_TEX8) {
 		uvcount = 8;
 	}
 
@@ -567,7 +567,7 @@ void Shd6LegacyW3DClass::Copy_Vertex_Stream
 
 	for (unsigned i=0; i<vertex_count; ++i) 
 	{
-		if ((FVF&D3DFVF_XYZ)==D3DFVF_XYZ) {
+		if ((FVF&VKFVF_XYZ)==VKFVF_XYZ) {
 			if (vss.Locations) 
 			{
 				*(Vector3*)(vb+fi.Get_Location_Offset())=vss.Locations[i];
@@ -578,7 +578,7 @@ void Shd6LegacyW3DClass::Copy_Vertex_Stream
 			}
 		}
 
-		if ((FVF&D3DFVF_DIFFUSE)==D3DFVF_DIFFUSE) {
+		if ((FVF&VKFVF_DIFFUSE)==VKFVF_DIFFUSE) {
 			if (vss.DiffuseInt) 
 			{
 				*(unsigned int*)(vb+fi.Get_Diffuse_Offset())=vss.DiffuseInt[i];
@@ -589,7 +589,7 @@ void Shd6LegacyW3DClass::Copy_Vertex_Stream
 			}
 		}
 	
-		if ((FVF&D3DFVF_NORMAL)==D3DFVF_NORMAL) {
+		if ((FVF&VKFVF_NORMAL)==VKFVF_NORMAL) {
 			if (vss.Normals) 
 			{
 				*(Vector3*)(vb+fi.Get_Normal_Offset())=vss.Normals[i];

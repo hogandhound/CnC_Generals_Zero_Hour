@@ -236,10 +236,10 @@ void Shd7BumpSpecClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 
 	// calculate shader view projection matrix
 	Matrix4x4 view_matrix;
-	DX8Wrapper::Get_Transform(D3DTS_VIEW, view_matrix);
+	DX8Wrapper::Get_Transform(VkTS::VIEW, view_matrix);
 
 	Matrix4x4 proj_matrix;
-	DX8Wrapper::Get_Transform(D3DTS_PROJECTION, proj_matrix);
+	DX8Wrapper::Get_Transform(VkTS::PROJECTION, proj_matrix);
 
 	Matrix4x4::Multiply(proj_matrix, view_matrix, &View_Projection_Matrix);
 #endif
@@ -257,7 +257,7 @@ void Shd7BumpSpecClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 	// set vertex shader constants
 	Matrix4x4 world;
 #ifdef TODO_VULKAN
-	DX8Wrapper::Get_Transform(D3DTS_WORLD, world);
+	DX8Wrapper::Get_Transform(VkTS::WORLD, world);
 
 	Matrix4x4 world_view_proj_matrix;
 

@@ -96,7 +96,7 @@ struct SHADOW_STATIC_VOLUME_VERTEX	//vertex structure passed to D3D
 {
 		float x,y,z;
 }; 
-#define SHADOW_STATIC_VOLUME_FVF	D3DFVF_XYZ
+#define SHADOW_STATIC_VOLUME_FVF	VKFVF_XYZ
 
 #ifdef SV_DEBUG	//in debug mode, dynamic shadows are rendered with random diffuse color
 	struct SHADOW_DYNAMIC_VOLUME_VERTEX	//vertex structure passed to D3D
@@ -104,10 +104,10 @@ struct SHADOW_STATIC_VOLUME_VERTEX	//vertex structure passed to D3D
 			float x,y,z;
 			DWORD diffuse;
 	}; 
-	#define SHADOW_DYNAMIC_VOLUME_FVF	D3DFVF_XYZ|D3DFVF_DIFFUSE
+	#define SHADOW_DYNAMIC_VOLUME_FVF	VKFVF_XYZ|VKFVF_DIFFUSE
 #else
 	typedef struct SHADOW_STATIC_VOLUME_VERTEX	SHADOW_DYNAMIC_VOLUME_VERTEX;
-	#define SHADOW_DYNAMIC_VOLUME_FVF	D3DFVF_XYZ
+	#define SHADOW_DYNAMIC_VOLUME_FVF	VKFVF_XYZ
 #endif
 
 #ifdef TODO_VULKAN
@@ -1407,7 +1407,7 @@ void W3DVolumetricShadow::RenderMeshVolume(Int meshIndex, Int lightIndex, const 
 	Matrix4x4 mWorld(*meshXform);
 
 	///@todo: W3D always does transpose on all of matrix sets.  Slow???  Better to hack view matrix.
-	m_pDev->SetTransform(D3DTS_WORLD,(_D3DMATRIX *)&mWorld.Transpose());
+	m_pDev->SetTransform(VkTS::WORLD,(_DirectX::XMMATRIX *)&mWorld.Transpose());
 	
 	W3DBufferManager::W3DVertexBufferSlot *vbSlot=m_shadowVolumeVB[lightIndex][ meshIndex ];
 	if (!vbSlot)
@@ -1528,7 +1528,7 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 	
 	Matrix4x4 mWorld(*meshXform);
 
-	m_pDev->SetTransform(D3DTS_WORLD,(_D3DMATRIX *)&mWorld.Transpose());
+	m_pDev->SetTransform(VkTS::WORLD,(_DirectX::XMMATRIX *)&mWorld.Transpose());
 
 	if (shadowVertexBufferD3D != lastActiveVertexBuffer)
 	{	m_pDev->SetStreamSource(0,shadowVertexBufferD3D, 0, sizeof(SHADOW_DYNAMIC_VOLUME_VERTEX));
@@ -1685,7 +1685,7 @@ void W3DVolumetricShadow::RenderMeshVolumeBounds(Int meshIndex, Int lightIndex, 
 	//todo: replace this with mesh transform
 	Matrix4x4 mWorld(1);	//identity since boxes are pre-transformed to world space.
 
-	m_pDev->SetTransform(D3DTS_WORLD,(_D3DMATRIX *)&mWorld.Transpose());
+	m_pDev->SetTransform(VkTS::WORLD,(_DirectX::XMMATRIX *)&mWorld.Transpose());
 	
 	m_pDev->SetStreamSource(0,shadowVertexBufferD3D, 0, sizeof(SHADOW_DYNAMIC_VOLUME_VERTEX));
 	m_pDev->SetFVF(SHADOW_DYNAMIC_VOLUME_FVF);
@@ -2113,10 +2113,8 @@ void W3DVolumetricShadow::updateMeshVolume(Int meshIndex, Int lightIndex, const 
 		// care only about the rotation of components for the coordinate
 		// system change, not the translations
 		//
-#ifdef TODO_VULKAN
-		Real det;
-		D3DXMatrixInverse((D3DXMATRIX*)&worldToObject, &det, (D3DXMATRIX*)&objectToWorld);
-#endif
+		DirectX::XMVECTOR det = {};
+		worldToObject = DirectX::XMMatrixInverse(&det, *(DirectX::XMMATRIX*)&objectToWorld);
 
 		// find out light position in object space
 		Matrix4x4::Transform_Vector(worldToObject,lightPosWorld,&lightPosObject);
@@ -3424,7 +3422,7 @@ void W3DVolumetricShadowManager::renderStencilShadows( void )
 
 	//draw polygons like this is very inefficient but for only 2 triangles, it's
 	//not worth bothering with index/vertex buffers.
-	m_pDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE);
+	m_pDev->SetFVF(VKFVF_XYZRHW | VKFVF_DIFFUSE);
 
 	// Use alpha blending to draw the transparent shadow
     m_pDev->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );

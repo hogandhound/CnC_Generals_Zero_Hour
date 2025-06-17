@@ -880,7 +880,7 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 	// Get the world and view matrices
 	Matrix4x4 view;
 #ifdef TODO_VULKAN
-	DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
+	DX8Wrapper::Get_Transform(VkTS::VIEW,view);
 #endif
 
 	// Transform the point locations from worldspace to camera space if needed
@@ -921,8 +921,8 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 	
 	Matrix4x4 identity(true);
 #ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,identity);	
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,identity);	
+	DX8Wrapper::Set_Transform(VkTS::WORLD,identity);	
+	DX8Wrapper::Set_Transform(VkTS::VIEW,identity);	
 #endif
 
 	DX8Wrapper::Set_Material(PointMaterial);
@@ -995,7 +995,7 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 
 	// restore the matrices
 #ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,view);
+	DX8Wrapper::Set_Transform(VkTS::VIEW,view);
 #endif
 }
 
@@ -1209,7 +1209,7 @@ void PointGroupClass::Update_Arrays(
 				Vector4 result;
 #ifdef TODO_VULKAN
 				if (!Billboard) {
-					DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
+					DX8Wrapper::Get_Transform(VkTS::VIEW,view);
 				}
 
 				// Scale vertex offsets and add them to point locations to get vertex locations
@@ -1698,7 +1698,7 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 		// Get the world and view matrices
 		Matrix4x4 view;
 #ifdef TODO_VULKAN
-		DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
+		DX8Wrapper::Get_Transform(VkTS::VIEW,view);
 #endif
 
 
@@ -1838,8 +1838,8 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 		
 		Matrix4x4 identity(true);
 #ifdef TODO_VULKAN
-		DX8Wrapper::Set_Transform(D3DTS_WORLD,identity);	
-		DX8Wrapper::Set_Transform(D3DTS_VIEW,identity);	
+		DX8Wrapper::Set_Transform(VkTS::WORLD,identity);	
+		DX8Wrapper::Set_Transform(VkTS::VIEW,identity);	
 #endif
 
 		DX8Wrapper::Set_Material(PointMaterial);
@@ -1924,6 +1924,6 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 
 	// restore the matrices
 #ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,view);
+	DX8Wrapper::Set_Transform(VkTS::VIEW,view);
 #endif
 }

@@ -298,9 +298,7 @@ void RigidDecalMeshClass::Render(void)
 	** transform between the time that the mesh is rendered and the time that the decal
 	** mesh is rendered...  It shouldn't happen though.
 	*/
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,Parent->Get_Transform());
-#endif
+	DX8Wrapper::Set_Transform(VkTS::WORLD,Parent->Get_Transform());
 
 	/*
 	** Copy the vertices into the dynamic vb
@@ -790,9 +788,7 @@ void SkinDecalMeshClass::Render(void)
 	/*
 	** Skin decals coordinates are in world space
 	*/
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,Matrix3D::Identity);
-#endif
+	DX8Wrapper::Set_Transform(VkTS::WORLD,Matrix3D::Identity);
 
 	/*
 	** Skin decals have to get the deformed vertices of their parent meshes.  For this

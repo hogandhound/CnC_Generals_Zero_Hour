@@ -61,6 +61,8 @@
 #include "dx8vertexbuffer.h"
 #include "dx8indexbuffer.h"
 #include "vertmaterial.h"
+#include <DirectXMath.h>
+#include <vulkan/vulkan.h>
 
 /*
 ** Registry value names
@@ -90,6 +92,25 @@ enum {
 	BUFFER_TYPE_DYNAMIC_SORTING,
 	BUFFER_TYPE_INVALID
 };
+
+typedef enum class VkTransformState {
+	VIEW = 1,
+	PROJECTION = 2,
+	TEXTURE0 = 3,
+	TEXTURE1 = 4,
+	TEXTURE2 = 5,
+	TEXTURE3 = 6,
+	TEXTURE4 = 7,
+	TEXTURE5 = 8,
+	TEXTURE6 = 9,
+	TEXTURE7 = 10,
+	WORLD = 11,
+	WORLD0 = 12,
+	WORLD1 = 13,
+	WORLD2 = 14,
+	FORCE_DWORD = 0x7fffffff, /* force 32-bit size enum */
+} VkTS;
+
 
 class VertexMaterialClass;
 class CameraClass;
@@ -286,9 +307,7 @@ public:
 
 	static void Clear(bool clear_color, bool clear_z_stencil, const Vector3 &color, float dest_alpha=0.0f, float z=1.0f, unsigned int stencil=0);
 
-#ifdef TODO_VULKAN
-	static void	Set_Viewport(CONST D3DVIEWPORT9* pViewport);
-#endif
+	static void	Set_Viewport(CONST VkViewport* pViewport);
 
 	static void Set_Vertex_Buffer(const VertexBufferClass* vb, unsigned stream=0);
 	static void Set_Vertex_Buffer(const DynamicVBAccessClass& vba);
@@ -311,11 +330,9 @@ public:
 	static void Set_DX8_ZBias(int zbias);
 	static void Set_Projection_Transform_With_Z_Bias(const Matrix4x4& matrix,float znear, float zfar);	// pointer to 16 matrices
 
-#ifdef TODO_VULKAN
-	static void Set_Transform(D3DTRANSFORMSTATETYPE transform,const Matrix4x4& m);
-	static void Set_Transform(D3DTRANSFORMSTATETYPE transform,const Matrix3D& m);
-	static void Get_Transform(D3DTRANSFORMSTATETYPE transform, Matrix4x4& m);
-#endif
+	static void Set_Transform(VkTransformState transform,const Matrix4x4& m);
+	static void Set_Transform(VkTransformState transform,const Matrix3D& m);
+	static void Get_Transform(VkTransformState transform, Matrix4x4& m);
 	static void	Set_World_Identity();
 	static void Set_View_Identity();
 	static bool	Is_World_Identity();
@@ -323,10 +340,10 @@ public:
 
 	// Note that *_DX8_Transform() functions take the matrix in DX8 format - transposed from Westwood convention.
 
+	static void _Set_DX8_Transform(VkTransformState transform,const Matrix4x4& m);
+	static void _Set_DX8_Transform(VkTransformState transform,const Matrix3D& m);
+	static void _Get_DX8_Transform(VkTransformState transform, Matrix4x4& m);
 #ifdef TODO_VULKAN
-	static void _Set_DX8_Transform(D3DTRANSFORMSTATETYPE transform,const Matrix4x4& m);
-	static void _Set_DX8_Transform(D3DTRANSFORMSTATETYPE transform,const Matrix3D& m);
-	static void _Get_DX8_Transform(D3DTRANSFORMSTATETYPE transform, Matrix4x4& m);
 
 	static void Set_DX8_Light(int index,D3DLIGHT9* light);
 	static void Set_DX8_Render_State(D3DRENDERSTATETYPE state, unsigned value);
@@ -475,9 +492,7 @@ public:
 
 	// Needed by shader class
 	static bool						Get_Fog_Enable() { return FogEnable; }
-#ifdef TODO_VULKAN
-	static D3DCOLOR				Get_Fog_Color() { return FogColor; }
-#endif
+	static uint32_t				Get_Fog_Color() { return FogColor; }
 
 	// Utilities
 	static Vector4 Convert_Color(unsigned color);
@@ -491,27 +506,6 @@ public:
 	static void _Enable_Triangle_Draw(bool enable) { _EnableTriangleDraw=enable; }
 	static bool _Is_Triangle_Draw_Enabled() { return _EnableTriangleDraw; }
 
-	/*
-	** Additional swap chain interface
-	**
-	**		Use this interface to render to multiple windows (in windowed mode).
-	**	To render to an additional window, the sequence of calls should look
-	**	something like this:
-	**
-	**	DX8Wrapper::Set_Render_Target (swap_chain_ptr);
-	**
-	**	WW3D::Begin_Render (true, true, Vector3 (0, 0, 0));
-	**	WW3D::Render (scene, camera, FALSE, FALSE);
-	**	WW3D::End_Render ();
-	**
-	**	swap_chain_ptr->Present (NULL, NULL, NULL, NULL);
-	**
-	**	DX8Wrapper::Set_Render_Target ((IDirect3DSurface9 *)NULL);
-	**
-	*/
-#ifdef TODO_VULKAN
-	static IDirect3DSwapChain9 *	Create_Additional_Swap_Chain (HWND render_window);
-#endif
 
 	/*
 	** Render target interface. If render target format is WW3D_FORMAT_UNKNOWN, current display format is used.
@@ -672,11 +666,7 @@ protected:
 
 	static RenderStateStruct			render_state;
 	static unsigned						render_state_changed;
-#ifdef TODO_VULKAN
-	static Matrix4x4						DX8Transforms[D3DTS_WORLD+1];
-#else
-	static Matrix4x4						DX8Transforms[256 + 1];
-#endif
+	static Matrix4x4						DX8Transforms[((int)VkTS::WORLD) + 1];
 
 	static bool								IsInitted;
 	static bool								IsDeviceLost;
@@ -691,12 +681,12 @@ protected:
 	static int								BitDepth;
 	static int								TextureBitDepth;
 	static bool								IsWindowed;
+	
+	static DirectX::XMMATRIX						old_world;
+	static DirectX::XMMATRIX						old_view;
+	static DirectX::XMMATRIX						old_prj;
 #ifdef TODO_VULKAN
 	static D3DFORMAT					DisplayFormat;
-	
-	static D3DMATRIX						old_world;
-	static D3DMATRIX						old_vie#endifw;
-	static D3DMATRIX						old_prj;
 
 	// shader system updates KJM v
 	static DWORD							Vertex_Shader_FVF;
@@ -727,9 +717,7 @@ protected:
 	// These fog settings are constant for all objects in a given scene,
 	// unlike the matching renderstates which vary based on shader settings.
 	static bool								FogEnable;
-#ifdef TODO_VULKAN
-	static D3DCOLOR						FogColor;
-#endif
+	static uint32_t						FogColor;
 
 	static unsigned						matrix_changes;
 	static unsigned						material_changes;
@@ -828,44 +816,47 @@ WWINLINE void DX8Wrapper::Set_Pixel_Shader_Constant(int reg, const void* data, i
 	memcpy(&Pixel_Shader_Constants[reg],data,memsize);
 	DX8CALL(SetPixelShaderConstantF(reg,(float*)data,count));
 }
+#endif
 // shader system updates KJM ^
 
 
-WWINLINE void DX8Wrapper::_Set_DX8_Transform(D3DTRANSFORMSTATETYPE transform,const Matrix4x4& m)
+WWINLINE void DX8Wrapper::_Set_DX8_Transform(VkTransformState transform,const Matrix4x4& m)
 {
-	WWASSERT(transform<=D3DTS_WORLD);
+	WWASSERT(transform<=VkTS::WORLD);
 #if 0 // (gth) this optimization is breaking generals because they set the transform behind our backs.
 	if (m!=DX8Transforms[transform]) 
 #endif
 	{
-		DX8Transforms[transform]=m;
+		DX8Transforms[(uintptr_t)transform]=m;
 		SNAPSHOT_SAY(("DX8 - SetTransform %d [%f,%f,%f,%f][%f,%f,%f,%f][%f,%f,%f,%f][%f,%f,%f,%f]\n",transform,m[0][0],m[0][1],m[0][2],m[0][3],m[1][0],m[1][1],m[1][2],m[1][3],m[2][0],m[2][1],m[2][2],m[2][3],m[3][0],m[3][1],m[3][2],m[3][3]));
 		DX8_RECORD_MATRIX_CHANGE();
-		DX8CALL(SetTransform(transform,(D3DMATRIX*)&m));
+#ifdef TODO_VULKAN
+		DX8CALL(SetTransform(transform,(DirectX::XMMATRIX*)&m));
+#endif
 	}
 }
 
 
-WWINLINE void DX8Wrapper::_Set_DX8_Transform(D3DTRANSFORMSTATETYPE transform,const Matrix3D& m)
+WWINLINE void DX8Wrapper::_Set_DX8_Transform(VkTransformState transform,const Matrix3D& m)
 {
-	WWASSERT(transform<=D3DTS_WORLD);
+	WWASSERT(transform<=VkTS::WORLD);
 	Matrix4x4 mtx(m);
-#if 0 // (gth) this optimization is breaking generals because they set the transform behind our backs.
-	if (mtx!=DX8Transforms[transform]) 
-#endif
 	{
 		DX8Transforms[transform]=mtx;
 		SNAPSHOT_SAY(("DX8 - SetTransform %d [%f,%f,%f,%f][%f,%f,%f,%f][%f,%f,%f,%f]\n",transform,m[0][0],m[0][1],m[0][2],m[0][3],m[1][0],m[1][1],m[1][2],m[1][3],m[2][0],m[2][1],m[2][2],m[2][3]));
 		DX8_RECORD_MATRIX_CHANGE();
-		DX8CALL(SetTransform(transform,(D3DMATRIX*)&m));
+#ifdef TODO_VULKAN
+		DX8CALL(SetTransform(transform,(DirectX::XMMATRIX*)&m));
+#endif
 	}
 }
 
-WWINLINE void DX8Wrapper::_Get_DX8_Transform(D3DTRANSFORMSTATETYPE transform, Matrix4x4& m)
+WWINLINE void DX8Wrapper::_Get_DX8_Transform(VkTransformState transform, Matrix4x4& m)
 {
-	DX8CALL(GetTransform(transform,(D3DMATRIX*)&m));
-}
+#ifdef TODO_VULKAN
+	DX8CALL(GetTransform(transform,(DirectX::XMMATRIX*)&m));
 #endif
+}
 
 // ----------------------------------------------------------------------------
 //
@@ -1362,10 +1353,10 @@ WWINLINE void DX8Wrapper::Set_Projection_Transform_With_Z_Bias(const Matrix4x4& 
 		tmp_zbias*=(1.0f/16.0f);
 		tmp_zbias*=1.0f / (ZFar - ZNear);
 		tmp[2][2]-=tmp_zbias*tmp[3][2];
-		DX8CALL(SetTransform(D3DTS_PROJECTION,(D3DMATRIX*)&tmp));
+		DX8CALL(SetTransform(VkTS::PROJECTION,(DirectX::XMMATRIX*)&tmp));
 	}
 	else {
-		DX8CALL(SetTransform(D3DTS_PROJECTION,(D3DMATRIX*)&ProjectionMatrix));
+		DX8CALL(SetTransform(VkTS::PROJECTION,(DirectX::XMMATRIX*)&ProjectionMatrix));
 	}
 #endif
 }
@@ -1384,7 +1375,7 @@ WWINLINE void DX8Wrapper::Set_DX8_ZBias(int zbias)
 		tmp_zbias*=(1.0f/16.0f);
 		tmp_zbias*=1.0f / (ZFar - ZNear);
 		tmp[2][2]-=tmp_zbias*tmp[3][2];
-		DX8CALL(SetTransform(D3DTS_PROJECTION,(D3DMATRIX*)&tmp));
+		DX8CALL(SetTransform(VkTS::PROJECTION,(DirectX::XMMATRIX*)&tmp));
 	}
 	else {
 		Set_DX8_Render_State (D3DRS_DEPTHBIAS,ZBias * -0.000005f);
@@ -1393,45 +1384,45 @@ WWINLINE void DX8Wrapper::Set_DX8_ZBias(int zbias)
 }
 
 #ifdef TODO_VULKAN
-WWINLINE void DX8Wrapper::Set_Transform(D3DTRANSFORMSTATETYPE transform,const Matrix4x4& m)
+WWINLINE void DX8Wrapper::Set_Transform(VkTransformState transform,const Matrix4x4& m)
 {
 	switch ((int)transform) {
-	case D3DTS_WORLD:
+	case VkTS::WORLD:
 		render_state.world=m.Transpose();
 		render_state_changed|=(unsigned)WORLD_CHANGED;
 		render_state_changed&=~(unsigned)WORLD_IDENTITY;
 		break;
-	case D3DTS_VIEW:
+	case VkTS::VIEW:
 		render_state.view=m.Transpose();
 		render_state_changed|=(unsigned)VIEW_CHANGED;
 		render_state_changed&=~(unsigned)VIEW_IDENTITY;
 		break;
-	case D3DTS_PROJECTION:
+	case VkTS::PROJECTION:
 		{
 			Matrix4x4 ProjectionMatrix=m.Transpose();
 			ZFar=0.0f;
 			ZNear=0.0f;
-			DX8CALL(SetTransform(D3DTS_PROJECTION,(D3DMATRIX*)&ProjectionMatrix));
+			DX8CALL(SetTransform(VkTS::PROJECTION,(DirectX::XMMATRIX*)&ProjectionMatrix));
 		}
 		break;
 	default:
 		DX8_RECORD_MATRIX_CHANGE();
 		Matrix4x4 m2=m.Transpose();
-		DX8CALL(SetTransform(transform,(D3DMATRIX*)&m2));
+		DX8CALL(SetTransform(transform,(DirectX::XMMATRIX*)&m2));
 		break;
 	}
 }
 
-WWINLINE void DX8Wrapper::Set_Transform(D3DTRANSFORMSTATETYPE transform,const Matrix3D& m)
+WWINLINE void DX8Wrapper::Set_Transform(VkTransformState transform,const Matrix3D& m)
 {
 	Matrix4x4 m2(m);
 	switch ((int)transform) {
-	case D3DTS_WORLD:
+	case VkTS::WORLD:
 		render_state.world=m2.Transpose();
 		render_state_changed|=(unsigned)WORLD_CHANGED;
 		render_state_changed&=~(unsigned)WORLD_IDENTITY;
 		break;
-	case D3DTS_VIEW:
+	case VkTS::VIEW:
 		render_state.view=m2.Transpose();
 		render_state_changed|=(unsigned)VIEW_CHANGED;
 		render_state_changed&=~(unsigned)VIEW_IDENTITY;
@@ -1439,7 +1430,7 @@ WWINLINE void DX8Wrapper::Set_Transform(D3DTRANSFORMSTATETYPE transform,const Ma
 	default:
 		DX8_RECORD_MATRIX_CHANGE();
 		m2=m2.Transpose();
-		DX8CALL(SetTransform(transform,(D3DMATRIX*)&m2));
+		DX8CALL(SetTransform(transform,(DirectX::XMMATRIX*)&m2));
 		break;
 	}
 }
@@ -1470,16 +1461,16 @@ WWINLINE bool DX8Wrapper::Is_View_Identity()
 }
 
 #ifdef TODO_VULKAN
-WWINLINE void DX8Wrapper::Get_Transform(D3DTRANSFORMSTATETYPE transform, Matrix4x4& m)
+WWINLINE void DX8Wrapper::Get_Transform(VkTransformState transform, Matrix4x4& m)
 {
-	D3DMATRIX mat;
+	DirectX::XMMATRIX mat;
 
 	switch ((int)transform) {
-	case D3DTS_WORLD:
+	case VkTS::WORLD:
 		if (render_state_changed&WORLD_IDENTITY) m.Make_Identity();
 		else m=render_state.world.Transpose();
 		break;
-	case D3DTS_VIEW:
+	case VkTS::VIEW:
 		if (render_state_changed&VIEW_IDENTITY) m.Make_Identity();
 		else m=render_state.view.Transpose();
 		break;

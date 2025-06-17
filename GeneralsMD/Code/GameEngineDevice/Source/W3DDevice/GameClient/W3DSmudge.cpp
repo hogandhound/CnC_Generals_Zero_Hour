@@ -263,7 +263,7 @@ Bool W3DSmudgeManager::testHardwareSupport(void)
 
 		//draw polygons like this is very inefficient but for only 2 triangles, it's
 		//not worth bothering with index/vertex buffers.
-		pDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+		pDev->SetFVF(VKFVF_XYZRHW | VKFVF_DIFFUSE | VKFVF_TEX1);
 
 		pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANS_LIT_TEX_VERTEX));
 
@@ -448,8 +448,8 @@ void W3DSmudgeManager::render(RenderInfoClass &rinfo)
 #endif
 
 	Matrix4x4 identity(true);
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,identity);	
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,identity);	
+	DX8Wrapper::Set_Transform(VkTS::WORLD,identity);	
+	DX8Wrapper::Set_Transform(VkTS::VIEW,identity);	
 
 	DX8Wrapper::Set_Index_Buffer(m_indexBuffer,0);
 	//DX8Wrapper::Set_Shader(ShaderClass::_PresetOpaqueSpriteShader);

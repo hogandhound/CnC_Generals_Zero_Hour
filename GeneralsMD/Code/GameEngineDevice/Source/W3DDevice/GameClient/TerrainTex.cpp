@@ -724,7 +724,7 @@ void LightMapTerrainTextureClass::Apply(unsigned int stage)
 	DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
 
 	Matrix4x4 curView;
-	DX8Wrapper::_Get_DX8_Transform(D3DTS_VIEW, curView);
+	DX8Wrapper::_Get_DX8_Transform(VkTS::VIEW, curView);
 
 
 	D3DXMATRIX inv;
@@ -734,9 +734,9 @@ void LightMapTerrainTextureClass::Apply(unsigned int stage)
 	D3DXMatrixScaling(&scale, STRETCH_FACTOR, STRETCH_FACTOR,1);
 	inv *=scale;
 	if (stage==0) {
-		DX8Wrapper::_Set_DX8_Transform(D3DTS_TEXTURE0, *((Matrix4x4*)&inv));
+		DX8Wrapper::_Set_DX8_Transform(VkTS::TEXTURE0, *((Matrix4x4*)&inv));
 	}	if (stage==1) {
-		DX8Wrapper::_Set_DX8_Transform(D3DTS_TEXTURE1, *((Matrix4x4*)&inv));
+		DX8Wrapper::_Set_DX8_Transform(VkTS::TEXTURE1, *((Matrix4x4*)&inv));
 	}
 		
 		
@@ -983,7 +983,7 @@ void CloudMapTerrainTextureClass::Apply(unsigned int stage)
 	DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
 
 	Matrix4x4 curView;
-	DX8Wrapper::_Get_DX8_Transform(D3DTS_VIEW, curView);
+	DX8Wrapper::_Get_DX8_Transform(VkTS::VIEW, curView);
 
 
 	D3DXMATRIX inv;
@@ -1016,7 +1016,7 @@ void CloudMapTerrainTextureClass::Apply(unsigned int stage)
 		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
 		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
 
-		DX8Wrapper::_Set_DX8_Transform(D3DTS_TEXTURE0, *((Matrix4x4*)&inv));
+		DX8Wrapper::_Set_DX8_Transform(VkTS::TEXTURE0, *((Matrix4x4*)&inv));
 		
 		// Disable 3rd stage just in case.
 		DX8Wrapper::Set_DX8_Texture_Stage_State( 2, D3DTSS_COLOROP,   D3DTOP_DISABLE );
@@ -1035,7 +1035,7 @@ void CloudMapTerrainTextureClass::Apply(unsigned int stage)
 		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAARG1, D3DTA_CURRENT );
 		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
 
-		DX8Wrapper::_Set_DX8_Transform(D3DTS_TEXTURE1, *((Matrix4x4*)&inv));
+		DX8Wrapper::_Set_DX8_Transform(VkTS::TEXTURE1, *((Matrix4x4*)&inv));
 	}
 #endif
 }

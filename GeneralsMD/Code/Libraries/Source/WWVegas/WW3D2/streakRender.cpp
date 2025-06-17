@@ -318,11 +318,11 @@ void StreakRendererClass::RenderStreak
 {
 	Matrix4x4 view;
 #ifdef TODO_VULKAN
-	DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
+	DX8Wrapper::Get_Transform(VkTS::VIEW,view);
 
 	Matrix4x4 identity(true);
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,identity);	
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,identity);	
+	DX8Wrapper::Set_Transform(VkTS::WORLD,identity);	
+	DX8Wrapper::Set_Transform(VkTS::VIEW,identity);	
 #endif
 	/* 
 	** Handle texture UV offset animation (done once for entire line).
@@ -1401,7 +1401,7 @@ void StreakRendererClass::RenderStreak
 	}	// Chunking loop
 
 #ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,view);
+	DX8Wrapper::Set_Transform(VkTS::VIEW,view);
 #endif
 
 }

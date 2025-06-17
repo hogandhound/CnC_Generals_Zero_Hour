@@ -371,8 +371,8 @@ static void Apply_Render_State(RenderStateStruct& render_state)
 	}
 
 #ifdef TODO_VULKAN
-	DX8Wrapper::_Set_DX8_Transform(D3DTS_WORLD,render_state.world);
-	DX8Wrapper::_Set_DX8_Transform(D3DTS_VIEW,render_state.view);
+	DX8Wrapper::_Set_DX8_Transform(VkTS::WORLD,render_state.world);
+	DX8Wrapper::_Set_DX8_Transform(VkTS::VIEW,render_state.view);
 
 
   if (!render_state.material->Get_Lighting())
@@ -618,8 +618,8 @@ void SortingRendererClass::Flush()
 	Matrix4x4 old_view;
 	Matrix4x4 old_world;
 #ifdef TODO_VULKAN
-	DX8Wrapper::Get_Transform(D3DTS_VIEW,old_view);
-	DX8Wrapper::Get_Transform(D3DTS_WORLD,old_world);
+	DX8Wrapper::Get_Transform(VkTS::VIEW,old_view);
+	DX8Wrapper::Get_Transform(VkTS::WORLD,old_world);
 #endif
 
 	while (SortingNodeStruct* state=sorted_list.Head()) {
@@ -652,8 +652,8 @@ void SortingRendererClass::Flush()
 
 
 #ifdef TODO_VULKAN
-	DX8Wrapper::Set_Transform(D3DTS_VIEW,old_view);
-	DX8Wrapper::Set_Transform(D3DTS_WORLD,old_world);
+	DX8Wrapper::Set_Transform(VkTS::VIEW,old_view);
+	DX8Wrapper::Set_Transform(VkTS::WORLD,old_world);
 #endif
 
 }

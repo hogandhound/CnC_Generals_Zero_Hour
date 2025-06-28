@@ -39,7 +39,6 @@
  *   WW3D::Init -- Initialize the WW3D Library                                                 *
  *   WW3D::Shutdown -- shutdown the WW3D Library                                               *
  *   WW3D::Set_Render_Device -- set the render device being currently used                     *
- *   WW3D::Set_Next_Render_Device -- just go to the next device in the list                    *
  *   WW3D::Set_Device_Resolution -- set the current resolution and bitdepth                    *
  *   WW3D::Get_Render_Device -- Get the index of the current render device                     *
  *   WW3D::Get_Render_Device_Desc -- returns description of the current render device          *
@@ -451,28 +450,6 @@ WW3DErrorType WW3D::Set_Render_Device(int dev, int width, int height, int bits, 
 	}
 }
 
-
-/***********************************************************************************************
- * WW3D::Set_Next_Render_Device -- just go to the next device in the list                      *
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   3/26/98    GTH : Created.                                                                 *
- *=============================================================================================*/
-WW3DErrorType WW3D::Set_Next_Render_Device(void)
-{
-	bool success = DX8Wrapper::Set_Next_Render_Device();
-	if (success) {
-		return WW3D_ERROR_OK;
-	} else {
-		return WW3D_ERROR_INITIALIZATION_FAILED;
-	}
-}
 
 /***********************************************************************************************
  * WW3D::Get_Window -- returns the handle of the render window.										  *
@@ -1131,23 +1108,6 @@ WW3DErrorType WW3D::End_Render(bool flip_frame)
 	return WW3D_ERROR_OK;
 }
 
-
-/***********************************************************************************************
- * WW3D::Flip_To_Primary                                                                       *
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   6/20/01    DEL : Created.                                                                 *
- *=============================================================================================*/
-void WW3D::Flip_To_Primary(void)
-{
-	DX8Wrapper::Flip_To_Primary();
-}
 
 
 /***********************************************************************************************

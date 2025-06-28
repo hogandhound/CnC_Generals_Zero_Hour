@@ -431,13 +431,6 @@ ShdDX8RendererNodeClass::ShdDX8RendererNodeClass
 	REF_PTR_SET(SubMesh,sub_mesh);
 
 	// create usage depending on associated shader's processing behaviour KM
-	DX8IndexBufferClass::UsageType ib_usage=DX8IndexBufferClass::USAGE_DEFAULT;
-
-	if (!SubMesh->Peek_Shader()->Use_HW_Vertex_Processing())
-	{
-		ib_usage=DX8IndexBufferClass::USAGE_SOFTWAREPROCESSING;
-	}
-
 	int count=SubMesh->Get_Visible_Polygon_Count();
 	if (!count) count=SubMesh->Get_Polygon_Count();
 	unsigned index_count=count*3;
@@ -445,7 +438,7 @@ ShdDX8RendererNodeClass::ShdDX8RendererNodeClass
 		IndexBuffer=new SortingIndexBufferClass(index_count);
 	}
 	else {
-		IndexBuffer=new DX8IndexBufferClass(index_count,ib_usage);
+		IndexBuffer=new DX8IndexBufferClass(index_count);
 	}
 	IndexBufferClass::WriteLockClass ilock(IndexBuffer);
 	const TriIndex* indices=SubMesh->Get_Polygon_Array();

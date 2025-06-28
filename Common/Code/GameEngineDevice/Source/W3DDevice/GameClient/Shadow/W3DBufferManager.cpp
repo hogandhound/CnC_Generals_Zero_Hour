@@ -199,7 +199,7 @@ Bool W3DBufferManager::ReAcquireResources(void)
 	W3DIndexBuffer *ib = m_W3DIndexBuffers;
 	while (ib)
 	{	DEBUG_ASSERTCRASH( ib->m_DX8IndexBuffer == NULL, ("ReAcquire of existing index buffer"));
-		ib->m_DX8IndexBuffer=NEW_REF(DX8IndexBufferClass,(ib->m_size,DX8IndexBufferClass::USAGE_DEFAULT));
+		ib->m_DX8IndexBuffer=NEW_REF(DX8IndexBufferClass,(ib->m_size));
 		DEBUG_ASSERTCRASH( ib->m_DX8IndexBuffer, ("Failed ReAcquire of index buffer"));
 		if (!ib->m_DX8IndexBuffer)
 			return FALSE;
@@ -418,7 +418,7 @@ W3DBufferManager::W3DIndexBufferSlot * W3DBufferManager::allocateSlotStorage(Int
 
 		Int ibSize=__max(DEFAULT_INDEX_BUFFER_SIZE,size);
 
-		pIB->m_DX8IndexBuffer=NEW_REF(DX8IndexBufferClass,(ibSize,DX8IndexBufferClass::USAGE_DEFAULT));
+		pIB->m_DX8IndexBuffer=NEW_REF(DX8IndexBufferClass,(ibSize));
 		pIB->m_startFreeIndex=size;
 		pIB->m_size=ibSize;
 		ibSlot=&m_W3DIndexBufferEmptySlots[m_numEmptyIndexSlotsAllocated];

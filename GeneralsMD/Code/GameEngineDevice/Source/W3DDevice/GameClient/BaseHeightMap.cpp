@@ -1442,7 +1442,6 @@ RenderObjClass *	 BaseHeightMapRenderObjClass::Clone(void) const
 	assert(false);
 	return NULL;
 }
-
 //=============================================================================
 // BaseHeightMapRenderObjClass::loadRoadsAndBridges
 //=============================================================================
@@ -1453,6 +1452,9 @@ void BaseHeightMapRenderObjClass::loadRoadsAndBridges(W3DTerrainLogic *pTerrainL
 #ifdef TODO_VULKAN
 	if (DX8Wrapper::_Get_D3D_Device8() && (DX8Wrapper::_Get_D3D_Device8()->TestCooperativeLevel()) != D3D_OK)
 		return;	//device not ready to render anything
+#endif
+	if (!DX8Wrapper::_GetRenderTarget().currentCmd)
+		return;//device not ready to render anything
 
 #ifdef DO_ROADS
 	if (m_roadBuffer) {
@@ -1462,7 +1464,6 @@ void BaseHeightMapRenderObjClass::loadRoadsAndBridges(W3DTerrainLogic *pTerrainL
 	if (m_bridgeBuffer) {
 		m_bridgeBuffer->loadBridges(pTerrainLogic, saveGame);
 	}
-#endif
 }
 
 // ============================================================================
@@ -2465,17 +2466,19 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 	if (DX8Wrapper::getBackBufferFormat() != WW3D_FORMAT_A8R8G8B8)
 		return;	//can't apply effect on cards without destination alpha
 
+#ifdef TODO_VULKAN
 	Int vertexCount = 0;
 	Int indexCount = 0;
+	Int drawStartX = m_map->getDrawOrgX();
+	Int drawStartY = m_map->getDrawOrgY();
+	Int j = 0;
+#endif
 	Int drawEdgeY=m_map->getDrawOrgY()+m_map->getDrawHeight()-1;
 	Int drawEdgeX=m_map->getDrawOrgX()+m_map->getDrawWidth()-1;
 	if (drawEdgeX > (m_map->getXExtent()-1))
 		drawEdgeX = m_map->getXExtent()-1;
 	if (drawEdgeY > (m_map->getYExtent()-1))
 		drawEdgeY = m_map->getYExtent()-1;
-	Int drawStartX=m_map->getDrawOrgX();
-	Int drawStartY=m_map->getDrawOrgY();
-	Int j=0;
 
 	ShaderClass unlitShader=ShaderClass::_PresetOpaque2DShader;
 	unlitShader.Set_Depth_Compare(ShaderClass::PASS_LEQUAL);
@@ -2677,8 +2680,8 @@ void BaseHeightMapRenderObjClass::renderShoreLinesSorted(CameraClass *pCamera)
 	DX8Wrapper::Set_Material(vmat);
 	REF_PTR_RELEASE(vmat);
 	DX8Wrapper::Set_Texture(0,m_destAlphaTexture);
-#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(VkTS::WORLD,Matrix3D(1));
+#ifdef TODO_VULKAN
 	//Enabled writes to destination alpha only
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0,  D3DTSS_TEXCOORDINDEX, 0);

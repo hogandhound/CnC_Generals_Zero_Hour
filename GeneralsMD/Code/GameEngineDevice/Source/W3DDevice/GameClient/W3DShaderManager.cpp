@@ -101,6 +101,7 @@ public:
 	};
 	virtual Int init(void) = 0;			///<perform any one time initialization and validation
 	virtual Int shutdown(void) { return TRUE;};			///<release resources used by shader
+	virtual void draw() = 0;
 protected:
 	Int m_numPasses;						///<number of passes to complete shader
 };

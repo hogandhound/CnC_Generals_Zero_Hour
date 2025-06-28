@@ -138,7 +138,7 @@ void W3DTerrainBackground::doPartialUpdate(const IRegion2D &partialRange, WorldH
 	if (m_indexTerrainSize<requiredIndexSize || m_indexTerrain==NULL) {
 		m_indexTerrainSize = requiredIndexSize;
 		REF_PTR_RELEASE(m_indexTerrain);
-		m_indexTerrain=NEW_REF(DX8IndexBufferClass,(m_indexTerrainSize+4,DX8IndexBufferClass::USAGE_DEFAULT));
+		m_indexTerrain=NEW_REF(DX8IndexBufferClass,(m_indexTerrainSize+4));
 	}
 	Int minX = m_xOrigin;
 	Int minY = m_yOrigin;
@@ -553,7 +553,7 @@ void W3DTerrainBackground::doTesselatedUpdate(const IRegion2D &partialRange, Wor
 	if (m_indexTerrainSize<requiredIndex || m_indexTerrain==NULL) {
 		m_indexTerrainSize = requiredIndex;
 		REF_PTR_RELEASE(m_indexTerrain);
-		m_indexTerrain=NEW_REF(DX8IndexBufferClass,(m_indexTerrainSize+4,DX8IndexBufferClass::USAGE_DEFAULT));
+		m_indexTerrain=NEW_REF(DX8IndexBufferClass,(m_indexTerrainSize+4));
 	}
 
 	m_curNumTerrainIndices = 0;

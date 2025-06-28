@@ -523,7 +523,6 @@ protected:
 	static bool Set_Any_Render_Device(void);
 	static bool	Set_Render_Device(const char * dev_name,int width=-1,int height=-1,int bits=-1,int windowed=-1,bool resize_window=false);
 	static bool	Set_Render_Device(int dev=-1,int resx=-1,int resy=-1,int bits=-1,int windowed=-1,bool resize_window = false, bool reset_device = false, bool restore_assets=true);
-	static bool Set_Next_Render_Device(void);
 	static bool Toggle_Windowed(void);
 
 	static int	Get_Render_Device_Count(void);

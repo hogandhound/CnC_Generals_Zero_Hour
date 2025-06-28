@@ -88,6 +88,8 @@ extern const FrustumClass *shadowCameraFrustum;	//defined in W3DShadow.
 extern LPDIRECT3DVERTEXBUFFER9 shadowVertexBufferD3D;		///<D3D vertex buffer
 extern LPDIRECT3DINDEXBUFFER9	shadowIndexBufferD3D;	///<D3D index buffer
 #endif
+extern VK::Buffer shadowVertexBufferD3D;		///<D3D vertex buffer
+extern VK::Buffer shadowIndexBufferD3D;	///<D3D index buffer
 extern int nShadowVertsInBuf;	//model vetices in vertex buffer
 extern int nShadowStartBatchVertex;
 extern int nShadowIndicesInBuf;	//model vetices in vertex buffer

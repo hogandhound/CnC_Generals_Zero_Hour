@@ -86,25 +86,25 @@ static ShaderClass detailAlphaShader(SC_ALPHA_DETAIL);
 //=============================================================================
 void W3DBibBuffer::loadBibsInVertexAndIndexBuffers(void)
 {
-#ifdef TODO_VULKAN
 	if (!m_indexBib || !m_vertexBib || !m_initialized) {
 		return;
 	}
 	if (!m_anythingChanged) {
 		return;
 	}
-
 	m_curNumBibVertices = 0;
 	m_curNumBibIndices = 0;
 	m_curNumNormalBibIndices = 0;
 	m_curNumNormalBibVertex = 0;
 
-	if (m_numBibs==0) {
-		return;	
+	if (m_numBibs == 0) {
+		return;
 	}
+#ifdef TODO_VULKAN
 
-	VertexFormatXYZDUV1 *vb;
-	UnsignedShort *ib;
+	VertexFormatXYZDUV1* vb;
+	UnsignedShort* ib;
+
 	// Lock the buffers.
 	DX8IndexBufferClass::WriteLockClass lockIdxBuffer(m_indexBib, D3DLOCK_DISCARD);
 	DX8VertexBufferClass::WriteLockClass lockVtxBuffer(m_vertexBib, D3DLOCK_DISCARD);
@@ -268,7 +268,7 @@ void W3DBibBuffer::freeBibBuffers(void)
 void W3DBibBuffer::allocateBibBuffers(void)
 {
 	m_vertexBib=NEW_REF(DX8VertexBufferClass,(DX8_FVF_XYZDUV1,m_vertexBibSize+4,DX8VertexBufferClass::USAGE_DYNAMIC));
-	m_indexBib=NEW_REF(DX8IndexBufferClass,(m_indexBibSize+4, DX8IndexBufferClass::USAGE_DYNAMIC));
+	m_indexBib=NEW_REF(DX8IndexBufferClass,(m_indexBibSize+4));
 	m_curNumBibVertices=0;
 	m_curNumBibIndices=0;
 }

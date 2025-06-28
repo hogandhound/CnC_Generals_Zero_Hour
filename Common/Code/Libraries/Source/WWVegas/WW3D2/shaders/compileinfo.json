@@ -1,0 +1,150 @@
+{
+  "name": "WWVK",
+  "includes": [ "VkTexture.h" ],
+  "shaders": [
+  {
+	  "name": "FVF_DUV",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "fvf_xyzduv.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_duv.frag" }
+  },
+  {
+	  "name": "FVF_NDUV",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "fvf_xyznduv1.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv.frag" }
+  },
+  {
+	  "name": "FTerrain",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "fvf_xyzduv.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fterrain.frag" }
+  },
+  {
+	  "name": "FTerrainNoise",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "fvf_xyzduv.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fterrainnoise.frag" }
+  },
+  {
+	  "name": "FTerrainNoise2",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "fvf_xyzduv.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fterrainnoise2.frag" }
+  },
+  {
+	  "name": "Monochrome",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "fvf_xyzduv.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "monochrome.frag" }
+  },
+  {
+	  "name": "MotionBlur",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "fvf_xyzduv.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "motionblur.frag" }
+  },
+  {
+	  "name": "BumpDiff",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "shd8bumpdiff.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "shd8bumpdiff.frag" }
+  },
+  {
+	  "name": "BumpSpec",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "shd8bumpspec.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "shd8bumpspec.frag" }
+  },
+  {
+	  "name": "SSBumpDiff",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "shd8ssbumpdiff.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "shd8ssbumpdiff.frag" }
+  },
+  {
+	  "name": "SSBumpSpec",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "shd8ssbumpspec.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "shd8ssbumpspec.frag" }
+  },
+  {
+	  "name": "Terrain",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "fvf_xyzduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "terrain.frag" }
+  },
+  {
+	  "name": "TerrainNoise",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "fvf_xyzduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "terrainnoise.frag" }
+  },
+  {
+	  "name": "TerrainNoise2",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "fvf_xyzduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "terrainnoise2.frag" }
+  },
+  {
+	  "name": "Trees",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "Trees.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "Trees.frag" }
+  },
+  {
+	  "name": "Wave",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "wave.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "wave.frag" }
+  },
+  ]
+}

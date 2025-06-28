@@ -229,7 +229,7 @@ public:
 
 	void Copy(const Vector3* loc, unsigned first_vertex, unsigned count);
 	void Copy(const Vector3* loc, const Vector2* uv, unsigned first_vertex, unsigned count);
-	void Copy(const Vector3* loc, const Vector3* norm, unsigned first_vertex, unsigned count);
+	//void Copy(const Vector3* loc, const Vector3* norm, unsigned first_vertex, unsigned count);
 	void Copy(const Vector3* loc, const Vector3* norm, const Vector2* uv, unsigned first_vertex, unsigned count);
 	void Copy(const Vector3* loc, const Vector3* norm, const Vector2* uv, const Vector4* diffuse, unsigned first_vertex, unsigned count);
 	void Copy(const Vector3* loc, const Vector2* uv, const Vector4* diffuse, unsigned first_vertex, unsigned count);

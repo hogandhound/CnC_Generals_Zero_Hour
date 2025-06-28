@@ -33,6 +33,18 @@ enum VkDescFormat
     VkDS_UU,
     VkDS_TUU,
     VkDS_TTUU,
+    VkDS_TTTUU,
+    VkDS_TTTTUU,
+    VkDS_UUU,
+    VkDS_TUUU,
+    VkDS_TTUUU,
+    VkDS_TTTUUU,
+    VkDS_TTTTUUU,
+    VkDS_UUUU,
+    VkDS_TUUUU,
+    VkDS_TTUUUU,
+    VkDS_TTTUUUU,
+    VkDS_TTTTUUUU,
     VkDS_MaxType,
     VkDS_ = VkDS_MaxType, //Dummy Value
 };
@@ -47,6 +59,7 @@ struct VkDescSetCol
     std::vector<VkDescSetSubType> subs[VkDS_MaxType];
 };
 
+class VkRenderTarget;
 namespace VK
 {
     enum BufferType
@@ -92,26 +105,25 @@ namespace VK
         std::vector<VK::FrameBuffer> fbos;
         uint32_t bufferIndex = 0, textureIndex = 0, fboIndex = 0;
     };
+    struct MemoryPool
+    {
+        VkRenderTarget* target;
+        std::vector<std::vector<VK::Buffer>> stashed;
+        VmaPool pool;
+        VkBufferUsageFlags usage;
+        VK::BufferType type;
+
+        void init(VkRenderTarget* target, VK::BufferType type);
+        VK::Buffer alloc(void* memory, size_t size);
+        void free(VK::Buffer buffer);
+        size_t PoolIndex(size_t);
+    };
+    struct MemoryPools
+    {
+        MemoryPool transfer, vertex, index, uniform;
+    };
 }
 
-class VkRenderTarget;
-struct MemoryPool
-{
-    VkRenderTarget* target;
-    std::vector<std::vector<VK::Buffer>> stashed;
-    VmaPool pool;
-    VkBufferUsageFlags usage;
-    VK::BufferType type;
-
-    void init(VkRenderTarget* target, VK::BufferType type);
-    VK::Buffer alloc(void* memory, size_t size);
-    void free(VK::Buffer buffer);
-    size_t PoolIndex(size_t);
-};
-struct MemoryPools
-{
-    MemoryPool transfer, vertex, index, uniform;
-};
 
 class VkRenderTarget
 {
@@ -123,7 +135,7 @@ public:
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
     VkDevice device;
     VmaAllocator allocator;
-    MemoryPools vmaPools_;
+    VK::MemoryPools vmaPools_;
 
     VkQueue graphicsQueue;
     VkQueue presentQueue;

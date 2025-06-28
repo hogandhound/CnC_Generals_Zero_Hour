@@ -1,9 +1,13 @@
 #define VMA_IMPLEMENTATION
 #include "vk_mem_alloc.h"
+#define NOMINMAX
+#include "windows.h"
+#include "strmif.h"
+#include "vulkan/vulkan.h"
+#include "vulkan/vulkan_win32.h"
+#include "libloaderapi.h"
 
 #include "VkRenderTarget.h"
-#include "SDL.h"
-#include "SDL_vulkan.h"
 #include <VkTexture.h>
 
 #include <thread>
@@ -273,7 +277,7 @@ void VkRenderTarget::StartRender(VkExtent2D extent)
 		}
 	}
 	auto& sf = singleFrame[currentFrame];
-	for (int i = 0; i < sf.bufferIndex; ++i)
+	for (uint32_t i = 0; i < sf.bufferIndex; ++i)
 	{
 		switch (sf.buffers[i].type)
 		{
@@ -293,7 +297,7 @@ void VkRenderTarget::StartRender(VkExtent2D extent)
 		//vmaDestroyBuffer(allocator, sf.buffers[i].buffer, sf.buffers[i].allocation);
 	}
 	singleFrame[currentFrame].bufferIndex = 0;
-	for (int i = 0; i < sf.fboIndex; ++i)
+	for (uint32_t i = 0; i < sf.fboIndex; ++i)
 	{
 		vkDestroyImageView(device, sf.fbos[i].depth.imageView, 0);
 		vkDestroySampler(device, sf.fbos[i].depth.sampler, 0);
@@ -307,7 +311,7 @@ void VkRenderTarget::StartRender(VkExtent2D extent)
 		vkDestroyFramebuffer(device, sf.fbos[i].fbo, 0);
 	}
 	singleFrame[currentFrame].fboIndex = 0;
-	for (int i = 0; i < sf.textureIndex; ++i)
+	for (uint32_t i = 0; i < sf.textureIndex; ++i)
 	{
 		if (sf.textures[i].image)
 		{
@@ -642,9 +646,12 @@ void VkRenderTarget::createInstance(void* window) {
 
 void VkRenderTarget::createSurface(void* window)
 {
-
+	VkWin32SurfaceCreateInfoKHR createInfo{};
+	createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+	createInfo.hwnd = (HWND)window;
+	createInfo.hinstance = GetModuleHandle(nullptr);
 	// now that you have a window and a vulkan instance you need a surface
-	if (!SDL_Vulkan_CreateSurface((SDL_Window*)window, instance, &surface)) {
+	if (vkCreateWin32SurfaceKHR(instance, &createInfo, nullptr, &surface) != VK_SUCCESS) {
 		// failed to create a surface!
 	}
 }
@@ -815,12 +822,12 @@ VkExtent2D VkRenderTarget::chooseSwapExtent(void* window, const VkSurfaceCapabil
 		return capabilities.currentExtent;
 	}
 	else {
-		int width, height;
-		SDL_GetWindowSize((SDL_Window*)window, &width, &height);
+		LPRECT rect = {};
+		GetWindowRect((HWND)window, rect);
 
 		VkExtent2D actualExtent = {
-			static_cast<uint32_t>(width),
-			static_cast<uint32_t>(height)
+			static_cast<uint32_t>(rect->right - rect->left),
+			static_cast<uint32_t>(rect->bottom - rect->bottom)
 		};
 
 		actualExtent.width = std::max(capabilities.minImageExtent.width, std::min(capabilities.maxImageExtent.width, actualExtent.width));
@@ -878,7 +885,7 @@ void VkRenderTarget::createSwapChain(SwapChainSupportDetails swapChainSupport, V
 	std::vector<VkImage> images;
 	images.resize(imageCount);
 	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, images.data());
-	for (int i = 0; i < imageCount; ++i)
+	for (uint32_t i = 0; i < imageCount; ++i)
 	{
 		swapChainFBOs[i].image.image = images[i];
 		VK::CreateTexture(this, swapChainFBOs[i].depth, extent.width, extent.height, (uint32_t)0, 0, VK_FORMAT_D32_SFLOAT);
@@ -1126,6 +1133,18 @@ void VkRenderTarget::createDescPools()
 		case VkDS_UU: texs = 0; ubos = 2; break;
 		case VkDS_TUU: texs = 1; ubos = 2; break;
 		case VkDS_TTUU: texs = 2; ubos = 2; break;
+		case VkDS_TTTUU: texs = 3; ubos = 2; break;
+		case VkDS_TTTTUU: texs = 4; ubos = 2; break;
+		case VkDS_UUU: texs = 0; ubos = 3; break;
+		case VkDS_TUUU: texs = 1; ubos = 3; break;
+		case VkDS_TTUUU: texs = 2; ubos = 3; break;
+		case VkDS_TTTUUU: texs = 3; ubos = 3; break;
+		case VkDS_TTTTUUU: texs = 4; ubos = 3; break;
+		case VkDS_UUUU: texs = 0; ubos = 4; break;
+		case VkDS_TUUUU: texs = 1; ubos = 4; break;
+		case VkDS_TTUUUU: texs = 2; ubos = 4; break;
+		case VkDS_TTTUUUU: texs = 3; ubos = 4; break;
+		case VkDS_TTTTUUUU: texs = 4; ubos = 4; break;
 		}
 		VkDescriptorPoolSize poolSizes[8] = {};
 		for (int i = 0; i < texs; ++i)
@@ -1243,10 +1262,9 @@ void VkRenderTarget::createRenderPass() {
 
 std::vector<const char*> VkRenderTarget::getRequiredExtensions(void* window) {
 
-	uint32_t extensionCount;
-	SDL_Vulkan_GetInstanceExtensions((SDL_Window*)window, &extensionCount, nullptr);
-	std::vector<const char*> extensionNames(extensionCount);
-	SDL_Vulkan_GetInstanceExtensions((SDL_Window*)window, &extensionCount, extensionNames.data());
+	std::vector<const char*> extensionNames = {
+		VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_EXTENSION_NAME
+	};
 
 	if (enableValidationLayers) {
 		extensionNames.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
@@ -1259,7 +1277,7 @@ uint32_t MemPoolSizes[] = {
 	32, 64, 128, 256, 384, 512, 768, 1024, 1536, 2048, 3072,  4096,1024 * 6, 1024 * 10, 1024 * 16, 1024 * 24, 1024 * 36,1024 * 72,1024 * 128
 };
 uint32_t MemPoolSizeCount = sizeof(MemPoolSizes) / sizeof(uint32_t);
-void MemoryPool::init(VkRenderTarget* target, VK::BufferType type)
+void VK::MemoryPool::init(VkRenderTarget* target, VK::BufferType type)
 {
 	this->target = target;
 	this->type = type;
@@ -1314,9 +1332,9 @@ void MemoryPool::init(VkRenderTarget* target, VK::BufferType type)
 }
 
 
-VK::Buffer MemoryPool::alloc(void* memory, size_t size)
+VK::Buffer VK::MemoryPool::alloc(void* memory, size_t size)
 {
-	uint32_t index = PoolIndex(size);
+	size_t index = PoolIndex(size);
 	if (!stashed[index].empty())
 	{
 		VK::Buffer ret = {};
@@ -1384,18 +1402,18 @@ VK::Buffer MemoryPool::alloc(void* memory, size_t size)
 	return ret;
 }
 
-void MemoryPool::free(VK::Buffer buffer)
+void VK::MemoryPool::free(VK::Buffer buffer)
 {
 	if (buffer.allocation == 0)
 	{
 		assert(!buffer.buffer);
 		return;
 	}
-	uint32_t index = PoolIndex(buffer.allocation->GetSize());
+	size_t index = PoolIndex(buffer.allocation->GetSize());
 	stashed[index].push_back(buffer);
 }
 
-size_t MemoryPool::PoolIndex(size_t sz)
+size_t VK::MemoryPool::PoolIndex(size_t sz)
 {
 	if (sz > MemPoolSizes[MemPoolSizeCount - 1])
 		return MemPoolSizeCount;

@@ -554,7 +554,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, const V
 }
 
 // ----------------------------------------------------------------------------
-
+#if 0
 void DX8VertexBufferClass::Copy(const Vector3* loc, unsigned first_vertex, unsigned count)
 {
 	WWASSERT(loc);
@@ -581,9 +581,10 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, unsigned first_vertex, unsig
 	}
 
 }
+#endif
 
 // ----------------------------------------------------------------------------
-
+#if 0
 void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector2* uv, unsigned first_vertex, unsigned count)
 {
 	WWASSERT(loc);
@@ -614,9 +615,10 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector2* uv, unsigned 
 		}
 	}
 }
+#endif
 
 // ----------------------------------------------------------------------------
-
+#if 0
 void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, unsigned first_vertex, unsigned count)
 {
 	WWASSERT(loc);
@@ -649,6 +651,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, unsigne
 		}
 	}
 }
+#endif
 
 // ----------------------------------------------------------------------------
 

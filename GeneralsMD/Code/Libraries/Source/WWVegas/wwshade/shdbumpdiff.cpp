@@ -39,8 +39,6 @@
 #include "assetmgr.h"
 
 #include "shdbumpdiff.h"
-#include "shd6bumpdiff.h"
-#include "shd7bumpdiff.h"
 #include "shd8bumpdiff.h"
 
 #include "editable.h"
@@ -184,20 +182,10 @@ void ShdBumpDiffDefClass::Init()
 	{
 		Version.Set(SHDVER_8);
 	}
-	else if (DX8Wrapper::Get_Current_Caps()->Support_Dot3())
-	{
-		Version.Set(SHDVER_7);
-	}
-	else
-	{
-		Version.Set(SHDVER_6);
-	}
 
 	switch (Version.Get())
 	{
 	case SHDVER_8		: Shd8BumpDiffClass::Init(); break;
-	case SHDVER_7		: Shd7BumpDiffClass::Init(); break;
-	case SHDVER_6		: Shd6BumpDiffClass::Init(); break;
 	}
 }
 
@@ -206,8 +194,6 @@ void ShdBumpDiffDefClass::Shutdown()
 	switch (Version.Get())
 	{
 	case SHDVER_8		: Shd8BumpDiffClass::Shutdown(); break;
-	case SHDVER_7		: Shd7BumpDiffClass::Shutdown(); break;
-	case SHDVER_6		: Shd6BumpDiffClass::Shutdown(); break;
 	}
 }
 
@@ -216,8 +202,6 @@ ShdInterfaceClass* ShdBumpDiffDefClass::Create() const
 	switch (Version.Get())
 	{
 	case SHDVER_8		: return new Shd8BumpDiffClass(this); break;
-	case SHDVER_7		: return new Shd7BumpDiffClass(this); break;
-	case SHDVER_6		: return new Shd6BumpDiffClass(this); break;
 	}
 	return NULL;
 }

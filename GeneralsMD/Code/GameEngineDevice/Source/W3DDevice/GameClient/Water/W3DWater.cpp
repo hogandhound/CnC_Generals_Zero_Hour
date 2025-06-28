@@ -1804,15 +1804,14 @@ void WaterRenderObjClass::drawSea(RenderInfoClass & rinfo)
 	if (!getClippedWaterPlane(&rinfo.Camera,&seaBox))
 		return;	//the sea is not visible
 
-#ifdef TODO_VULKAN
-	D3DXMATRIX matProj, matView, matWW3D;
+	DirectX::XMMATRIX matProj, matView, matWW3D;
 
 	//create a transform which will flip the y and z coordinates to fit our system
 	memset(&matWW3D,0,sizeof(DirectX::XMMATRIX));
-	matWW3D._11=1.0f;
-	matWW3D._32=1.0f;
-	matWW3D._23=1.0f;
-	matWW3D._44=1.0f;
+	matWW3D.r[0].m128_f32[0] = 1.0f;
+	matWW3D.r[3].m128_f32[2] =1.0f;
+	matWW3D.r[2].m128_f32[3] =1.0f;
+	matWW3D.r[4].m128_f32[4] =1.0f;
 
 	Matrix3D tm(Transform);
 
@@ -1830,6 +1829,7 @@ void WaterRenderObjClass::drawSea(RenderInfoClass & rinfo)
 	DX8Wrapper::_Get_DX8_Transform(VkTS::VIEW, *(Matrix4x4*)&matView);
 	DX8Wrapper::_Get_DX8_Transform(VkTS::PROJECTION, *(Matrix4x4*)&matProj);
 
+#ifdef TODO_VULKAN
 	//default setup from Kenny's demo
 	m_pDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
 	m_pDev->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );

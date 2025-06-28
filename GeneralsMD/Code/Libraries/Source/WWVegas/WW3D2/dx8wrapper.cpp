@@ -81,6 +81,8 @@
 #include "dx8webbrowser.h"
 #include <DxErr.h>
 
+#include "VkTexture.h"
+
 #include "shdlib.h"
 
 const int DEFAULT_RESOLUTION_WIDTH = 640;
@@ -287,6 +289,7 @@ bool DX8Wrapper::Init(void * hwnd, bool lite)
 	//world_identity;
 	//CurrentFogColor;
 
+	target.InitVulkan(hwnd);
 #ifdef TODO_VULKAN
 	D3DInterface = NULL;
 	D3DDevice = NULL;
@@ -328,6 +331,7 @@ bool DX8Wrapper::Init(void * hwnd, bool lite)
 
 void DX8Wrapper::Shutdown(void)
 {
+	target.~VkRenderTarget();
 #ifdef TODO_VULKAN
 	if (D3DDevice) {
 
@@ -1103,12 +1107,6 @@ bool DX8Wrapper::Set_Render_Device(int dev, int width, int height, int bits, int
 #endif
 }
 
-bool DX8Wrapper::Set_Next_Render_Device(void)
-{
-	int new_dev = (CurRenderDevice + 1) % _RenderDeviceNameTable.Count();
-	return Set_Render_Device(new_dev);
-}
-
 bool DX8Wrapper::Toggle_Windowed(void)
 {
 #ifdef WW3D_DX8
@@ -1724,9 +1722,7 @@ void DX8Wrapper::Begin_Scene(void)
 	DX8WebBrowser::Update();
 #endif
 
-#ifdef TODO_VULKAN
-	DX8CALL(BeginScene());
-#endif
+	target.StartRender();
 
 	DX8WebBrowser::Update();
 }
@@ -1784,61 +1780,8 @@ void DX8Wrapper::End_Scene(bool flip_frames)
 	for (int i=0;i<CurrentCaps->Get_Max_Textures_Per_Pass();++i) Set_Texture(i,NULL);
 	Set_Material(NULL);
 #endif
+	target.EndRender();
 }
-
-
-void DX8Wrapper::Flip_To_Primary(void)
-{
-	// If we are fullscreen and the current frame is odd then we need
-	// to force a page flip to ensure that the first buffer in the flipping
-	// chain is the one visible.
-	if (!IsWindowed) {
-		DX8_Assert();
-
-		int numBuffers = (_PresentParameters.BackBufferCount + 1);
-		int visibleBuffer = (FrameCount % numBuffers);
-		int flipCount = ((numBuffers - visibleBuffer) % numBuffers);
-		int resetAttempts = 0;
-
-		while ((flipCount > 0) && (resetAttempts < 3)) {
-#ifdef TODO_VULKAN
-			HRESULT hr = _Get_D3D_Device8()->TestCooperativeLevel();
-
-			if (FAILED(hr)) {
-				WWDEBUG_SAY(("TestCooperativeLevel Failed!\n"));
-
-				if (D3DERR_DEVICELOST == hr) {
-					IsDeviceLost=true;
-					WWDEBUG_SAY(("DEVICELOST: Cannot flip to primary.\n"));
-					return;
-				}
-				IsDeviceLost=false;
-
-				if (D3DERR_DEVICENOTRESET == hr) {
-					WWDEBUG_SAY(("DEVICENOTRESET\n"));
-					Reset_Device();
-					resetAttempts++;
-				}
-			} else {
-				WWDEBUG_SAY(("Flipping: %ld\n", FrameCount));
-				hr = _Get_D3D_Device8()->Present(NULL, NULL, NULL, NULL);
-
-				if (SUCCEEDED(hr)) {
-					IsDeviceLost=false;
-					FrameCount++;
-					WWDEBUG_SAY(("Flip to primary succeeded %ld\n", FrameCount));
-				}
-				else {
-					IsDeviceLost=true;
-				}
-			}
-
-			--flipCount;
-#endif
-		}
-	}
-}
-
 
 //**********************************************************************************************
 //! Clear current render device
@@ -1887,13 +1830,11 @@ void DX8Wrapper::Clear(bool clear_color, bool clear_z_stencil, const Vector3 &co
 #endif
 }
 
-#ifdef TODO_VULKAN
 void DX8Wrapper::Set_Viewport(CONST VkViewport* pViewport)
 {
 	DX8_THREAD_ASSERT();
-	DX8CALL(SetViewport(pViewport));
+	vkCmdSetViewport(target.currentCmd, 0, 1, pViewport);
 }
-#endif
 
 // ----------------------------------------------------------------------------
 //
@@ -2432,15 +2373,12 @@ void DX8Wrapper::Apply_Render_State_Changes()
 #endif
 }
 
-IDirect3DTexture9 * DX8Wrapper::_Create_DX8_Texture
+VK::Texture DX8Wrapper::_Create_DX8_Texture
 (
 	unsigned int width,
 	unsigned int height,
 	WW3DFormat format,
 	MipCountType mip_level_count,
-#ifdef TODO_VULKAN
-	D3DPOOL pool,
-#endif
 	bool rendertarget
 )
 {
@@ -2555,7 +2493,7 @@ IDirect3DTexture9 * DX8Wrapper::_Create_DX8_Texture
 
 	return texture;
 #else
-	return nullptr;
+	return {};
 #endif
 }
 

@@ -245,7 +245,7 @@ public:
 
 
 // TODO: Legacy - remove this call!
-IDirect3DTexture9* Load_Compressed_Texture(
+VK::Texture Load_Compressed_Texture(
 	const StringClass& filename,
 	unsigned reduction_factor,
 	MipCountType mip_level_count,
@@ -254,8 +254,8 @@ IDirect3DTexture9* Load_Compressed_Texture(
 	// If DDS file isn't available, use TGA file to convert to DDS.
 
 	DDSFileClass dds_file(filename,reduction_factor);
-	if (!dds_file.Is_Available()) return NULL;
-	if (!dds_file.Load()) return NULL;
+	if (!dds_file.Is_Available()) return {};
+	if (!dds_file.Load()) return {};
 
 	unsigned width=dds_file.Get_Width(0);
 	unsigned height=dds_file.Get_Height(0);
@@ -265,7 +265,7 @@ IDirect3DTexture9* Load_Compressed_Texture(
 	// Note that the nearest valid format could be anything, even uncompressed.
 	if (dest_format==WW3D_FORMAT_UNKNOWN) dest_format=Get_Valid_Texture_Format(dds_file.Get_Format(),true);
 
-	IDirect3DTexture9* d3d_texture = DX8Wrapper::_Create_DX8_Texture
+	VK::Texture d3d_texture = DX8Wrapper::_Create_DX8_Texture
 	(
 		width,
 		height,
@@ -273,15 +273,16 @@ IDirect3DTexture9* Load_Compressed_Texture(
 		(MipCountType)mips
 	);
 
+#ifdef TODO_VULKAN
 	for (unsigned level=0;level<mips;++level) {
 		IDirect3DSurface9* d3d_surface=NULL;
 		WWASSERT(d3d_texture);
-#ifdef TODO_VULKAN
 		DX8_ErrorCode(d3d_texture->GetSurfaceLevel(level/*-reduction_factor*/,&d3d_surface));
 		dds_file.Copy_Level_To_Surface(level,d3d_surface);
 		d3d_surface->Release();
-#endif
+
 	}
+#endif
 	return d3d_texture;
 }
 
@@ -444,7 +445,7 @@ IDirect3DTexture9* TextureLoader::Load_Thumbnail(const StringClass& filename, co
 		WWASSERT(dest_format==texture_format);
 	}
 
-	IDirect3DTexture9* sysmem_texture = DX8Wrapper::_Create_DX8_Texture(
+	VK::Texture sysmem_texture = DX8Wrapper::_Create_DX8_Texture(
 		thumb->Get_Width(),
 		thumb->Get_Height(),
 		dest_format,

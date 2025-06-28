@@ -63,6 +63,8 @@
 #include "vertmaterial.h"
 #include <DirectXMath.h>
 #include <vulkan/vulkan.h>
+#include <VkRenderTarget.h>
+#include <shaders/WWVK_shaderdef.h>
 
 /*
 ** Registry value names
@@ -302,9 +304,6 @@ public:
 	static void Begin_Scene(void);
 	static void End_Scene(bool flip_frame = true);
 
-	// Flip until the primary buffer is visible.
-	static void Flip_To_Primary(void);
-
 	static void Clear(bool clear_color, bool clear_z_stencil, const Vector3 &color, float dest_alpha=0.0f, float z=1.0f, unsigned int stencil=0);
 
 	static void	Set_Viewport(CONST VkViewport* pViewport);
@@ -351,7 +350,6 @@ public:
 	static void Set_DX8_Sampler_Stage_State(unsigned stage, D3DSAMPLERSTATETYPE state, unsigned value);
 	static void Set_DX8_Texture(unsigned int stage, IDirect3DBaseTexture9* texture);
 #endif
-	static void Set_DX8_Clip_Plane(DWORD Index, CONST float* pPlane);
 	static void Set_Light_Environment(LightEnvironmentClass* light_env);
 	static LightEnvironmentClass* Get_Light_Environment() { return Light_Environment; }
 	static void Set_Fog(bool enable, const Vector3 &color, float start, float end);
@@ -422,7 +420,7 @@ public:
 	);
 
 
-	static IDirect3DTexture9* _Create_DX8_ZTexture
+	static VK::Texture _Create_DX8_ZTexture
 	(
 		unsigned int width,
 		unsigned int height,
@@ -434,15 +432,12 @@ public:
 	);
 
 
-	static IDirect3DTexture9 * _Create_DX8_Texture
+	static VK::Texture _Create_DX8_Texture
 	(
 		unsigned int width,
 		unsigned int height,
 		WW3DFormat format,
 		MipCountType mip_level_count,
-#ifdef TODO_VULKAN
-		D3DPOOL pool=D3DPOOL_MANAGED,
-#endif
 		bool rendertarget=false
 	);
 #ifdef TODO_VULKAN
@@ -562,6 +557,8 @@ public:
 	static IDirect3DDevice9* _Get_D3D_Device8() { return D3DDevice; }
 	static IDirect3D9* _Get_D3D8() { return D3DInterface; }
 #endif
+	static VkRenderTarget& _GetRenderTarget() { return target; }
+
 	/// Returns the display format - added by TR for video playback - not part of W3D
 	static WW3DFormat	getBackBufferFormat( void );
 	static bool Reset_Device(bool reload_assets=true);
@@ -623,7 +620,6 @@ protected:
 	static bool Set_Any_Render_Device(void);
 	static bool	Set_Render_Device(const char * dev_name,int width=-1,int height=-1,int bits=-1,int windowed=-1,bool resize_window=false);
 	static bool	Set_Render_Device(int dev=-1,int resx=-1,int resy=-1,int bits=-1,int windowed=-1,bool resize_window = false, bool reset_device = false, bool restore_assets=true);
-	static bool Set_Next_Render_Device(void);
 	static bool Toggle_Windowed(void);
 
 	static int	Get_Render_Device_Count(void);
@@ -740,6 +736,7 @@ protected:
 	static IDirect3D9 *					D3DInterface;			//d3d8;
 	static IDirect3DDevice9 *			D3DDevice;				//d3ddevice8;
 #endif
+	static VkRenderTarget target;
 
 	static IDirect3DSurface9 *			CurrentRenderTarget;
 	static IDirect3DSurface9 *			CurrentDepthBuffer;
@@ -842,7 +839,7 @@ WWINLINE void DX8Wrapper::_Set_DX8_Transform(VkTransformState transform,const Ma
 	WWASSERT(transform<=VkTS::WORLD);
 	Matrix4x4 mtx(m);
 	{
-		DX8Transforms[transform]=mtx;
+		DX8Transforms[(uintptr_t)transform]=mtx;
 		SNAPSHOT_SAY(("DX8 - SetTransform %d [%f,%f,%f,%f][%f,%f,%f,%f][%f,%f,%f,%f]\n",transform,m[0][0],m[0][1],m[0][2],m[0][3],m[1][0],m[1][1],m[1][2],m[1][3],m[2][0],m[2][1],m[2][2],m[2][3]));
 		DX8_RECORD_MATRIX_CHANGE();
 #ifdef TODO_VULKAN
@@ -853,6 +850,7 @@ WWINLINE void DX8Wrapper::_Set_DX8_Transform(VkTransformState transform,const Ma
 
 WWINLINE void DX8Wrapper::_Get_DX8_Transform(VkTransformState transform, Matrix4x4& m)
 {
+	m = DX8Transforms[(uint32_t)transform];
 #ifdef TODO_VULKAN
 	DX8CALL(GetTransform(transform,(DirectX::XMMATRIX*)&m));
 #endif
@@ -959,12 +957,6 @@ WWINLINE void DX8Wrapper::Set_DX8_Render_State(D3DRENDERSTATETYPE state, unsigne
 	DX8_RECORD_RENDER_STATE_CHANGE();
 }
 #endif
-WWINLINE void DX8Wrapper::Set_DX8_Clip_Plane(DWORD Index, CONST float* pPlane)
-{
-#ifdef TODO_VULKAN
-	DX8CALL(SetClipPlane( Index, pPlane ));
-#endif
-}
 
 #ifdef TODO_VULKAN
 WWINLINE void DX8Wrapper::Set_DX8_Texture_Stage_State(unsigned stage, D3DTEXTURESTAGESTATETYPE state, unsigned value)
@@ -1380,6 +1372,9 @@ WWINLINE void DX8Wrapper::Set_DX8_ZBias(int zbias)
 	else {
 		Set_DX8_Render_State (D3DRS_DEPTHBIAS,ZBias * -0.000005f);
 	}
+#else
+	//No idea if this is correct
+	vkCmdSetDepthBias(target.currentCmd, ZBias * -0.000005f, 0.f, 1.f);
 #endif
 }
 

@@ -16,14 +16,89 @@
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// DX7 bump specular mask vertex shader pass 0
+// DX8 bump diffuse vertex shader
 // Kenny Mitchell - Westwood Studios EA 2002
 
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
+layout( push_constant ) uniform WorldMatrix {
+  mat4 world;
+} push;
+layout(set = 0, binding = 0) uniform Projection{
+	mat4 m;
+} proj;
+layout(set = 0, binding = 1) uniform ViewMatrix{
+	mat4 m;
+} view;
+layout(set = 0, binding = 1) uniform SSBumpDiff{
+	mat4 m;
+	vec4 lightDir[4];
+	vec4 lightColor[4];
+	vec4 diffuse;
+	vec4 ambient;
+	vec4 constVal;
+	vec4 bumpiness;
+} bump;
+
+layout(location = 0) in vec3 vert;
+layout(location = 1) in vec3 vS;
+layout(location = 2) in vec3 vT;
+layout(location = 3) in vec3 vSxT;
+layout(location = 4) in vec3 norm;
+layout(location = 5) in vec4 diffuse;
+layout(location = 6) in vec2 uv;
+
+layout(location = 0) out vec4 fragUv;
+layout(location = 1) out vec4 fragSpec;
+layout(location = 2) out vec4 fragDiff;
+
+void main() {
+	vec4 eye = proj.m * view.m * push.world * vec4(vert,1.0);
+    gl_Position = eye;
+	vec3 wS = (push.world * vec4(vS,0)).xyz;
+	vec3 wT = (push.world * vec4(vT,0)).xyz;
+	vec3 wSxT = (push.world * vec4(vSxT,0)).xyz;
+	
+	vec4 lightLocal = vec4(
+		dot(wS,bump.lightDir[0].xyz), 
+		dot(wT,bump.lightDir[0].xyz), 
+		dot(wSxT,bump.lightDir[0].xyz), 0.0);
+	lightLocal.w = inversesqrt(dot(lightLocal.xyz,lightLocal.xyz));
+	lightLocal = lightLocal * lightLocal.w;
+	
+	vec4 worldNorm = push.world * vec4(norm,0.0);
+	worldNorm.w = inversesqrt(dot(worldNorm.xyz,worldNorm.xyz));
+	worldNorm = worldNorm * worldNorm.w;
+	
+	vec4 light = vec4(0,0,0,0);
+	light.x = clamp(dot(worldNorm.xyz,bump.lightDir[0].xyz),0,1) * bump.lightColor[0].w;
+	light.y = clamp(dot(worldNorm.xyz,bump.lightDir[1].xyz),0,1) * bump.lightColor[1].w;
+	light.z = clamp(dot(worldNorm.xyz,bump.lightDir[2].xyz),0,1) * bump.lightColor[2].w;
+	light.w = clamp(dot(worldNorm.xyz,bump.lightDir[3].xyz),0,1) * bump.lightColor[3].w;
+	
+	vec4 col = bump.lightColor[0] * light.x + bump.lightColor[1] * light.y + bump.lightColor[2] * light.z + bump.lightColor[3] * light.w;
+	
+	col = col * diffuse * bump.diffuse;
+	fragSpec = col + bump.ambient;
+	
+	lightLocal.xyz = (lightLocal.xyz + bump.constVal.yyy) * bump.constVal.zzz * bump.bumpiness.xxx;
+	fragDiff.xyz = vec3(lightLocal.xyz + bump.bumpiness.yyy);
+	
+	light.x = (bump.constVal.y - light.x) * bump.lightColor[0].x;
+	light.y = (bump.constVal.y - light.y) * bump.lightColor[0].y;
+	fragDiff.w = light.x + light.y;
+	
+	fragUv = vec4(uv,0,0);
+}
+
+
+//Converted to GLSL
+#if 0
 vs.1.1
 
 #include "shdhw_constants.h"
 
-#include "shd7bumpspec_constants.h"
+#include "shd8bumpdiff_constants.h"
 
 // In:
 //	v0 - object space vertex position
@@ -35,10 +110,12 @@ vs.1.1
 //	v6 - SxT
 
 // object space vertex position -> screen (early as possible for view clipping)
-dp4 oPos.x, V_POSITION, c[CV_WORLD_VIEW_PROJECTION_0]
-dp4 oPos.y, V_POSITION, c[CV_WORLD_VIEW_PROJECTION_1]
-dp4 oPos.z, V_POSITION, c[CV_WORLD_VIEW_PROJECTION_2]
-dp4 oPos.w, V_POSITION, c[CV_WORLD_VIEW_PROJECTION_3]
+dp4 EYE_VECTOR.x, V_POSITION, c[CV_WORLD_VIEW_PROJECTION_0]
+dp4 EYE_VECTOR.y, V_POSITION, c[CV_WORLD_VIEW_PROJECTION_1]
+dp4 EYE_VECTOR.z, V_POSITION, c[CV_WORLD_VIEW_PROJECTION_2]
+dp4 EYE_VECTOR.w, V_POSITION, c[CV_WORLD_VIEW_PROJECTION_3]
+
+mov oPos, EYE_VECTOR
 
 // Transform basis vectors to world space
 dp3 S_WORLD.x, V_S, c[CV_WORLD_0]
@@ -71,7 +148,6 @@ dp3 WORLD_NORMAL.z, V_NORMAL, c[CV_WORLD_2]
 dp3 WORLD_NORMAL.w, WORLD_NORMAL, WORLD_NORMAL
 rsq WORLD_NORMAL.w, WORLD_NORMAL.w
 mul WORLD_NORMAL, WORLD_NORMAL, WORLD_NORMAL.w
-
 // calculate light 0 factor
 dp3 LIGHT_0.w, WORLD_NORMAL, c[CV_LIGHT_DIRECTION_0]	// L.N
 max LIGHT_0.w, LIGHT_0.w, c[CV_CONST].x				// clamp 0-1
@@ -102,8 +178,6 @@ mad COL, c[CV_LIGHT_COLOR_3], LIGHT_3.w, COL
 mul COL, COL, V_DIFFUSE
 mul COL, COL, c[CV_DIFFUSE]
 add oD1, COL, c[CV_AMBIENT]
-
-
 // Scale to 0-1
 add LIGHT_LOCAL, LIGHT_LOCAL, c[CV_CONST].yyy
 mul LIGHT_LOCAL, LIGHT_LOCAL, c[CV_CONST].zzz
@@ -112,11 +186,15 @@ mul LIGHT_LOCAL, LIGHT_LOCAL, c[CV_CONST].zzz
 mul LIGHT_LOCAL, LIGHT_LOCAL, c[CV_BUMPINESS].xxx
 add oD0, LIGHT_LOCAL, c[CV_BUMPINESS].yyy
 
-// place negated bump light intensity in alpha channel
-add oD0.w, c[CV_CONST].y, -LIGHT_0.w
 
+// calc light factor excluding bumped lights
+add LIGHT_0.w, c[CV_CONST].y, -LIGHT_0.w
+add LIGHT_1.w, c[CV_CONST].y, -LIGHT_1.w
+
+mul LIGHT_0.w, c[CV_LIGHT_COLOR_0], LIGHT_0.w
+mul LIGHT_1.w, c[CV_LIGHT_COLOR_1], LIGHT_1.w
+add oD0.w, LIGHT_0.w, LIGHT_1.w
 
 mov oT0, V_TEXTURE
 mov oT1, V_TEXTURE
-
-
+#endif

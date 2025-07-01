@@ -19,8 +19,9 @@ layout(location = 4) in vec2 uv2;
 
 layout(location = 0) out vec3 fragNorm;
 layout(location = 1) out vec4 fragDiffuse;
-layout(location = 2) out vec2 fragUv1;
-layout(location = 3) out vec2 fragUv2;
+layout(location = 2) out vec3 viewDir;
+layout(location = 3) out vec2 fragUv1;
+layout(location = 4) out vec2 fragUv2;
 
 void main() {
     // Pass the tex coord straight through to the fragment shader
@@ -29,5 +30,6 @@ void main() {
 	fragNorm = norm;
 	fragDiffuse = unpackUnorm4x8(diffuse);
     
+	viewDir = (view.m * vec4(0,0,1,1)).xyz;
     gl_Position = proj.m*view.m*push.world*vec4(vert, 1);
 }

@@ -265,9 +265,7 @@ DX8IndexBufferClass::DX8IndexBufferClass(unsigned short index_count_)
 
 DX8IndexBufferClass::~DX8IndexBufferClass()
 {
-#ifdef TODO_VULKAN
-	index_buffer->Release();
-#endif
+	DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(index_buffer);
 }
 
 void DX8IndexBufferClass::Upload()

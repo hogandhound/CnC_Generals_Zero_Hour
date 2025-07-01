@@ -250,16 +250,11 @@ void SortingRendererClass::Insert_Triangles(
 	WWASSERT(vertex_buffer);
 	WWASSERT(state->vertex_count<=vertex_buffer->Get_Vertex_Count());
 
-#ifdef TODO_VULKAN
-	D3DXMATRIX mtx=(D3DXMATRIX&)state->sorting_state.world*(D3DXMATRIX&)state->sorting_state.view;
-	D3DXVECTOR3 vec=(D3DXVECTOR3&)state->bounding_sphere.Center;
-	D3DXVECTOR4 transformed_vec;
-	D3DXVec3Transform(
-		&transformed_vec,
-		&vec,
-		&mtx); 
-	state->transformed_center=Vector3(transformed_vec[0],transformed_vec[1],transformed_vec[2]);
-#endif
+	DirectX::XMMATRIX mtx=(DirectX::XMMATRIX&)state->sorting_state.world*(DirectX::XMMATRIX&)state->sorting_state.view;
+	DirectX::FXMVECTOR vec =
+		{ state->bounding_sphere.Center.X, state->bounding_sphere.Center.Y, state->bounding_sphere.Center.Z, 1.0 };
+	DirectX::FXMVECTOR transformed_vec = DirectX::XMVector3Transform(vec, mtx);
+	state->transformed_center=Vector3(transformed_vec.m128_f32[0],transformed_vec.m128_f32[1],transformed_vec.m128_f32[2]);
 	
 	/// @todo lorenzen sez use a bucket sort here... and stop copying so much data so many times
 
@@ -371,7 +366,6 @@ static void Apply_Render_State(RenderStateStruct& render_state)
 		DX8Wrapper::Set_Texture(i,render_state.Textures[i]);
 	}
 
-#ifdef TODO_VULKAN
 	DX8Wrapper::_Set_DX8_Transform(VkTS::WORLD,render_state.world);
 	DX8Wrapper::_Set_DX8_Transform(VkTS::VIEW,render_state.view);
 
@@ -383,27 +377,26 @@ static void Apply_Render_State(RenderStateStruct& render_state)
 	if (render_state.LightEnable[0]) 
   {
     
-    DX8Wrapper::Set_DX8_Light(0,&render_state.Lights[0]);
+    DX8Wrapper::Set_Light(0,&render_state.Lights.lights[0]);
 		if (render_state.LightEnable[1]) 
     {
-			DX8Wrapper::Set_DX8_Light(1,&render_state.Lights[1]);
+			DX8Wrapper::Set_Light(1,&render_state.Lights.lights[1]);
 			if (render_state.LightEnable[2]) 
       {
-				DX8Wrapper::Set_DX8_Light(2,&render_state.Lights[2]);
+				DX8Wrapper::Set_Light(2,&render_state.Lights.lights[2]);
 				if (render_state.LightEnable[3]) 
-					DX8Wrapper::Set_DX8_Light(3,&render_state.Lights[3]);
+					DX8Wrapper::Set_Light(3,&render_state.Lights.lights[3]);
 				else 
-					DX8Wrapper::Set_DX8_Light(3,NULL);
+					DX8Wrapper::Set_Light(3,NULL);
 			}
 			else 
-				DX8Wrapper::Set_DX8_Light(2,NULL);
+				DX8Wrapper::Set_Light(2,NULL);
 		}
 		else 
-			DX8Wrapper::Set_DX8_Light(1,NULL);
+			DX8Wrapper::Set_Light(1,NULL);
 	}
 	else 
-		DX8Wrapper::Set_DX8_Light(0,NULL);
-#endif
+		DX8Wrapper::Set_Light(0,NULL);
 
 }
 
@@ -436,7 +429,7 @@ void SortingRendererClass::Flush_Sorting_Pool()
 			VertexFormatXYZNDUV2* src_verts=NULL;
 			SortingVertexBufferClass* vertex_buffer=static_cast<SortingVertexBufferClass*>(state->sorting_state.vertex_buffers[0]);
 			WWASSERT(vertex_buffer);
-			src_verts=vertex_buffer->VertexBuffer;
+			src_verts=vertex_buffer->Vertices.data();
 			WWASSERT(src_verts);
 			src_verts+=state->sorting_state.vba_offset;
 			src_verts+=state->sorting_state.index_base_offset;
@@ -720,16 +713,11 @@ void SortingRendererClass::Insert_VolumeParticle(
 
 	// Transform the center point to view space for sorting
 
-#ifdef TODO_VULKAN
-	D3DXMATRIX mtx=(D3DXMATRIX&)state->sorting_state.world*(D3DXMATRIX&)state->sorting_state.view;
-	D3DXVECTOR3 vec=(D3DXVECTOR3&)state->bounding_sphere.Center;
-	D3DXVECTOR4 transformed_vec;
-	D3DXVec3Transform(
-		&transformed_vec,
-		&vec,
-		&mtx); 
-	state->transformed_center=Vector3(transformed_vec[0],transformed_vec[1],transformed_vec[2]);
-#endif
+	DirectX::XMMATRIX mtx=(DirectX::XMMATRIX&)state->sorting_state.world*(DirectX::XMMATRIX&)state->sorting_state.view;
+	DirectX::XMVECTOR vec=(DirectX::XMVECTOR&)state->bounding_sphere.Center;
+	DirectX::XMVECTOR transformed_vec;
+	transformed_vec = DirectX::XMVector3Transform(vec, mtx);
+	state->transformed_center=Vector3(transformed_vec.m128_f32[0],transformed_vec.m128_f32[1],transformed_vec.m128_f32[2]);
 
 
 	// BUT WHAT IS THE DEAL WITH THE VERTCOUNT AND POLYCOUNT BEING N BUT TRANSFORMED CENTER COUNT == 1

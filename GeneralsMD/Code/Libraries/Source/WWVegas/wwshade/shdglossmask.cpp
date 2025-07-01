@@ -295,6 +295,14 @@ void Shd6GlossMaskClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 #endif
 }
 
+void Shd6GlossMaskClass::Draw(int cur_pass, RenderInfoClass& rinfo, unsigned short start_index,
+	unsigned short polygon_count,
+	unsigned short min_vertex_index,
+	unsigned short vertex_count,
+	bool isStrip)
+{
+}
+
 unsigned Shd6GlossMaskClass::Get_Vertex_Stream_Count() const
 {
 	return 1;

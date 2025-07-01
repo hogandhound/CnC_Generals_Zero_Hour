@@ -43,27 +43,6 @@ public:
 	ShdLegacyW3DDefClass();
 	ShdLegacyW3DDefClass(const ShdLegacyW3DDefClass& that);
 	virtual ~ShdLegacyW3DDefClass();
-	
-	virtual ShdDefClass*	Clone() const	{ return new ShdLegacyW3DDefClass(*this); }
-
-	// Shader Creation (should create a shader compatible with the current hardware/API)
-	virtual void						Init();
-	virtual void						Shutdown();
-	virtual ShdInterfaceClass*		Create() const;
-
-	// Validation methods
-	virtual bool						Is_Valid_Config(StringClass &message);
-
-	// Requirements
-	virtual bool						Requires_Normals() const { return true; }
-	virtual bool						Requires_Tangent_Space_Vectors() const { return false; }
-	virtual bool						Requires_Sorting() const { return false; }
-	virtual int							Static_Sort_Index() const { return 0; }
-	virtual bool						Uses_UV_Channel(int i) const;
-
-	// From PersistClass
-	virtual bool						Save(ChunkSaveClass &csave);
-	virtual bool						Load(ChunkLoadClass &cload);
 
 	// Accessors
 	int										Get_Pass_Count() { return PassCount; }
@@ -74,6 +53,7 @@ public:
 	StringClass &							Get_Mapper_Args(int pass,int stage) { return MapperArgs[pass][stage]; }
 	int										Get_Map_Channel(int pass,int stage) { return MapChannel[pass][stage]; }
 
+#if 0
 	void										Set_Pass_Count(int passes) { PassCount=passes; }
 	void										Set_Texture_Name(int pass, int stage, const StringClass& name) { TextureNames[pass][stage]=name; }
 	void										Set_Texture_Attributes(int pass, int stage, unsigned int attributes) { TextureAttributes[pass][stage] = attributes; }
@@ -81,6 +61,28 @@ public:
 	void										Set_Material(int pass, const W3dVertexMaterialStruct& mat) { Materials[pass] = mat; }
 	void										Set_Mapper_Args(int pass, int stage,const char * args) { MapperArgs[pass][stage] = args; }
 	void										Set_Map_Channel(int pass, int stage, int channel) { MapChannel[pass][stage] = channel; }
+#endif
+
+	///virtualed
+	virtual ShdDefClass* Clone() const { return new ShdLegacyW3DDefClass(*this); }
+
+	// Shader Creation (should create a shader compatible with the current hardware/API)
+	virtual void						Init();
+	virtual void						Shutdown();
+	virtual ShdInterfaceClass* Create() const;
+	// Validation methods
+	virtual bool						Is_Valid_Config(StringClass& message);
+
+	// Requirements
+	virtual bool						Requires_Normals() const { return true; }
+	virtual bool						Requires_Tangent_Space_Vectors() const { return false; }
+	virtual bool						Requires_Sorting() const { return false; }
+	virtual int							Static_Sort_Index() const { return 0; }
+	virtual bool						Uses_UV_Channel(int i) const;
+
+	// From PersistClass
+	virtual bool						Save(ChunkSaveClass& csave);
+	virtual bool						Load(ChunkLoadClass& cload);
 
 private:
 
@@ -124,6 +126,11 @@ public:
 
 	virtual void						Apply_Shared(int cur_pass, RenderInfoClass& rinfo);
 	virtual void						Apply_Instance(int cur_pass, RenderInfoClass& rinfo);
+	void Draw(int cur_pass, RenderInfoClass& rinfo, unsigned short start_index,
+		unsigned short polygon_count,
+		unsigned short min_vertex_index,
+		unsigned short vertex_count,
+		bool isStrip) override;
 
 	virtual unsigned					Get_Vertex_Stream_Count() const;
 	virtual unsigned					Get_Vertex_Size(unsigned stream) const;

@@ -54,7 +54,7 @@
 #include "shd8ssbumpspec.psh_code.h"
 
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 ShdHWVertexShader		Shd8BumpSpecClass::Vertex_Shader;
 ShdHWPixelShader		Shd8BumpSpecClass::Pixel_Shader;
 ShdHWPixelShader		Shd8BumpSpecClass::Self_Shadow_Pixel_Shader;
@@ -119,7 +119,7 @@ void Shd8BumpSpecClass::Init(void)
 #endif
 	};
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	Pixel_Shader.Create
 	(
 		shd8bumpspec_psh_code
@@ -144,7 +144,7 @@ void Shd8BumpSpecClass::Init(void)
 
 void Shd8BumpSpecClass::Shutdown(void)
 {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	Vertex_Shader.Destroy();
 	Pixel_Shader.Destroy();
 	Self_Shadow_Pixel_Shader.Destroy();
@@ -155,7 +155,7 @@ void Shd8BumpSpecClass::Shutdown(void)
 void Shd8BumpSpecClass::Apply_Shared(int cur_pass, RenderInfoClass& rinfo)
 {
 	// set vertex shader
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	if (cur_pass==0)
 	{
 		DX8Wrapper::Set_Vertex_Shader(Vertex_Shader.Peek_Shader());
@@ -197,6 +197,7 @@ void Shd8BumpSpecClass::Apply_Shared(int cur_pass, RenderInfoClass& rinfo)
 
 	// set constants
 	DX8Wrapper::Set_Vertex_Shader_Constant(CV_CONST, D3DXVECTOR4(0.0f, 1.0f, 0.5f, 2.0f), 1);
+#endif
 
 	// calculate shader view projection matrix
 	Matrix4x4 view_matrix;
@@ -206,7 +207,6 @@ void Shd8BumpSpecClass::Apply_Shared(int cur_pass, RenderInfoClass& rinfo)
 	DX8Wrapper::Get_Transform(VkTS::PROJECTION, proj_matrix);
 
 	Matrix4x4::Multiply(proj_matrix, view_matrix, &View_Projection_Matrix);
-#endif
 }
 
 void Shd8BumpSpecClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
@@ -248,6 +248,14 @@ void Shd8BumpSpecClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 
 	DX8Wrapper::Set_Vertex_Shader_Constant(CV_BUMPINESS, &Bumpiness, 1);
 #endif
+}
+
+void Shd8BumpSpecClass::Draw(int cur_pass, RenderInfoClass& rinfo, unsigned short start_index,
+	unsigned short polygon_count,
+	unsigned short min_vertex_index,
+	unsigned short vertex_count,
+	bool isStrip)
+{
 }
 
 unsigned Shd8BumpSpecClass::Get_Vertex_Stream_Count() const

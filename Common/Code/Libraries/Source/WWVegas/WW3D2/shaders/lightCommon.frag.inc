@@ -1,5 +1,5 @@
-#define VKLIGHT_DIR 0
-#define VKLIGHT_POINT 1
+#define VKLIGHT_POINT 0
+#define VKLIGHT_DIR 1
 #define VKLIGHT_SPOT 2
 
 struct LightGeneric {

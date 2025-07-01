@@ -246,10 +246,10 @@ Bool W3DShroud::ReAcquireResources(void)
 		// Since we control the video memory copy, we can do partial updates more efficiently. Or do shift blits.
 #if defined(_DEBUG) || defined(_INTERNAL)
 		if (TheGlobalData && TheGlobalData->m_fogOfWarOn)
-			m_pDstTexture = new TextureClass(m_dstTextureWidth,m_dstTextureHeight,WW3D_FORMAT_A4R4G4B4,MipCountType::MIP_LEVELS_1, TextureClass::POOL_DEFAULT);
+			m_pDstTexture = new TextureClass(m_dstTextureWidth,m_dstTextureHeight,WW3D_FORMAT_A4R4G4B4,MipCountType::MIP_LEVELS_1);
 		else
 #endif
-			m_pDstTexture = new TextureClass(m_dstTextureWidth,m_dstTextureHeight,WW3D_FORMAT_R5G6B5,MipCountType::MIP_LEVELS_1, TextureClass::POOL_DEFAULT);
+			m_pDstTexture = new TextureClass(m_dstTextureWidth,m_dstTextureHeight,WW3D_FORMAT_R5G6B5,MipCountType::MIP_LEVELS_1);
 
 		DEBUG_ASSERTCRASH( m_pDstTexture != NULL, ("Failed ReAcquire of shroud texture"));
 

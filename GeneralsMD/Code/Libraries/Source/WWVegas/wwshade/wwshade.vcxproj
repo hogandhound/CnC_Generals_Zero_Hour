@@ -598,10 +598,6 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="shdsimple.cpp">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="shdsubmesh.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
@@ -628,7 +624,6 @@
     <ClInclude Include="shdloader.h" />
     <ClInclude Include="shdmesh.h" />
     <ClInclude Include="shdrenderer.h" />
-    <ClInclude Include="shdsimple.h" />
     <ClInclude Include="shdsubmesh.h" />
   </ItemGroup>
   <ItemGroup>

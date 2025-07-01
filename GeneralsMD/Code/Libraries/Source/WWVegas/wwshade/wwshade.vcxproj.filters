@@ -65,9 +65,6 @@
     <ClCompile Include="shdsubmesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="shdsimple.cpp">
-      <Filter>Shaders\Simple</Filter>
-    </ClCompile>
     <ClCompile Include="shd8bumpspec.cpp">
       <Filter>Shaders\Bump Specular</Filter>
     </ClCompile>
@@ -126,9 +123,6 @@
     </ClInclude>
     <ClInclude Include="shdsubmesh.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="shdsimple.h">
-      <Filter>Shaders\Simple</Filter>
     </ClInclude>
     <ClInclude Include="shd8bumpspec.h">
       <Filter>Shaders\Bump Specular</Filter>

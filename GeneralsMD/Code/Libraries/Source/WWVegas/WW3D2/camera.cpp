@@ -733,12 +733,10 @@ void CameraClass::Apply(void)
 	vp.maxDepth = ZBufferMax;
 	DX8Wrapper::Set_Viewport(&vp);
 
-#ifdef TODO_VULKAN
 	Matrix4x4 d3dprojection;
 	Get_D3D_Projection_Matrix(&d3dprojection);
 	DX8Wrapper::Set_Projection_Transform_With_Z_Bias(d3dprojection,ZNear,ZFar);
 	DX8Wrapper::Set_Transform(VkTS::VIEW,CameraInvTransform);
-#endif
 }
 
 void CameraClass::Set_Clip_Planes(float znear,float zfar)						

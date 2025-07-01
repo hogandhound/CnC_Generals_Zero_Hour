@@ -158,7 +158,7 @@ public:
 	/// Update the macro texture (pass 3).
 	void setTextureLOD(Int lod);	///<change the maximum mip-level sent to the hardware.
 	void updateMacroTexture(AsciiString textureName);
-	void doTextures(Bool flag) {m_disableTextures = !flag;};
+	//void doTextures(Bool flag) {m_disableTextures = !flag;};
 	/// Update the diffuse value from static light info for one vertex.
 	void doTheLight(VERTEX_FORMAT *vb, Vector3*light, Vector3*normal, RefRenderObjListIterator *pLightsIterator, UnsignedByte alpha);
 	void addScorch(Vector3 location, Real radius, Scorches type);
@@ -269,7 +269,6 @@ protected:
 	Bool m_useDepthFade;	///<fade terrain lighting under water
 	Bool m_updating;
 	Vector3 m_depthFade;	///<depth based fall off values for r,g,b
-	Bool m_disableTextures;
 	Bool m_needFullUpdate; ///< True if lighting changed, and we need to update all instead of what moved.
 	Bool m_doXNextTime; ///< True if we updated y scroll, and need to do x scroll next frame.
 	Real	m_minHeight;	///<minimum value of height samples in heightmap

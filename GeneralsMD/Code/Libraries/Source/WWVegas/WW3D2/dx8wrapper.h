@@ -65,6 +65,7 @@
 #include <vulkan/vulkan.h>
 #include <VkRenderTarget.h>
 #include <shaders/WWVK_shaderdef.h>
+#include <VkBufferTools.h>
 
 /*
 ** Registry value names
@@ -209,6 +210,7 @@ struct RenderStateStruct
 #ifdef TODO_VULKAN
 	D3DLIGHT9 Lights[4];
 #endif
+	LightCollection Lights;
 	bool LightEnable[4];
   //unsigned lightsHash;
 	Matrix4x4 world;
@@ -268,6 +270,8 @@ class DX8Wrapper
 		unsigned short polygon_count,
 		unsigned short min_vertex_index,
 		unsigned short vertex_count);
+
+	static void Convert_Sorting_IB_VB(SortingVertexBufferClass* sortingV, SortingIndexBufferClass* sortingI, VK::Buffer& vbo, VK::Buffer& ibo);
 
 	static void Draw(
 		unsigned primitive_type,
@@ -337,6 +341,9 @@ public:
 	static bool	Is_World_Identity();
 	static bool Is_View_Identity();
 
+	static VK::Buffer UboProj();
+	static VK::Buffer UboView();
+
 	// Note that *_DX8_Transform() functions take the matrix in DX8 format - transposed from Westwood convention.
 
 	static void _Set_DX8_Transform(VkTransformState transform,const Matrix4x4& m);
@@ -344,12 +351,12 @@ public:
 	static void _Get_DX8_Transform(VkTransformState transform, Matrix4x4& m);
 #ifdef TODO_VULKAN
 
-	static void Set_DX8_Light(int index,D3DLIGHT9* light);
 	static void Set_DX8_Render_State(D3DRENDERSTATETYPE state, unsigned value);
 	static void Set_DX8_Texture_Stage_State(unsigned stage, D3DTEXTURESTAGESTATETYPE state, unsigned value);
 	static void Set_DX8_Sampler_Stage_State(unsigned stage, D3DSAMPLERSTATETYPE state, unsigned value);
-	static void Set_DX8_Texture(unsigned int stage, IDirect3DBaseTexture9* texture);
 #endif
+	static void Set_DX8_Texture(unsigned int stage, VK::Texture texture);
+	static VK::Texture Get_DX8_Texture(unsigned int stage);
 	static void Set_Light_Environment(LightEnvironmentClass* light_env);
 	static LightEnvironmentClass* Get_Light_Environment() { return Light_Environment; }
 	static void Set_Fog(bool enable, const Vector3 &color, float start, float end);
@@ -366,11 +373,12 @@ public:
 	static void Set_Shader(const ShaderClass& shader);
 	static void Get_Shader(ShaderClass& shader);
 	static void Set_Texture(unsigned stage,TextureBaseClass* texture);
+	static TextureBaseClass* Get_Texture(unsigned stage);
 	static void Set_Material(const VertexMaterialClass* material);
-#ifdef TODO_VULKAN
-	static void Set_Light(unsigned index,const D3DLIGHT9* light);
-#endif
+	static void Set_Light(unsigned index,const LightGeneric* light);
 	static void Set_Light(unsigned index,const LightClass &light);
+
+	static VK::Buffer UboLight();
 
 	static void Apply_Render_State_Changes();	// Apply deferred render state changes (will be called automatically by Draw...)
 
@@ -534,11 +542,13 @@ public:
 	// shader system udpates KJM v
 	static void Apply_Default_State();
 
-	static void Set_Vertex_Shader(DWORD vertex_shader);
 #ifdef TODO_VULKAN
+	static void Set_Vertex_Shader(DWORD vertex_shader);
 	static void Set_Vertex_Shader(IDirect3DVertexShader9* vertex_shader);
 	static void Set_Pixel_Shader(IDirect3DPixelShader9* pixel_shader);
 #endif
+	static void Set_Pipeline(WWVK_Pipeline_Entry pipeline) { pipeline_ = pipeline; }
+	static WWVK_Pipeline_Entry Get_Pipeline() { return pipeline_; }
 
 	static void Set_Vertex_Shader_Constant(int reg, const void* data, int count);
 	static void Set_Pixel_Shader_Constant(int reg, const void* data, int count);
@@ -558,6 +568,7 @@ public:
 	static IDirect3D9* _Get_D3D8() { return D3DInterface; }
 #endif
 	static VkRenderTarget& _GetRenderTarget() { return target; }
+	static WWVK_Pipeline_Collection& _GetPipelineCol() { return pipelineCol_; }
 
 	/// Returns the display format - added by TR for video playback - not part of W3D
 	static WW3DFormat	getBackBufferFormat( void );
@@ -663,6 +674,9 @@ protected:
 	static RenderStateStruct			render_state;
 	static unsigned						render_state_changed;
 	static Matrix4x4						DX8Transforms[((int)VkTS::WORLD) + 1];
+	static VK::Buffer DX8TransformsUbos[((int)VkTS::WORLD) + 1];
+	static VK::Buffer ProjUbo, IdentityUbo;
+	static VK::Buffer LightUbo;
 
 	static bool								IsInitted;
 	static bool								IsDeviceLost;
@@ -689,7 +703,7 @@ protected:
 	static IDirect3DVertexShader9* Vertex_Shader_Ptr;
 	static IDirect3DPixelShader9* Pixel_Shader;
 #endif
-
+	static WWVK_Pipeline_Entry pipeline_;
 
 	static Vector4							Vertex_Shader_Constants[MAX_VERTEX_SHADER_CONSTANTS];
 	static Vector4							Pixel_Shader_Constants[MAX_PIXEL_SHADER_CONSTANTS];
@@ -704,11 +718,11 @@ protected:
 	static Vector3							Ambient_Color;
 	// shader system updates KJM ^
 
-	static bool								world_identity;
-	static unsigned						RenderStates[256];
-	static unsigned						TextureStageStates[MAX_TEXTURE_STAGES][32];
-	static unsigned						SamplerStates[MAX_TEXTURE_STAGES][32];
-	static IDirect3DBaseTexture9 *	Textures[MAX_TEXTURE_STAGES];
+	static bool world_identity;
+	static unsigned RenderStates[256];
+	static unsigned TextureStageStates[MAX_TEXTURE_STAGES][32];
+	static unsigned SamplerStates[MAX_TEXTURE_STAGES][32];
+	static VK::Texture Textures[MAX_TEXTURE_STAGES];
 
 	// These fog settings are constant for all objects in a given scene,
 	// unlike the matching renderstates which vary based on shader settings.
@@ -737,11 +751,14 @@ protected:
 	static IDirect3DDevice9 *			D3DDevice;				//d3ddevice8;
 #endif
 	static VkRenderTarget target;
+	static WWVK_Pipeline_Collection pipelineCol_;
 
+#ifdef TODO_VULKAN
 	static IDirect3DSurface9 *			CurrentRenderTarget;
 	static IDirect3DSurface9 *			CurrentDepthBuffer;
 	static IDirect3DSurface9 *			DefaultRenderTarget;
 	static IDirect3DSurface9 *			DefaultDepthBuffer;
+#endif
 
 	static unsigned							DrawPolygonLowBoundLimit;
 
@@ -920,23 +937,6 @@ WWINLINE void DX8Wrapper::Set_DX8_Material(const D3DMATERIAL9* mat)
 	DX8CALL(SetMaterial(mat));
 }
 
-WWINLINE void DX8Wrapper::Set_DX8_Light(int index, D3DLIGHT9* light)
-{
-	if (light) {
-		DX8_RECORD_LIGHT_CHANGE();
-		DX8CALL(SetLight(index,light));
-		DX8CALL(LightEnable(index,TRUE));
-		CurrentDX8LightEnables[index]=true;
-		SNAPSHOT_SAY(("DX8 - SetLight %d\n",index));
-	}
-	else if (CurrentDX8LightEnables[index]) {
-		DX8_RECORD_LIGHT_CHANGE();
-		CurrentDX8LightEnables[index]=false;
-		DX8CALL(LightEnable(index,FALSE));
-		SNAPSHOT_SAY(("DX8 - DisableLight %d\n",index));
-	}
-}
-
 WWINLINE void DX8Wrapper::Set_DX8_Render_State(D3DRENDERSTATETYPE state, unsigned value)
 {
 	// Can't monitor state changes because setShader call to GERD may change the states!
@@ -1010,24 +1010,6 @@ WWINLINE void DX8Wrapper::Set_DX8_Sampler_Stage_State(unsigned stage, D3DSAMPLER
 	DX8_RECORD_TEXTURE_STAGE_STATE_CHANGE();
 }
 
-WWINLINE void DX8Wrapper::Set_DX8_Texture(unsigned int stage, IDirect3DBaseTexture9* texture)
-{
-  	if (stage >= MAX_TEXTURE_STAGES)
-  	{	DX8CALL(SetTexture(stage, texture));
-  		return;
-  	}
-
-	if (Textures[stage]==texture) return;
-
-	SNAPSHOT_SAY(("DX8 - SetTexture(%x) \n",texture));
-
-	if (Textures[stage]) Textures[stage]->Release();
-	Textures[stage] = texture;
-	if (Textures[stage]) Textures[stage]->AddRef();
-	DX8CALL(SetTexture(stage, texture));
-	DX8_RECORD_TEXTURE_CHANGE();
-}
-
 WWINLINE void DX8Wrapper::_Copy_DX8_Rects(
   IDirect3DSurface9* pSourceSurface,
   CONST RECT* pSourceRectsArray,
@@ -1068,6 +1050,28 @@ WWINLINE void DX8Wrapper::_Copy_DX8_Rects(
 #endif
 }
 #endif
+
+WWINLINE void DX8Wrapper::Set_DX8_Texture(unsigned int stage, VK::Texture texture)
+{
+	if (stage >= MAX_TEXTURE_STAGES)
+	{
+		return;
+	}
+
+	if (Textures[stage].image == texture.image) return;
+
+	SNAPSHOT_SAY(("DX8 - SetTexture(%x) \n", texture));
+
+	if (Textures[stage].image) target.PushSingleTexture(Textures[stage]);
+	Textures[stage] = texture;
+	//if (Textures[stage]) Textures[stage]->AddRef();
+	//DX8CALL(SetTexture(stage, texture));
+	DX8_RECORD_TEXTURE_CHANGE();
+}
+WWINLINE VK::Texture DX8Wrapper::Get_DX8_Texture(unsigned int stage)
+{
+	return Textures[stage];
+}
 
 WWINLINE Vector4 DX8Wrapper::Convert_Color(unsigned color)
 {
@@ -1303,6 +1307,12 @@ WWINLINE void DX8Wrapper::Set_Texture(unsigned stage,TextureBaseClass* texture)
 	render_state_changed|=(TEXTURE0_CHANGED<<stage);
 }
 
+WWINLINE TextureBaseClass* DX8Wrapper::Get_Texture(unsigned stage)
+{
+	WWASSERT(stage < (unsigned int)CurrentCaps->Get_Max_Textures_Per_Pass());
+	return render_state.Textures[stage];
+}
+
 WWINLINE void DX8Wrapper::Set_Material(const VertexMaterialClass* material)
 {
 /*	if (material && render_state.material &&
@@ -1378,10 +1388,9 @@ WWINLINE void DX8Wrapper::Set_DX8_ZBias(int zbias)
 #endif
 }
 
-#ifdef TODO_VULKAN
 WWINLINE void DX8Wrapper::Set_Transform(VkTransformState transform,const Matrix4x4& m)
 {
-	switch ((int)transform) {
+	switch (transform) {
 	case VkTS::WORLD:
 		render_state.world=m.Transpose();
 		render_state_changed|=(unsigned)WORLD_CHANGED;
@@ -1397,13 +1406,13 @@ WWINLINE void DX8Wrapper::Set_Transform(VkTransformState transform,const Matrix4
 			Matrix4x4 ProjectionMatrix=m.Transpose();
 			ZFar=0.0f;
 			ZNear=0.0f;
-			DX8CALL(SetTransform(VkTS::PROJECTION,(DirectX::XMMATRIX*)&ProjectionMatrix));
+			VkBufferTools::CreateUniformBuffer(&target, sizeof(float) * 16, &ProjectionMatrix, ProjUbo);
 		}
 		break;
 	default:
 		DX8_RECORD_MATRIX_CHANGE();
 		Matrix4x4 m2=m.Transpose();
-		DX8CALL(SetTransform(transform,(DirectX::XMMATRIX*)&m2));
+		VkBufferTools::CreateUniformBuffer(&target, sizeof(float) * 16, &m2, DX8TransformsUbos[(int)transform]);
 		break;
 	}
 }
@@ -1411,7 +1420,7 @@ WWINLINE void DX8Wrapper::Set_Transform(VkTransformState transform,const Matrix4
 WWINLINE void DX8Wrapper::Set_Transform(VkTransformState transform,const Matrix3D& m)
 {
 	Matrix4x4 m2(m);
-	switch ((int)transform) {
+	switch (transform) {
 	case VkTS::WORLD:
 		render_state.world=m2.Transpose();
 		render_state_changed|=(unsigned)WORLD_CHANGED;
@@ -1425,11 +1434,11 @@ WWINLINE void DX8Wrapper::Set_Transform(VkTransformState transform,const Matrix3
 	default:
 		DX8_RECORD_MATRIX_CHANGE();
 		m2=m2.Transpose();
-		DX8CALL(SetTransform(transform,(DirectX::XMMATRIX*)&m2));
+		target.PushSingleFrameBuffer(DX8TransformsUbos[(int)transform]);
+		VkBufferTools::CreateUniformBuffer(&target, sizeof(float) * 16, &m2, DX8TransformsUbos[(int)transform]);
 		break;
 	}
 }
-#endif
 
 WWINLINE void DX8Wrapper::Set_World_Identity()
 {
@@ -1454,13 +1463,23 @@ WWINLINE bool DX8Wrapper::Is_View_Identity()
 {
 	return !!(render_state_changed&(unsigned)VIEW_IDENTITY);
 }
+WWINLINE VK::Buffer DX8Wrapper::UboProj()
+{
+	return ProjUbo;
+}
+WWINLINE VK::Buffer DX8Wrapper::UboView()
+{
+	if ((render_state_changed & ((unsigned)VIEW_CHANGED | (unsigned)VIEW_IDENTITY)) == VIEW_CHANGED)
+	{
+		target.PushSingleFrameBuffer(DX8TransformsUbos[(int)VkTS::VIEW]);
+		VkBufferTools::CreateUniformBuffer(&target, sizeof(float) * 16, &render_state.view, DX8TransformsUbos[(int)VkTS::VIEW]);
+	}
+	return Is_View_Identity() ? IdentityUbo : DX8TransformsUbos[(int)VkTS::VIEW];
+}
 
-#ifdef TODO_VULKAN
 WWINLINE void DX8Wrapper::Get_Transform(VkTransformState transform, Matrix4x4& m)
 {
-	DirectX::XMMATRIX mat;
-
-	switch ((int)transform) {
+	switch (transform) {
 	case VkTS::WORLD:
 		if (render_state_changed&WORLD_IDENTITY) m.Make_Identity();
 		else m=render_state.world.Transpose();
@@ -1470,13 +1489,13 @@ WWINLINE void DX8Wrapper::Get_Transform(VkTransformState transform, Matrix4x4& m
 		else m=render_state.view.Transpose();
 		break;
 	default:
-		DX8CALL(GetTransform(transform,&mat));
-		m=*(Matrix4x4*)&mat;
+		m=*(Matrix4x4*)&DX8Transforms[(int)transform];
 		m=m.Transpose();
 		break;
 	}
 }
 
+#ifdef TODO_VULKAN
 WWINLINE const D3DLIGHT9& DX8Wrapper::Peek_Light(unsigned index)
 {
 	return render_state.Lights[index];;

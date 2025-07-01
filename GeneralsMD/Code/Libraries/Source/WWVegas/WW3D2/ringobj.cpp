@@ -715,7 +715,6 @@ void RingRenderObjClass::Render(RenderInfoClass & rinfo)
 		//	Should we force the ring to be camera aligned?
 		// (this will cause the ring to be parallel to the screen)
 		//
-#ifdef TODO_VULKAN
 		if (Flags & USE_CAMERA_ALIGN) {
 			Vector3 obj_position;
 			Vector3 camera_z_vector;
@@ -729,7 +728,6 @@ void RingRenderObjClass::Render(RenderInfoClass & rinfo)
 		} else {
 			DX8Wrapper::Set_Transform(VkTS::WORLD, Transform);	
 		}
-#endif
 
 		//
 		//	Pass the geometry on to DX8

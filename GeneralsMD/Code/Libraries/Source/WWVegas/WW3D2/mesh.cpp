@@ -950,9 +950,8 @@ void MeshClass::Render_Material_Pass(MaterialPassClass * pass,IndexBufferClass *
 			int vertex_offset = Model->PolygonRendererList.Peek_Head()->Get_Vertex_Offset();
 			pass->Install_Materials();
 
-#ifdef TODO_VULKAN
 			DX8Wrapper::Set_Transform(VkTS::WORLD,Get_Transform());
-#endif
+
 			DX8Wrapper::Set_Index_Buffer(dynamic_ib,vertex_offset);
 
 			DX8Wrapper::Draw_Triangles(
@@ -988,9 +987,7 @@ void MeshClass::Render_Material_Pass(MaterialPassClass * pass,IndexBufferClass *
 		DX8Wrapper::Set_Index_Buffer(ib,0);
 
 		SNAPSHOT_SAY(("Set_World_Transform\n"));
-#ifdef TODO_VULKAN
 		DX8Wrapper::Set_Transform(VkTS::WORLD,Transform);
-#endif
 
 		DX8PolygonRendererListIterator it(&Model->PolygonRendererList);
 		while (!it.Is_Done()) {

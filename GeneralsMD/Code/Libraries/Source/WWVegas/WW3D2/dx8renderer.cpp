@@ -1726,7 +1726,7 @@ void DX8TextureCategoryClass::Render(void)
 		//DX8Wrapper::Set_Material(material);
 		//REF_PTR_RELEASE(material);
 		DX8Wrapper::Apply_Render_State_Changes();
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND,D3DBLEND_DESTCOLOR);
 #endif
 	}
@@ -1870,7 +1870,7 @@ void DX8TextureCategoryClass::Render(void)
 
 		
 //--------------------------------------------------------------------
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		if (mesh->Get_ObjectScale() != 1.0f)
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_NORMALIZENORMALS, TRUE);
 #endif
@@ -1937,8 +1937,7 @@ void DX8TextureCategoryClass::Render(void)
 			else
 				renderer->Render(mesh->Get_Base_Vertex_Offset());
 		}
-//--------------------------------------------------------------------
-#ifdef TODO_VULKAN
+//--------------------------------------------------------------------#ifdef INFO_VULKAN
 		if (mesh->Get_ObjectScale() != 1.0f)
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_NORMALIZENORMALS, FALSE);
 #endif

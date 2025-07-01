@@ -3,6 +3,15 @@
   "includes": [ "VkTexture.h" ],
   "shaders": [
   {
+	  "name": "FVF_D",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "fvf_xyzd.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_d.frag" }
+  },
+  {
 	  "name": "FVF_DUV",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "vert":{
@@ -19,6 +28,15 @@
 		  "inputs": {}
 	  },
 	  "frag": { "name": "fvf_nduv.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv2.frag" }
   },
   {
 	  "name": "FTerrain",
@@ -135,7 +153,7 @@
 		  "name": "Trees.vert",
 		  "inputs": {}
 	  },
-	  "frag": { "name": "Trees.frag" }
+	  "frag": { "name": "fvf_nduv2_noL.frag" }
   },
   {
 	  "name": "Wave",

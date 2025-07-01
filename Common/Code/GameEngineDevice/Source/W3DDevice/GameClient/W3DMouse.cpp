@@ -122,6 +122,7 @@ W3DMouse::~W3DMouse( void )
 		Win32Mouse::setCursor(ARROW); //enable default windows cursor
 	}
 #endif
+	Win32Mouse::setCursor(ARROW); //enable default windows cursor
 
 	freeD3DAssets();
 	freeW3DAssets();

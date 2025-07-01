@@ -773,15 +773,21 @@ WW3DErrorType WW3D::Begin_Render(bool clear,bool clearz,const Vector3 & color, f
 
 	WWPROFILE("WW3D::Begin_Render");
 	WWASSERT(IsInitted);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	HRESULT hr;
+#endif
 
 	SNAPSHOT_SAY(("==========================================\r\n"));
 	SNAPSHOT_SAY(("========== WW3D::Begin_Render ============\r\n"));
 	SNAPSHOT_SAY(("==========================================\r\n\r\n"));
 
+#ifdef INFO_VULKAN
 	if (DX8Wrapper::_Get_D3D_Device8() && (hr=DX8Wrapper::_Get_D3D_Device8()->TestCooperativeLevel()) != D3D_OK)
+#else
+	if (DX8Wrapper::_GetRenderTarget().currentCmd)
+#endif
 	{
+#ifdef TODO_VULKAN
         // If the device was lost, do not render until we get it back
         if( D3DERR_DEVICELOST == hr )
             return WW3D_ERROR_GENERIC;	//other app has the device
@@ -791,10 +797,10 @@ WW3DErrorType WW3D::Begin_Render(bool clear,bool clearz,const Vector3 & color, f
         {
 			DX8Wrapper::Reset_Device();
         }
+#endif
 
 		return WW3D_ERROR_GENERIC;
 	}
-#endif
 
 	// Memory allocation statistics
 	LastFrameMemoryAllocations=WWMemoryLogClass::Get_Allocate_Count();
@@ -818,23 +824,21 @@ WW3DErrorType WW3D::Begin_Render(bool clear,bool clearz,const Vector3 & color, f
 	WWASSERT(!IsRendering);
 	IsRendering = true;
 
-#ifdef TODO_VULKAN
 	// If we want to clear the screen, we need to set the viewport to include the entire screen:
 	if (clear || clearz) {
 		VkViewport vp;
 		int width, height, bits;
 		bool windowed;
 		WW3D::Get_Render_Target_Resolution(width, height, bits, windowed);
-		vp.X = 0;
-		vp.Y = 0;
-		vp.Width = width;
-		vp.Height = height;
-		vp.MinZ = 0.0f;;
-		vp.MaxZ = 1.0f;
+		vp.x = 0;
+		vp.y = 0;
+		vp.width = width;
+		vp.height = height;
+		vp.minDepth = 0.0f;;
+		vp.maxDepth = 1.0f;
 		DX8Wrapper::Set_Viewport(&vp);
 		DX8Wrapper::Clear(clear, clearz, color, dest_alpha);
 	}
-#endif
 
 	// Notify D3D that we are beginning to render the frame
 	DX8Wrapper::Begin_Scene();

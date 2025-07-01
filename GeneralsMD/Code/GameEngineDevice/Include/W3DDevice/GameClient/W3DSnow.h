@@ -49,7 +49,7 @@ class W3DSnowManager : public SnowManager
  private:
 	DX8IndexBufferClass	*m_indexBuffer;
 	TextureClass *m_snowTexture;
-	IDirect3DVertexBuffer9*  m_VertexBufferD3D;
+	VK::Buffer m_VertexBufferD3D;
 	Int m_dwBase;	///<index to beginning of unused vertex buffer space.
     Int m_dwFlush;	///<maximum amount of vertices to sumbit before rendering.
 	Int m_dwDiscard;	///<maximum index allowed before needing to discard the buffer.

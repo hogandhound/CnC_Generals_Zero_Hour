@@ -122,6 +122,11 @@ public:
 
 	virtual void						Apply_Shared(int cur_pass, RenderInfoClass& rinfo);
 	virtual void						Apply_Instance(int cur_pass, RenderInfoClass& rinfo);
+	void Draw(int cur_pass, RenderInfoClass& rinfo, unsigned short start_index,
+		unsigned short polygon_count,
+		unsigned short min_vertex_index,
+		unsigned short vertex_count,
+		bool isStrip) override;
 
 	virtual unsigned					Get_Vertex_Stream_Count() const;
 	virtual unsigned					Get_Vertex_Size(unsigned stream) const;

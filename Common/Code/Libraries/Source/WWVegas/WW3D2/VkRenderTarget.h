@@ -45,6 +45,7 @@ enum VkDescFormat
     VkDS_TTUUUU,
     VkDS_TTTUUUU,
     VkDS_TTTTUUUU,
+    VkDS_TTUUUUU,
     VkDS_MaxType,
     VkDS_ = VkDS_MaxType, //Dummy Value
 };
@@ -179,6 +180,7 @@ public:
     uint32_t getDescSetSubIndex(VkDescFormat fmt, VkDescriptorSetLayoutBinding* bindings, int bCount);
     VkDescriptorSet getDescSet(VkDescFormat fmt, uint32_t subIndex, VkDescriptorSetLayout* layout);
     void PushSingleFrameBuffer(VK::Buffer staging);
+    void PushSingleTexture(VK::Texture staging);
 private:
     SwapChainSupportDetails swapChainSupport_;
     uint32_t imageIndex;

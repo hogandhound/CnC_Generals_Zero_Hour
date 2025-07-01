@@ -559,12 +559,10 @@ void SimpleSceneClass::Customized_Render(RenderInfoClass & rinfo)
 	WWASSERT(rinfo.light_environment==NULL);
 	int count=0;
 	// Turn off lights in case we have none
-#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Light(0,NULL);
 	DX8Wrapper::Set_Light(1,NULL);
 	DX8Wrapper::Set_Light(2,NULL);
 	DX8Wrapper::Set_Light(3,NULL);
-#endif
 
 // (gth) WWShade only works with light environments.  We need to upgrade LightEnvironment to
 // support real point lights, etc.  It will likely just evolve into "the n most important" lights

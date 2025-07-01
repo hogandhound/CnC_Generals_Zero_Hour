@@ -501,7 +501,15 @@ void Shd6LegacyW3DClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 	SNAPSHOT_SAY(("legacyshader:DX8Wrapper::Set_Shader(%s)\n",Shaders[cur_pass].Get_Description(str)));
 	DX8Wrapper::Set_Shader(Shaders[cur_pass]);
 
-	DX8Wrapper::Set_Vertex_Shader(FVF);
+
+	//DX8Wrapper::Set_Vertex_Shader(FVF);
+	switch (FVF)
+	{
+	case DX8_FVF_XYZNDUV2:
+		DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_FVF_NDUV2);
+		break;
+	default: assert(false);
+	}
 
 	SNAPSHOT_SAY(("legacyshader:DX8Wrapper::Set_Material(%s)\n",Materials[cur_pass] ? Materials[cur_pass]->Get_Name() : "NULL"));
 	DX8Wrapper::Set_Material(Materials[cur_pass]);
@@ -509,6 +517,33 @@ void Shd6LegacyW3DClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 	for (int stage=0;stage<MeshMatDescClass::MAX_TEX_STAGES;++stage) {
 		SNAPSHOT_SAY(("legacyshader:DX8Wrapper::Set_Texture(%d,%s)\n",stage,Textures[cur_pass][stage] ? Textures[cur_pass][stage]->Get_Full_Path() : "NULL"));
 		DX8Wrapper::Set_Texture(stage, Textures[cur_pass][stage]);
+	}
+}
+
+void Shd6LegacyW3DClass::Draw(int cur_pass, RenderInfoClass& rinfo, unsigned short start_index,
+	unsigned short polygon_count,
+	unsigned short min_vertex_index,
+	unsigned short vertex_count,
+	bool isStrip)
+{
+	assert(FVF & VKFVF_XYZ);
+	if ((FVF & VKFVF_DIFFUSE) && (FVF & VKFVF_NORMAL))
+	{
+
+	}
+	else if ((FVF & VKFVF_DIFFUSE))
+	{
+		assert(FVF & VKFVF_TEX1);
+		WorldMatrix push = {};
+		std::vector<VkDescriptorSet> sets;
+		WWVK_UpdateFVF_DUVDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(),
+			sets, &Textures[cur_pass][0]->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		//WWVK_DrawFVF_DUV(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets, vertexCount, uv, uvOffset, push);;
+		
+	}
+	else if ((FVF & VKFVF_NORMAL))
+	{
+		assert(FVF & VKFVF_TEX1);
 	}
 }
 

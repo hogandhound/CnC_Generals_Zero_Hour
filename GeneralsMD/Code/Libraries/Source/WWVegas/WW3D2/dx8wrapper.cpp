@@ -115,7 +115,7 @@ bool								DX8Wrapper::IsWindowed									= false;
 DirectX::XMMATRIX						DX8Wrapper::old_world;
 DirectX::XMMATRIX						DX8Wrapper::old_view;
 DirectX::XMMATRIX						DX8Wrapper::old_prj;
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 D3DFORMAT					DX8Wrapper::DisplayFormat	= D3DFMT_UNKNOWN;
 
 // shader system additions KJM v
@@ -123,6 +123,7 @@ DWORD								DX8Wrapper::Vertex_Shader_FVF = 0;
 IDirect3DVertexShader9* DX8Wrapper::Vertex_Shader_Ptr = 0;
 IDirect3DPixelShader9* DX8Wrapper::Pixel_Shader								= 0;
 #endif
+WWVK_Pipeline_Entry DX8Wrapper::pipeline_ = PIPELINE_WWVK_MAX;
 
 Vector4							DX8Wrapper::Vertex_Shader_Constants[MAX_VERTEX_SHADER_CONSTANTS];
 Vector4							DX8Wrapper::Pixel_Shader_Constants[MAX_PIXEL_SHADER_CONSTANTS];
@@ -140,13 +141,13 @@ bool								DX8Wrapper::world_identity;
 unsigned							DX8Wrapper::RenderStates[256];
 unsigned							DX8Wrapper::TextureStageStates[MAX_TEXTURE_STAGES][32];
 unsigned							DX8Wrapper::SamplerStates[MAX_TEXTURE_STAGES][32];
-IDirect3DBaseTexture9 *		DX8Wrapper::Textures[MAX_TEXTURE_STAGES];
-RenderStateStruct				DX8Wrapper::render_state;
+VK::Texture							DX8Wrapper::Textures[MAX_TEXTURE_STAGES];
+RenderStateStruct					DX8Wrapper::render_state;
 unsigned							DX8Wrapper::render_state_changed;
 
 bool								DX8Wrapper::FogEnable									= false;
 uint32_t							DX8Wrapper::FogColor										= 0;
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 
 IDirect3D9 *					DX8Wrapper::D3DInterface								= NULL;
 IDirect3DDevice9 *			DX8Wrapper::D3DDevice									= NULL;
@@ -172,15 +173,20 @@ bool								DX8Wrapper::IsDeviceLost;
 int								DX8Wrapper::ZBias;
 float								DX8Wrapper::ZNear;
 float								DX8Wrapper::ZFar;
+VkRenderTarget						DX8Wrapper::target;
+WWVK_Pipeline_Collection						DX8Wrapper::pipelineCol_;
 Matrix4x4						DX8Wrapper::ProjectionMatrix;
 Matrix4x4						DX8Wrapper::DX8Transforms[((int)VkTS::WORLD) + 1];//VkTS::WORLD+1
+VK::Buffer DX8Wrapper::DX8TransformsUbos[((int)VkTS::WORLD) + 1];
+VK::Buffer DX8Wrapper::ProjUbo, DX8Wrapper::IdentityUbo;
+VK::Buffer DX8Wrapper::LightUbo;
 
 DX8Caps*							DX8Wrapper::CurrentCaps = 0;
 
 // Hack test... this disables rendering of batches of too few polygons.
 unsigned							DX8Wrapper::DrawPolygonLowBoundLimit=0;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 D3DADAPTER_IDENTIFIER9		DX8Wrapper::CurrentAdapterIdentifier;
 #endif
 
@@ -351,10 +357,10 @@ void DX8Wrapper::Shutdown(void)
 		int max=CurrentCaps->Get_Max_Textures_Per_Pass();
 		for (int i = 0; i < max; i++) 
 		{
-			if (Textures[i]) 
+			if (Textures[i].image) 
 			{
-				Textures[i]->Release();
-				Textures[i] = NULL;
+				target.PushSingleTexture(Textures[i]);
+				Textures[i] = {};
 			}
 		}
 	}
@@ -1288,7 +1294,7 @@ void DX8Wrapper::Get_Device_Resolution(int & set_w,int & set_h,int & set_bits,bo
 void DX8Wrapper::Get_Render_Target_Resolution(int & set_w,int & set_h,int & set_bits,bool & set_windowed)
 {
 	WWASSERT(IsInitted);
-
+#if TODO_VULKAN
 	if (CurrentRenderTarget != NULL) {
 		D3DSURFACE_DESC info;
 		CurrentRenderTarget->GetDesc (&info);
@@ -1301,7 +1307,7 @@ void DX8Wrapper::Get_Render_Target_Resolution(int & set_w,int & set_h,int & set_
 	} else {
 		Get_Device_Resolution (set_w, set_h, set_bits, set_windowed);
 	}
-
+#endif
 	return ;
 }
 
@@ -1952,7 +1958,7 @@ void DX8Wrapper::Draw_Sorting_IB_VB(
 	DynamicVBAccessClass dyn_vb_access(BUFFER_TYPE_DYNAMIC_DX8,dynamic_fvf_type,vertex_count);
 	{
 		DynamicVBAccessClass::WriteLockClass lock(&dyn_vb_access);
-		VertexFormatXYZNDUV2* src = static_cast<SortingVertexBufferClass*>(render_state.vertex_buffers[0])->VertexBuffer;
+		VertexFormatXYZNDUV2* src = static_cast<SortingVertexBufferClass*>(render_state.vertex_buffers[0])->Vertices.data();
 		VertexFormatXYZNDUV2* dest= lock.Get_Formatted_Vertex_Array();
 		src += render_state.vba_offset + render_state.index_base_offset + min_vertex_index;
 		unsigned  size = dyn_vb_access.FVF_Info().Get_FVF_Size()*vertex_count/sizeof(unsigned);
@@ -2021,6 +2027,78 @@ void DX8Wrapper::Draw_Sorting_IB_VB(
 		polygon_count));
 
 	DX8_RECORD_RENDER(polygon_count,vertex_count,render_state.shader);
+#endif
+}
+void DX8Wrapper::Convert_Sorting_IB_VB(
+	SortingVertexBufferClass* sortingV,
+	SortingIndexBufferClass* sortingI,
+	VK::Buffer& vbo,
+	VK::Buffer& ibo
+	)
+{
+	// Fill dynamic vertex buffer with sorting vertex buffer vertices
+	VkBufferTools::CreateVertexBuffer(&DX8Wrapper::_GetRenderTarget(),
+		sortingV->FVF_Info().Get_FVF_Size() * sortingV->Get_Vertex_Count(), (void*)sortingV->Get_Vertices(), vbo);
+	VkBufferTools::CreateIndexBuffer(&DX8Wrapper::_GetRenderTarget(), sortingI->Get_Index_Count() * sizeof(uint16_t),
+		sortingI->Get_Indices(), ibo);
+#ifdef TODO_VULKAN
+	DX8CALL(SetStreamSource(
+		0,
+		static_cast<DX8VertexBufferClass*>(dyn_vb_access.VertexBuffer)->Get_DX8_Vertex_Buffer(),
+		0,
+		dyn_vb_access.FVF_Info().Get_FVF_Size()));
+	// If using FVF format VB, set the FVF as vertex shader (may not be needed here KM)
+	unsigned fvf = dyn_vb_access.FVF_Info().Get_FVF();
+	if (fvf != 0) {
+		DX8CALL(SetFVF(fvf));
+	}
+	DX8_RECORD_VERTEX_BUFFER_CHANGE();
+
+	unsigned index_count = 0;
+	switch (primitive_type) {
+	case D3DPT_TRIANGLELIST: index_count = polygon_count * 3; break;
+	case D3DPT_TRIANGLESTRIP: index_count = polygon_count + 2; break;
+	case D3DPT_TRIANGLEFAN: index_count = polygon_count + 2; break;
+	default: WWASSERT(0); break; // Unsupported primitive type
+	}
+
+	// Fill dynamic index buffer with sorting index buffer vertices
+	DynamicIBAccessClass dyn_ib_access(BUFFER_TYPE_DYNAMIC_DX8, index_count);
+	{
+		DynamicIBAccessClass::WriteLockClass lock(&dyn_ib_access);
+		unsigned short* dest = lock.Get_Index_Array();
+		unsigned short* src = NULL;
+		src = static_cast<SortingIndexBufferClass*>(render_state.index_buffer)->index_buffer;
+		src += render_state.iba_offset + start_index;
+
+		try {
+			for (unsigned short i = 0; i < index_count; ++i) {
+				unsigned short index = *src++;
+				index -= min_vertex_index;
+				WWASSERT(index < vertex_count);
+				*dest++ = index;
+			}
+			IndexBufferExceptionFunc();
+		}
+		catch (...) {
+			IndexBufferExceptionFunc();
+		}
+	}
+
+	DX8CALL(SetIndices(
+		static_cast<DX8IndexBufferClass*>(dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer()));
+	DX8_RECORD_INDEX_BUFFER_CHANGE();
+
+	DX8_RECORD_DRAW_CALLS();
+	DX8CALL(DrawIndexedPrimitive(
+		D3DPT_TRIANGLELIST,
+		dyn_vb_access.VertexBufferOffset,
+		0,		// start vertex
+		vertex_count,
+		dyn_ib_access.IndexBufferOffset,
+		polygon_count));
+
+	DX8_RECORD_RENDER(polygon_count, vertex_count, render_state.shader);
 #endif
 }
 
@@ -2292,10 +2370,10 @@ void DX8Wrapper::Apply_Render_State_Changes()
 					}
 #endif
 
-					Set_DX8_Light(index,&render_state.Lights[index]);
+					Set_Light(index,&render_state.Lights[index]);
 				}
 				else {
-					Set_DX8_Light(index,NULL);
+					Set_Light(index,NULL);
 					SNAPSHOT_SAY((" clearing light to NULL\n"));
 				}
 			}
@@ -2977,8 +3055,6 @@ void DX8Wrapper::_Update_Texture(TextureClass *system, TextureClass *video)
 {
 	WWASSERT(system);
 	WWASSERT(video);
-	WWASSERT(system->Get_Pool()==TextureClass::POOL_SYSTEMMEM);
-	WWASSERT(video->Get_Pool()==TextureClass::POOL_DEFAULT);
 #ifdef TODO_VULKAN
 	DX8CALL(UpdateTexture(system->Peek_D3D_Base_Texture(),video->Peek_D3D_Base_Texture()));
 #endif
@@ -2995,92 +3071,81 @@ void DX8Wrapper::Compute_Caps(WW3DFormat display_format)
 }
 
 
-#ifdef TODO_VULKAN
-void DX8Wrapper::Set_Light(unsigned index, const D3DLIGHT9* light)
+void DX8Wrapper::Set_Light(unsigned index, const LightGeneric* light)
 {
 	if (light) {
-		render_state.Lights[index]=*light;
+		render_state.Lights.lights[index]=*light;
 		render_state.LightEnable[index]=true;
 	}
 	else {
+		render_state.Lights.lights[index].Type[0] = 99;
 		render_state.LightEnable[index]=false;
 	}
 	render_state_changed|=(LIGHT0_CHANGED<<index);
 }
-#endif
 
 void DX8Wrapper::Set_Light(unsigned index,const LightClass &light)
 {
-#ifdef TODO_VULKAN
-	D3DLIGHT9 dlight;
+	LightGeneric dlight = {};
 	Vector3 temp;
-	memset(&dlight,0,sizeof(D3DLIGHT9));
 
-	switch (light.Get_Type())
-	{
-	case LightClass::POINT:
-		{
-			dlight.Type=D3DLIGHT_POINT;
-		}
-		break;
-	case LightClass::DIRECTIONAL:
-		{
-			dlight.Type=D3DLIGHT_DIRECTIONAL;
-		}
-		break;
-	case LightClass::SPOT:
-		{
-			dlight.Type=D3DLIGHT_SPOT;
-		}
-		break;
-	}
+	dlight.Type[0] = (uint32_t)light.Get_Type();
 
 	light.Get_Diffuse(&temp);
 	temp*=light.Get_Intensity();
-	dlight.Diffuse.r=temp.X;
-	dlight.Diffuse.g=temp.Y;
-	dlight.Diffuse.b=temp.Z;
-	dlight.Diffuse.a=1.0f;
+	dlight.Diffuse[0] = temp.X;
+	dlight.Diffuse[1] =temp.Y;
+	dlight.Diffuse[2] =temp.Z;
+	dlight.Diffuse[3] =1.0f;
 
 	light.Get_Specular(&temp);
 	temp*=light.Get_Intensity();
-	dlight.Specular.r=temp.X;
-	dlight.Specular.g=temp.Y;
-	dlight.Specular.b=temp.Z;
-	dlight.Specular.a=1.0f;
+	dlight.Specular[0]=temp.X;
+	dlight.Specular[1]=temp.Y;
+	dlight.Specular[2]=temp.Z;
+	dlight.Specular[3]=1.0f;
 
 	light.Get_Ambient(&temp);
 	temp*=light.Get_Intensity();
-	dlight.Ambient.r=temp.X;
-	dlight.Ambient.g=temp.Y;
-	dlight.Ambient.b=temp.Z;
-	dlight.Ambient.a=1.0f;
+	dlight.Ambient[0]=temp.X;
+	dlight.Ambient[1]=temp.Y;
+	dlight.Ambient[2]=temp.Z;
+	dlight.Ambient[3]=1.0f;
 
 	temp=light.Get_Position();
-	dlight.Position=*(D3DVECTOR*) &temp;
+	memcpy(dlight.Position, &temp, sizeof(float) * 3);
 
 	light.Get_Spot_Direction(temp);
-	dlight.Direction=*(D3DVECTOR*) &temp;
+	memcpy(dlight.Direction, &temp, sizeof(float) * 3);
 
-	dlight.Range=light.Get_Attenuation_Range();
-	dlight.Falloff=light.Get_Spot_Exponent();
-	dlight.Theta=light.Get_Spot_Angle();
-	dlight.Phi=light.Get_Spot_Angle();
+	dlight.Range[0] = light.Get_Attenuation_Range();
+	dlight.Falloff[0] =light.Get_Spot_Exponent();
+	dlight.Theta[0] =light.Get_Spot_Angle();
+	dlight.Phi[0] =light.Get_Spot_Angle();
 
 	// Inverse linear light 1/(1+D)
 	double a,b;
 	light.Get_Far_Attenuation_Range(a,b);
-	dlight.Attenuation0=1.0f;
+	dlight.Attenuation0[0] =1.0f;
 	if (fabs(a-b)<1e-5)
 		// if the attenuation range is too small assume uniform with cutoff
-		dlight.Attenuation1=0.0f;
+		dlight.Attenuation1[0] =0.0f;
 	else
 		// this will cause the light to drop to half intensity at the first far attenuation
-		dlight.Attenuation1=(float) 1.0/a;
-	dlight.Attenuation2=0.0f;
+		dlight.Attenuation1[0] =(float) 1.0/a;
+	dlight.Attenuation2[0] =0.0f;
 
 	Set_Light(index,&dlight);
-#endif
+}
+
+VK::Buffer DX8Wrapper::UboLight()
+{
+	if (render_state_changed & LIGHTS_CHANGED)
+	{
+		target.PushSingleFrameBuffer(LightUbo);
+		VkBufferTools::CreateUniformBuffer(&target, sizeof(LightCollection), &render_state.Lights, LightUbo);
+	}
+	return LightUbo;
 }
 
 //**********************************************************************************************
@@ -3093,13 +3158,13 @@ void DX8Wrapper::Set_Light_Environment(LightEnvironmentClass* light_env)
 	// Shader light environment support															*
 //	if (Light_Environment && light_env && (*Light_Environment)==(*light_env)) return;
 
-#ifdef TODO_VULKAN
 	Light_Environment=light_env;
 
 	if (light_env) 
 	{
 		int light_count = light_env->Get_Light_Count();
 		unsigned int color=Convert_Color(light_env->Get_Equivalent_Ambient(),0.0f);
+#ifdef TODO_VULKAN
 		if (RenderStates[D3DRS_AMBIENT]!=color)
 		{
 			Set_DX8_Render_State(D3DRS_AMBIENT,color);
@@ -3108,29 +3173,30 @@ void DX8Wrapper::Set_Light_Environment(LightEnvironmentClass* light_env)
 			render_state_changed|=MATERIAL_CHANGED;
 #endif
 		}
+#endif
 
-		D3DLIGHT9 light;		
+		LightGeneric light;		
 		int l = 0;
 		for (;l<light_count;++l) {
 			
 			::ZeroMemory(&light, sizeof(D3DLIGHT9));
 			
-			light.Type=D3DLIGHT_DIRECTIONAL;
+			light.Type[0]  = (uint32_t)LightClass::DIRECTIONAL;
 			(Vector3&)light.Diffuse=light_env->Get_Light_Diffuse(l);
 			Vector3 dir=-light_env->Get_Light_Direction(l);
-			light.Direction=(const D3DVECTOR&)(dir);
+			memcpy(light.Direction, &dir, sizeof(Vector3));
 
 			// (gth) TODO: put specular into LightEnvironment?  Much work to be done on lights :-)'
 			if (l==0) {
-				light.Specular.r = light.Specular.g = light.Specular.b = 1.0f;
+				light.Specular[0] = light.Specular[1] = light.Specular[2] = 1.0f;
 			}
 
 			if (light_env->isPointLight(l)) {
-				light.Type = D3DLIGHT_POINT;
+				light.Type[0] = (uint32_t)LightClass::POINT;
 				(Vector3&)light.Diffuse=light_env->getPointDiffuse(l);
 				(Vector3&)light.Ambient=light_env->getPointAmbient(l);
-				light.Position = (const D3DVECTOR&)light_env->getPointCenter(l);
-				light.Range = light_env->getPointOrad(l);
+				memcpy(light.Position, &light_env->getPointCenter(l), sizeof(Vector3));
+				light.Range[0] = light_env->getPointOrad(l);
 				
 				// Inverse linear light 1/(1+D)
 				double a,b;
@@ -3142,16 +3208,16 @@ void DX8Wrapper::Set_Light_Environment(LightEnvironmentClass* light_env)
 #if 0
 				light.Attenuation0=0.01f;
 #else
-				light.Attenuation0=1.0f;
+				light.Attenuation0[0] = 1.0f;
 #endif
 				if (fabs(a-b)<1e-5)
 					// if the attenuation range is too small assume uniform with cutoff
-					light.Attenuation1=0.0f;
+					light.Attenuation1[0] =0.0f;
 				else
 					// this will cause the light to drop to half intensity at the first far attenuation
-					light.Attenuation1=(float) 0.1/a;
+					light.Attenuation1[0] =(float) 0.1/a;
 	
-				light.Attenuation2=8.0f/(b*b);
+				light.Attenuation2[0] =8.0f/(b*b);
 			}
 
 			Set_Light(l,&light);
@@ -3167,7 +3233,6 @@ void DX8Wrapper::Set_Light_Environment(LightEnvironmentClass* light_env)
 		}
 	}
 */
-#endif
 }
 
 #ifdef TODO_VULKAN
@@ -3250,11 +3315,11 @@ DX8Wrapper::Create_Render_Target (int width, int height, WW3DFormat format)
 	//	Attempt to create the render target
 	//
 #endif
-	TextureClass * tex = NEW_REF(TextureClass,(width,height,format,MIP_LEVELS_1,TextureClass::POOL_DEFAULT,true));
+	TextureClass * tex = NEW_REF(TextureClass,(width,height,format,MIP_LEVELS_1,true));
 
 	// 3dfx drivers are lying in the CheckDeviceFormat call and claiming
 	// that they support render targets!
-	if (tex->Peek_D3D_Base_Texture() == NULL) 
+	if (tex->Peek_D3D_Base_Texture().image == NULL) 
 	{
 		WWDEBUG_SAY(("DX8Wrapper - Render target creation failed!\r\n"));
 		REF_PTR_RELEASE(tex);
@@ -3863,7 +3928,7 @@ void DX8Wrapper::Apply_Default_State()
 
 	for (unsigned index=0;index<4;++index) {
 		SNAPSHOT_SAY(("Clearing light %d to NULL\n",index));
-		Set_DX8_Light(index,NULL);
+		Set_Light(index,NULL);
 	}
 
 	// set up simple default TSS 
@@ -3878,6 +3943,7 @@ void DX8Wrapper::Apply_Default_State()
 	Set_Vertex_Shader(DX8_FVF_XYZNDUV2);
 	Set_Pixel_Shader(0);
 #endif
+	Set_Pipeline(PIPELINE_WWVK_FVF_NDUV2);
 	ShaderClass::Invalidate();
 }
 

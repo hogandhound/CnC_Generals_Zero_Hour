@@ -417,6 +417,14 @@ void VkRenderTarget::PushSingleFrameBuffer(VK::Buffer staging)
 	singleFrame[currentFrame].bufferIndex++;
 }
 
+void VkRenderTarget::PushSingleTexture(VK::Texture staging)
+{
+	if (singleFrame[currentFrame].textures.size() <= singleFrame[currentFrame].textureIndex)
+		singleFrame[currentFrame].textures.resize(singleFrame[currentFrame].textureIndex + 1);
+	singleFrame[currentFrame].textures[singleFrame[currentFrame].textureIndex] = staging;
+	singleFrame[currentFrame].textureIndex++;
+}
+
 uint32_t VkRenderTarget::getDescSetSubIndex(VkDescFormat fmt, VkDescriptorSetLayoutBinding* bindings, int bCount)
 {
 	if (fmt < 0 || fmt >= VkDS_MaxType)
@@ -1145,6 +1153,7 @@ void VkRenderTarget::createDescPools()
 		case VkDS_TTUUUU: texs = 2; ubos = 4; break;
 		case VkDS_TTTUUUU: texs = 3; ubos = 4; break;
 		case VkDS_TTTTUUUU: texs = 4; ubos = 4; break;
+		case VkDS_TTUUUUU: texs = 2; ubos = 5; break;
 		}
 		VkDescriptorPoolSize poolSizes[8] = {};
 		for (int i = 0; i < texs; ++i)

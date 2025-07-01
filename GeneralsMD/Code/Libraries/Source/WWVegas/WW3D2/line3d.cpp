@@ -272,10 +272,8 @@ void Line3DClass::Render(RenderInfoClass & rinfo)
 	VertexMaterialClass *vm=VertexMaterialClass::Get_Preset(VertexMaterialClass::PRELIT_DIFFUSE);
 	DX8Wrapper::Set_Material(vm);
 	REF_PTR_RELEASE(vm);
-
-#ifdef TODO_VULKAN
+	
 	DX8Wrapper::Set_Transform(VkTS::WORLD,Transform);	
-#endif
 
 	DynamicVBAccessClass vb(BUFFER_TYPE_DYNAMIC_DX8,dynamic_fvf_type,8);
 	{

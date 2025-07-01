@@ -98,6 +98,7 @@ class StringClass;
 enum {
 	//DX8_FVF_XYZ				= VKFVF_XYZ,
 	//DX8_FVF_XYZN			= VKFVF_XYZ|VKFVF_NORMAL,
+	DX8_FVF_XYZD			= VKFVF_XYZ|VKFVF_DIFFUSE,
 	DX8_FVF_XYZNUV1		= VKFVF_XYZ|VKFVF_NORMAL|VKFVF_TEX1,
 	DX8_FVF_XYZNUV2		= VKFVF_XYZ|VKFVF_NORMAL|VKFVF_TEX2,
 	DX8_FVF_XYZNDUV1		= VKFVF_XYZ|VKFVF_NORMAL|VKFVF_TEX1|VKFVF_DIFFUSE,
@@ -197,6 +198,14 @@ struct VertexFormatXYZDUV1
 	unsigned diffuse;
 	float u1;
 	float v1;
+};
+
+struct VertexFormatXYZD
+{
+	float x;
+	float y;
+	float z;
+	unsigned diffuse;
 };
 
 struct VertexFormatXYZDUV2

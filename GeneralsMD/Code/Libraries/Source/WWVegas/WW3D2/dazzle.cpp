@@ -1021,11 +1021,9 @@ void DazzleRenderObjClass::Render_Dazzle(CameraClass* camera)
 	Matrix4x4 view_transform;
 	Matrix4x4 world_transform;
 	Matrix4x4 projection_transform;
-#ifdef TODO_VULKAN
 	DX8Wrapper::Get_Transform(VkTS::VIEW,view_transform);
 	DX8Wrapper::Get_Transform(VkTS::WORLD,world_transform);
 	DX8Wrapper::Get_Transform(VkTS::PROJECTION,projection_transform);
-#endif
 	old_view_transform=view_transform;
 	old_world_transform=world_transform;
 	old_projection_transform=projection_transform;

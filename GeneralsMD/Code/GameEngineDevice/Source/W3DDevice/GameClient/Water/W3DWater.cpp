@@ -345,11 +345,11 @@ WaterRenderObjClass::WaterRenderObjClass(void)
 	m_tod=TIME_OF_DAY_AFTERNOON;
 	m_pReflectionTexture=NULL;
 	m_skyBox=NULL;
-#ifdef TODO_VULKAN
-	m_vertexBufferD3D=NULL;
-	m_indexBufferD3D=NULL;
+	m_vertexBufferD3D = {};
+	m_indexBufferD3D = {};
 	m_vertexBufferD3DOffset=0;
 
+#ifdef TODO_VULKAN
 	m_dwWavePixelShader=NULL;
 	m_dwWaveVertexShader=NULL;
 #endif
@@ -365,24 +365,24 @@ WaterRenderObjClass::WaterRenderObjClass(void)
 	m_gridCellsY=WATER_MESH_Y_VERTICES;
 	m_gridWidth = m_gridCellsX * m_gridCellSize;
 	m_gridHeight = m_gridCellsY * m_gridCellSize;
-#ifdef TODO_VULKAN
 	
 	Int i=NUM_BUMP_FRAMES;
 	while (i--)
-		m_pBumpTexture[i]=NULL;
+		m_pBumpTexture[i] = {};
 
 	m_riverVOrigin=0;
 	m_riverTexture=NULL;
 	m_whiteTexture=NULL;
 	m_waterNoiseTexture=NULL;
 	m_riverAlphaEdge=NULL;
+#ifdef INFO_VULKAN
 	m_waterPixelShader=0;		///<D3D handle to pixel shader.
 	m_riverWaterPixelShader=0;		///<D3D handle to pixel shader.
 	m_trapezoidWaterPixelShader=0;		///<D3D handle to pixel shader.
+#endif
 	m_waterSparklesTexture=0;
 	m_riverXOffset=0;
 	m_riverYOffset=0;
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -820,6 +820,7 @@ void WaterRenderObjClass::ReleaseResources(void)
 	REF_PTR_RELEASE(m_indexBuffer);
 
 	REF_PTR_RELEASE(m_pReflectionTexture);
+
 #ifdef TODO_VULKAN
 	SAFE_RELEASE(m_vertexBufferD3D);
 	SAFE_RELEASE(m_indexBufferD3D);

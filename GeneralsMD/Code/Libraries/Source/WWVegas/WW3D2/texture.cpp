@@ -81,12 +81,11 @@ TextureBaseClass::TextureBaseClass
 	unsigned int width,
 	unsigned int height,
 	enum MipCountType mip_level_count,
-	enum PoolType pool,
 	bool rendertarget,
 	bool reducible
 )
 :	MipLevelCount(mip_level_count),
-	D3DTexture(NULL),
+	D3DTexture({}),
 	Initialized(false),
    Name(""),
 	FullPath(""),
@@ -101,7 +100,6 @@ TextureBaseClass::TextureBaseClass
 	LastAccessed(0),
 	Width(width),
 	Height(height),
-	Pool(pool),
 	Dirty(false),
 	TextureLoadTask(NULL),
 	ThumbnailLoadTask(NULL),
@@ -257,7 +255,7 @@ void TextureBaseClass::Invalidate()
 //! Returns a pointer to the d3d texture
 /*! 
 */
-IDirect3DBaseTexture9 * TextureBaseClass::Peek_D3D_Base_Texture() const 
+const VK::Texture& TextureBaseClass::Peek_D3D_Base_Texture() const 
 { 	
 	LastAccessed=WW3D::Get_Sync_Time(); 
 	return D3DTexture; 
@@ -267,7 +265,7 @@ IDirect3DBaseTexture9 * TextureBaseClass::Peek_D3D_Base_Texture() const
 //! Set the d3d texture pointer.  Handles ref counts properly.
 /*! 
 */
-void TextureBaseClass::Set_D3D_Base_Texture(IDirect3DBaseTexture9* tex) 
+void TextureBaseClass::Set_D3D_Base_Texture(VK::Texture tex) 
 { 
 	// (gth) Generals does stuff directly with the D3DTexture pointer so lets
 	// reset the access timer whenever someon messes with this pointer.
@@ -309,7 +307,7 @@ bool TextureBaseClass::Is_Missing_Texture()
 {
 	bool flag = false;
 #ifdef TODO_VULKAN
-	IDirect3DBaseTexture9 *missing_texture = MissingTexture::_Get_Missing_Texture();
+	VK::Texture missing_texture = MissingTexture::_Get_Missing_Texture();
 
 	if (D3DTexture == missing_texture)
 		flag = true;
@@ -342,7 +340,7 @@ void TextureBaseClass::Set_Texture_Name(const char * name)
 */
 unsigned int TextureBaseClass::Get_Priority(void)
 {
-	if (!D3DTexture) 
+	if (!D3DTexture.image) 
 	{
 		WWASSERT_PRINT(0, "Get_Priority: D3DTexture is NULL!\n");
 		return 0;
@@ -366,7 +364,7 @@ unsigned int TextureBaseClass::Get_Priority(void)
 */
 unsigned int TextureBaseClass::Set_Priority(unsigned int priority)
 {
-	if (!D3DTexture) 
+	if (!D3DTexture.image) 
 	{
 		WWASSERT_PRINT(0, "Set_Priority: D3DTexture is NULL!\n");
 		return 0;
@@ -415,10 +413,8 @@ unsigned TextureBaseClass::Get_Reduction() const
 */
 void TextureBaseClass::Apply_Null(unsigned int stage)
 {
-#ifdef TODO_VULKAN
 	// This function sets the render states for a "NULL" texture
-	DX8Wrapper::Set_DX8_Texture(stage, NULL);
-#endif
+	DX8Wrapper::Set_DX8_Texture(stage, {});
 }
 
 // ----------------------------------------------------------------------------
@@ -617,11 +613,10 @@ TextureClass::TextureClass
 	unsigned height, 
 	WW3DFormat format, 
 	MipCountType mip_level_count, 
-	PoolType pool,
 	bool rendertarget,
 	bool allow_reduction
 )
-:	TextureBaseClass(width, height, mip_level_count, pool, rendertarget,allow_reduction),
+:	TextureBaseClass(width, height, mip_level_count, rendertarget,allow_reduction),
 	Filter(mip_level_count),
 	TextureFormat(format)
 {
@@ -642,14 +637,6 @@ TextureClass::TextureClass
 	}
 
 #ifdef TODO_VULKAN
-	D3DPOOL d3dpool=(D3DPOOL)0;
-	switch(pool)
-	{
-	case POOL_DEFAULT		: d3dpool=D3DPOOL_DEFAULT; break;
-	case POOL_MANAGED		: d3dpool=D3DPOOL_MANAGED; break;
-	case POOL_SYSTEMMEM	: d3dpool=D3DPOOL_SYSTEMMEM; break;
-	default: WWASSERT(0);
-	}
 
 	Poke_Texture
 	(
@@ -663,9 +650,9 @@ TextureClass::TextureClass
 			rendertarget
 		)
 	);
-#endif
 
 	if (pool==POOL_DEFAULT)
+#endif
 	{
 		Set_Dirty();
 		DX8TextureTrackerClass *track=new DX8TextureTrackerClass
@@ -752,10 +739,10 @@ TextureClass::TextureClass
 	Set_Texture_Name(name);
 	Set_Full_Path(full_path);
 	WWASSERT(name[0]!='\0');
-	if (!WW3D::Is_Texturing_Enabled()) 
+	if (!WW3D::Is_Texturing_Enabled())
 	{
-		Initialized=true;
-		Poke_Texture(NULL);
+		Initialized = true;
+		Poke_Texture({});
 	}
 
 	// Find original size from the thumbnail (but don't create thumbnail texture yet!)
@@ -826,7 +813,7 @@ TextureClass::TextureClass
 }
 
 // ----------------------------------------------------------------------------
-TextureClass::TextureClass(IDirect3DBaseTexture9* d3d_texture)
+TextureClass::TextureClass(const VK::Texture& d3d_texture)
 :	TextureBaseClass
 	(
 		0,
@@ -898,7 +885,7 @@ void TextureClass::Init()
 	}
 
 
-	if (!Peek_D3D_Base_Texture()) 
+	if (!Peek_D3D_Base_Texture().image) 
 	{
 		if (!WW3D::Get_Thumbnail_Enabled() || MipLevelCount==MIP_LEVELS_1) 
 		{
@@ -1022,7 +1009,7 @@ void TextureClass::Apply(unsigned int stage)
 */
 SurfaceClass *TextureClass::Get_Surface_Level(unsigned int level)
 {
-	if (!Peek_D3D_Texture()) 
+	if (!Peek_D3D_Texture().image) 
 	{
 		WWASSERT_PRINT(0, "Get_Surface_Level: D3DTexture is NULL!\n");
 		return 0;
@@ -1059,7 +1046,7 @@ void TextureClass::Get_Level_Description( SurfaceClass::SurfaceDescription & des
 */
 IDirect3DSurface9 *TextureClass::Get_D3D_Surface_Level(unsigned int level)
 {
-	if (!Peek_D3D_Texture()) 
+	if (!Peek_D3D_Texture().image) 
 	{
 		WWASSERT_PRINT(0, "Get_D3D_Surface_Level: D3DTexture is NULL!\n");
 		return 0;
@@ -1258,10 +1245,9 @@ ZTextureClass::ZTextureClass
 	unsigned width, 
 	unsigned height, 
 	WW3DZFormat zformat, 
-	MipCountType mip_level_count, 
-	PoolType pool
+	MipCountType mip_level_count
 )
-:	TextureBaseClass(width,height, mip_level_count, pool),
+:	TextureBaseClass(width,height, mip_level_count),
 	DepthStencilTextureFormat(zformat)
 {
 #ifdef TODO_VULKAN
@@ -1363,7 +1349,7 @@ void ZTextureClass::Apply_New_Surface
 */
 IDirect3DSurface9* ZTextureClass::Get_D3D_Surface_Level(unsigned int level)
 {
-	if (!Peek_D3D_Texture()) 
+	if (!Peek_D3D_Texture().image) 
 	{
 		WWASSERT_PRINT(0, "Get_D3D_Surface_Level: D3DTexture is NULL!\n");
 		return 0;
@@ -1385,7 +1371,7 @@ IDirect3DSurface9* ZTextureClass::Get_D3D_Surface_Level(unsigned int level)
 unsigned ZTextureClass::Get_Texture_Memory_Usage() const
 {
 	int size=0;
-	if (!Peek_D3D_Texture()) return 0;
+	if (!Peek_D3D_Texture().image) return 0;
 #ifdef TODO_VULKAN
 	for (unsigned i=0;i<Peek_D3D_Texture()->GetLevelCount();++i) 
 	{
@@ -1408,11 +1394,10 @@ CubeTextureClass::CubeTextureClass
 	unsigned height, 
 	WW3DFormat format, 
 	MipCountType mip_level_count, 
-	PoolType pool,
 	bool rendertarget,
 	bool allow_reduction
 )
-: TextureClass(width, height, format, mip_level_count, pool, rendertarget)
+: TextureClass(width, height, format, mip_level_count, rendertarget)
 {
 	Initialized=true;
 	IsProcedural=true;
@@ -1483,7 +1468,7 @@ CubeTextureClass::CubeTextureClass
 	bool allow_compression,
 	bool allow_reduction
 )
-:	TextureClass(0,0,mip_level_count, POOL_MANAGED, false, texture_format)
+:	TextureClass(0,0,mip_level_count, false, texture_format)
 {
 	IsCompressionAllowed=allow_compression;
 	InactivationTime=DEFAULT_INACTIVATION_TIME;		// Default inactivation time 30 seconds
@@ -1541,7 +1526,7 @@ CubeTextureClass::CubeTextureClass
 	if (!WW3D::Is_Texturing_Enabled()) 
 	{
 		Initialized=true;
-		Poke_Texture(NULL);
+		Poke_Texture({});
 	}
 
 	// Find original size from the thumbnail (but don't create thumbnail texture yet!)
@@ -1659,7 +1644,7 @@ void CubeTextureClass::Apply_New_Surface
 	bool disable_auto_invalidation
 )
 {
-	IDirect3DBaseTexture9* d3d_tex=Peek_D3D_Base_Texture();
+	VK::Texture d3d_tex=Peek_D3D_Base_Texture();
 
 #ifdef TODO_VULKAN
 	if (d3d_tex) d3d_tex->Release();
@@ -1695,11 +1680,10 @@ VolumeTextureClass::VolumeTextureClass
 	unsigned depth,
 	WW3DFormat format, 
 	MipCountType mip_level_count, 
-	PoolType pool,
 	bool rendertarget,
 	bool allow_reduction
 )
-: TextureClass(width, height, format, mip_level_count, pool, rendertarget),
+: TextureClass(width, height, format, mip_level_count, rendertarget),
   Depth(depth)
 {
 	Initialized=true;
@@ -1771,7 +1755,7 @@ VolumeTextureClass::VolumeTextureClass
 	bool allow_compression,
 	bool allow_reduction
 )
-:	TextureClass(0,0,mip_level_count, POOL_MANAGED, false, texture_format),
+:	TextureClass(0,0,mip_level_count, false, texture_format),
 	Depth(0)
 {
 	IsCompressionAllowed=allow_compression;
@@ -1830,7 +1814,7 @@ VolumeTextureClass::VolumeTextureClass
 	if (!WW3D::Is_Texturing_Enabled()) 
 	{
 		Initialized=true;
-		Poke_Texture(NULL);
+		Poke_Texture({});
 	}
 
 	// Find original size from the thumbnail (but don't create thumbnail texture yet!)

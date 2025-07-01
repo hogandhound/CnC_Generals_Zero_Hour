@@ -55,6 +55,7 @@
 #include "wwstring.h"
 #include "vector3.h"
 #include "texturefilter.h"
+#include <VkRenderTarget.h>
 
 struct IDirect3DBaseTexture9;
 struct IDirect3DTexture9;
@@ -77,14 +78,6 @@ class TextureBaseClass : public RefCountClass
 	friend class DX8ZTextureTrackerClass;
 
 public:
-
-	enum PoolType 
-	{
-		POOL_DEFAULT=0,
-		POOL_MANAGED,
-		POOL_SYSTEMMEM
-	};
-
 	enum TexAssetType
 	{
 		TEX_REGULAR,
@@ -98,7 +91,6 @@ public:
 		unsigned width, 
 		unsigned height, 
 		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		PoolType pool=POOL_MANAGED,
 		bool rendertarget=false,
 		bool reducible=true
 	);
@@ -163,16 +155,14 @@ public:
 	void Invalidate();
 
 	// texture accessors (dx8)
-	IDirect3DBaseTexture9 *Peek_D3D_Base_Texture() const;
-	void Set_D3D_Base_Texture(IDirect3DBaseTexture9* tex);
-
-	PoolType Get_Pool() const { return Pool; }
+	const VK::Texture& Peek_D3D_Base_Texture() const;
+	void Set_D3D_Base_Texture(VK::Texture tex);
 
 	bool Is_Missing_Texture();
 
 	// Support for self managed textures
-	bool Is_Dirty() { WWASSERT(Pool==POOL_DEFAULT); return Dirty; };
-	void Set_Dirty() { WWASSERT(Pool==POOL_DEFAULT); Dirty=true; }
+	bool Is_Dirty() { return Dirty; };
+	void Set_Dirty() { Dirty=true; }
 	void Clean() { Dirty=false; };
 
 	void Set_HSV_Shift(const Vector3 &hsv_shift);
@@ -203,14 +193,14 @@ public:
 	virtual CubeTextureClass* As_CubeTextureClass() { return NULL; }
 	virtual VolumeTextureClass* As_VolumeTextureClass() { return NULL; }
 
-	IDirect3DTexture9* Peek_D3D_Texture() const { return (IDirect3DTexture9*)Peek_D3D_Base_Texture(); }
-	IDirect3DVolumeTexture9* Peek_D3D_VolumeTexture() const { return (IDirect3DVolumeTexture9*)Peek_D3D_Base_Texture(); }
-	IDirect3DCubeTexture9* Peek_D3D_CubeTexture() const { return (IDirect3DCubeTexture9*)Peek_D3D_Base_Texture(); }
+	VK::Texture& Peek_D3D_Texture() const { return (VK::Texture)Peek_D3D_Base_Texture(); }
+	VK::Texture& Peek_D3D_VolumeTexture() const { return (VK::Texture)Peek_D3D_Base_Texture(); }
+	VK::Texture& Peek_D3D_CubeTexture() const { return (VK::Texture)Peek_D3D_Base_Texture(); }
 
 protected:
 
 	void Load_Locked_Surface();
-	void Poke_Texture(IDirect3DBaseTexture9* tex) { D3DTexture = tex; }
+	void Poke_Texture(VK::Texture tex) { D3DTexture = tex; }
 
 	bool Initialized;
 
@@ -237,7 +227,7 @@ protected:
 private:
 
 	// Direct3D texture object
-	IDirect3DBaseTexture9 *D3DTexture;
+	VK::Texture D3DTexture;
 
 	// Name
 	StringClass Name;
@@ -247,8 +237,6 @@ private:
 	unsigned texture_id;
 
 	// Support for self-managed textures
-
-	PoolType Pool;
 	bool Dirty;
 
 	friend class TextureLoadTaskClass;
@@ -282,7 +270,6 @@ public:
 		unsigned height, 
 		WW3DFormat format,
 		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		PoolType pool=POOL_MANAGED,
 		bool rendertarget=false,
 		bool allow_reduction=true
 	);
@@ -307,7 +294,7 @@ public:
 		MipCountType mip_level_count=MIP_LEVELS_ALL
 	);		
 
-	TextureClass(IDirect3DBaseTexture9* d3d_texture);
+	TextureClass(const VK::Texture& d3d_texture);
 
 	// defualt constructors for derived classes (cube & vol)
 	TextureClass
@@ -315,12 +302,11 @@ public:
 		unsigned width,
 		unsigned height,
 		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		PoolType pool=POOL_MANAGED,
 		bool rendertarget=false,
 		WW3DFormat format=WW3D_FORMAT_UNKNOWN,
 		bool allow_reduction=true
 	)
-	: TextureBaseClass(width,height,mip_level_count,pool,rendertarget,allow_reduction), TextureFormat(format), Filter(mip_level_count) { }
+	: TextureBaseClass(width,height,mip_level_count,rendertarget,allow_reduction), TextureFormat(format), Filter(mip_level_count) { }
 
 	virtual TexAssetType Get_Asset_Type() const { return TEX_REGULAR; }
 
@@ -361,8 +347,7 @@ public:
 		unsigned width,
 		unsigned height,
 		WW3DZFormat zformat,
-		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		PoolType pool=POOL_MANAGED
+		MipCountType mip_level_count=MIP_LEVELS_ALL
 	);
 
 	WW3DZFormat Get_Texture_Format() const { return DepthStencilTextureFormat; }
@@ -394,7 +379,6 @@ public:
 		unsigned height, 
 		WW3DFormat format,
 		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		PoolType pool=POOL_MANAGED,
 		bool rendertarget=false,
 		bool allow_reduction=true
 	);
@@ -440,7 +424,6 @@ public:
 		unsigned depth,
 		WW3DFormat format,
 		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		PoolType pool=POOL_MANAGED,
 		bool rendertarget=false,
 		bool allow_reduction=true
 	);

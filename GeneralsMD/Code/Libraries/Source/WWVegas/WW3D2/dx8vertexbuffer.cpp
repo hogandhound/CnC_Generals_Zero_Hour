@@ -75,19 +75,18 @@ static int _VertexBufferTotalSize;
 
 VertexBufferClass::VertexBufferClass(unsigned type_, unsigned FVF, unsigned short vertex_count_, unsigned vertex_size)
 	:
-	VertexCount(vertex_count_),
 	type(type_),
 	engine_refs(0)
 {
 	WWMEMLOG(MEM_RENDERER);
-	WWASSERT(VertexCount);
 	WWASSERT(type==BUFFER_TYPE_DX8 || type==BUFFER_TYPE_SORTING);
 	WWASSERT((FVF!=0 && vertex_size==0) || (FVF==0 && vertex_size!=0));
 	fvf_info=W3DNEW FVFInfoClass(FVF,vertex_size);
 
+	Vertices.resize(vertex_count_);
 	_VertexBufferCount++;
-	_VertexBufferTotalVertices+=VertexCount;
-	_VertexBufferTotalSize+=VertexCount*fvf_info->Get_FVF_Size();
+	_VertexBufferTotalVertices+= vertex_count_;
+	_VertexBufferTotalSize+= vertex_count_ *fvf_info->Get_FVF_Size();
 #ifdef VERTEX_BUFFER_LOG
 	WWDEBUG_SAY(("New VB, %d vertices, size %d bytes\n",VertexCount,VertexCount*fvf_info->Get_FVF_Size()));
 	WWDEBUG_SAY(("Total VB count: %d, total %d vertices, total size %d bytes\n",
@@ -102,8 +101,8 @@ VertexBufferClass::VertexBufferClass(unsigned type_, unsigned FVF, unsigned shor
 VertexBufferClass::~VertexBufferClass()
 {
 	_VertexBufferCount--;
-	_VertexBufferTotalVertices-=VertexCount;
-	_VertexBufferTotalSize-=VertexCount*fvf_info->Get_FVF_Size();
+	_VertexBufferTotalVertices-= (int)Vertices.size();
+	_VertexBufferTotalSize-= (int)Vertices.size() *fvf_info->Get_FVF_Size();
 
 #ifdef VERTEX_BUFFER_LOG
 	WWDEBUG_SAY(("Delete VB, %d vertices, size %d bytes\n",VertexCount,VertexCount*fvf_info->Get_FVF_Size()));
@@ -173,7 +172,7 @@ VertexBufferClass::WriteLockClass::WriteLockClass(VertexBufferClass* VertexBuffe
 		}
 #endif
 		DX8_Assert();
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		DX8_ErrorCode(static_cast<DX8VertexBufferClass*>(VertexBuffer)->Get_DX8_Vertex_Buffer()->Lock(
 			0,
 			0,
@@ -182,12 +181,12 @@ VertexBufferClass::WriteLockClass::WriteLockClass(VertexBufferClass* VertexBuffe
 #endif
 		break;
 	case BUFFER_TYPE_SORTING:
-		Vertices=static_cast<SortingVertexBufferClass*>(VertexBuffer)->VertexBuffer;
 		break;
 	default:
 		WWASSERT(0);
 		break;
 	}
+	Vertices = VertexBuffer->Vertices.data();
 }
 
 // ----------------------------------------------------------------------------
@@ -201,7 +200,7 @@ VertexBufferClass::WriteLockClass::~WriteLockClass()
 		WWDEBUG_SAY(("VertexBuffer->Unlock()\n"));
 #endif
 		DX8_Assert();
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		DX8_ErrorCode(static_cast<DX8VertexBufferClass*>(VertexBuffer)->Get_DX8_Vertex_Buffer()->Unlock());
 #endif
 		break;
@@ -243,7 +242,8 @@ VertexBufferClass::AppendLockClass::AppendLockClass(VertexBufferClass* VertexBuf
 		}
 #endif
 		DX8_Assert();
-#ifdef TODO_VULKAN
+		Vertices = ((char*)VertexBuffer->Vertices.data()) + start_index * VertexBuffer->FVF_Info().Get_FVF_Size();
+#ifdef INFO_VULKAN
 		DX8_ErrorCode(static_cast<DX8VertexBufferClass*>(VertexBuffer)->Get_DX8_Vertex_Buffer()->Lock(
 			start_index*VertexBuffer->FVF_Info().Get_FVF_Size(),
 			index_range*VertexBuffer->FVF_Info().Get_FVF_Size(),
@@ -252,7 +252,7 @@ VertexBufferClass::AppendLockClass::AppendLockClass(VertexBufferClass* VertexBuf
 #endif
 		break;
 	case BUFFER_TYPE_SORTING:
-		Vertices=static_cast<SortingVertexBufferClass*>(VertexBuffer)->VertexBuffer+start_index;
+		Vertices = VertexBuffer->Vertices.data() + start_index;
 		break;
 	default:
 		WWASSERT(0);
@@ -271,7 +271,7 @@ VertexBufferClass::AppendLockClass::~AppendLockClass()
 #ifdef VERTEX_BUFFER_LOG
 		WWDEBUG_SAY(("VertexBuffer->Unlock()\n"));
 #endif
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		DX8_ErrorCode(static_cast<DX8VertexBufferClass*>(VertexBuffer)->Get_DX8_Vertex_Buffer()->Unlock());
 #endif
 		break;
@@ -295,14 +295,12 @@ SortingVertexBufferClass::SortingVertexBufferClass(unsigned short VertexCount)
 	VertexBufferClass(BUFFER_TYPE_SORTING, dynamic_fvf_type, VertexCount)
 {
 	WWMEMLOG(MEM_RENDERER);
-	VertexBuffer=W3DNEWARRAY VertexFormatXYZNDUV2[VertexCount];
 }
 
 // ----------------------------------------------------------------------------
 
 SortingVertexBufferClass::~SortingVertexBufferClass()
 {
-	delete[] VertexBuffer;
 }
 
 
@@ -317,7 +315,7 @@ SortingVertexBufferClass::~SortingVertexBufferClass()
 DX8VertexBufferClass::DX8VertexBufferClass(unsigned FVF, unsigned short vertex_count_, UsageType usage, unsigned vertex_size)
 	:
 	VertexBufferClass(BUFFER_TYPE_DX8, FVF, vertex_count_, vertex_size),
-	VertexBuffer(NULL)
+	VertexBuffer({})
 {
 	Create_Vertex_Buffer(usage);
 }
@@ -334,7 +332,7 @@ DX8VertexBufferClass::DX8VertexBufferClass(
 	VertexBufferClass(BUFFER_TYPE_DX8,
 		VKFVF_XYZ|VKFVF_TEX1|VKFVF_NORMAL
 		, VertexCount),
-	VertexBuffer(NULL)
+	VertexBuffer({})
 {
 	WWASSERT(vertices);
 	WWASSERT(normals);
@@ -357,7 +355,7 @@ DX8VertexBufferClass::DX8VertexBufferClass(
 	VertexBufferClass(BUFFER_TYPE_DX8,
 		VKFVF_XYZ|VKFVF_TEX1|VKFVF_NORMAL|VKFVF_DIFFUSE
 		, VertexCount),
-	VertexBuffer(NULL)
+	VertexBuffer({})
 {
 	WWASSERT(vertices);
 	WWASSERT(normals);
@@ -380,7 +378,7 @@ DX8VertexBufferClass::DX8VertexBufferClass(
 	VertexBufferClass(BUFFER_TYPE_DX8,
 		VKFVF_XYZ|VKFVF_TEX1|VKFVF_DIFFUSE
 		, VertexCount),
-	VertexBuffer(NULL)
+	VertexBuffer({})
 {
 	WWASSERT(vertices);
 	WWASSERT(tex_coords);
@@ -401,7 +399,7 @@ DX8VertexBufferClass::DX8VertexBufferClass(
 	VertexBufferClass(BUFFER_TYPE_DX8,
 		VKFVF_XYZ|VKFVF_TEX1
 		, VertexCount),
-	VertexBuffer(NULL)
+	VertexBuffer({})
 {
 	WWASSERT(vertices);
 	WWASSERT(tex_coords);
@@ -419,9 +417,7 @@ DX8VertexBufferClass::~DX8VertexBufferClass()
 	_DX8VertexBufferCount--;
 	WWDEBUG_SAY(("Current vertex buffer count: %d\n",_DX8VertexBufferCount));
 #endif
-#ifdef TODO_VULKAN
-	VertexBuffer->Release();
-#endif
+	DX8Wrapper::target.PushSingleFrameBuffer(VertexBuffer);
 }
 
 // ----------------------------------------------------------------------------
@@ -433,7 +429,7 @@ DX8VertexBufferClass::~DX8VertexBufferClass()
 void DX8VertexBufferClass::Create_Vertex_Buffer(UsageType usage)
 {
 	DX8_THREAD_ASSERT();
-	WWASSERT(!VertexBuffer);
+	WWASSERT(!VertexBuffer.buffer);
 
 #ifdef VERTEX_BUFFER_LOG
 	StringClass fvf_name;
@@ -449,7 +445,7 @@ void DX8VertexBufferClass::Create_Vertex_Buffer(UsageType usage)
 	WWDEBUG_SAY(("Current vertex buffer count: %d\n",_DX8VertexBufferCount));
 #endif
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	unsigned usage_flags =
 		D3DUSAGE_WRITEONLY |
 		((usage & USAGE_DYNAMIC) ? D3DUSAGE_DYNAMIC : 0) |
@@ -520,7 +516,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, const V
 	WWASSERT(loc);
 	WWASSERT(norm);
 	WWASSERT(uv);
-	WWASSERT(count<=VertexCount);
+	WWASSERT(count<=Vertices.size());
 	WWASSERT(FVF_Info().Get_FVF()==DX8_FVF_XYZNUV1);
 
 	if (first_vertex) {
@@ -661,7 +657,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector3* norm, const V
 	WWASSERT(norm);
 	WWASSERT(uv);
 	WWASSERT(diffuse);
-	WWASSERT(count<=VertexCount);
+	WWASSERT(count<=Vertices.size());
 	WWASSERT(FVF_Info().Get_FVF()==DX8_FVF_XYZNDUV1);
 
 	if (first_vertex) {
@@ -703,7 +699,7 @@ void DX8VertexBufferClass::Copy(const Vector3* loc, const Vector2* uv, const Vec
 	WWASSERT(loc);
 	WWASSERT(uv);
 	WWASSERT(diffuse);
-	WWASSERT(count<=VertexCount);
+	WWASSERT(count<=Vertices.size());
 	WWASSERT(FVF_Info().Get_FVF()==DX8_FVF_XYZDUV1);
 
 	if (first_vertex) {

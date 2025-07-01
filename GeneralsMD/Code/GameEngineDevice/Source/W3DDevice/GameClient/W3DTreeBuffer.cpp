@@ -1120,7 +1120,7 @@ W3DTreeBuffer::W3DTreeBuffer(void)
 		m_curNumTreeIndices[i]=0;
 	}
 	m_treeTexture = NULL;
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	m_dwTreeVertexShader = 0;
 	m_dwTreePixelShader = 0;
 #endif
@@ -1147,7 +1147,7 @@ void W3DTreeBuffer::freeTreeBuffers(void)
 		REF_PTR_RELEASE(m_indexTree[i]);
 	}
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	if (m_dwTreePixelShader)
 		m_dwTreePixelShader->Release();
 	m_dwTreePixelShader = 0;
@@ -1256,7 +1256,7 @@ void W3DTreeBuffer::allocateTreeBuffers(void)
 		m_curNumTreeVertices[i]=0;
 		m_curNumTreeIndices[i]=0;
 	}
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 
 		//shader decleration
 	// DX8_FVF_XYZNDUV1
@@ -1672,70 +1672,6 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 		updateVertexBuffer();
 	}
 
-//#define DEBUG_TEXTURE 1
-#ifdef DEBUG_TEXTURE // Draw the combined texture for debugging. jba. [4/21/2003]
-	// Setup the vertex buffer, shader & texture.
-	DX8Wrapper::Set_Shader(detailAlphaShader);
-	DX8Wrapper::Set_Texture(0,m_treeTexture);
-	DynamicIBAccessClass ib_access(BUFFER_TYPE_DYNAMIC_DX8, 6);
-	//draw an infinite sky plane
-	DynamicVBAccessClass vb_access(BUFFER_TYPE_DYNAMIC_DX8, DX8_FVF_XYZNDUV2, 4);
-	{
-		DynamicIBAccessClass::WriteLockClass ibLock(&ib_access);
-		UnsignedShort *ndx = ibLock.Get_Index_Array();
-
-		if (ndx) {
-			ndx[0] = 0;
-			ndx[1] = 1;
-			ndx[2] = 2;
-			ndx[3] = 1;
-			ndx[4] = 3;
-			ndx[5] = 2;
-		}
-		DynamicVBAccessClass::WriteLockClass lock(&vb_access);
-		VertexFormatXYZNDUV2* verts=lock.Get_Formatted_Vertex_Array();
-		if(verts)
-		{
-			Real width = 300;
-			Real origin = 40;
-			verts[0].x=origin;
-			verts[0].y=origin;
-			verts[0].z=15;
-			verts[0].u1=0;
-			verts[0].v1=0;
-			verts[0].diffuse=0xffffffff;
-	
-			verts[1].x=origin+width;
-			verts[1].y=origin;
-			verts[1].z=15;
-			verts[1].u1=1;
-			verts[1].v1=0;
-			verts[1].diffuse=0xffffffff;
-	
-			verts[2].x=origin;
-			verts[2].y=origin+width;
-			verts[2].z=15;
-			verts[2].u1=0;
-			verts[2].v1=1;
-			verts[2].diffuse=0xffffffff;
-	
-			verts[3].x=origin+width;
-			verts[3].y=origin+width;
-			verts[3].z=15;
-			verts[3].u1=1;
-			verts[3].v1=1;
-			verts[3].diffuse=0xffffffff;
-		}
-	}
-
-	DX8Wrapper::Set_Index_Buffer(ib_access,0);
-	DX8Wrapper::Set_Vertex_Buffer(vb_access);
-
-	Matrix3D tm(1);
-	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
-
-	DX8Wrapper::Draw_Triangles(	0,2, 0,	4);	//draw a quad, 2 triangles, 4 verts
-#endif
 
 
 	if (m_curNumTreeIndices[0] == 0) {
@@ -1745,6 +1681,100 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 
 	DX8Wrapper::Set_Texture(0,m_treeTexture);
 	DX8Wrapper::Set_Texture(1,NULL);
+
+	//DX8Wrapper::Set_DX8_Texture_Stage_State(0, D3DTSS_TEXCOORDINDEX, 0);
+	//DX8Wrapper::Set_DX8_Texture_Stage_State(1, D3DTSS_TEXCOORDINDEX, 1);
+	// Draw all the trees.
+	DX8Wrapper::Apply_Render_State_Changes();
+	W3DShaderManager::setShroudTex(1);
+	DX8Wrapper::Apply_Render_State_Changes();
+
+	VK::Buffer uboTrees;
+	Trees treeConstants;
+	{
+		Matrix4x4 matProj, matView, matWorld;
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&matWorld);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::VIEW, *(Matrix4x4*)&matView);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::PROJECTION, *(Matrix4x4*)&matProj);
+		Matrix4x4 mat;
+		Matrix4x4::Multiply(matView, matProj, &mat);
+		Matrix4x4::Multiply(mat, matWorld, &mat);
+		mat = mat.Transpose();
+
+		// c4  - Composite World-View-Projection Matrix
+		//DX8Wrapper::_Get_D3D_Device8()->SetVertexShaderConstantF(4, &mat.m[0][0], 4);
+		memcpy(treeConstants.tilt[4], &mat, sizeof(float) * 16);
+		Vector4 noSway(0, 0, 0, 0);
+		//DX8Wrapper::_Get_D3D_Device8()->SetVertexShaderConstantF(8, &noSway.X, 1);
+		memcpy(treeConstants.tilt[8], &noSway, sizeof(float) * 4);
+
+		// c8 - c8+MAX_SWAY_TYPES - the sway amount.
+		for (i = 0; i < MAX_SWAY_TYPES; i++) {
+			Vector4 sway4(swayFactor[i].X, swayFactor[i].Y, swayFactor[i].Z, 0);
+			//DX8Wrapper::_Get_D3D_Device8()->SetVertexShaderConstantF(9 + i, &sway4.X, 1);
+			memcpy(treeConstants.tilt[9+i], &swayFactor[i], sizeof(float) * 4);
+		}
+
+		W3DShroud* shroud;
+		if ((shroud = TheTerrainRenderObject->getShroud()) != 0) {
+			// Setup shroud texture info [6/6/2003]
+			float xoffset = 0;
+			float yoffset = 0;
+			Real width = shroud->getCellWidth();
+			Real height = shroud->getCellHeight();
+
+			xoffset = -(float)shroud->getDrawOriginX() + width;
+			yoffset = -(float)shroud->getDrawOriginY() + height;
+			Vector4 offset(xoffset, yoffset, 0, 0);
+			//DX8Wrapper::_Get_D3D_Device8()->SetVertexShaderConstantF(32, &offset.X, 1);
+			treeConstants.shroudOffset[0] = offset.X;
+			treeConstants.shroudOffset[1] = offset.Y;
+			width = 1.0f / (width * shroud->getTextureWidth());
+			height = 1.0f / (height * shroud->getTextureHeight());
+			offset.Set(width, height, 1, 1);
+			//DX8Wrapper::_Get_D3D_Device8()->SetVertexShaderConstantF(33, &offset.X, 1);
+			treeConstants.shroudOffset[0] = offset.X;
+			treeConstants.shroudOffset[1] = offset.Y;
+			treeConstants.shroudScale[0] = offset.X;
+			treeConstants.shroudScale[1] = offset.Y;
+		}
+		else {
+			Vector4 offset(0, 0, 0, 0);
+			//DX8Wrapper::_Get_D3D_Device8()->SetVertexShaderConstantF(32, &offset.X, 1);
+			//DX8Wrapper::_Get_D3D_Device8()->SetVertexShaderConstantF(33, &offset.X, 1);
+			treeConstants.shroudOffset[0] = offset.X;
+			treeConstants.shroudOffset[1] = offset.Y;
+			treeConstants.shroudScale[0] = offset.X;
+			treeConstants.shroudScale[1] = offset.Y;
+		}
+
+	}
+
+
+	DirectX::XMMATRIX matWorld;
+	DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&matWorld);
+	Int bNdx;
+	for (bNdx = 0; bNdx < MAX_BUFFERS; bNdx++) {
+		if (m_curNumTreeIndices[bNdx] == 0) {
+			break;
+		}
+		DX8Wrapper::Set_Index_Buffer(m_indexTree[bNdx], 0);
+		DX8Wrapper::Set_Vertex_Buffer(m_vertexTree[bNdx]);
+		// Render the waving grass
+		DX8Wrapper::Apply_Render_State_Changes();
+		//DX8Wrapper::Draw_Triangles(0, m_curNumTreeIndices[bNdx] / 3, 0, m_curNumTreeVertices[bNdx]);
+
+		std::vector<VkDescriptorSet> sets;
+		WWVK_UpdateTreesDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets,
+			&m_treeTexture->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(), 
+			DX8Wrapper::UboView(), uboTrees, DX8Wrapper::UboProj());
+		//void WWVK_DrawTrees(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, 
+		// VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push);
+		WWVK_DrawTrees(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets,
+			m_indexTree[bNdx]->Get_DX8_Index_Buffer().buffer, (uint32_t)m_curNumTreeIndices[bNdx], VK_INDEX_TYPE_UINT16, 
+			m_vertexTree[bNdx]->Get_DX8_Vertex_Buffer().buffer, (VkDeviceSize)0, (WorldMatrix*)& matWorld);
+	}
+
 #ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0,  D3DTSS_TEXCOORDINDEX, 0);
 	DX8Wrapper::Set_DX8_Texture_Stage_State(1,  D3DTSS_TEXCOORDINDEX, 1);

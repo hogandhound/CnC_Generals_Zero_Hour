@@ -695,14 +695,12 @@ void W3DBridgeBuffer::loadBridgesInVertexAndIndexBuffers(RefRenderObjListIterato
 	m_curNumBridgeVertices = 0;
 	m_curNumBridgeIndices = 0;
 	// Lock the buffers.
-#ifdef TODO_VULKAN
 	VertexFormatXYZNDUV1 *vb;
 	UnsignedShort *ib;
-	DX8IndexBufferClass::WriteLockClass lockIdxBuffer(m_indexBridge, D3DLOCK_DISCARD);
-	DX8VertexBufferClass::WriteLockClass lockVtxBuffer(m_vertexBridge, D3DLOCK_DISCARD);
+	DX8IndexBufferClass::WriteLockClass lockIdxBuffer(m_indexBridge);
+	DX8VertexBufferClass::WriteLockClass lockVtxBuffer(m_vertexBridge);
 	vb=(VertexFormatXYZNDUV1*)lockVtxBuffer.Get_Vertex_Array();
 	ib = lockIdxBuffer.Get_Index_Array();
-#endif
 
 //	UnsignedShort *curIb = ib;
 
@@ -712,10 +710,8 @@ void W3DBridgeBuffer::loadBridgesInVertexAndIndexBuffers(RefRenderObjListIterato
 
 	try {
 	for (curBridge=0; curBridge<m_numBridges; curBridge++) {
-#ifdef TODO_VULKAN
 		m_bridges[curBridge].getIndicesNVertices(ib, vb, &m_curNumBridgeIndices, 
 			&m_curNumBridgeVertices, pLightsIterator);
-#endif
 	}
 	IndexBufferExceptionFunc();
 	} catch(...) {

@@ -62,6 +62,11 @@ public:
 
 	virtual void						Apply_Shared(int cur_pass, RenderInfoClass& rinfo);
 	virtual void						Apply_Instance(int cur_pass, RenderInfoClass& rinfo);
+	void Draw(int cur_pass, RenderInfoClass& rinfo, unsigned short start_index,
+		unsigned short polygon_count,
+		unsigned short min_vertex_index,
+		unsigned short vertex_count,
+		bool isStrip) override;
 
 	virtual unsigned					Get_Vertex_Stream_Count() const;
 	virtual unsigned					Get_Vertex_Size(unsigned stream) const;
@@ -69,7 +74,7 @@ public:
 #ifdef TODO_VULKAN
 		return Vertex_Shader.Is_Using_Hardware();
 #else
-		return false;
+		return true;
 #endif
 	}
 	virtual void						Copy_Vertex_Stream
@@ -84,7 +89,7 @@ protected:
 
 	void Setup_Self_Shadow_Info(ShdMeshClass& mesh, RenderInfoClass& rinfo);
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	static ShdHWVertexShader		Vertex_Shader;
 	static ShdHWPixelShader			Pixel_Shader;
 #endif
@@ -99,7 +104,7 @@ protected:
 	Vector4					Bumpiness;
 
 	// self shadowing
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	static ShdHWPixelShader		Self_Shadow_Pixel_Shader;
 	static ShdHWVertexShader	Self_Shadow_Vertex_Shader;
 #endif

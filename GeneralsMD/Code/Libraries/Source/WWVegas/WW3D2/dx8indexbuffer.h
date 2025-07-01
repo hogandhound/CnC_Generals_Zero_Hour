@@ -178,7 +178,7 @@ public:
 	
 private:
 	VK::Buffer index_buffer;
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	IDirect3DIndexBuffer9*	index_buffer;		// actual dx8 index buffer
 #endif
 };

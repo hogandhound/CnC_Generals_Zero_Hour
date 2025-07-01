@@ -44,10 +44,25 @@
 
 static unsigned Get_FVF_Vertex_Size(unsigned FVF)
 {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	return D3DXGetFVFVertexSize(FVF);
-	#else
-	return 0;
+#else
+	unsigned ret = 0;
+	if (FVF & VKFVF_XYZ) ret += sizeof(float) * 3;
+	else if ((FVF & VKFVF_XYZRHW) || (FVF & VKFVF_XYZW)) ret += sizeof(float) * 4;
+	if (FVF & VKFVF_NORMAL) ret += sizeof(float) * 3;
+	if (FVF & VKFVF_DIFFUSE) ret += sizeof(DWORD) * 1;
+	if (FVF & VKFVF_SPECULAR) ret += sizeof(DWORD) * 1;
+	if ((FVF & VKFVF_TEX8) == VKFVF_TEX8) ret += sizeof(float) * 2 * 8;
+	else if ((FVF & VKFVF_TEX7) == VKFVF_TEX7) ret += sizeof(float) * 2 * 7;
+	else if ((FVF & VKFVF_TEX6) == VKFVF_TEX6) ret += sizeof(float) * 2 * 6;
+	else if ((FVF & VKFVF_TEX5) == VKFVF_TEX5) ret += sizeof(float) * 2 * 5;
+	else if ((FVF & VKFVF_TEX4) == VKFVF_TEX4) ret += sizeof(float) * 2 * 4;
+	else if ((FVF & VKFVF_TEX3) == VKFVF_TEX3) ret += sizeof(float) * 2 * 3;
+	else if ((FVF & VKFVF_TEX2) == VKFVF_TEX2) ret += sizeof(float) * 2 * 2;
+	else if ((FVF & VKFVF_TEX1) == VKFVF_TEX1) ret += sizeof(float) * 2 * 1;
+
+	return ret;
 #endif
 }
 
@@ -74,8 +89,7 @@ FVFInfoClass::FVFInfoClass(unsigned FVF_, unsigned vertex_size)
 
 	if ((FVF&VKFVF_SPECULAR)==VKFVF_SPECULAR) texcoord_offset[0]+=sizeof(DWORD);	
 
-#ifdef TODO_VULKAN
-	for (unsigned int i=1; i<D3DDP_MAXTEXCOORD; i++)
+	for (unsigned int i=1; i<5/*D3DDP_MAXTEXCOORD*/; i++)
 	{
 		texcoord_offset[i]=texcoord_offset[i-1];
 
@@ -84,7 +98,6 @@ FVFInfoClass::FVFInfoClass(unsigned FVF_, unsigned vertex_size)
 		else if ((int(FVF)&VKFVF_TEXCOORDSIZE3(i-1))==VKFVF_TEXCOORDSIZE3(i-1)) texcoord_offset[i]+=3*sizeof(float);
 		else if ((int(FVF)&VKFVF_TEXCOORDSIZE4(i-1))==VKFVF_TEXCOORDSIZE4(i-1)) texcoord_offset[i]+=4*sizeof(float);
 	}
-#endif
 }
 
 void FVFInfoClass::Get_FVF_Name(StringClass& fvfname) const

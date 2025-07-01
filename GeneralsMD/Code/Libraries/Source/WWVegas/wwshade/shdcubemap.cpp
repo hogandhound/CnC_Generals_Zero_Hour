@@ -270,6 +270,14 @@ void Shd6CubeMapClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 	DX8Wrapper::Set_Texture(0, Texture);
 }
 
+void Shd6CubeMapClass::Draw(int cur_pass, RenderInfoClass& rinfo, unsigned short start_index,
+	unsigned short polygon_count,
+	unsigned short min_vertex_index,
+	unsigned short vertex_count,
+	bool isStrip)
+{
+}
+
 unsigned Shd6CubeMapClass::Get_Vertex_Stream_Count() const
 {
 	return 1;

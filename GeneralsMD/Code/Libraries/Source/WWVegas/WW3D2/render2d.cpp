@@ -611,7 +611,6 @@ void Render2DClass::Render(void)
 	Matrix4x4 view,proj;
 	Matrix4x4 identity(true);
 
-#ifdef TODO_VULKAN
 	DX8Wrapper::Get_Transform(VkTS::VIEW,view);
 	DX8Wrapper::Get_Transform(VkTS::PROJECTION,proj);
 
@@ -622,12 +621,12 @@ void Render2DClass::Render(void)
 	int width, height, bits;
 	bool windowed;
 	WW3D::Get_Device_Resolution( width, height, bits, windowed );
-	vp.X			= 0;
-	vp.Y			= 0;
-	vp.Width		= width;
-	vp.Height	= height;
-	vp.MinZ		= 0;
-	vp.MaxZ		= 1;
+	vp.x			= 0;
+	vp.y			= 0;
+	vp.width		= width;
+	vp.height	= height;
+	vp.minDepth		= 0;
+	vp.maxDepth		= 1;
 	DX8Wrapper::Set_Viewport(&vp);
 	DX8Wrapper::Set_Texture(0,Texture);
 
@@ -675,6 +674,7 @@ void Render2DClass::Render(void)
 	{	//special case added to draw grayscale non-alpha blended images.
 		DX8Wrapper::Set_Shader(ShaderClass::_PresetOpaqueShader);
 		DX8Wrapper::Apply_Render_State_Changes();	//force update of all regular W3D states.
+#ifdef TODO_VULKAN
 		if (DX8Wrapper::Get_Current_Caps()->Support_Dot3())
 		{	//Override W3D states with customizations for grayscale
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_TEXTUREFACTOR, 0x80A5CA8E);
@@ -694,6 +694,7 @@ void Render2DClass::Render(void)
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP, D3DTOP_MODULATE);
 		}
+#endif
 	}
 	else
 		DX8Wrapper::Set_Shader(Shader);
@@ -703,7 +704,6 @@ void Render2DClass::Render(void)
 	DX8Wrapper::Set_Transform(VkTS::PROJECTION,proj);
 	if (IsGrayScale)
 		ShaderClass::Invalidate();	//force both stages to be reset.
-#endif
 }
 
 

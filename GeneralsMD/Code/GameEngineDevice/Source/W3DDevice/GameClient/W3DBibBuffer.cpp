@@ -100,14 +100,13 @@ void W3DBibBuffer::loadBibsInVertexAndIndexBuffers(void)
 	if (m_numBibs == 0) {
 		return;
 	}
-#ifdef TODO_VULKAN
 
 	VertexFormatXYZDUV1* vb;
 	UnsignedShort* ib;
 
 	// Lock the buffers.
-	DX8IndexBufferClass::WriteLockClass lockIdxBuffer(m_indexBib, D3DLOCK_DISCARD);
-	DX8VertexBufferClass::WriteLockClass lockVtxBuffer(m_vertexBib, D3DLOCK_DISCARD);
+	DX8IndexBufferClass::WriteLockClass lockIdxBuffer(m_indexBib);
+	DX8VertexBufferClass::WriteLockClass lockVtxBuffer(m_vertexBib);
 	vb=(VertexFormatXYZDUV1*)lockVtxBuffer.Get_Vertex_Array();
 	ib = lockIdxBuffer.Get_Index_Array();
 	// Add to the index buffer & vertex buffer.
@@ -201,7 +200,6 @@ void W3DBibBuffer::loadBibsInVertexAndIndexBuffers(void)
 	} catch(...) {
 		IndexBufferExceptionFunc();
 	}
-#endif
 }
 
 //-----------------------------------------------------------------------------

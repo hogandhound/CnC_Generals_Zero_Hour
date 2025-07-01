@@ -221,7 +221,6 @@ void W3DDebugIcons::Render(RenderInfoClass & rinfo)
 
 	Matrix3D tm(Transform);
 	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
-#ifdef TODO_VULKAN
 
 	Int numRect = m_numDebugIcons;
 	static Real offset = 30;
@@ -313,7 +312,6 @@ void W3DDebugIcons::Render(RenderInfoClass & rinfo)
 		DX8Wrapper::Set_Vertex_Buffer(vb_access);
 		DX8Wrapper::Draw_Triangles(	0,curIndex/3, 0,	numVertex);	//draw a quad, 2 triangles, 4 verts
 	}
-#endif
 
 	if (anyVanished) {
 		compressIconsArray();

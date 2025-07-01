@@ -879,9 +879,7 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 
 	// Get the world and view matrices
 	Matrix4x4 view;
-#ifdef TODO_VULKAN
 	DX8Wrapper::Get_Transform(VkTS::VIEW,view);
-#endif
 
 	// Transform the point locations from worldspace to camera space if needed
 	// (i.e. if they are not already in camera space):
@@ -920,10 +918,8 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 	// so set world and view matrices to identity and render
 	
 	Matrix4x4 identity(true);
-#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(VkTS::WORLD,identity);	
 	DX8Wrapper::Set_Transform(VkTS::VIEW,identity);	
-#endif
 
 	DX8Wrapper::Set_Material(PointMaterial);
 	DX8Wrapper::Set_Shader(Shader);
@@ -994,9 +990,7 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 	} // loop while (current<vnum)							  
 
 	// restore the matrices
-#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(VkTS::VIEW,view);
-#endif
 }
 
 
@@ -1207,7 +1201,6 @@ void PointGroupClass::Update_Arrays(
 			{
 				Matrix4x4 view;
 				Vector4 result;
-#ifdef TODO_VULKAN
 				if (!Billboard) {
 					DX8Wrapper::Get_Transform(VkTS::VIEW,view);
 				}
@@ -1217,7 +1210,7 @@ void PointGroupClass::Update_Arrays(
 					if (!Billboard) {
 						// If we're not billboarding, then the coordinate we have is in screen space.
 						Matrix4x4 rotMat;
-						D3DXMatrixRotationZ(&(D3DXMATRIX&) rotMat, ((float)point_orientation[i] / 255.0f * 2 * D3DX_PI));
+						rotMat = DirectX::XMMatrixRotationZ((float)point_orientation[i] / 255.0f * 2 * DirectX::XM_PI);
 						
 						Vector4 orientedVecX = rotMat * GroundMultiplierX;
 						Vector4 orientedVecY = rotMat * GroundMultiplierY;
@@ -1272,7 +1265,6 @@ void PointGroupClass::Update_Arrays(
 					}
 					vert += 4;
 				}
-#endif
 			}
 			break;
 
@@ -1697,9 +1689,7 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 
 		// Get the world and view matrices
 		Matrix4x4 view;
-#ifdef TODO_VULKAN
 		DX8Wrapper::Get_Transform(VkTS::VIEW,view);
-#endif
 
 
 
@@ -1923,7 +1913,5 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 
 
 	// restore the matrices
-#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Transform(VkTS::VIEW,view);
-#endif
 }

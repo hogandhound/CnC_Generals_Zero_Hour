@@ -657,7 +657,7 @@ void TextureLoader::Request_Thumbnail(TextureBaseClass *tc)
 	CriticalSectionClass::LockClass lock(_ForegroundCriticalSection);
 
 	// Has a Direct3D texture already been loaded?
-	if (tc->Peek_D3D_Base_Texture()) {
+	if (tc->Peek_D3D_Base_Texture().image) {
 		return;
 	}
 

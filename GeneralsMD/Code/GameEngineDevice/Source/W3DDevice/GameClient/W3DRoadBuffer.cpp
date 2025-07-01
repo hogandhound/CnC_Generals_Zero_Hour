@@ -1261,9 +1261,7 @@ void W3DRoadBuffer::loadRoadsInVertexAndIndexBuffers()
 	for (corner = SEGMENT; corner < NUM_JOINS; corner = (TCorner)(corner+1)) {
 		for (curRoad=0; curRoad<m_numRoads; curRoad++) {
 			if (m_roads[curRoad].m_type == corner) {
-#ifdef TODO_VULKAN
 				loadRoadSegment(ib, vb, &m_roads[curRoad]);
-#endif
 			}
 		}		
 	}

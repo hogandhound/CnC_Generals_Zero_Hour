@@ -1996,13 +1996,13 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 				DX8Wrapper::Set_Shader(ShaderClass::_PresetOpaqueSolidShader);
 				devicePasses=1;	//one pass solid, next in wireframe.
 				DX8Wrapper::Apply_Render_State_Changes();
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 				DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_TFACTOR );
 				DX8Wrapper::Set_DX8_Render_State(D3DRS_TEXTUREFACTOR,0xff808080);
 #endif
 				doMultiPassWireFrame=TRUE;
 				renderTerrainPass(&rinfo.Camera);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 				DX8Wrapper::Set_DX8_Render_State(D3DRS_TEXTUREFACTOR,0xff008000);
 #endif
 				return;
@@ -2044,16 +2044,13 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
  		//Find number of passes required to render current shader
  		devicePasses=W3DShaderManager::getShaderPasses(st);
  
- 		if (m_disableTextures)
- 			devicePasses=1;	//force to 1 lighting-only pass
- 
  		//Specify all textures that this shader may need.
  		W3DShaderManager::setTexture(0,m_stageZeroTexture);
  		W3DShaderManager::setTexture(1,m_stageZeroTexture);
  		W3DShaderManager::setTexture(2,m_stageTwoTexture);	//cloud
  		W3DShaderManager::setTexture(3,m_stageThreeTexture);//noise
 		//Disable writes to destination alpha channel (if there is one)
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		if (DX8Wrapper::getBackBufferFormat() == WW3D_FORMAT_A8R8G8B8)
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
 #endif
@@ -2065,12 +2062,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 #endif
 		if (!doMultiPassWireFrame)	//multi-pass wireframe doesn't use regular shaders.
 		{
- 			if (m_disableTextures ) {
- 				DX8Wrapper::Set_Shader(ShaderClass::_PresetOpaque2DShader);
- 				DX8Wrapper::Set_Texture(0,NULL);
-   			} else {
- 				W3DShaderManager::setShader(st, pass);
-			}
+			W3DShaderManager::setShader(st, pass);
 		}
 
 		for (j=0; j<m_numVBTilesY; j++)
@@ -2104,6 +2096,35 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 #endif				
 				if (Is_Hidden() == 0) {
 					DX8Wrapper::Draw_Triangles(	0,numPolys, 0,	numVertex);
+					std::vector<VkDescriptorSet> sets;
+					if (st == W3DShaderManager::ST_TERRAIN_BASE)
+					{
+						WWVK_UpdateTerrainDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets,
+							&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
+							DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+						WWVK_DrawTerrain(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets,
+							m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, VK_INDEX_TYPE_UINT16,
+							m_vertexBufferTiles[j * m_numVBTilesX + i]->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm);
+					}
+					else if (st == W3DShaderManager::ST_TERRAIN_BASE_NOISE1 || W3DShaderManager::ST_TERRAIN_BASE_NOISE2)
+					{
+						WWVK_UpdateTerrainNoiseDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets,
+							&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
+							&DX8Wrapper::Get_Texture(2)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+						WWVK_DrawTerrainNoise(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets,
+							m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, VK_INDEX_TYPE_UINT16,
+							m_vertexBufferTiles[j * m_numVBTilesX + i]->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm);
+					}
+					else if (st == W3DShaderManager::ST_TERRAIN_BASE_NOISE12)
+					{
+						WWVK_UpdateTerrainNoise2DescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets,
+							&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
+							&DX8Wrapper::Get_Texture(2)->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(3)->Peek_D3D_Texture(),
+							DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+						WWVK_DrawTerrainNoise2(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets,
+							m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, VK_INDEX_TYPE_UINT16,
+							m_vertexBufferTiles[j * m_numVBTilesX + i]->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm);
+					}
 				}
 
 			}
@@ -2145,7 +2166,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 				RTS3DScene *pMyScene = (RTS3DScene *)Scene;
 				RefRenderObjListIterator pDynamicLightsIterator(pMyScene->getDynamicLights());
 				m_roadBuffer->drawRoads(&rinfo.Camera, doCloud?m_stageTwoTexture:NULL, TheGlobalData->m_useLightMap?m_stageThreeTexture:NULL,
-					m_disableTextures,xCoordMin-m_map->getBorderSizeInline(), xCoordMax-m_map->getBorderSizeInline(), yCoordMin-m_map->getBorderSizeInline(), yCoordMax-m_map->getBorderSizeInline(), &pDynamicLightsIterator);
+					false,xCoordMin-m_map->getBorderSizeInline(), xCoordMax-m_map->getBorderSizeInline(), yCoordMin-m_map->getBorderSizeInline(), yCoordMax-m_map->getBorderSizeInline(), &pDynamicLightsIterator);
 			}
 		}
 	#endif
@@ -2168,7 +2189,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 		ShaderClass::Invalidate();
 		DX8Wrapper::Apply_Render_State_Changes();
 
-		m_bridgeBuffer->drawBridges(&rinfo.Camera, m_disableTextures, doCloud?m_stageTwoTexture:NULL);
+		m_bridgeBuffer->drawBridges(&rinfo.Camera, false, doCloud?m_stageTwoTexture:NULL);
 
 		if (TheTerrainTracksRenderObjClassSystem)
 			TheTerrainTracksRenderObjClassSystem->flush();
@@ -2184,7 +2205,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 		DX8Wrapper::Apply_Render_State_Changes();
 	}
 	else
-			m_bridgeBuffer->drawBridges(&rinfo.Camera, m_disableTextures, m_stageTwoTexture);
+			m_bridgeBuffer->drawBridges(&rinfo.Camera, false, m_stageTwoTexture);
 
   if ( m_waypointBuffer ) 
 	  m_waypointBuffer->drawWaypoints(rinfo);
@@ -2207,7 +2228,6 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 {
 	DX8Wrapper::Set_Transform(VkTS::WORLD,Matrix3D(1));
 
-#ifdef TODO_VULKAN
 	//Apply the shader and material
 	
 	DX8Wrapper::Set_Index_Buffer(m_indexBuffer,0);
@@ -2245,7 +2265,6 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 				DX8Wrapper::Draw_Triangles(	0,numPolys, 0,	numVertex);
 			}
 		}
-#endif
 }
 
 //=============================================================================

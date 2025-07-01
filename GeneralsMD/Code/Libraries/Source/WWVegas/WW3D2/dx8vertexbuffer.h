@@ -48,7 +48,8 @@
 #include "wwdebug.h"
 #include "refcount.h"
 #include "dx8fvf.h"
-
+#include <vector>
+#include <VkRenderTarget.h>
 
 
 const unsigned dynamic_fvf_type = VKFVF_XYZ|VKFVF_NORMAL|VKFVF_TEX2|VKFVF_DIFFUSE;
@@ -92,7 +93,8 @@ protected:
 public:
 
 	inline const FVFInfoClass& FVF_Info() const { return *fvf_info; }
-	inline unsigned short Get_Vertex_Count() const { return VertexCount; }
+	inline unsigned short Get_Vertex_Count() const { return (uint16_t)Vertices.size(); }
+	inline const unsigned char* Get_Vertices() const { return (unsigned char*)Vertices.data(); }
 	inline unsigned Type() const { return type; }
 
 	void Add_Engine_Ref() const;
@@ -118,8 +120,8 @@ public:
 	static unsigned Get_Total_Allocated_Memory();
 
 protected:
+	std::vector<VertexFormatXYZNDUV2> Vertices;
 	unsigned							type;
-	unsigned short					VertexCount;
 	mutable int						engine_refs;
 	FVFInfoClass*					fvf_info;
 };
@@ -225,7 +227,7 @@ public:
 	DX8VertexBufferClass(const Vector3* vertices, const Vector4* diffuse, const Vector2* tex_coords, unsigned short VertexCount,UsageType usage=USAGE_DEFAULT);
 	DX8VertexBufferClass(const Vector3* vertices, const Vector2* tex_coords, unsigned short VertexCount,UsageType usage=USAGE_DEFAULT);
 
-	IDirect3DVertexBuffer9* Get_DX8_Vertex_Buffer() { return VertexBuffer; }
+	const VK::Buffer& Get_DX8_Vertex_Buffer() { return VertexBuffer; }
 
 	void Copy(const Vector3* loc, unsigned first_vertex, unsigned count);
 	void Copy(const Vector3* loc, const Vector2* uv, unsigned first_vertex, unsigned count);
@@ -235,7 +237,7 @@ public:
 	void Copy(const Vector3* loc, const Vector2* uv, const Vector4* diffuse, unsigned first_vertex, unsigned count);
 
 protected:
-	IDirect3DVertexBuffer9*		VertexBuffer;
+	VK::Buffer VertexBuffer;
 
 	void Create_Vertex_Buffer(UsageType usage);
 };
@@ -254,8 +256,6 @@ class SortingVertexBufferClass : public VertexBufferClass
 	friend VertexBufferClass::WriteLockClass;
 	friend VertexBufferClass::AppendLockClass;
 	friend DynamicVBAccessClass::WriteLockClass;
-
-	VertexFormatXYZNDUV2* VertexBuffer;
 
 protected:
 	~SortingVertexBufferClass();

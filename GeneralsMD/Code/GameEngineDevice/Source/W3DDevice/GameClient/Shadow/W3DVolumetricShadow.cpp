@@ -110,10 +110,6 @@ struct SHADOW_STATIC_VOLUME_VERTEX	//vertex structure passed to D3D
 	#define SHADOW_DYNAMIC_VOLUME_FVF	VKFVF_XYZ
 #endif
 
-#ifdef TODO_VULKAN
-LPDIRECT3DVERTEXBUFFER9 shadowVertexBufferD3D=NULL;		///<D3D vertex buffer
-LPDIRECT3DINDEXBUFFER9	shadowIndexBufferD3D=NULL;	///<D3D index buffer
-#endif
 VK::Buffer shadowVertexBufferD3D = {};		///<D3D vertex buffer
 VK::Buffer shadowIndexBufferD3D = {};	///<D3D index buffer
 int nShadowVertsInBuf=0;	//model vetices in vertex buffer
@@ -132,9 +128,7 @@ static Real beX;
 static Real beY;
 static Real beZ;
 
-#ifdef TODO_VULKAN
-static LPDIRECT3DVERTEXBUFFER9 lastActiveVertexBuffer=NULL;
-#endif
+static VK::Buffer lastActiveVertexBuffer = {};
 
 /** A simple structure to hold random geometry (vertices, polygons, etc.).  We'll use this
 * to store shadow volumes. */
@@ -1379,15 +1373,16 @@ void W3DVolumetricShadow::RenderVolume(Int meshIndex, Int lightIndex)
 
 void W3DVolumetricShadow::RenderMeshVolume(Int meshIndex, Int lightIndex, const Matrix3D *meshXform)
 {
-#ifdef TODO_VULKAN
 	Geometry *geometry;
 	Int numVerts, numPolys, numIndex;
 
 	//Get D3D Device used by W3D for quicker access.
+#ifdef TODO_VULKAN
 	LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 	if (!m_pDev)
 		return;
+#endif
 
 	geometry = m_shadowVolume[lightIndex][ meshIndex ];
 
@@ -1409,16 +1404,20 @@ void W3DVolumetricShadow::RenderMeshVolume(Int meshIndex, Int lightIndex, const 
 	Matrix4x4 mWorld(*meshXform);
 
 	///@todo: W3D always does transpose on all of matrix sets.  Slow???  Better to hack view matrix.
+#ifdef TODO_VULKAN
 	m_pDev->SetTransform(VkTS::WORLD,(_DirectX::XMMATRIX *)&mWorld.Transpose());
+#endif
 	
 	W3DBufferManager::W3DVertexBufferSlot *vbSlot=m_shadowVolumeVB[lightIndex][ meshIndex ];
 	if (!vbSlot)
 		return;
+#ifdef TODO_VULKAN
 	if (vbSlot->m_VB->m_DX8VertexBuffer->Get_DX8_Vertex_Buffer() != lastActiveVertexBuffer)
 	{	lastActiveVertexBuffer=vbSlot->m_VB->m_DX8VertexBuffer->Get_DX8_Vertex_Buffer();
 		m_pDev->SetStreamSource(0,lastActiveVertexBuffer, 0,
 			vbSlot->m_VB->m_DX8VertexBuffer->FVF_Info().Get_FVF_Size());	//12 bytes per vertex.
 	}
+#endif
 
 	DEBUG_ASSERTCRASH(vbSlot->m_size >= numVerts,("Overflowing Shadow Vertex Buffer Slot"));
 
@@ -1428,30 +1427,33 @@ void W3DVolumetricShadow::RenderMeshVolume(Int meshIndex, Int lightIndex, const 
 
 	DEBUG_ASSERTCRASH(ibSlot->m_size >= numIndex,("Overflowing Shadow Index Buffer Slot"));
 
+#ifdef TODO_VULKAN
 	m_pDev->SetIndices(ibSlot->m_IB->m_DX8IndexBuffer->Get_DX8_Index_Buffer());
+#endif
 
 	if (DX8Wrapper::_Is_Triangle_Draw_Enabled())
 	{
 		Debug_Statistics::Record_DX8_Polys_And_Vertices(numPolys,numVerts,ShaderClass::_PresetOpaqueShader);
+#ifdef TODO_VULKAN
 		m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, vbSlot->m_start,0,numVerts,ibSlot->m_start,numPolys);
-	}
 #endif
+	}
 }
 
 void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex, const Matrix3D *meshXform)
 {
-#ifdef TODO_VULKAN
 	Geometry *geometry;
 	Int numVerts, numPolys, numIndex;
-	SHADOW_DYNAMIC_VOLUME_VERTEX* pvVertices;
-	UnsignedShort *pvIndices;
+	std::vector<SHADOW_DYNAMIC_VOLUME_VERTEX> pvVertices;
+	std::vector<UnsignedShort> pvIndices;
 
 	//Get D3D Device used by W3D for quicker access.
+#ifdef TODO_VULKAN
 	LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 	if (!m_pDev)
 		return;
-
+#endif
 
 	geometry = m_shadowVolume[lightIndex][ meshIndex ];
 
@@ -1470,7 +1472,7 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 	if( numVerts == 0 || numPolys == 0 )
 		return;
 
-
+#ifdef TODO_VULKAN
 	if (nShadowVertsInBuf > (SHADOW_VERTEX_SIZE-numVerts))	//check if room for model verts
 	{	//flush the buffer by drawing the contents and re-locking again
 		if (shadowVertexBufferD3D->Lock(0,numVerts*sizeof(SHADOW_DYNAMIC_VOLUME_VERTEX),(void**)&pvVertices,D3DLOCK_DISCARD) != D3D_OK)
@@ -1482,10 +1484,11 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 	{	if (shadowVertexBufferD3D->Lock(nShadowVertsInBuf*sizeof(SHADOW_DYNAMIC_VOLUME_VERTEX),numVerts*sizeof(SHADOW_DYNAMIC_VOLUME_VERTEX), (void**)&pvVertices,D3DLOCK_NOOVERWRITE) != D3D_OK)
 			return;
 	}
+#endif
 #ifdef SV_DEBUG
 	srand(0x1345465);
 #endif
-	if(pvVertices)
+	pvVertices.resize(numVerts);
 	{
 #ifdef SV_DEBUG
 		for (Int i=0; i<numVerts; i++)
@@ -1495,10 +1498,14 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 			pvVertices++;
 		}
 #else
-		memcpy(pvVertices,geometry->GetVertex(0),numVerts*sizeof(SHADOW_DYNAMIC_VOLUME_VERTEX));
+		memcpy(pvVertices.data(), geometry->GetVertex(0), numVerts * sizeof(SHADOW_DYNAMIC_VOLUME_VERTEX));
 #endif
 	}
 
+	DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(shadowVertexBufferD3D);
+	VkBufferTools::CreateVertexBuffer(&DX8Wrapper::_GetRenderTarget(), numVerts * sizeof(SHADOW_DYNAMIC_VOLUME_VERTEX),
+		pvVertices.data(), shadowVertexBufferD3D);
+#ifdef TODO_VULKAN
 	shadowVertexBufferD3D->Unlock();
 
 	if (nShadowIndicesInBuf > (SHADOW_INDEX_SIZE-numIndex))	//check if room for model verts
@@ -1512,18 +1519,24 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 	{	if (shadowIndexBufferD3D->Lock(nShadowIndicesInBuf*sizeof(short),numIndex*sizeof(short), (void**)&pvIndices,D3DLOCK_NOOVERWRITE) != D3D_OK)
 			return;
 	}
+#endif
 
 
 	try {
-	if(pvIndices)
+		pvIndices.resize(numPolys * 3 * sizeof(short));
 	{
-		memcpy(pvIndices,geometry->GetPolygonIndex(0,(short *)pvIndices),numPolys*3*sizeof(short));
+		memcpy(pvIndices.data(), geometry->GetPolygonIndex(0, (short*)pvIndices.data()), numPolys * 3 * sizeof(short));
 	}
 	IndexBufferExceptionFunc();
 	} catch(...) {
 		IndexBufferExceptionFunc();
 	}
+	DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(shadowIndexBufferD3D);
+	VkBufferTools::CreateIndexBuffer(&DX8Wrapper::_GetRenderTarget(), numIndex * sizeof(uint16_t),
+		pvIndices.data(), shadowIndexBufferD3D);
 
+
+#ifdef TODO_VULKAN
 	shadowIndexBufferD3D->Unlock();
 
 	m_pDev->SetIndices(shadowIndexBufferD3D);
@@ -1536,11 +1549,14 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 	{	m_pDev->SetStreamSource(0,shadowVertexBufferD3D, 0, sizeof(SHADOW_DYNAMIC_VOLUME_VERTEX));
 		lastActiveVertexBuffer = shadowVertexBufferD3D;
 	}
+#endif
 
 	if (DX8Wrapper::_Is_Triangle_Draw_Enabled())
 	{
 		Debug_Statistics::Record_DX8_Polys_And_Vertices(numPolys,numVerts,ShaderClass::_PresetOpaqueShader);
+#ifdef TODO_VULKAN
 		m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, nShadowStartBatchVertex,0,numVerts,nShadowStartBatchIndex,numPolys);
+#endif
 	}
 
 	nShadowVertsInBuf += numVerts;
@@ -1548,7 +1564,6 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 
 	nShadowIndicesInBuf += numIndex;
 	nShadowStartBatchIndex=nShadowIndicesInBuf;
-#endif
 }
 
 /** Debug function to draw bounding boxes around shadow volumes */

@@ -46,7 +46,7 @@ W3DSnowManager::W3DSnowManager(void)
 {
 	m_indexBuffer=NULL;
 	m_snowTexture=NULL;
-	m_VertexBufferD3D=NULL;
+	m_VertexBufferD3D = {};
 }
 
 W3DSnowManager::~W3DSnowManager()
@@ -65,11 +65,8 @@ void W3DSnowManager::ReleaseResources(void)
 {
 	REF_PTR_RELEASE(m_snowTexture);
 
-#ifdef TODO_VULKAN
-	if (m_VertexBufferD3D)
-		m_VertexBufferD3D->Release();
-	m_VertexBufferD3D=NULL;
-#endif
+	DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(m_VertexBufferD3D);
+	m_VertexBufferD3D = {};
 
 	REF_PTR_RELEASE(m_indexBuffer);
 }
@@ -273,12 +270,14 @@ void W3DSnowManager::renderSubBox(RenderInfoClass &rinfo, Int originX, Int origi
 		if((m_dwBase + batchSize) > m_dwDiscard)
 			m_dwBase = 0;
 
-#ifdef TODO_VULKAN
-		POINTVERTEX* verts;
+		std::vector<POINTVERTEX> verts;
 
+#ifdef TODO_VULKAN
 		if(m_VertexBufferD3D->Lock(m_dwBase * sizeof(POINTVERTEX), batchSize * sizeof(POINTVERTEX),
 			(void **) &verts, m_dwBase ? D3DLOCK_NOOVERWRITE : D3DLOCK_DISCARD) != D3D_OK )
 			return;	//couldn't lock buffer.
+#else
+		verts.resize(batchSize);
 #endif
 
 		Int numberInBatch=0;
@@ -287,7 +286,6 @@ void W3DSnowManager::renderSubBox(RenderInfoClass &rinfo, Int originX, Int origi
 		{
 			for (Int x=cubeOriginXRemainder; x<cubeDimX; x++)
 			{
-#ifdef TODO_VULKAN
 				if (numberInBatch >= batchSize)
 				{	cubeOriginXRemainder = x;
 					goto flush_particles;
@@ -309,9 +307,7 @@ void W3DSnowManager::renderSubBox(RenderInfoClass &rinfo, Int originX, Int origi
 				snowCenter.X += m_amplitude * WWMath::Fast_Sin( h0 * m_frequencyScaleX + (Real)x); 
 				snowCenter.Y += m_amplitude * WWMath::Fast_Sin( h0 * m_frequencyScaleY + (Real)y); 
 
-				*(Vector3 *)verts=snowCenter;
-				verts++;
-#endif
+				*(Vector3 *)&verts[numberInBatch] = snowCenter;
 
 				numberInBatch++;
 			}
@@ -319,18 +315,24 @@ void W3DSnowManager::renderSubBox(RenderInfoClass &rinfo, Int originX, Int origi
 			cubeOriginXRemainder = originX;	//reset to normal amount
 		}
 
+	flush_particles:
 #ifdef TODO_VULKAN
-flush_particles:
 		m_VertexBufferD3D->Unlock();
+#endif
+
+		DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(m_VertexBufferD3D);
+		VkBufferTools::CreateVertexBuffer(&DX8Wrapper::_GetRenderTarget(), numberInBatch * sizeof(POINTVERTEX),
+			verts.data(), m_VertexBufferD3D);
 		//Render any particles that may be queued up.
 		if (numberInBatch)
 		{
 			Debug_Statistics::Record_DX8_Polys_And_Vertices(numberInBatch*2,numberInBatch*4,ShaderClass::_PresetOpaqueShader);
+#ifdef TODO_VULKAN
 			DX8Wrapper::_Get_D3D_Device8()->DrawPrimitive( D3DPT_POINTLIST, m_dwBase, numberInBatch);
+#endif
 			totalPart -= numberInBatch;
 			m_dwBase += numberInBatch;
 		}
-#endif
 
 	}
 }
@@ -416,7 +418,7 @@ void W3DSnowManager::render(RenderInfoClass &rinfo)
 	REF_PTR_RELEASE(vmat);
 
 	//make sure we have all the resources we need
-	if (usePointSprites && !m_VertexBufferD3D)
+	if (usePointSprites && !m_VertexBufferD3D.buffer)
 		ReAcquireResources();
 
 	if (!usePointSprites && !m_indexBuffer)

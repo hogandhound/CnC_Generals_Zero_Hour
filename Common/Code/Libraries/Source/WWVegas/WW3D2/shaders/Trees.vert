@@ -40,7 +40,7 @@ layout(set = 0, binding = 0) uniform Projection{
 layout(set = 0, binding = 1) uniform ViewMatrix{
 	mat4 m;
 } view;
-layout(set = 0, binding = 2) uniform Trees{
+layout(set = 0, binding = 10) uniform Trees{
 	vec4 c1;
 	vec4 tilt[24];
 	vec4 shroudOffset;
@@ -52,14 +52,17 @@ layout(location = 1) in vec3 norm;
 layout(location = 2) in vec2 uv;
 layout(location = 3) in uint diffuse;
 
-layout(location = 1) out vec2 fragUv;
-layout(location = 2) out vec4 fragDiffuse;
-layout(location = 3) out vec4 fragOffset;
+layout(location = 0) out vec3 fragNorm;
+layout(location = 1) out vec4 fragDiffuse;
+layout(location = 2) out vec3 viewDir;
+layout(location = 3) out vec2 fragUv1;
+layout(location = 4) out vec2 fragUv2;
 
 void main() {
     // Pass the tex coord straight through to the fragment shader
-    fragUv = uv;
+    fragUv1 = uv;
 	vec4 localDiffuse = unpackUnorm4x8(diffuse);
+	viewDir = (view.m * vec4(0,0,1,1)).xyz;
 	
 	vec4 r2 = vec4(vert,0.0) - vec4(0,0,norm.z,0);
 	int offset = int(norm.x);
@@ -69,7 +72,7 @@ void main() {
 	
 	r2 = vec4(norm.yyy,1.0);
 	fragDiffuse = localDiffuse * r2;
-	fragOffset = (vec4(vert,0) + tree.shroudOffset) * tree.shroudScale;
+	fragUv2 = ((vec4(vert,0) + tree.shroudOffset) * tree.shroudScale).xy;
 }
 
 #if 0

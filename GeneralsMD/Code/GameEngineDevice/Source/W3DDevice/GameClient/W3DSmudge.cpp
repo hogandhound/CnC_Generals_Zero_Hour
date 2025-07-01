@@ -212,8 +212,8 @@ Bool W3DSmudgeManager::testHardwareSupport(void)
 	if (m_hardwareSupportStatus == SMUDGE_SUPPORT_UNKNOWN)
 	{	//we have not done the test yet.
 
-		IDirect3DTexture9 *backTexture=W3DShaderManager::getRenderTexture();
-		if (!backTexture)
+		VK::Texture backTexture=W3DShaderManager::getRenderTexture();
+		if (!backTexture.image)
 		{	//do trivial test first to see if render target exists.
 			m_hardwareSupportStatus = SMUDGE_SUPPORT_NO;
 			return FALSE;

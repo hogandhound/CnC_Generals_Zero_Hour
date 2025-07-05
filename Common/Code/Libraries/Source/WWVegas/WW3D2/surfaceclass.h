@@ -45,6 +45,7 @@
 
 #include "ww3dformat.h"
 #include "refcount.h"
+#include <WWVKStructs.h>
 
 struct IDirect3DSurface9;
 class Vector2i;
@@ -76,7 +77,9 @@ class SurfaceClass : public W3DMPO, public RefCountClass
 		SurfaceClass(const char *filename);
 
 		// Create the surface from a D3D pointer
+#ifdef TODO_VULKAN
 		SurfaceClass(IDirect3DSurface9 *d3d_surface);
+#endif
 
 		~SurfaceClass(void);
 
@@ -117,14 +120,14 @@ class SurfaceClass : public W3DMPO, public RefCountClass
 		bool Is_Transparent_Column(unsigned int column);		
 
 		// makes a copy of the surface into a byte array
-		unsigned char *CreateCopy(int *width,int *height,int*size,bool flip=false);
+		std::vector<uint8_t> CreateCopy(int *width,int *height,bool flip=false);
 
 			// For use by TextureClass:
-		IDirect3DSurface9 *Peek_D3D_Surface(void) {
+		std::vector<uint8_t>& Peek_D3D_Surface(void) {
 #ifdef TODO_VULKAN
 			return D3DSurface; 
 #else
-			return 0;
+			return buffer;
 #endif
 		}
 
@@ -152,6 +155,7 @@ class SurfaceClass : public W3DMPO, public RefCountClass
 #ifdef TODO_VULKAN
 		IDirect3DSurface9 *D3DSurface;
 #endif
+		std::vector<uint8_t> buffer;
 
 		WW3DFormat SurfaceFormat;
 	friend class TextureClass;	

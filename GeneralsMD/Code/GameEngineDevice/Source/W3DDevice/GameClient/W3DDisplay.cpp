@@ -1843,7 +1843,7 @@ AGAIN:
 		}
 
 		// update all views of the world - recomputes data which will affect drawing
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		if (DX8Wrapper::_Get_D3D_Device8() && (DX8Wrapper::_Get_D3D_Device8()->TestCooperativeLevel()) == D3D_OK)
 #else
 		if (DX8Wrapper::_GetRenderTarget().currentCmd)

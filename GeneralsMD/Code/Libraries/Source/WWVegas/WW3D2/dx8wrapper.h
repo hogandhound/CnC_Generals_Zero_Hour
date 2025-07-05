@@ -230,6 +230,9 @@ struct RenderStateStruct
 	RenderStateStruct& operator= (const RenderStateStruct& src);
 };
 
+#define WWVKRENDER DX8Wrapper::_GetRenderTarget()
+#define WWVKPIPES DX8Wrapper::_GetPipelineCol()
+
 /**
 ** DX8Wrapper
 **
@@ -343,6 +346,7 @@ public:
 
 	static VK::Buffer UboProj();
 	static VK::Buffer UboView();
+	static VK::Buffer UboIdent();
 
 	// Note that *_DX8_Transform() functions take the matrix in DX8 format - transposed from Westwood convention.
 
@@ -445,8 +449,7 @@ public:
 		unsigned int width,
 		unsigned int height,
 		WW3DFormat format,
-		MipCountType mip_level_count,
-		bool rendertarget=false
+		MipCountType mip_level_count
 	);
 #ifdef TODO_VULKAN
 	static IDirect3DTexture9 * _Create_DX8_Texture(const char *filename, MipCountType mip_level_count);
@@ -465,6 +468,8 @@ public:
 			CONST POINT* pDestPointsArray
 	);
 #endif
+	static VK::Surface _Create_DX8_Surface(unsigned int width, unsigned int height, WW3DFormat format);
+	static VK::Surface _Create_DX8_Surface(const char* filename);
 
 	static void _Update_Texture(TextureClass *system, TextureClass *video);
 	static void Flush_DX8_Resource_Manager(unsigned int bytes=0);
@@ -1475,6 +1480,11 @@ WWINLINE VK::Buffer DX8Wrapper::UboView()
 		VkBufferTools::CreateUniformBuffer(&target, sizeof(float) * 16, &render_state.view, DX8TransformsUbos[(int)VkTS::VIEW]);
 	}
 	return Is_View_Identity() ? IdentityUbo : DX8TransformsUbos[(int)VkTS::VIEW];
+}
+
+WWINLINE VK::Buffer DX8Wrapper::UboIdent()
+{
+	return IdentityUbo;
 }
 
 WWINLINE void DX8Wrapper::Get_Transform(VkTransformState transform, Matrix4x4& m)

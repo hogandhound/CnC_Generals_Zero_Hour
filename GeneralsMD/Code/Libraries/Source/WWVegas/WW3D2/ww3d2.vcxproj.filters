@@ -734,6 +734,9 @@
     <ClInclude Include="..\..\..\..\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\VkTexture.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="WWVKStructs.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="RequiredAssets\AddProjectorGradient.tga">

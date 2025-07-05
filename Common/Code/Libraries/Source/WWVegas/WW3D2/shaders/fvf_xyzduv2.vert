@@ -12,9 +12,9 @@ layout(set = 0, binding = 1) uniform ViewMatrix{
 } view;
 
 layout(location = 0) in vec3 vert;
-layout(location = 1) in vec2 uv0;
-layout(location = 2) in vec2 uv1;
-layout(location = 3) in uint diffuse;
+layout(location = 1) in uint diffuse;
+layout(location = 2) in vec2 uv0;
+layout(location = 3) in vec2 uv1;
 
 layout(location = 0) out vec2 fragUv0;
 layout(location = 1) out vec2 fragUv1;

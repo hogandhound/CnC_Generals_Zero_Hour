@@ -84,6 +84,9 @@ namespace VK
         VkImageView imageView;
         VmaAllocation allocation;
         VkSampler sampler;
+        VkFormat format;
+        uint16_t width, height;
+        uint8_t mips;
     };
     enum TexFlags
     {

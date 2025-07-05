@@ -63,6 +63,7 @@
 #include "W3DDevice/GameClient/W3DPoly.h"
 #include "W3DDevice/GameClient/W3DScene.h"
 #include "W3DDevice/GameClient/W3DCustomScene.h"
+#include <VkTexture.h>
 
 
 #ifdef _INTERNAL
@@ -434,12 +435,10 @@ RenderObjClass *	 WaterRenderObjClass::Clone(void) const
 /** Copies raw bits from pBumpSrc (a regular grayscale texture) into a D3D
 	*   bump-map format. */
 //-------------------------------------------------------------------------------------------------
-#ifdef TODO_VULKAN
-HRESULT WaterRenderObjClass::initBumpMap(LPDIRECT3DTEXTURE9 *pTex, TextureClass *pBumpSource)
+HRESULT WaterRenderObjClass::initBumpMap(VK::Texture *pTex, TextureClass *pBumpSource)
 {
     SurfaceClass::SurfaceDescription    d3dsd;
 	SurfaceClass * surf;
-    D3DLOCKED_RECT     d3dlr;
 	DWORD dwSrcPitch;
 	BYTE* pSrc;
 	Int numLevels;
@@ -455,24 +454,22 @@ HRESULT WaterRenderObjClass::initBumpMap(LPDIRECT3DTEXTURE9 *pTex, TextureClass 
 		return S_OK;
 	}
 	
-	if (pBumpSource->Peek_D3D_Texture())
-	{
-		numLevels=pBumpSource->Peek_D3D_Texture()->GetLevelCount();
-	}
-	else
+	if (pBumpSource->Peek_D3D_Texture().image == 0)
 		return S_OK;
 
-	pTex[0]=DX8Wrapper::_Create_DX8_Texture(d3dsd.Width,d3dsd.Height,WW3D_FORMAT_U8V8,MIP_LEVELS_ALL,D3DPOOL_MANAGED,false);
+	//pTex[0]=DX8Wrapper::_Create_DX8_Texture(d3dsd.Width,d3dsd.Height,WW3D_FORMAT_U8V8,MIP_LEVELS_ALL,false);
+	std::vector<uint8_t> bump;
+	bump.resize(d3dsd.Width * d3dsd.Height * VK::SizeOfFormat(VK_FORMAT_R8G8_UINT));
 
-	for (Int level=0; level < numLevels; level++)
 	{
-		surf=pBumpSource->Get_Surface_Level(level);
+		surf=pBumpSource->Get_Surface_Level(0);
 		surf->Get_Description(d3dsd);
 		pSrc=(unsigned char *)surf->Lock((int *)&dwSrcPitch);
 
-		pTex[0]->LockRect( level, &d3dlr, 0, 0 );
-		DWORD dwDstPitch = (DWORD)d3dlr.Pitch;
-		BYTE* pDst       = (BYTE*)d3dlr.pBits;
+		//std::vector<uint8_t>& pBumpSource
+		//pTex[0]->LockRect( level, &d3dlr, 0, 0 );
+		//DWORD dwDstPitch = (DWORD)d3dlr.Pitch;
+		BYTE* pDst       = (BYTE*)bump.data();
 
 		for( DWORD y=0; y<d3dsd.Height; y++ )
 		{
@@ -505,27 +502,15 @@ HRESULT WaterRenderObjClass::initBumpMap(LPDIRECT3DTEXTURE9 *pTex, TextureClass 
 				}
 
 				// The luminance bump value (land masses are less shiny)
+#ifdef INFO_VULKAN
 				WORD uL = ( v00>1 ) ? 63 : 127;
+#endif
 
-				switch( D3DFMT_V8U8)//m_BumpMapFormat )
+				switch(VK_FORMAT_R8G8_UINT)//m_BumpMapFormat )
 				{
-					case D3DFMT_V8U8:
+					case VK_FORMAT_R8G8_UINT:
 						*pDstT++ = (BYTE)iDu;
 						*pDstT++ = (BYTE)iDv;
-						break;
-
-					case D3DFMT_L6V5U5:
-						*(WORD*)pDstT  = (WORD)( ( (iDu>>3) & 0x1f ) <<  0 );
-						*(WORD*)pDstT |= (WORD)( ( (iDv>>3) & 0x1f ) <<  5 );
-						*(WORD*)pDstT |= (WORD)( ( ( uL>>2) & 0x3f ) << 10 );
-						pDstT += 2;
-						break;
-
-					case D3DFMT_X8L8V8U8:
-						*pDstT++ = (BYTE)iDu;
-						*pDstT++ = (BYTE)iDv;
-						*pDstT++ = (BYTE)uL;
-						*pDstT++ = (BYTE)0L;
 						break;
 				}
 
@@ -534,12 +519,13 @@ HRESULT WaterRenderObjClass::initBumpMap(LPDIRECT3DTEXTURE9 *pTex, TextureClass 
 			}
 
 			// Move to the next line
-			pSrc += dwSrcPitch;    pDst += dwDstPitch;
+			pSrc += dwSrcPitch;    pDst += d3dsd.Width * VK::SizeOfFormat(VK_FORMAT_R8G8_UINT);
 		}
 
-		pTex[0]->UnlockRect(level);
-		surf->Unlock();
-		REF_PTR_RELEASE (surf);
+		int smallerSide = d3dsd.Width < d3dsd.Height ? d3dsd.Width : d3dsd.Height;
+		int mips = 0;
+		for (; smallerSide > 0; mips++, smallerSide = smallerSide >> 1)
+		VK::CreateTextureMips(&WWVKRENDER, pTex[0], mips, d3dsd.Width, d3dsd.Height, bump.data(), 0, VK_FORMAT_R8G8_UINT);
 	}//for each level
 
 #else
@@ -626,7 +612,6 @@ HRESULT WaterRenderObjClass::initBumpMap(LPDIRECT3DTEXTURE9 *pTex, TextureClass 
 
     return S_OK;
 }
-#endif
 
 //-------------------------------------------------------------------------------------------------
 /** Create and fill a D3D vertex buffer with water surface vertices */

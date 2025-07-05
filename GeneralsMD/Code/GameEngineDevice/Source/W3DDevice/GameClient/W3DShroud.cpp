@@ -77,7 +77,7 @@ W3DShroud::W3DShroud(void)
 {
 	m_finalFogData=NULL;
 	m_currentFogData=NULL;
-	m_pSrcTexture=NULL;
+	m_pSrcTexture = {};
 	m_pDstTexture=NULL;
 	m_srcTextureData=NULL;
 	m_srcTexturePitch=NULL;
@@ -97,7 +97,7 @@ W3DShroud::W3DShroud(void)
 W3DShroud::~W3DShroud(void)
 {
 	ReleaseResources();
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	if (m_pSrcTexture)
 		m_pSrcTexture->Release();
 	m_pSrcTexture=NULL;
@@ -116,7 +116,7 @@ W3DShroud::~W3DShroud(void)
 */
 void W3DShroud::init(WorldHeightMap *pMap, Real worldCellSizeX, Real worldCellSizeY)
 {
-	DEBUG_ASSERTCRASH( m_pSrcTexture == NULL, ("ReAcquire of existing shroud textures"));
+	DEBUG_ASSERTCRASH(m_pSrcTexture.buffer.empty() != false, ("ReAcquire of existing shroud textures"));
 	DEBUG_ASSERTCRASH( pMap != NULL, ("Shroud init with NULL WorldHeightMap"));
 
 	Int dstTextureWidth=0;
@@ -212,7 +212,7 @@ void W3DShroud::init(WorldHeightMap *pMap, Real worldCellSizeX, Real worldCellSi
 void W3DShroud::reset()
 {
 	//Free old shroud data since it may no longer fit new map.
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	if (m_pSrcTexture)
 		m_pSrcTexture->Release();
 	m_pSrcTexture=NULL;
@@ -270,7 +270,7 @@ Bool W3DShroud::ReAcquireResources(void)
 //-----------------------------------------------------------------------------
 W3DShroudLevel W3DShroud::getShroudLevel(Int x, Int y)
 {
-	DEBUG_ASSERTCRASH( m_pSrcTexture != NULL, ("Reading empty shroud"));
+	DEBUG_ASSERTCRASH( m_pSrcTexture.buffer.empty() != false, ("Reading empty shroud"));
 
 	if (x < m_numCellsX && y < m_numCellsY)
 	{
@@ -291,9 +291,9 @@ W3DShroudLevel W3DShroud::getShroudLevel(Int x, Int y)
 //-----------------------------------------------------------------------------
 void W3DShroud::setShroudLevel(Int x, Int y, W3DShroudLevel level, Bool textureOnly)
 {
-	DEBUG_ASSERTCRASH( m_pSrcTexture != NULL, ("Writing empty shroud.  Usually means that map failed to load."));
+	DEBUG_ASSERTCRASH(m_pSrcTexture.buffer.empty() != false, ("Writing empty shroud.  Usually means that map failed to load."));
 
-	if (!m_pSrcTexture)
+	if (m_pSrcTexture.buffer.empty())
 		return;
 
 	if (x < m_numCellsX && y < m_numCellsY)
@@ -423,7 +423,6 @@ void W3DShroud::fillShroudData(W3DShroudLevel level)
 
 void W3DShroud::fillBorderShroudData(W3DShroudLevel level, SurfaceClass* pDestSurface)
 {
-#ifdef TODO_VULKAN
 	Int x,y;
 	UnsignedShort pixel;
 
@@ -460,6 +459,7 @@ void W3DShroud::fillBorderShroudData(W3DShroudLevel level, SurfaceClass* pDestSu
 	//Skip to unused texels within the shroud data
 	UnsignedShort *ptr=(UnsignedShort *)m_srcTextureData + m_numCellsY*(m_srcTexturePitch >> 1);
 
+#ifdef TODO_VULKAN
 	//Fill unused texels with border color
 	for (x=0; x<m_numCellsX; x++)
 			ptr[x]=pixel;
@@ -533,12 +533,15 @@ TextureClass *DummyTexture=NULL;
 /** Updates video memory surface with currently visible shroud data */
 void W3DShroud::render(CameraClass *cam)
 {
-	if (!m_pSrcTexture)
+	if (m_pSrcTexture.buffer.empty())
 		return; //nothing to update from.  Must be in reset state.
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	if (DX8Wrapper::_Get_D3D_Device8() && (DX8Wrapper::_Get_D3D_Device8()->TestCooperativeLevel()) != D3D_OK)
 		return;	//device not ready to render anything
+#else
+	if (WWVKRENDER.currentCmd == 0)
+		return;
 #endif
 
 #if defined(_DEBUG) || defined(_INTERNAL)
@@ -554,7 +557,7 @@ void W3DShroud::render(CameraClass *cam)
 	}
 #endif
 
-	DEBUG_ASSERTCRASH( m_pSrcTexture != NULL, ("Updating unallocated shroud texture"));
+	DEBUG_ASSERTCRASH(m_pSrcTexture.buffer.empty() != false, ("Updating unallocated shroud texture"));
 
 #ifdef LOAD_DUMMY_SHROUD
 	

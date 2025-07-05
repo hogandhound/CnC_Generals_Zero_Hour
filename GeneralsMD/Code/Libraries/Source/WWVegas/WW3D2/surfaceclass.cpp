@@ -237,7 +237,8 @@ SurfaceClass::SurfaceClass(const char *filename)
 	SurfaceFormat=desc.Format;
 }
 
-SurfaceClass::SurfaceClass(IDirect3DSurface9 *d3d_surface)
+#ifdef TODO_VULKAN
+SurfaceClass::SurfaceClass(VK::Surface& d3d_surface)
 #ifdef TODO_VULKAN
 	: D3DSurface (NULL)
 #endif
@@ -247,6 +248,7 @@ SurfaceClass::SurfaceClass(IDirect3DSurface9 *d3d_surface)
 	Get_Description(desc);
 	SurfaceFormat=desc.Format;
 }
+#endif
 
 SurfaceClass::~SurfaceClass(void)
 {

@@ -85,7 +85,7 @@ W3DProjectedShadowManager *TheW3DProjectedShadowManager=NULL;	//global singleton
 ProjectedShadowManager	*TheProjectedShadowManager;				//global singleton with simpler interface.
 extern const FrustumClass *shadowCameraFrustum;	//defined in W3DShadow.
 ///@todo: Externs from volumetric shadow renderer - these need to be moved into W3DBufferManager
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 extern LPDIRECT3DVERTEXBUFFER9 shadowVertexBufferD3D;		///<D3D vertex buffer
 extern LPDIRECT3DINDEXBUFFER9	shadowIndexBufferD3D;	///<D3D index buffer
 #endif
@@ -114,7 +114,7 @@ struct SHADOW_DECAL_VERTEX	//vertex structure passed to D3D
 
 #define SHADOW_DECAL_FVF	VKFVF_XYZ|VKFVF_TEX1|VKFVF_DIFFUSE
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 LPDIRECT3DVERTEXBUFFER9 shadowDecalVertexBufferD3D=NULL;		///<D3D vertex buffer
 LPDIRECT3DINDEXBUFFER9	shadowDecalIndexBufferD3D=NULL;	///<D3D index buffer
 #else
@@ -287,7 +287,7 @@ Bool W3DProjectedShadowManager::ReAcquireResources(void)
 			m_dynamicRenderTarget=DX8Wrapper::Create_Render_Target (DEFAULT_RENDER_TARGET_WIDTH, DEFAULT_RENDER_TARGET_HEIGHT);
 	}
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 	DEBUG_ASSERTCRASH(m_pDev, ("Trying to ReAquireResources on W3DProjectedShadowManager without device"));
@@ -374,7 +374,7 @@ Int W3DProjectedShadowManager::renderProjectedTerrainShadow(W3DProjectedShadow *
 		float x,y,z;
 	}; 
 
-	Int i,j,k;
+	Int i,j;
 	UnsignedByte alpha[4];
 	float UA[4], VA[4];
 	Bool flipForBlend;
@@ -394,7 +394,7 @@ Int W3DProjectedShadowManager::renderProjectedTerrainShadow(W3DProjectedShadow *
 		Real mapScaleInv=1.0f/MAP_XY_FACTOR;
 		std::vector<UnsignedShort> pvIndices;
 		std::vector<SHADOW_VOLUME_VERTEX> pvVertices;
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 		if (!m_pDev)	return 0;
@@ -727,7 +727,7 @@ void W3DProjectedShadowManager::flushDecals(W3DShadowTexture *texture, ShadowTyp
 		return;
 	}
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 	if (!m_pDev)	return;	//no D3D Device to render
 #endif
@@ -852,7 +852,7 @@ is an optimized system that only uses the render objects bounding box to determi
 */
 void W3DProjectedShadowManager::queueDecal(W3DProjectedShadow *shadow)
 {
-	int i,j,k;
+	int i,j;
 	Vector3 hmapVertex,objPos;
 	AABoxClass box;
 	Matrix3D   objXform(1);

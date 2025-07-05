@@ -52,6 +52,8 @@
 #include "W3DDevice/GameClient/TileData.h"
 #include "common/GlobalData.h"
 #include "WW3D2/dx8wrapper.h"
+#include <VkTexture.h>
+#include <formconv.h>
 
 /******************************************************************************
 						TerrainTextureClass
@@ -107,6 +109,16 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 	}
 
 	DX8_ErrorCode(surface_level->LockRect(&locked_rect, NULL, 0));
+#endif
+	SurfaceClass* surface = Get_Surface_Level(0);
+	if (!surface)
+		return 0;
+	SurfaceClass::SurfaceDescription surface_desc;
+	surface->Get_Description(surface_desc);
+	if (surface_desc.Width < TEXTURE_WIDTH) {
+		return 0;
+	}
+	auto& buffer = surface->Peek_D3D_Surface();
 
 	Int tilePixelExtent = TILE_PIXEL_EXTENT;		 
 	Int tilesPerRow = surface_desc.Width/(2*TILE_PIXEL_EXTENT+TILE_OFFSET);
@@ -116,7 +128,7 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 	//DEBUG_ASSERTCRASH(tilesPerRow*numRows >= htMap->m_numBitmapTiles, ("Too many tiles."));
 	DEBUG_ASSERTCRASH((Int)surface_desc.Width >= tilePixelExtent*tilesPerRow, ("Bitmap too small."));
 #endif
-	if (surface_desc.Format == D3DFMT_A1R5G5B5) {
+	if (WW3DFormat_To_D3DFormat( surface_desc.Format) == VK_FORMAT_A1R5G5B5_UNORM_PACK16) {
 #if 0
 		UnsignedInt cellX, cellY;
 		for (cellX = 0; cellX < surface_desc.Width; cellX++) {
@@ -139,7 +151,7 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 				UnsignedByte *pBGR = pTile->getRGBDataForWidth(tilePixelExtent);
 				pBGR += (tilePixelExtent-1-j)*TILE_BYTES_PER_PIXEL*tilePixelExtent; // invert to match.
 				Int row = position.y+j;
-				UnsignedByte *pBGRX = ((UnsignedByte*)locked_rect.pBits) +
+				UnsignedByte *pBGRX = ((UnsignedByte*)buffer.data()) +
 							(row)*surface_desc.Width*pixelBytes;
 
 				Int column = position.x;
@@ -162,7 +174,7 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 			Int j;
 			for (j=0; j<width; j++) {
 				Int row = origin.y+j;
-				UnsignedByte *pBGRX = ((UnsignedByte*)locked_rect.pBits) +
+				UnsignedByte *pBGRX = ((UnsignedByte*)buffer.data()) +
 							(row)*surface_desc.Width*pixelBytes;
 
 				Int column = origin.x;
@@ -177,13 +189,13 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 			for (j=0; j<4; j++) {
 				// copy before.
 				Int row = origin.y-j-1;
-				UnsignedByte *pBGRX = ((UnsignedByte*)locked_rect.pBits) +
+				UnsignedByte *pBGRX = ((UnsignedByte*)buffer.data()) +
 							(row)*surface_desc.Width*pixelBytes;
 				UnsignedByte *target = pBGRX+(origin.x-4)*pixelBytes; 
 				memcpy(target, target+width*surface_desc.Width*pixelBytes, (width+8)*pixelBytes);
 				// copy after.
 				row = origin.y+j;
-				pBGRX = ((UnsignedByte*)locked_rect.pBits) +
+				pBGRX = ((UnsignedByte*)buffer.data()) +
 							(row)*surface_desc.Width*pixelBytes;
 				target = pBGRX+(origin.x-4)*pixelBytes; 
 				memcpy(target+width*surface_desc.Width*pixelBytes, target, (width+8)*pixelBytes);
@@ -192,16 +204,18 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 		}
 
 	}
+#ifdef INFO_VULKAN
 	surface_level->UnlockRect();
 	surface_level->Release();
 	DX8_ErrorCode(D3DXFilterTexture(Peek_D3D_Texture(), NULL, 0, D3DX_FILTER_BOX));	
 	if (TheWritableGlobalData->m_textureReductionFactor) {
 		Peek_D3D_Texture()->SetLOD(TheWritableGlobalData->m_textureReductionFactor);
 	}
-	return(surface_desc.Height);
-#else
-	return 0;
 #endif
+	WWVKRENDER.PushSingleTexture(Peek_D3D_Texture());
+	VK::Texture tex;
+	VK::CreateTexture(&WWVKRENDER, tex, surface_desc.Width, surface_desc.Height, buffer.data(), 0, WW3DFormat_To_D3DFormat(surface_desc.Format));
+	return(surface_desc.Height);
 }
 
 #if 0 // old version.
@@ -366,7 +380,8 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 //=============================================================================
 void TerrainTextureClass::setLOD(Int LOD)
 {
-#ifdef TODO_VULKAN
+	//Not sure setting LOD manually is a thing anymore?
+#ifdef INFO_VULKAN
 	if (Peek_D3D_Texture()) Peek_D3D_Texture()->SetLOD(LOD);
 #endif
 }
@@ -381,7 +396,7 @@ Bool TerrainTextureClass::updateFlat(WorldHeightMap *htMap, Int xCell, Int yCell
 {
 	// D3DTexture is our texture;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	IDirect3DSurface9 *surface_level;
 	D3DSURFACE_DESC surface_desc;
 	D3DLOCKED_RECT locked_rect;
@@ -389,14 +404,22 @@ Bool TerrainTextureClass::updateFlat(WorldHeightMap *htMap, Int xCell, Int yCell
 	DX8_ErrorCode(surface_level->GetDesc(&surface_desc));
 	DEBUG_ASSERTCRASH((Int)surface_desc.Width == cellWidth*pixelsPerCell, ("Bitmap too small."));
 	DEBUG_ASSERTCRASH((Int)surface_desc.Height == cellWidth*pixelsPerCell, ("Bitmap too small."));
+#endif
+	SurfaceClass* surface = this->Get_Surface_Level(0);
+	if (!surface)
+		return false;
+	SurfaceClass::SurfaceDescription surface_desc;
+	surface->Get_Description(surface_desc);
 	if (surface_desc.Width != cellWidth*pixelsPerCell) {
 		return false;
 	}
+	auto& buffer = surface->Peek_D3D_Surface();
 
+#ifdef INFO_VULKAN
 	DX8_ErrorCode(surface_level->LockRect(&locked_rect, NULL, 0));
+#endif
 
-
-	if (surface_desc.Format == D3DFMT_A1R5G5B5) {
+	if (WW3DFormat_To_D3DFormat( surface_desc.Format) == VK_FORMAT_A1B5G5R5_UNORM_PACK16_KHR) {//D3DFMT_A1R5G5B5
 
 		Int pixelBytes = 2;
 		Int cellX, cellY;
@@ -411,7 +434,7 @@ Bool TerrainTextureClass::updateFlat(WorldHeightMap *htMap, Int xCell, Int yCell
 #endif
 		for (cellX = 0; cellX < cellWidth; cellX++) {
 			for (cellY = 0; cellY < cellWidth; cellY++) {
-				UnsignedByte *pBGRX_data = ((UnsignedByte*)locked_rect.pBits);
+				UnsignedByte *pBGRX_data = ((UnsignedByte*)buffer.data());
 				UnsignedByte *pBGR = htMap->getPointerToTileData(xCell+cellX, yCell+cellY, pixelsPerCell);
 				if (pBGR == NULL) continue; // past end of defined terrain. [3/24/2003]
 				Int k, l;
@@ -427,14 +450,16 @@ Bool TerrainTextureClass::updateFlat(WorldHeightMap *htMap, Int xCell, Int yCell
 			}
 		}
 	}
-
+	WW3DFormat_To_D3DFormat(surface_desc.Format);
+#ifdef INFO_VULKAN
 	surface_level->UnlockRect();
 	surface_level->Release();
 	DX8_ErrorCode(D3DXFilterTexture(Peek_D3D_Texture(), NULL, 0, D3DX_FILTER_BOX));	
-	return(surface_desc.Height);
-#else
-	return 0;
 #endif
+	WWVKRENDER.PushSingleTexture(Peek_D3D_Texture());
+	VK::Texture tex;
+	VK::CreateTexture(&WWVKRENDER, tex, surface_desc.Width, surface_desc.Height, buffer.data(), 0, WW3DFormat_To_D3DFormat(surface_desc.Format));
+	return(surface_desc.Height);
 }
 
 //=============================================================================
@@ -516,7 +541,7 @@ void AlphaTerrainTextureClass::Apply(unsigned int stage)
 {
 	// Do the base apply.
 	TextureClass::Apply(stage);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	
 	// Set the bilinear or trilinear filtering.
 	if (TheGlobalData && TheGlobalData->m_bilinearTerrainTex || TheGlobalData->m_trilinearTerrainTex) {
@@ -537,7 +562,7 @@ void AlphaTerrainTextureClass::Apply(unsigned int stage)
 #endif
 	// Now setup the texture pipeline.
 	if (stage==0) {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		// Modulate the diffuse color with the texture as lighting comes from diffuse.
 		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
 		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
@@ -559,7 +584,7 @@ void AlphaTerrainTextureClass::Apply(unsigned int stage)
 			///@todo: Remove 8-Stage Nvidia hack after drivers are fixed.
 			//This method is a backdoor specific to Nvidia based cards.  It will fail on
 			//other hardware.  Allows single pass blend of 2 textures and post modulate diffuse.
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP, D3DTOP_MODULATE);
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_TEXCOORDINDEX, 0);
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
@@ -633,7 +658,7 @@ void AlphaTerrainTextureClass::Apply(unsigned int stage)
 		}
 		else
 		{
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
   			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
@@ -785,7 +810,7 @@ int AlphaEdgeTextureClass::update256(WorldHeightMap *htMap)
 int AlphaEdgeTextureClass::update(WorldHeightMap *htMap)
 {
 	// D3DTexture is our texture;
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 
 	IDirect3DSurface9 *surface_level;
 	D3DSURFACE_DESC surface_desc;
@@ -793,19 +818,26 @@ int AlphaEdgeTextureClass::update(WorldHeightMap *htMap)
 	DX8_ErrorCode(Peek_D3D_Texture()->GetSurfaceLevel(0, &surface_level));
 	DX8_ErrorCode(surface_level->LockRect(&locked_rect, NULL, 0));
 	DX8_ErrorCode(surface_level->GetDesc(&surface_desc));
+#endif
+	SurfaceClass* surface = Get_Surface_Level(0);
+	if (!surface)
+		return 0;
+	auto& buffer = surface->Peek_D3D_Surface();
+	SurfaceClass::SurfaceDescription surface_desc;
+	surface->Get_Description(surface_desc);
 
 	Int tilePixelExtent = TILE_PIXEL_EXTENT; // blend tiles are 1/4 tiles.
 //	Int tilesPerRow = surface_desc.Width / (tilePixelExtent+8);
 
 //	Int numRows = surface_desc.Height/(tilePixelExtent+8);
 
-	if (surface_desc.Format == D3DFMT_A8R8G8B8) {
+	if (surface_desc.Format == VK_FORMAT_A8B8G8R8_UINT_PACK32) {//D3DFMT_A8R8G8B8
 #if 1
 #if 1
 		Int cellX, cellY;
 		for (cellX = 0; (UnsignedInt)cellX < (int)surface_desc.Width; cellX++) {
 			for (cellY = 0; cellY < (int)surface_desc.Height; cellY++) {
-				UnsignedByte *pBGR = ((UnsignedByte *)locked_rect.pBits)+(cellY*surface_desc.Width+cellX)*4;
+				UnsignedByte *pBGR = ((UnsignedByte *)buffer.data())+(cellY*surface_desc.Width+cellX)*4;
 				pBGR[2] = 255-cellY/2;
 				pBGR[0] = cellX/2;
 				pBGR[3] = cellX/2;  // alpha.
@@ -827,7 +859,7 @@ int AlphaEdgeTextureClass::update(WorldHeightMap *htMap)
 				Int row = position.y+j;
 				UnsignedByte *pBGR = htMap->getEdgeTile(tileNdx)->getRGBDataForWidth(tilePixelExtent);
 				pBGR += (tilePixelExtent-1-j)*TILE_BYTES_PER_PIXEL*tilePixelExtent; // invert to match.
-				UnsignedByte *pBGRX = ((UnsignedByte*)locked_rect.pBits) +
+				UnsignedByte *pBGRX = ((UnsignedByte*)buffer.data()) +
 							(row)*surface_desc.Width*pixelBytes;
 				pBGRX += column*pixelBytes;
 
@@ -851,13 +883,15 @@ int AlphaEdgeTextureClass::update(WorldHeightMap *htMap)
 #endif
 #endif
 	}
+#ifdef INFO_VULKAN
 	surface_level->UnlockRect();
 	surface_level->Release();
 	DX8_ErrorCode(D3DXFilterTexture(Peek_D3D_Texture(), NULL, 0, D3DX_FILTER_BOX));
-	return(surface_desc.Height);
-#else
-	return 0;
 #endif
+	WWVKRENDER.PushSingleTexture(Peek_D3D_Texture());
+	VK::Texture tex;
+	VK::CreateTexture(&WWVKRENDER, tex, surface_desc.Width, surface_desc.Height, buffer.data(), 0, WW3DFormat_To_D3DFormat(surface_desc.Format));
+	return(surface_desc.Height);
 }
 
 void AlphaEdgeTextureClass::Apply(unsigned int stage)

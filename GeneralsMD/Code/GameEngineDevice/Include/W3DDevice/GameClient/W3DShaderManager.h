@@ -94,7 +94,9 @@ public:
 	///Return last activated shader.
 	static inline ShaderTypes getCurrentShader(void) {return m_currentShader;}
 	/// Loads a .vso file and creates a vertex shader for it
+#ifdef INFO_VULKAN
 	static HRESULT LoadAndCreateD3DShader(char* strFilePath, const DWORD* pDeclaration, DWORD Usage, Bool ShaderType, void** pHandle);
+#endif
 
 	static Bool testMinimumRequirements(ChipsetType *videoChipType, CpuType *cpuType, int64_t*cpuFreq, int64_t*numRAM, Real *intBenchIndex, Real *floatBenchIndex, Real *memBenchIndex);
 	static StaticGameLODLevel getGPUPerformanceIndex(void);

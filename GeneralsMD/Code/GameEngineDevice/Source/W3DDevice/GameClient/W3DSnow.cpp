@@ -81,7 +81,7 @@ Bool W3DSnowManager::ReAcquireResources(void)
 
 	if (TheWeatherSetting->m_usePointSprites && DX8Wrapper::Get_Current_Caps()->Support_PointSprites())
 	{
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 		DEBUG_ASSERTCRASH(m_pDev, ("Trying to ReAquireResources on W3DSnowManager without device"));
@@ -272,7 +272,7 @@ void W3DSnowManager::renderSubBox(RenderInfoClass &rinfo, Int originX, Int origi
 
 		std::vector<POINTVERTEX> verts;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		if(m_VertexBufferD3D->Lock(m_dwBase * sizeof(POINTVERTEX), batchSize * sizeof(POINTVERTEX),
 			(void **) &verts, m_dwBase ? D3DLOCK_NOOVERWRITE : D3DLOCK_DISCARD) != D3D_OK )
 			return;	//couldn't lock buffer.
@@ -316,7 +316,7 @@ void W3DSnowManager::renderSubBox(RenderInfoClass &rinfo, Int originX, Int origi
 		}
 
 	flush_particles:
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		m_VertexBufferD3D->Unlock();
 #endif
 
@@ -327,9 +327,13 @@ void W3DSnowManager::renderSubBox(RenderInfoClass &rinfo, Int originX, Int origi
 		if (numberInBatch)
 		{
 			Debug_Statistics::Record_DX8_Polys_And_Vertices(numberInBatch*2,numberInBatch*4,ShaderClass::_PresetOpaqueShader);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 			DX8Wrapper::_Get_D3D_Device8()->DrawPrimitive( D3DPT_POINTLIST, m_dwBase, numberInBatch);
 #endif
+			std::vector<VkDescriptorSet> sets;
+			Matrix4x4 identity(true);
+			WWVK_UpdateSnowDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, (VK::Texture*) & m_snowTexture->Peek_D3D_Base_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+			WWVK_DrawSnow(WWVKPIPES, WWVKRENDER.currentCmd, sets, numberInBatch, m_VertexBufferD3D.buffer, 0, (WorldMatrix*)&identity);
 			totalPart -= numberInBatch;
 			m_dwBase += numberInBatch;
 		}
@@ -435,8 +439,8 @@ void W3DSnowManager::render(RenderInfoClass &rinfo)
 	Vector3 snowCenter;
 
 	DX8Wrapper::Apply_Render_State_Changes();
-
-#ifdef TODO_VULKAN
+	
+#ifdef VERIFY_VULKAN
     // Set the render states for using point sprites
 	DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSPRITEENABLE, TRUE );
     DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSCALEENABLE,  TRUE );
@@ -462,6 +466,16 @@ void W3DSnowManager::render(RenderInfoClass &rinfo)
 	// Reset render states
     DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSPRITEENABLE, FALSE );
     DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSCALEENABLE,  FALSE );
+#else
+	m_dwBase = SNOW_BUFFER_SIZE;	//start with a new vertex buffer each frame.
+
+	m_leafDim = 45;	//cull boxes that are 20x20 emitters in size. Making them much smaller will result in too many draw calls.
+	m_totalRendered = 0;	//keep track of how many particles were rendered.
+
+	//Particle centers can deviate from center by by amplitude of sine offset.  They also have radius m_quadSize.
+	//Enlarge culling bounds to compensate.
+	m_cullOverscan = m_amplitude + m_quadSize;
+	renderSubBox(rinfo, cubeOriginX, cubeOriginY, cubeDimX, cubeDimY);
 #endif
 
 }

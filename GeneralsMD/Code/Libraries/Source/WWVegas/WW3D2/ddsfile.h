@@ -29,6 +29,10 @@
 #include "ww3dformat.h"
 #include "wwstring.h"
 #include "vector3.h"
+namespace VK
+{
+	struct Surface;
+}
 
 struct IDirect3DSurface9;
 struct IDirect3DVolume8;
@@ -221,7 +225,7 @@ public:
 	DDSType Get_Type() const { return Type; }
 
 	// Copy pixels to the destination surface.
-	void Copy_Level_To_Surface(unsigned level,IDirect3DSurface9* d3d_surface, const Vector3& hsv_shift = Vector3(0.0f, 0.0f, 0.0f));
+	void Copy_Level_To_Surface(unsigned level, VK::Surface& d3d_surface, const Vector3& hsv_shift = Vector3(0.0f, 0.0f, 0.0f));
 	void Copy_Level_To_Surface(
 		unsigned level,
 		WW3DFormat dest_format, 

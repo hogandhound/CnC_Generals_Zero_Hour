@@ -113,7 +113,7 @@ W3DMouse::W3DMouse( void )
 
 W3DMouse::~W3DMouse( void )
 {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 	if (m_pDev)
@@ -395,7 +395,8 @@ void W3DMouse::setCursor( MouseCursor cursor )
 	{
 		SetCursor(NULL);	//Kill Windows Cursor
 
-#ifdef TODO_VULKAN
+		assert(false);//I don't think this code should be hit
+#ifdef VERIFY_VULKAN
 		LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 		Bool doImageChange=FALSE;
 
@@ -493,7 +494,8 @@ void W3DMouse::draw(void)
 	{
 		//called from upate thread or rendering loop.  Tells D3D where
 		//to draw the mouse cursor.
-#ifdef TODO_VULKAN
+		assert(false);//I don't think this code should be hit
+#ifdef VERIFY_VULKAN
 		LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 		if (m_pDev)
 		{	m_pDev->ShowCursor(TRUE);	//Enable DX8 cursor

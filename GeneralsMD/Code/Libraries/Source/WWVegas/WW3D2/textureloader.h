@@ -47,6 +47,7 @@
 
 #include "always.h"
 #include "texture.h"
+#include "WWVKStructs.h"
 
 class StringClass;
 struct IDirect3DTexture9;
@@ -61,11 +62,11 @@ public:
 	// Modify given texture size to nearest valid size on current hardware.
 	static void Validate_Texture_Size(unsigned& width, unsigned& height, unsigned& depth);
 
-	static IDirect3DTexture9* Load_Thumbnail(
+	static VK::Texture Load_Thumbnail(
 		const StringClass& filename,const Vector3& hsv_shift);
 //		WW3DFormat texture_format);	// Pass WW3D_FORMAT_UNKNOWN if you don't care
 
-	static IDirect3DSurface9* Load_Surface_Immediate(
+	static VK::Surface Load_Surface_Immediate(
 		const StringClass& filename,
 		WW3DFormat surface_format,		// Pass WW3D_FORMAT_UNKNOWN if you don't care
 		bool allow_compression);
@@ -255,7 +256,11 @@ class TextureLoadTaskClass : public TextureLoadTaskListNodeClass
 		void						Apply							(bool initialize);
 		
 		TextureBaseClass*		Texture;
+#ifdef INFO_VULKAN
 		IDirect3DBaseTexture9*	D3DTexture;
+#else
+		VK::Texture D3DTexture;
+#endif
 		WW3DFormat				Format;
 
 		unsigned int			Width;

@@ -12,16 +12,9 @@ layout(set = 0, binding = 1) uniform ViewMatrix{
 } view;
 
 layout(location = 0) in vec3 vert;
-layout(location = 1) in uint diffuse;
-layout(location = 2) in vec2 uv;
-
-layout(location = 1) out vec2 fragUv;
-layout(location = 2) out vec4 fragDiffuse;
 
 void main() {
     // Pass the tex coord straight through to the fragment shader
-    fragUv = uv;
-	fragDiffuse = unpackUnorm4x8(diffuse);
-    
+	gl_PointSize = 1.0;
     gl_Position = proj.m*view.m*push.world*vec4(vert, 1);
 }

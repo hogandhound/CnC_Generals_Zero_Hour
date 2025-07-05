@@ -72,6 +72,7 @@
 #include "common/GameLOD.h"
 #include "dx8caps.h"
 #include "common/gamelod.h"
+#include "VkBufferTools.h"
 //#include "Benchmark.h"
 
 #ifdef _INTERNAL
@@ -99,7 +100,6 @@ public:
 	};
 	virtual Int init(void) = 0;			///<perform any one time initialization and validation
 	virtual Int shutdown(void) { return TRUE;};			///<release resources used by shader
-	virtual void draw() = 0;
 protected:
 	Int m_numPasses;						///<number of passes to complete shader
 };
@@ -209,7 +209,7 @@ Bool ScreenDefaultFilter::postRender(enum FilterModes mode, Coord2D& scrollDelta
 
 	Int xpos, ypos, width, height;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	DX8Wrapper::Set_Texture(0, tex);	//previously rendered frame inside this texture
 #endif
 	TheTacticalView->getOrigin(&xpos, &ypos);
@@ -235,10 +235,20 @@ Bool ScreenDefaultFilter::postRender(enum FilterModes mode, Coord2D& scrollDelta
 
 	//draw polygons like this is very inefficient but for only 2 triangles, it's
 	//not worth bothering with index/vertex buffers.
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	pDev->SetFVF(VKFVF_XYZRHW | VKFVF_DIFFUSE | VKFVF_TEX1);
 
 	pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANS_LIT_TEX_VERTEX));
+#else
+	Matrix4x4 ident(true);
+
+	VK::Buffer vbo;
+	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANS_LIT_TEX_VERTEX) * 4, v, vbo);
+
+	std::vector<VkDescriptorSet> sets;
+	WWVK_UpdateFVF_DUV_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+	WWVK_DrawFVF_DUV_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+	WWVKRENDER.PushSingleFrameBuffer(vbo);
 #endif
 
 	reset();
@@ -377,10 +387,20 @@ Bool ScreenBWFilter::postRender(enum FilterModes mode, Coord2D &scrollDelta,Bool
 
 	//draw polygons like this is very inefficient but for only 2 triangles, it's
 	//not worth bothering with index/vertex buffers.
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	pDev->SetFVF(VKFVF_XYZRHW | VKFVF_DIFFUSE | VKFVF_TEX1);
 
 	pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANS_LIT_TEX_VERTEX));
+#else
+	Matrix4x4 ident(true);
+
+	VK::Buffer vbo;
+	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANS_LIT_TEX_VERTEX) * 4, v, vbo);
+
+	std::vector<VkDescriptorSet> sets;
+	WWVK_UpdateFVF_DUV_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+	WWVK_DrawFVF_DUV_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+	WWVKRENDER.PushSingleFrameBuffer(vbo);
 #endif
 
 	reset();
@@ -607,6 +627,15 @@ Bool ScreenBWFilterDOT3::postRender(enum FilterModes mode, Coord2D& scrollDelta,
 
 	pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANS_LIT_TEX_VERTEX));
 #endif
+	Matrix4x4 ident(true);
+
+	VK::Buffer vbo;
+	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANS_LIT_TEX_VERTEX) * 4, v, vbo);
+
+	std::vector<VkDescriptorSet> sets;
+	WWVK_UpdateFVF_DUV_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+	WWVK_DrawFVF_DUV_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+	WWVKRENDER.PushSingleFrameBuffer(vbo);
 
 	//Draw normal view blended by current fade level
 	ShaderClass::Invalidate();	//reset DOT3 blend from above.
@@ -615,10 +644,22 @@ Bool ScreenBWFilterDOT3::postRender(enum FilterModes mode, Coord2D& scrollDelta,
 	DX8Wrapper::Set_Shader(shader);
 	DX8Wrapper::Apply_Render_State_Changes();	//force update of view and projection matrices
 	//replace texture alpha with vertex alpha
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG2);
+#ifdef INFO_VULKAN
+#ifdef VERIFY_VULKAN //Not sure what this does
+	DX8Wrapper::Set_DX8_Texture_Stage_State(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG2);
+#endif
 
 	pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANS_LIT_TEX_VERTEX));
+#else
+	Matrix4x4 ident(true);
+
+	VK::Buffer vbo;
+	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANS_LIT_TEX_VERTEX) * 4, v, vbo);
+
+	std::vector<VkDescriptorSet> sets;
+	WWVK_UpdateFVF_DUV_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+	WWVK_DrawFVF_DUV_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+	WWVKRENDER.PushSingleFrameBuffer(vbo);
 #endif
 
 	reset();
@@ -811,7 +852,7 @@ Bool ScreenCrossFadeFilter::postRender(enum FilterModes mode, Coord2D &scrollDel
 	if (!tex.image) return false;
 	if (!set(mode)) return false;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	LPDIRECT3DDEVICE9 pDev=DX8Wrapper::_Get_D3D_Device8();
 #endif 
 	struct _TRANS_LIT_TEX_VERTEX {
@@ -825,7 +866,7 @@ Bool ScreenCrossFadeFilter::postRender(enum FilterModes mode, Coord2D &scrollDel
 
 	Int xpos, ypos, width, height;
 	Real radius = 0.0f;
-#if TODO_VULKAN
+#ifdef INFO_VULKAN
 	DX8Wrapper::Set_Texture(0,tex);	//previously rendered frame inside this texture
 #endif
 	if (mode == FM_VIEW_CROSSFADE_CIRCLE)
@@ -874,14 +915,26 @@ Bool ScreenCrossFadeFilter::postRender(enum FilterModes mode, Coord2D &scrollDel
 
 	//draw polygons like this is very inefficient but for only 2 triangles, it's
 	//not worth bothering with index/vertex buffers.
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	pDev->SetFVF(VKFVF_XYZRHW | VKFVF_DIFFUSE | VKFVF_TEX2);
 
-//		m_pDev->SetTextureStageState(0,D3DSAMP_MAGFILTER,D3DTEXF_POINT); 
-//		m_pDev->SetSamplerState( 0, D3DSAMP_MINFILTER,D3DTEXF_POINT); 
+	//		m_pDev->SetTextureStageState(0,D3DSAMP_MAGFILTER,D3DTEXF_POINT); 
+	//		m_pDev->SetSamplerState( 0, D3DSAMP_MINFILTER,D3DTEXF_POINT); 
 
 	pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANS_LIT_TEX_VERTEX));
+#else
+	Matrix4x4 ident(true);
+
+	VK::Buffer vbo;
+	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANS_LIT_TEX_VERTEX) * 4, v, vbo);
+
+	std::vector<VkDescriptorSet> sets;
+	WWVK_UpdateFVF_DUV2_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(), 
+		DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+	WWVK_DrawFVF_DUV2_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+	WWVKRENDER.PushSingleFrameBuffer(vbo);
 #endif
+
 	reset();
 	return true;
 }
@@ -1037,7 +1090,7 @@ Bool ScreenMotionBlurFilter::postRender(enum FilterModes mode, Coord2D &scrollDe
 	//draw polygons like this is very inefficient but for only 2 triangles, it's
 	//not worth bothering with index/vertex buffers.
 	DX8Wrapper::Apply_Render_State_Changes();
-#ifdef TOOD_VULKAN
+#ifdef INFO_VULKAN
 	pDev->SetFVF(VKFVF_XYZRHW | VKFVF_DIFFUSE | VKFVF_TEX1);
 #endif
 
@@ -1104,11 +1157,24 @@ Bool ScreenMotionBlurFilter::postRender(enum FilterModes mode, Coord2D &scrollDe
 		}
 	}
 #ifdef TODO_VULKAN
+#ifdef VERIFY_VULKAN
 	pDev->SetTextureStageState(0,D3DTSS_ALPHAARG1, D3DTA_CURRENT);
 	pDev->SetTextureStageState(0,D3DTSS_ALPHAARG2, D3DTA_TEXTURE);
 	pDev->SetTextureStageState(0,D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+#endif
 	pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANS_LIT_TEX_VERTEX));
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE,true);
+#else
+	Matrix4x4 ident(true);
+
+	VK::Buffer vbo;
+	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANS_LIT_TEX_VERTEX) * 4, v, vbo);
+
+	std::vector<VkDescriptorSet> sets;
+	WWVK_UpdateFVF_DUV2_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
+		DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+	WWVK_DrawFVF_DUV2_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+	WWVKRENDER.PushSingleFrameBuffer(vbo);
 #endif
 
 	DX8Wrapper::Apply_Render_State_Changes();
@@ -1136,8 +1202,19 @@ Bool ScreenMotionBlurFilter::postRender(enum FilterModes mode, Coord2D &scrollDe
 					v[i].v = ((v[i].v-center.y)*factor) + center.y;
 				}
 			}
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 			pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANS_LIT_TEX_VERTEX));
+#else
+			Matrix4x4 ident(true);
+
+			VK::Buffer vbo;
+			VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANS_LIT_TEX_VERTEX) * 4, v, vbo);
+
+			std::vector<VkDescriptorSet> sets;
+			WWVK_UpdateFVF_DUV2_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
+				DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+			WWVK_DrawFVF_DUV2_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+			WWVKRENDER.PushSingleFrameBuffer(vbo);
 #endif
 		}
 	}
@@ -1340,10 +1417,6 @@ class FlatShroudTextureShader : public W3DShaderInterface
 	virtual Int init(void);			///<perform any one time initialization and validation
 	virtual void reset(void);		///<do any custom resetting necessary to bring W3D in sync.
 	Int m_stageOfSet;
-	void draw() {
-#ifdef TODO_VULKAN
-#endif
-	}
 } flatShroudTextureShader;
 
 ///List of different shroud shader implementations in order of preference
@@ -1441,10 +1514,6 @@ class MaskTextureShader : public W3DShaderInterface
 	virtual Int set(Int pass);		///<setup shader for the specified rendering pass.
 	virtual Int init(void);			///<perform any one time initialization and validation
 	virtual void reset(void);		///<do any custom resetting necessary to bring W3D in sync.
-	void draw() {
-#ifdef TODO_VULKAN
-#endif
-	}
 } maskTextureShader;
 
 ///List of different shroud shader implementations in order of preference
@@ -1563,10 +1632,6 @@ public:
 	virtual void reset(void);		///<do any custom resetting necessary to bring W3D in sync.
 	void updateNoise1 (DirectX::XMMATRIX *destMatrix,DirectX::XMMATRIX *curViewInverse, Bool doUpdate=true);	///<generate the uv coordinates for Noise1 (i.e clouds)
 	void updateNoise2 (DirectX::XMMATRIX *destMatrix,DirectX::XMMATRIX *curViewInverse, Bool doUpdate=true);	///<generate the uv coordinates for Noise2 (i.e lightmap)
-	void draw() {
-#ifdef TODO_VULKAN
-#endif
-	}
 } terrainShader2Stage;
 
 ///regular terrain shader that should work on all multi-texture video cards (slowest version)
@@ -1576,10 +1641,6 @@ public:
 	virtual Int set(Int pass);		///<setup shader for the specified rendering pass.
 	virtual Int init(void);			///<perform any one time initialization and validation
 	virtual void reset(void);		///<do any custom resetting necessary to bring W3D in sync.
-	void draw() {
-#ifdef TODO_VULKAN
-#endif
-	}
 } flatTerrainShader2Stage;
 
 ///regular terrain shader that should work on all multi-texture video cards (slowest version)
@@ -1596,10 +1657,6 @@ public:
 	virtual Int init(void);			///<perform any one time initialization and validation
 	virtual void reset(void);		///<do any custom resetting necessary to bring W3D in sync.
 	virtual Int shutdown(void);			///<release resources used by shader
-	void draw() {
-#ifdef TODO_VULKAN
-#endif
-	}
 } flatTerrainShaderPixelShader;
 
 ///8 stage terrain shader which only works on certain Nvidia cards.
@@ -1608,10 +1665,6 @@ class TerrainShader8Stage : public W3DShaderInterface
 	virtual Int set(Int pass);		///<setup shader for the specified rendering pass.
 	virtual void reset(void);		///<do any custom resetting necessary to bring W3D in sync.
 	virtual Int init(void);			///<perform any one time initialization and validation
-	void draw() {
-#ifdef TODO_VULKAN
-#endif
-	}
 } terrainShader8Stage;
 
 //Offsets into constant register pool used by vertex shader
@@ -1630,10 +1683,6 @@ class TerrainShaderPixelShader : public W3DShaderInterface
 	virtual void reset(void);		///<do any custom resetting necessary to bring W3D in sync.
 	virtual Int init(void);			///<perform any one time initialization and validation
 	virtual Int shutdown(void);			///<release resources used by shader
-	void draw() {
-#ifdef TODO_VULKAN
-#endif
-	}
 } terrainShaderPixelShader;
 
 ///List of different terrain shader implementations in order of preference
@@ -2150,7 +2199,7 @@ Int TerrainShaderPixelShader::set(Int pass)
 	DX8Wrapper::Set_Texture(0, W3DShaderManager::getShaderTexture(0));
 	DX8Wrapper::Set_Texture(1, W3DShaderManager::getShaderTexture(1));
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
 	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 	DX8Wrapper::Set_DX8_Sampler_Stage_State( 1, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
@@ -2389,10 +2438,6 @@ class RoadShaderPixelShader : public W3DShaderInterface
 	virtual void reset(void);		///<do any custom resetting necessary to bring W3D in sync.
 	virtual Int init(void);			///<perform any one time initialization and validation
 	virtual Int shutdown(void);			///<release resources used by shader
-	void draw() {
-#ifdef TODO_VULKAN
-#endif
-	}
 } roadShaderPixelShader;
 
 class RoadShader2Stage : public W3DShaderInterface
@@ -2401,10 +2446,6 @@ class RoadShader2Stage : public W3DShaderInterface
 	virtual Int set(Int pass);		///<setup shader for the specified rendering pass.
 	virtual Int init(void);			///<perform any one time initialization and validation
 	virtual void reset(void);
-	void draw() {
-#ifdef TODO_VULKAN
-#endif
-	}
 } roadShader2Stage;
 
 ///List of different terrain shader implementations in order of preference
@@ -3033,10 +3074,21 @@ void W3DShaderManager::drawViewport(Int color)
 
 	//draw polygons like this is very inefficient but for only 2 triangles, it's
 	//not worth bothering with index/vertex buffers.
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	pDev->SetFVF(VKFVF_XYZRHW | VKFVF_DIFFUSE | VKFVF_TEX1);
 
 	pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANS_LIT_TEX_VERTEX));
+#else
+	Matrix4x4 ident(true);
+
+	VK::Buffer vbo;
+	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANS_LIT_TEX_VERTEX) * 4, v, vbo);
+
+	std::vector<VkDescriptorSet> sets;
+	WWVK_UpdateFVF_DUV_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(),
+		DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+	WWVK_DrawFVF_DUV_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+	WWVKRENDER.PushSingleFrameBuffer(vbo);
 #endif
 }
 
@@ -3140,7 +3192,7 @@ ChipsetType W3DShaderManager::getChipset( void )
 	if (TheGlobalData && TheGlobalData->m_chipSetType != DC_UNKNOWN)
 		return (ChipsetType)TheGlobalData->m_chipSetType;
 
-	ChipsetType chip=DC_UNKNOWN;
+	ChipsetType chip= DC_GENERIC_PIXEL_SHADER_2_0;
 #ifdef TODO_VULKAN
 	IDirect3D9* d3d8Interface=DX8Wrapper::_Get_D3D8();
 
@@ -3229,6 +3281,7 @@ ChipsetType W3DShaderManager::getChipset( void )
 //=============================================================================
 /** Loads and creates a D3D pixel or vertex shader.*/
 //=============================================================================
+#ifdef INFO_VULKAN
 HRESULT W3DShaderManager::LoadAndCreateD3DShader(char* strFilePath, const DWORD* pDeclaration, DWORD Usage, Bool ShaderType, void** pHandle)
 {
 	if (getChipset() < DC_GENERIC_PIXEL_SHADER_1_1)
@@ -3291,6 +3344,7 @@ HRESULT W3DShaderManager::LoadAndCreateD3DShader(char* strFilePath, const DWORD*
 
 	return S_OK;
 }
+#endif
 
 //For the MP test, we're enforcing high min-spec requirements that need to be verified.
 #define MIN_INTEL_CPU_FREQ	1300
@@ -3720,7 +3774,7 @@ Int FlatTerrainShader2Stage::set(Int pass)
 
 Int FlatTerrainShaderPixelShader::shutdown(void)
 {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	if (m_dwBasePixelShader)
 		m_dwBasePixelShader->Release();
 

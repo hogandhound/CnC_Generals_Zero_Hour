@@ -211,7 +211,8 @@ int W3DTreeBuffer::W3DTreeTextureClass::update(W3DTreeBuffer *buffer)
 //=============================================================================
 void W3DTreeBuffer::W3DTreeTextureClass::setLOD(Int LOD) const
 {
-#ifdef TODO_VULKAN
+	//Don't think I need to worry about the lod?
+#ifdef VERIFY_VULKAN
 	if (Peek_D3D_Texture()) {
 		DX8_ErrorCode(Peek_D3D_Texture()->SetLOD((DWORD)LOD));
 	}
@@ -1749,7 +1750,8 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 		}
 
 	}
-
+	VkBufferTools::CreateUniformBuffer(&DX8Wrapper::_GetRenderTarget(), sizeof(Trees), &treeConstants, uboTrees);
+	DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(uboTrees);
 
 	DirectX::XMMATRIX matWorld;
 	DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&matWorld);

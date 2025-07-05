@@ -173,7 +173,7 @@ public:
 	unsigned Get_Reduction() const;
 
 	// Background texture loader will call this when texture has been loaded
-	virtual void Apply_New_Surface(IDirect3DBaseTexture9* tex, bool initialized, bool disable_auto_invalidation = false)=0;	// If the parameter is true, the texture will be flagged as initialised
+	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, bool disable_auto_invalidation = false)=0;	// If the parameter is true, the texture will be flagged as initialised
 
 	MipCountType MipLevelCount;
 
@@ -193,9 +193,9 @@ public:
 	virtual CubeTextureClass* As_CubeTextureClass() { return NULL; }
 	virtual VolumeTextureClass* As_VolumeTextureClass() { return NULL; }
 
-	VK::Texture& Peek_D3D_Texture() const { return (VK::Texture)Peek_D3D_Base_Texture(); }
-	VK::Texture& Peek_D3D_VolumeTexture() const { return (VK::Texture)Peek_D3D_Base_Texture(); }
-	VK::Texture& Peek_D3D_CubeTexture() const { return (VK::Texture)Peek_D3D_Base_Texture(); }
+	VK::Texture& Peek_D3D_Texture() const { return (VK::Texture&)Peek_D3D_Base_Texture(); }
+	VK::Texture& Peek_D3D_VolumeTexture() const { return (VK::Texture&)Peek_D3D_Base_Texture(); }
+	VK::Texture& Peek_D3D_CubeTexture() const { return (VK::Texture&)Peek_D3D_Base_Texture(); }
 
 protected:
 
@@ -270,7 +270,6 @@ public:
 		unsigned height, 
 		WW3DFormat format,
 		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		bool rendertarget=false,
 		bool allow_reduction=true
 	);
 
@@ -313,11 +312,13 @@ public:
 	virtual void Init();
 
 	// Background texture loader will call this when texture has been loaded
-	virtual void Apply_New_Surface(IDirect3DBaseTexture9* tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
+	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
 
 	// Get the surface of one of the mipmap levels (defaults to highest-resolution one)
 	SurfaceClass *Get_Surface_Level(unsigned int level = 0);
+#ifdef TODO_VULKAN
 	IDirect3DSurface9 *Get_D3D_Surface_Level(unsigned int level = 0);
+#endif
 	void Get_Level_Description( SurfaceClass::SurfaceDescription & desc, unsigned int level = 0 );
 	
 	TextureFilterClass& Get_Filter() { return Filter; }
@@ -331,7 +332,7 @@ public:
 	virtual TextureClass* As_TextureClass() { return this; }
 
 protected:
-
+	SurfaceClass* surface;
 	WW3DFormat				TextureFormat;
 
 	// legacy
@@ -357,11 +358,13 @@ public:
 	virtual void Init() {}
 
 	// Background texture loader will call this when texture has been loaded
-	virtual void Apply_New_Surface(IDirect3DBaseTexture9* tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
+	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
 
 	virtual void Apply(unsigned int stage);
 
+#ifdef TODO_VULKAN
 	IDirect3DSurface9 *Get_D3D_Surface_Level(unsigned int level = 0);
+#endif
 	virtual unsigned Get_Texture_Memory_Usage() const;
 
 private:
@@ -403,9 +406,9 @@ public:
 		MipCountType mip_level_count=MIP_LEVELS_ALL
 	);		
 
-	CubeTextureClass(IDirect3DBaseTexture9* d3d_texture);
+	CubeTextureClass(VK::Texture d3d_texture);
 
-	virtual void Apply_New_Surface(IDirect3DBaseTexture9* tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
+	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
 
 	virtual TexAssetType Get_Asset_Type() const { return TEX_CUBEMAP; }
 
@@ -417,6 +420,7 @@ class VolumeTextureClass : public TextureClass
 {
 public:
 	// Create texture with desired height, width and format.
+#ifdef TODO_VULKAN
 	VolumeTextureClass
 	(
 		unsigned width, 
@@ -427,6 +431,7 @@ public:
 		bool rendertarget=false,
 		bool allow_reduction=true
 	);
+#endif
 
 	// Create texture from a file. If format is specified the texture is converted to that format.
 	// Note that the format must be supported by the current device and that a texture can't exist
@@ -442,15 +447,17 @@ public:
 	);
 
 	// Create texture from a surface.
+#ifdef TODO_VULKAN
 	VolumeTextureClass
 	(
 		SurfaceClass *surface, 
 		MipCountType mip_level_count=MIP_LEVELS_ALL
 	);		
+#endif
 
-	VolumeTextureClass(IDirect3DBaseTexture9* d3d_texture);
+	VolumeTextureClass(VK::Texture d3d_texture);
 
-	virtual void Apply_New_Surface(IDirect3DBaseTexture9* tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
+	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
 
 	virtual TexAssetType Get_Asset_Type() const { return TEX_VOLUME; }
 

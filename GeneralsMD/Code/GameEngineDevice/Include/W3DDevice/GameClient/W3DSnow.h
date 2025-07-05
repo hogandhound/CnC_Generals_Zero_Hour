@@ -22,6 +22,7 @@
 #define _W3DSNOW_H_
 
 #include "GameClient/Snow.h"
+#include <VkRenderTarget.h>
 
 class DX8IndexBufferClass;
 class RenderInfoClass;

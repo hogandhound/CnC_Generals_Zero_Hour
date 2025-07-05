@@ -21,6 +21,24 @@
 	  "frag": { "name": "fvf_duv.frag" }
   },
   {
+	  "name": "FVF_DUV_Strip",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
+	  "vert":{
+		  "name": "fvf_xyzduv.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_duv.frag" }
+  },
+  {
+	  "name": "FVF_DUV2_Strip",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
+	  "vert":{
+		  "name": "fvf_xyzduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_duv2.frag" }
+  },
+  {
 	  "name": "FVF_NDUV",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "vert":{
@@ -37,6 +55,15 @@
 		  "inputs": {}
 	  },
 	  "frag": { "name": "fvf_nduv2.frag" }
+  },
+  {
+	  "name": "Snow",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_POINT_LIST",
+	  "vert":{
+		  "name": "snow.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "snow.frag" }
   },
   {
 	  "name": "FTerrain",

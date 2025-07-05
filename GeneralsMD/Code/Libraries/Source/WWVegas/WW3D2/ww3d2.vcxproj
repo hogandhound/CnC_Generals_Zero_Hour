@@ -1264,6 +1264,7 @@
     <ClInclude Include="ww3dformat.h" />
     <ClInclude Include="ww3dids.h" />
     <ClInclude Include="ww3dtrig.h" />
+    <ClInclude Include="WWVKStructs.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="intersec.inl" />

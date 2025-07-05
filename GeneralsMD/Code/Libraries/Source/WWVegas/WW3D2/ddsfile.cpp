@@ -92,8 +92,20 @@ DDSFileClass::DDSFileClass(const char* name,unsigned reduction_factor)
 		WWASSERT_PRINT(0,tmp);
 		return;
 	}
-
-#ifdef TODO_VULKAN
+	
+	char* fourcc = (char*) & SurfaceDesc.PixelFormat.FourCC;
+	if (fourcc[0] = 'D' && fourcc[1] == 'X' && fourcc[2] == 'T')
+	{
+		switch (fourcc[3])
+		{
+		case '1': Format = WW3D_FORMAT_DXT1;
+		case '2': Format = WW3D_FORMAT_DXT2;
+		case '3': Format = WW3D_FORMAT_DXT3;
+		case '4': Format = WW3D_FORMAT_DXT4;
+		case '5': Format = WW3D_FORMAT_DXT5;
+		}
+	}
+#ifdef INFO_VULKAN
 	Format=D3DFormat_To_WW3DFormat((D3DFORMAT)SurfaceDesc.PixelFormat.FourCC);
 #endif
 	WWASSERT(
@@ -341,9 +353,9 @@ WWINLINE static unsigned short ARGB8888_To_RGB565(unsigned argb_)
 //
 // ----------------------------------------------------------------------------
 
-void DDSFileClass::Copy_Level_To_Surface(unsigned level,IDirect3DSurface9* d3d_surface,const Vector3& hsv_shift)
+void DDSFileClass::Copy_Level_To_Surface(unsigned level,VK::Surface& d3d_surface,const Vector3& hsv_shift)
 {
-	WWASSERT(d3d_surface);
+	WWASSERT(!d3d_surface.buffer.empty());
 #ifdef TODO_VULKAN
 	// Verify that the destination surface size matches the source surface size
 	D3DSURFACE_DESC surface_desc;

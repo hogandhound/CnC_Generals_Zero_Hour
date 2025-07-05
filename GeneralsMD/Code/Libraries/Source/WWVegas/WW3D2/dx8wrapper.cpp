@@ -2456,75 +2456,19 @@ VK::Texture DX8Wrapper::_Create_DX8_Texture
 	unsigned int width,
 	unsigned int height,
 	WW3DFormat format,
-	MipCountType mip_level_count,
-	bool rendertarget
+	MipCountType mip_level_count
 )
 {
 	DX8_THREAD_ASSERT();
 	DX8_Assert();
-	IDirect3DTexture9 *texture = NULL;
+	VK::Texture texture = {};
+#ifdef TODO_VULKAN
 
 	// Paletted textures not supported!
 	WWASSERT(format!=D3DFMT_P8);
 
 	// NOTE: If 'format' is not supported as a texture format, this function will find the closest
 	// format that is supported and use that instead.
-
-#ifdef TODO_VULKAN
-	// Render target may return NOTAVAILABLE, in
-	// which case we return NULL.
-	if (rendertarget) {
-		unsigned ret=D3DXCreateTexture(
-			DX8Wrapper::_Get_D3D_Device8(),
-			width,
-			height,
-			mip_level_count,
-			D3DUSAGE_RENDERTARGET,
-			WW3DFormat_To_D3DFormat(format),
-			pool,
-			&texture);
-
-		if (ret==D3DERR_NOTAVAILABLE) {
-			Non_Fatal_Log_DX8_ErrorCode(ret,__FILE__,__LINE__);
-			return NULL;
-		}
-
-		// If ran out of texture ram, try invalidating some textures and mesh cache.
-		if (ret==D3DERR_OUTOFVIDEOMEMORY) {
-			WWDEBUG_SAY(("Error: Out of memory while creating render target. Trying to release assets...\n"));
-			// Free all textures that haven't been used in the last 5 seconds
-			TextureClass::Invalidate_Old_Unused_Textures(5000);
-
-			// Invalidate the mesh cache
-			WW3D::_Invalidate_Mesh_Cache();
-
-			ret=D3DXCreateTexture(
-				DX8Wrapper::_Get_D3D_Device8(),
-				width,
-				height,
-				mip_level_count,
-				D3DUSAGE_RENDERTARGET,
-				WW3DFormat_To_D3DFormat(format),
-				pool,
-				&texture);
-
-			if (SUCCEEDED(ret)) {
-				WWDEBUG_SAY(("...Render target creation succesful.\n"));
-			}
-			else {
-				WWDEBUG_SAY(("...Render target creation failed.\n"));
-			}
-			if (ret==D3DERR_OUTOFVIDEOMEMORY) {
-				Non_Fatal_Log_DX8_ErrorCode(ret,__FILE__,__LINE__);
-				return NULL;
-			}
-		}
-
-		DX8_ErrorCode(ret);
-		// Just return the texture, no reduction
-		// allowed for render targets.
-		return texture;
-	}
 
 	// We should never run out of video memory when allocating a non-rendertarget texture.
 	// However, it seems to happen sometimes when there are a lot of textures in memory and so
@@ -2568,11 +2512,8 @@ VK::Texture DX8Wrapper::_Create_DX8_Texture
 
 	}
 	DX8_ErrorCode(ret);
-
-	return texture;
-#else
-	return {};
 #endif
+	return texture;
 }
 
 #ifdef TODO_VULKAN
@@ -2967,12 +2908,12 @@ IDirect3DVolumeTexture9* DX8Wrapper::_Create_DX8_Volume_Texture
 #endif
 
 
-#ifdef TODO_VULKAN
-IDirect3DSurface9 * DX8Wrapper::_Create_DX8_Surface(unsigned int width, unsigned int height, WW3DFormat format)
+VK::Surface DX8Wrapper::_Create_DX8_Surface(unsigned int width, unsigned int height, WW3DFormat format)
 {
 	DX8_THREAD_ASSERT();
 	DX8_Assert();
 
+#ifdef INFO_VULKAN
 	IDirect3DSurface9 *surface = NULL;
 
 	// Paletted surfaces not supported!
@@ -2981,11 +2922,17 @@ IDirect3DSurface9 * DX8Wrapper::_Create_DX8_Surface(unsigned int width, unsigned
 	DX8CALL(CreateOffscreenPlainSurface(width, height, WW3DFormat_To_D3DFormat(format), D3DPOOL_SYSTEMMEM, &surface, nullptr));
 
 	return surface;
-}
+#else
+	VK::Surface ret = {};
+	ret.width = width;
+	ret.height = height;
+	ret.format = WW3DFormat_To_D3DFormat(format);
+	ret.buffer.resize(width * height * VK::SizeOfFormat(ret.format));
+	return ret;
 #endif
+}
 
-#ifdef TODO_VULKAN
-IDirect3DSurface9 * DX8Wrapper::_Create_DX8_Surface(const char *filename_)
+VK::Surface DX8Wrapper::_Create_DX8_Surface(const char *filename_)
 {
 	DX8_THREAD_ASSERT();
 	DX8_Assert();
@@ -2999,7 +2946,9 @@ IDirect3DSurface9 * DX8Wrapper::_Create_DX8_Surface(const char *filename_)
 	// the file data and use D3DXLoadSurfaceFromFile. This is a horrible hack, but it saves us
 	// having to write file loaders. Will fix this when D3DX provides us with the right functions.
 	// Create a surface the size of the file image data
+#ifdef INFO_VULKAN
 	IDirect3DSurface9 *surface = NULL;
+#endif
 
 	{
 
@@ -3027,13 +2976,12 @@ IDirect3DSurface9 * DX8Wrapper::_Create_DX8_Surface(const char *filename_)
 	}
 
 	StringClass filename_string(filename_,true);
-	surface=TextureLoader::Load_Surface_Immediate(
+	VK::Surface surface=TextureLoader::Load_Surface_Immediate(
 		filename_string,
 		WW3D_FORMAT_UNKNOWN,
 		true);
 	return surface;
 }
-#endif
 
 
 /***********************************************************************************************
@@ -3425,6 +3373,7 @@ void DX8Wrapper::Set_Render_Target_With_Z
 	ZTextureClass* ztexture
 )
 {
+#ifdef TODO_VULKAN
 	WWASSERT(texture!=NULL);
 	IDirect3DSurface9 * d3d_surf = texture->Get_D3D_Surface_Level();
 	WWASSERT(d3d_surf != NULL);
@@ -3443,7 +3392,7 @@ void DX8Wrapper::Set_Render_Target_With_Z
 		Set_Render_Target(d3d_surf,true);
 	}
 	d3d_surf->Release();
-
+#endif
 	IsRenderToTexture = true;
 }
 

@@ -1937,7 +1937,8 @@ void DX8TextureCategoryClass::Render(void)
 			else
 				renderer->Render(mesh->Get_Base_Vertex_Offset());
 		}
-//--------------------------------------------------------------------#ifdef INFO_VULKAN
+//--------------------------------------------------------------------
+#ifdef INFO_VULKAN
 		if (mesh->Get_ObjectScale() != 1.0f)
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_NORMALIZENORMALS, FALSE);
 #endif

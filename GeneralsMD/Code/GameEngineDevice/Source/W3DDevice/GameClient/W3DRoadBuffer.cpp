@@ -3369,7 +3369,20 @@ void W3DRoadBuffer::drawRoads(CameraClass * camera, TextureClass *cloudTexture, 
 				if (!wireframe)
 		 			W3DShaderManager::setShader(st, pass);
 				//Draw all this road type.
+				switch (st)
+				{
+				default:
+				case W3DShaderManager::ST_ROAD_BASE:
+					break;
+				case W3DShaderManager::ST_ROAD_BASE_NOISE1:
+				case W3DShaderManager::ST_ROAD_BASE_NOISE2:
+					break;
+				case W3DShaderManager::ST_ROAD_BASE_NOISE12:
+					break;
+				}
+#ifdef TODO_VULKAN
 				DX8Wrapper::Draw_Triangles(	0, m_roadTypes[i].getNumIndices()/3, 0,	m_roadTypes[i].getNumVertices());
+#endif
 #ifdef LOG_STATS
 				polys += m_roadTypes[i].getNumIndices()/3;
 #endif

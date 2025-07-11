@@ -371,7 +371,7 @@ void W3DCustomEdging::drawEdging(WorldHeightMap *pMap, Int minX, Int maxX, Int m
 	DX8Wrapper::Set_Texture(1,edgeTex);
 	DX8Wrapper::Apply_Render_State_Changes();
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN //This is disabled test code
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAREF,0x7B);
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAFUNC,D3DCMP_LESSEQUAL);	//pass pixels who's alpha is not zero
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHATESTENABLE, true);	//test pixels if transparent(clipped) before rendering.
@@ -382,7 +382,7 @@ void W3DCustomEdging::drawEdging(WorldHeightMap *pMap, Int minX, Int maxX, Int m
 	// Draw the custom edge.
 	DX8Wrapper::Apply_Render_State_Changes();
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN //This is disabled test code
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAREF,0x84);
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAFUNC,D3DCMP_GREATEREQUAL);	//pass pixels who's alpha is not zero
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHATESTENABLE, true);	//test pixels if transparent(clipped) before rendering.
@@ -402,7 +402,7 @@ void W3DCustomEdging::drawEdging(WorldHeightMap *pMap, Int minX, Int maxX, Int m
 		DX8Wrapper::Apply_Render_State_Changes();
 		DX8Wrapper::Set_Texture(0,cloudTexture);
 		DX8Wrapper::Apply_Render_State_Changes();
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN //This is disabled test code
 #if 1
 		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAARG1,   D3DTA_CURRENT );
 		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
@@ -430,7 +430,7 @@ void W3DCustomEdging::drawEdging(WorldHeightMap *pMap, Int minX, Int maxX, Int m
 		DX8Wrapper::Apply_Render_State_Changes();
 		DX8Wrapper::Set_Texture(1,edgeTex);
 		DX8Wrapper::Apply_Render_State_Changes();
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN //This is disabled test code
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAREF,0x80);
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAFUNC,D3DCMP_NOTEQUAL);	//pass pixels who's alpha is not zero
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHATESTENABLE, true);	//test pixels if transparent(clipped) before rendering.

@@ -476,7 +476,9 @@ void	LineGroupClass::Render(RenderInfoClass &rinfo)
 	if (sort) {
 		SortingRendererClass::Insert_Triangles(0, num_tris, 0, num_vertices);
 	} else {
+#ifdef TODO_VULKAN
 		DX8Wrapper::Draw_Triangles(0, num_tris, 0, num_vertices);
+#endif
 	}		
 	
 	// restore the matrices

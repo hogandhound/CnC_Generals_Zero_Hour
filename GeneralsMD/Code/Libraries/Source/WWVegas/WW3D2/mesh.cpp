@@ -954,11 +954,13 @@ void MeshClass::Render_Material_Pass(MaterialPassClass * pass,IndexBufferClass *
 
 			DX8Wrapper::Set_Index_Buffer(dynamic_ib,vertex_offset);
 
+#ifdef TODO_VULKAN
 			DX8Wrapper::Draw_Triangles(
 				0,
 				temp_apt.Count(),
 				min_v,
 				max_v-min_v+1);
+#endif
 			//MW: Need uninstall custom materials in case they leave D3D in unknown state
 			pass->UnInstall_Materials();
 		}

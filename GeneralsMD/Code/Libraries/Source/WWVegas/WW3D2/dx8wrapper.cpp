@@ -296,7 +296,8 @@ bool DX8Wrapper::Init(void * hwnd, bool lite)
 	//CurrentFogColor;
 
 	target.InitVulkan(hwnd);
-#ifdef TODO_VULKAN
+	WWVK_PopulatePipeline(&target, pipelineCol_);
+#ifdef INFO_VULKAN
 	D3DInterface = NULL;
 	D3DDevice = NULL;
 
@@ -341,7 +342,7 @@ void DX8Wrapper::Shutdown(void)
 #ifdef TODO_VULKAN
 	if (D3DDevice) {
 
-		Set_Render_Target ((IDirect3DSurface9 *)NULL);
+		Set_Render_Target ();
 		Release_Device();
 	}
 
@@ -1162,6 +1163,8 @@ bool DX8Wrapper::Toggle_Windowed(void)
 
 void DX8Wrapper::Set_Swap_Interval(int swap)
 {
+	//I'm just going to use a set number of swap chains
+#if INFO_VULKAN
 	switch (swap) {
 		case 0: _PresentParameters.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE; break;
 		case 1: _PresentParameters.PresentationInterval = D3DPRESENT_INTERVAL_ONE ; break;
@@ -1171,6 +1174,7 @@ void DX8Wrapper::Set_Swap_Interval(int swap)
 	}
 
 	Reset_Device();
+#endif
 }
 
 int DX8Wrapper::Get_Swap_Interval(void)
@@ -1180,8 +1184,8 @@ int DX8Wrapper::Get_Swap_Interval(void)
 
 bool DX8Wrapper::Has_Stencil(void)
 {
-	bool has_stencil = (_PresentParameters.AutoDepthStencilFormat == D3DFMT_D24S8 ||
-						_PresentParameters.AutoDepthStencilFormat == D3DFMT_D24X4S4);
+	bool has_stencil = true;//(_PresentParameters.AutoDepthStencilFormat == D3DFMT_D24S8 ||
+					//	_PresentParameters.AutoDepthStencilFormat == D3DFMT_D24X4S4);
 	return has_stencil;
 }
 
@@ -2254,6 +2258,7 @@ void DX8Wrapper::Draw(
 //
 // ----------------------------------------------------------------------------
 
+#ifdef TODO_VULKAN
 void DX8Wrapper::Draw_Triangles(
 	unsigned buffer_type,
 	unsigned short start_index,
@@ -2298,6 +2303,7 @@ void DX8Wrapper::Draw_Strip(
 {
 	Draw(D3DPT_TRIANGLESTRIP,start_index,polygon_count,min_vertex_index,vertex_count);
 }
+#endif
 
 // ----------------------------------------------------------------------------
 //
@@ -3396,40 +3402,11 @@ void DX8Wrapper::Set_Render_Target_With_Z
 	IsRenderToTexture = true;
 }
 
+
+void
+DX8Wrapper::Set_Render_Target()
+{
 #ifdef TODO_VULKAN
-void
-DX8Wrapper::Set_Render_Target(IDirect3DSwapChain9 *swap_chain)
-{
-	DX8_THREAD_ASSERT();
-	WWASSERT (swap_chain != NULL);
-
-	//
-	//	Get the back buffer for the swap chain
-	//
-	LPDIRECT3DSURFACE9 render_target = NULL;
-	swap_chain->GetBackBuffer (0, D3DBACKBUFFER_TYPE_MONO, &render_target);
-
-	//
-	//	Set this back buffer as the render targer
-	//
-	Set_Render_Target (render_target, true);
-
-	//
-	//	Release our hold on the back buffer
-	//
-	if (render_target != NULL) {
-		render_target->Release ();
-		render_target = NULL;
-	}
-
-	IsRenderToTexture = false;
-
-	return ;
-}
-
-void
-DX8Wrapper::Set_Render_Target(IDirect3DSurface9 *render_target, bool use_default_depth_buffer)
-{
 //#ifndef _XBOX
 	DX8_THREAD_ASSERT();
 	DX8_Assert();
@@ -3545,130 +3522,17 @@ DX8Wrapper::Set_Render_Target(IDirect3DSurface9 *render_target, bool use_default
 //		depth_buffer = NULL;
 //	}
 
+#endif
 	IsRenderToTexture = false;
 	return ;
 //#endif // XBOX
 }
-#endif
 
 
 //**********************************************************************************************
 //! Set render target with depth stencil buffer
 /*! KJM
 */
-#ifdef TODO_VULKAN
-void DX8Wrapper::Set_Render_Target
-(
-	IDirect3DSurface9* render_target, 
-	IDirect3DSurface9* depth_buffer 
-)
-{
-//#ifndef _XBOX
-	DX8_THREAD_ASSERT();
-	DX8_Assert();
-
-	//
-	//	Should we restore the default render target set a new one?
-	//
-	if (render_target == NULL || render_target == DefaultRenderTarget) 
-	{
-		// If there is currently a custom render target, default must NOT be NULL.
-		if (CurrentRenderTarget) 
-		{
-			WWASSERT(DefaultRenderTarget!=NULL);
-		}
-
-		//
-		//	Restore the default render target
-		//
-		if (DefaultRenderTarget != NULL) 
-		{
-			DX8CALL(SetRenderTarget (1, DefaultRenderTarget));
-			DX8Wrapper::_Get_D3D_Device8()->SetDepthStencilSurface(DefaultDepthBuffer);
-			DefaultRenderTarget->Release ();
-			DefaultRenderTarget = NULL;
-			if (DefaultDepthBuffer) 
-			{
-				DefaultDepthBuffer->Release ();
-				DefaultDepthBuffer = NULL;
-			}
-		}
-
-		//
-		//	Release our hold on the "current" render target
-		//
-		if (CurrentRenderTarget != NULL) 
-		{
-			CurrentRenderTarget->Release ();
-			CurrentRenderTarget = NULL;
-		}
-
-		if (CurrentDepthBuffer!=NULL)
-		{
-			CurrentDepthBuffer->Release();
-			CurrentDepthBuffer=NULL;
-		}
-	}
-	else if (render_target != CurrentRenderTarget) 
-	{
-		WWASSERT(DefaultRenderTarget==NULL);
-
-		//
-		//	We'll need the depth buffer later...
-		//
-		if (DefaultDepthBuffer == NULL) 
-		{
-//		IDirect3DSurface9 *depth_buffer = NULL;
-			DX8CALL(GetDepthStencilSurface (&DefaultDepthBuffer));
-		}
-
-		//
-		//	Get a pointer to the default render target (if necessary)
-		//
-		if (DefaultRenderTarget == NULL) 
-		{
-			DX8CALL(GetRenderTarget (1, &DefaultRenderTarget));
-		}
-
-		//
-		//	Release our hold on the old "current" render target
-		//
-		if (CurrentRenderTarget != NULL) 
-		{
-			CurrentRenderTarget->Release ();
-			CurrentRenderTarget = NULL;
-		}
-
-		if (CurrentDepthBuffer!=NULL)
-		{
-			CurrentDepthBuffer->Release();
-			CurrentDepthBuffer=NULL;
-		}
-
-		//
-		//	Keep a copy of the current render target (for housekeeping)
-		//
-		CurrentRenderTarget = render_target;
-		CurrentDepthBuffer = depth_buffer;
-		WWASSERT (CurrentRenderTarget != NULL);
-		if (CurrentRenderTarget != NULL) 
-		{
-			CurrentRenderTarget->AddRef ();
-			CurrentDepthBuffer->AddRef();
-
-			//
-			//	Switch render targets
-			//
-			DX8CALL(SetRenderTarget (1, CurrentRenderTarget));
-			DX8Wrapper::_Get_D3D_Device8()->SetDepthStencilSurface(CurrentDepthBuffer);
-		}
-	}
-
-	IsRenderToTexture=true;
-//#endif // XBOX
-}
-#endif
-
 #ifdef TODO_VULKAN
 void DX8Wrapper::Flush_DX8_Resource_Manager(unsigned int bytes)
 {

@@ -98,7 +98,7 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 {
 	// D3DTexture is our texture;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	IDirect3DSurface9 *surface_level;
 	D3DSURFACE_DESC surface_desc;
 	D3DLOCKED_RECT locked_rect;
@@ -1085,7 +1085,7 @@ understood by w3d. */
 //=============================================================================
 void CloudMapTerrainTextureClass::restore(void)
 {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
 	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
 	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
@@ -1128,6 +1128,18 @@ void CloudMapTerrainTextureClass::restore(void)
 			DX8Wrapper::Set_DX8_Texture(i, NULL);
 		}
 	}
+#else
+
+	if (TheGlobalData && !TheGlobalData->m_multiPassTerrain)
+	{
+		///@todo: Remove 8-Stage Nvidia hack after drivers are fixed.
+		//This method is a backdoor specific to Nvidia based cards.  It will fail on
+		//other hardware.  Allows single pass blend of 2 textures and post modulate diffuse.
+		Int i;
+		for (i = 0; i < 8; i++) {
+			DX8Wrapper::Set_DX8_Texture(i, {});
+		}
+	}
 #endif
 }
 
@@ -1163,7 +1175,7 @@ void ScorchTextureClass::Apply(unsigned int stage)
 {
 	// Do the base apply.
 	TextureClass::Apply(stage);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	// Setup bilinear or trilinear filtering as specified in global data.
 	if (TheGlobalData && TheGlobalData->m_bilinearTerrainTex || TheGlobalData->m_trilinearTerrainTex) {
 		DX8Wrapper::Set_DX8_Sampler_Stage_State( stage, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);

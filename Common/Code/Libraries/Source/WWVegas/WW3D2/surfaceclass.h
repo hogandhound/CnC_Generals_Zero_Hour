@@ -46,6 +46,7 @@
 #include "ww3dformat.h"
 #include "refcount.h"
 #include <WWVKStructs.h>
+#include <vector>
 
 struct IDirect3DSurface9;
 class Vector2i;
@@ -120,7 +121,7 @@ class SurfaceClass : public W3DMPO, public RefCountClass
 		bool Is_Transparent_Column(unsigned int column);		
 
 		// makes a copy of the surface into a byte array
-		std::vector<uint8_t> CreateCopy(int *width,int *height,bool flip=false);
+		std::vector<uint8_t> CreateCopy(int *width,int *height, int* size, bool flip=false);
 
 			// For use by TextureClass:
 		std::vector<uint8_t>& Peek_D3D_Surface(void) {

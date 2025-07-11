@@ -315,8 +315,8 @@ static void Log_Textures(bool inited,unsigned& total_count, unsigned& total_mem)
 	for (ite.First();!ite.Is_Done();ite.Next()) {
 		TextureClass * tex=ite.Peek_Value();
 		if (tex->Is_Initialized()!=inited) continue;
-
-#ifdef TODO_VULKAN
+		//Not planning on actually implementing this
+#ifdef INFO_VULKAN
 		D3DSURFACE_DESC desc;
 		IDirect3DTexture9* d3d_texture=tex->Peek_D3D_Texture();
 		if (!d3d_texture) continue;

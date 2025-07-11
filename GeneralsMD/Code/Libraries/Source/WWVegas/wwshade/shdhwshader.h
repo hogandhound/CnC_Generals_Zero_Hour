@@ -73,7 +73,7 @@ protected:
 	void Preprocess_And_Assemble_Shader_From_File
 	(
 		char*				file_name
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		,
 		LPD3DXBUFFER*	constants,
 		LPD3DXBUFFER*	shader_code
@@ -83,7 +83,7 @@ protected:
 	T* Shader;
 };
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 class ShdHWVertexShader : public ShdHWShader<IDirect3DVertexShader9>
 {
 public:

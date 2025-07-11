@@ -26,6 +26,7 @@
 #include "colorspace.h"
 #include <string.h>
 #include <ddraw.h>
+#include <VkTexture.h>
 
 // ----------------------------------------------------------------------------
 
@@ -356,7 +357,7 @@ WWINLINE static unsigned short ARGB8888_To_RGB565(unsigned argb_)
 void DDSFileClass::Copy_Level_To_Surface(unsigned level,VK::Surface& d3d_surface,const Vector3& hsv_shift)
 {
 	WWASSERT(!d3d_surface.buffer.empty());
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	// Verify that the destination surface size matches the source surface size
 	D3DSURFACE_DESC surface_desc;
 	DX8_ErrorCode(d3d_surface->GetDesc(&surface_desc));
@@ -376,6 +377,13 @@ void DDSFileClass::Copy_Level_To_Surface(unsigned level,VK::Surface& d3d_surface
 
 	// Finally, unlock the surface
 	DX8_ErrorCode(d3d_surface->UnlockRect());
+#else
+	Copy_Level_To_Surface(level, D3DFormat_To_WW3DFormat(d3d_surface.format),
+		d3d_surface.width,
+		d3d_surface.height,
+		reinterpret_cast<unsigned char*>(d3d_surface.buffer.data()),
+		d3d_surface.width * VK::SizeOfFormat(d3d_surface.format),
+		hsv_shift);
 #endif
 }
 

@@ -134,12 +134,36 @@ W3DBridge::~W3DBridge(void)
 /** Renders the bride.  It is assumed that the shared vertex and index buffers
 are already set.  */
 //=============================================================================
-void W3DBridge::renderBridge(Bool wireframe)
+void W3DBridge::renderBridge(Bool wireframe, VK::Buffer index, VK::Buffer vertex)
 {
 	if (m_visible && m_numPolygons && m_numVertex) {
 		if (!wireframe) DX8Wrapper::Set_Texture(0,m_bridgeTexture);
+		auto baseTexture = DX8Wrapper::Get_Texture(0);
+		auto cloudTexture = DX8Wrapper::Get_Texture(1);
 		// Draw all the bridges.
+		WWVKDSV;
+		Matrix4x4 world;
+		DX8Wrapper::Get_Transform(VkTS::WORLD, world);
+		if (!wireframe && cloudTexture)
+		{
+			WWVK_UpdateFVF_NDUV_CAMUV_NOLDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &baseTexture->Peek_D3D_Texture(),
+				&cloudTexture->Peek_D3D_Texture(), DX8Wrapper::UboView(), DX8Wrapper::UboProj());
+			WWVK_DrawFVF_NDUV_CAMUV_NOL(WWVKPIPES, WWVKRENDER.currentCmd, sets, index.buffer, m_numPolygons, 
+				VK_INDEX_TYPE_UINT16, vertex.buffer, 0, (WorldMatrix*)&world);
+		}
+		else
+		{
+			WorldMatrixUvt push;
+			memcpy(push.world, &world, sizeof(float) * 16);
+			DX8Wrapper::Get_Transform(VkTS::TEXTURE0, *(Matrix4x4*)&push.uvt);
+			WWVK_UpdateFVF_NDUV_UVT_NOLDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &baseTexture->Peek_D3D_Texture(),
+				DX8Wrapper::UboView(), DX8Wrapper::UboProj());
+			WWVK_DrawFVF_NDUV_UVT_NOL(WWVKPIPES, WWVKRENDER.currentCmd, sets, index.buffer, m_numPolygons,
+				VK_INDEX_TYPE_UINT16, vertex.buffer, 0, &push);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(	m_firstIndex, m_numPolygons, m_firstVertex,	m_numVertex);
+#endif
 	}
 }
 
@@ -1176,7 +1200,7 @@ void W3DBridgeBuffer::drawBridges(CameraClass * camera, Bool wireframe, TextureC
 
 	for (curBridge=0; curBridge<m_numBridges; curBridge++) {
 		if (m_bridges[curBridge].isEnabled() && m_bridges[curBridge].isVisible()) {
-			m_bridges[curBridge].renderBridge(wireframe);
+			m_bridges[curBridge].renderBridge(wireframe, m_indexBridge->Get_DX8_Index_Buffer(), m_vertexBridge->Get_DX8_Vertex_Buffer());
 		}
 	}
 
@@ -1200,7 +1224,7 @@ void W3DBridgeBuffer::drawBridges(CameraClass * camera, Bool wireframe, TextureC
 		for (curBridge=0; curBridge<m_numBridges; curBridge++) {
 			if (m_bridges[curBridge].isEnabled() && m_bridges[curBridge].isVisible()) {
 				//Pretend we're in wireframe so function doesn't reset the shroud texture.
-				m_bridges[curBridge].renderBridge(TRUE);
+				m_bridges[curBridge].renderBridge(TRUE, m_indexBridge->Get_DX8_Index_Buffer(), m_vertexBridge->Get_DX8_Vertex_Buffer());
 			}
 		}
 		W3DShaderManager::resetShader(W3DShaderManager::ST_SHROUD_TEXTURE);

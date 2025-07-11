@@ -983,7 +983,9 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 		}
 		else
 		{
+#ifdef TODO_VULKAN
 			DX8Wrapper::Draw_Triangles (0, delta / verticesperprimitive, 0, delta);
+#endif
 		}
 		
 		current+=delta;
@@ -1899,7 +1901,11 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 			if ( sort ) 
 					SortingRendererClass::Insert_Triangles (0, delta / verticesperprimitive, 0, delta);
 			else
-				DX8Wrapper::Draw_Triangles (0, delta / verticesperprimitive, 0, delta);
+			{
+#ifdef TODO_VULKAN
+				DX8Wrapper::Draw_Triangles(0, delta / verticesperprimitive, 0, delta);
+#endif
+			}
 			
 
 			current+=delta;

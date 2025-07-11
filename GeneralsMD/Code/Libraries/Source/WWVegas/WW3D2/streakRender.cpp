@@ -1393,7 +1393,9 @@ void StreakRendererClass::RenderStreak
 		} 
 		else 
 		{
+#ifdef TODO_VULKAN
 			DX8Wrapper::Draw_Triangles(0,triangleIndex,0,vnum);
+#endif
 		}
 		
 	}	// Chunking loop

@@ -221,7 +221,9 @@ void SortingRendererClass::Insert_Triangles(
 	unsigned short vertex_count)
 {
 	if (!WW3D::Is_Sorting_Enabled()) {
+#ifdef TODO_VULKAN
 		DX8Wrapper::Draw_Triangles(start_index,polygon_count,min_vertex_index,vertex_count);
+#endif
 		return;
 	}
 
@@ -561,11 +563,13 @@ void SortingRendererClass::Flush_Sorting_Pool()
 			SortingNodeStruct* state=overlapping_nodes[node_id];
 			Apply_Render_State(state->sorting_state);
 
+#ifdef TODO_VULKAN
 			DX8Wrapper::Draw_Triangles(
 				start_index*3,
 				count_to_render,
 				state->min_vertex_index,
 				state->vertex_count);
+#endif
 
 			count_to_render=0;
 			start_index=i;
@@ -579,11 +583,13 @@ void SortingRendererClass::Flush_Sorting_Pool()
 		SortingNodeStruct* state=overlapping_nodes[node_id];
 		Apply_Render_State(state->sorting_state);
 
+#ifdef TODO_VULKAN
 		DX8Wrapper::Draw_Triangles(
 			start_index*3,
 			count_to_render,
 			state->min_vertex_index,
 			state->vertex_count);
+#endif
 	}
 
 	// Release all references and return nodes back to the clean list for the frame...
@@ -619,7 +625,9 @@ void SortingRendererClass::Flush()
 		}
 		else {
 			DX8Wrapper::Set_Render_State(state->sorting_state);
+#ifdef TODO_VULKAN
 			DX8Wrapper::Draw_Triangles(state->start_index,state->polygon_count,state->min_vertex_index,state->vertex_count);
+#endif
 			DX8Wrapper::Release_Render_State();
 			Release_Refs(state);
 			clean_list.Add_Head(state);
@@ -686,7 +694,9 @@ void SortingRendererClass::Insert_VolumeParticle(
 	unsigned short layerCount)
 {
 	if (!WW3D::Is_Sorting_Enabled()) {
+#ifdef TODO_VULKAN
 		DX8Wrapper::Draw_Triangles(start_index,polygon_count,min_vertex_index,vertex_count);
+#endif
 		return;
 	}
 

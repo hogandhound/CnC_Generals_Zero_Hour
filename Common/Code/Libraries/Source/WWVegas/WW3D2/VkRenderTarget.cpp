@@ -86,8 +86,8 @@ void VkRenderTarget::BeginFramebuffer(VkExtent2D extent, VkFormat imageFormat)
 
 	VK::CreateTexture(this, fbo.image, extent.width, extent.height, VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, 0, imageFormat);
 	fbo.image.imageView = createImageView(fbo.image.image, imageFormat);
-	VK::CreateTexture(this, fbo.depth, extent.width, extent.height, (uint32_t)0, 0, VK_FORMAT_D32_SFLOAT);
-	fbo.depth.imageView = createImageView(fbo.depth.image, VK_FORMAT_D32_SFLOAT);
+	VK::CreateTexture(this, fbo.depth, extent.width, extent.height, (uint32_t)0, 0, VK_FORMAT_D32_SFLOAT_S8_UINT);
+	fbo.depth.imageView = createImageView(fbo.depth.image, VK_FORMAT_D32_SFLOAT_S8_UINT);
 	
 	VkImageView attachments[] = {
 		fbo.image.imageView, fbo.depth.imageView
@@ -896,7 +896,7 @@ void VkRenderTarget::createSwapChain(SwapChainSupportDetails swapChainSupport, V
 	for (uint32_t i = 0; i < imageCount; ++i)
 	{
 		swapChainFBOs[i].image.image = images[i];
-		VK::CreateTexture(this, swapChainFBOs[i].depth, extent.width, extent.height, (uint32_t)0, 0, VK_FORMAT_D32_SFLOAT);
+		VK::CreateTexture(this, swapChainFBOs[i].depth, extent.width, extent.height, (uint32_t)0, 0, VK_FORMAT_D32_SFLOAT_S8_UINT);
 	}
 
 	swapChainImageFormat = surfaceFormat.format;
@@ -1110,7 +1110,7 @@ VkImageView VkRenderTarget::createImageView(VkImage image, VkFormat format) {
 	viewInfo.image = image;
 	viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
 	viewInfo.format = format;
-	viewInfo.subresourceRange.aspectMask = format == VK_FORMAT_D32_SFLOAT? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
+	viewInfo.subresourceRange.aspectMask = format == VK_FORMAT_D32_SFLOAT_S8_UINT ? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
 	viewInfo.subresourceRange.baseMipLevel = 0;
 	viewInfo.subresourceRange.levelCount = 1;
 	viewInfo.subresourceRange.baseArrayLayer = 0;
@@ -1197,7 +1197,7 @@ void VkRenderTarget::createRenderPass() {
 	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
 	VkAttachmentDescription depthAttachment{};
-	depthAttachment.format = VK_FORMAT_D32_SFLOAT;
+	depthAttachment.format = VK_FORMAT_D32_SFLOAT_S8_UINT;
 	depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 	depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 	depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;

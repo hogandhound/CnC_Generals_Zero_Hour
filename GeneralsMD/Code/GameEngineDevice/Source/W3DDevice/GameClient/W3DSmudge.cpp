@@ -84,7 +84,7 @@ void W3DSmudgeManager::ReAcquireResources(void)
 {
 	ReleaseResources();
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	SurfaceClass *surface=DX8Wrapper::_Get_DX8_Back_Buffer();
 	SurfaceClass::SurfaceDescription surface_desc;
 
@@ -97,6 +97,10 @@ void W3DSmudgeManager::ReAcquireResources(void)
 
 	m_backBufferWidth = surface_desc.Width;
 	m_backBufferHeight = surface_desc.Height;
+#else
+	m_backBufferWidth = WWVKRENDER.swapChainExtent.width;
+	m_backBufferHeight = WWVKRENDER.swapChainExtent.height;
+#endif
 
 	m_indexBuffer=NEW_REF(DX8IndexBufferClass,(SMUDGE_DRAW_SIZE*4*3));	//allocate 4 triangles per smudge, each with 3 indices.
 
@@ -134,7 +138,6 @@ void W3DSmudgeManager::ReAcquireResources(void)
 			ib+=12;
 		}
 	}
-#endif
 }
 
 /*Copies a portion of the current render target into a specified buffer*/

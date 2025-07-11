@@ -71,7 +71,7 @@ public:
 	virtual unsigned					Get_Vertex_Stream_Count() const;
 	virtual unsigned					Get_Vertex_Size(unsigned stream) const;
 	virtual bool						Use_HW_Vertex_Processing() const {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		return Vertex_Shader.Is_Using_Hardware();
 #else
 		return true;

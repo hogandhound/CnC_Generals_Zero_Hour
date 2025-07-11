@@ -1193,7 +1193,9 @@ void SegLineRendererClass::Render
 		if (sorting) {	
 			SortingRendererClass::Insert_Triangles(obj_sphere,0,tidx,0,vnum);
 		} else {
+#ifdef TODO_VULKAN
 			DX8Wrapper::Draw_Triangles(0,tidx,0,vnum);
+#endif
 		}
 		
 		REF_PTR_RELEASE(mat);

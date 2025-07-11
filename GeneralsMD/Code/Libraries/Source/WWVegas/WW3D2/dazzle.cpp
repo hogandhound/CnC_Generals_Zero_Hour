@@ -1232,7 +1232,9 @@ void DazzleRenderObjClass::Render_Dazzle(CameraClass* camera)
 		DX8Wrapper::Set_Texture(0,types[type]->Get_Halo_Texture());
 		SphereClass sphere(Get_Position(),0.1f);
 
+#ifdef TODO_VULKAN
 		DX8Wrapper::Draw_Triangles(0,halo_poly_count,0,vertex_count);
+#endif
 	}
 
 	if (dazzle_poly_count) {
@@ -1240,7 +1242,9 @@ void DazzleRenderObjClass::Render_Dazzle(CameraClass* camera)
 		DX8Wrapper::Set_Shader(default_dazzle_shader);
 		DX8Wrapper::Set_Texture(0,types[type]->Get_Dazzle_Texture());
 		SphereClass sphere(Vector3(0.0f,0.0f,0.0f),0.0f);
+#ifdef TODO_VULKAN
 		DX8Wrapper::Draw_Triangles(0,dazzle_poly_count,0,vertex_count);
+#endif
 	}
 
 	if (lensflare_poly_count) {
@@ -1248,7 +1252,9 @@ void DazzleRenderObjClass::Render_Dazzle(CameraClass* camera)
 		DX8Wrapper::Set_Shader(default_dazzle_shader);
 		DX8Wrapper::Set_Texture(0,lensflare->Get_Texture());
 		SphereClass sphere(Vector3(0.0f,0.0f,0.0f),0.0f);
+#ifdef TODO_VULKAN
 		DX8Wrapper::Draw_Triangles(0,lensflare_poly_count,0,vertex_count);
+#endif
 	}
 
 	DX8Wrapper::Set_Transform(VkTS::PROJECTION,old_projection_transform);

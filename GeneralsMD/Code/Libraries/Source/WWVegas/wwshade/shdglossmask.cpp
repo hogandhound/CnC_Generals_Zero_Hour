@@ -198,13 +198,21 @@ Shd6GlossMaskClass::Shd6GlossMaskClass(const ShdDefClass* def)
 	const Vector3& s=Definition->Get_Specular();
 	Specular.Set(s.X,s.Y,s.Z,1.0f);
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	Material=new D3DMATERIAL9;
 	memset(Material,0,sizeof(D3DMATERIAL9));
 	Material->Ambient.r=a.X; Material->Ambient.g=a.Y; Material->Ambient.b=a.Z; 
 	Material->Diffuse.r=d.X; Material->Diffuse.g=d.Y; Material->Diffuse.b=d.Z; 
 	Material->Specular.r=s.X; Material->Specular.g=s.Y; Material->Specular.b=s.Z;
 	Material->Power=20;
+#else
+
+	Material = new DX8Material();
+	memset(Material, 0, sizeof(DX8Material));
+	Material->Ambient[0] = a.X; Material->Ambient[1] = a.Y; Material->Ambient[2] = a.Z;
+	Material->Diffuse[0] = d.X; Material->Diffuse[1] = d.Y; Material->Diffuse[2] = d.Z;
+	Material->Specular[0] = s.X; Material->Specular[1] = s.Y; Material->Specular[2] = s.Z;
+	Material->Shininess[0] = 20;
 #endif
 }
 
@@ -228,7 +236,7 @@ void Shd6GlossMaskClass::Shutdown()
 */
 void Shd6GlossMaskClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	// fixed function uses pass through by default
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_PASSTHRU);
 
@@ -272,7 +280,9 @@ void Shd6GlossMaskClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_DIFFUSEMATERIALSOURCE,D3DMCS_MATERIAL);
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_SPECULARMATERIALSOURCE,D3DMCS_MATERIAL);
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_EMISSIVEMATERIALSOURCE,D3DMCS_MATERIAL);
+#endif
 
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Material(Material);
 #endif
 }

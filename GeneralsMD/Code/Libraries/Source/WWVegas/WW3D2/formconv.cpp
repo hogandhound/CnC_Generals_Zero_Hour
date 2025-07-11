@@ -208,6 +208,7 @@ WW3DZFormat D3DFormat_To_WW3DZFormat(VkFormat d3d_format)
 {
 	if (VK_to_WW3DZFormat.find(d3d_format) != VK_to_WW3DZFormat.end())
 		return VK_to_WW3DZFormat[d3d_format];
+	return WW3D_ZFORMAT_UNKNOWN;
 }
 
 //**********************************************************************************************

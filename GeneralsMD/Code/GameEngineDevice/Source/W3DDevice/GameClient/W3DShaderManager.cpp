@@ -651,12 +651,9 @@ Bool ScreenBWFilterDOT3::postRender(enum FilterModes mode, Coord2D& scrollDelta,
 
 	pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANS_LIT_TEX_VERTEX));
 #else
-	Matrix4x4 ident(true);
 
-	VK::Buffer vbo;
 	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANS_LIT_TEX_VERTEX) * 4, v, vbo);
 
-	std::vector<VkDescriptorSet> sets;
 	WWVK_UpdateFVF_DUV_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
 	WWVK_DrawFVF_DUV_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
 	WWVKRENDER.PushSingleFrameBuffer(vbo);
@@ -3193,7 +3190,7 @@ ChipsetType W3DShaderManager::getChipset( void )
 		return (ChipsetType)TheGlobalData->m_chipSetType;
 
 	ChipsetType chip= DC_GENERIC_PIXEL_SHADER_2_0;
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN //Don't bother
 	IDirect3D9* d3d8Interface=DX8Wrapper::_Get_D3D8();
 
 	if (d3d8Interface && DX8Wrapper::_Get_D3D_Device8())

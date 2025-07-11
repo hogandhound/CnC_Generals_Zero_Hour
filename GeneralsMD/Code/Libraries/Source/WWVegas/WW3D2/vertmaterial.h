@@ -251,9 +251,9 @@ private:
 	_D3DMATERIAL9 *				MaterialOld;
 #endif
 	unsigned int					Flags;
-	unsigned int					AmbientColorSource;
-	unsigned int					EmissiveColorSource;
-	unsigned int					DiffuseColorSource;
+	ColorSourceType	 AmbientColorSource;
+	ColorSourceType EmissiveColorSource;
+	ColorSourceType DiffuseColorSource;
 	StringClass						Name;
 	TextureMapperClass *	Mapper[MeshBuilderClass::MAX_STAGES];
 	unsigned int					UVSource[MeshBuilderClass::MAX_STAGES];

@@ -698,7 +698,9 @@ void Render2DClass::Render(void)
 	}
 	else
 		DX8Wrapper::Set_Shader(Shader);
+#ifdef TODO_VULKAN
 	DX8Wrapper::Draw_Triangles(0,Indices.Count()/3,0,Vertices.Count());	
+#endif
 
 	DX8Wrapper::Set_Transform(VkTS::VIEW,view);
 	DX8Wrapper::Set_Transform(VkTS::PROJECTION,proj);

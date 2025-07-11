@@ -597,7 +597,9 @@ flush_particles:
 		if (numberInBatch)
 		{
 			DX8Wrapper::Set_Vertex_Buffer(vb_access);
+#ifdef TODO_VULKAN
 			DX8Wrapper::Draw_Triangles(	0,numberInBatch*2, 0, numberInBatch*4);	
+#endif
 			totalPart -= numberInBatch;
 		}
 	}

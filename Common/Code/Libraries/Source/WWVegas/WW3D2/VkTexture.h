@@ -4,12 +4,14 @@
 #include "VkRenderTarget.h"
 namespace VK
 {
-    uint32_t SizeOfFormat(VkFormat f)
+    static uint32_t SizeOfFormat(VkFormat f)
     {
         switch (f)
         {
         case VK_FORMAT_R32G32B32A32_SFLOAT:
             return 4 * sizeof(float);
+        case VK_FORMAT_D32_SFLOAT_S8_UINT:
+            return 5 * sizeof(uint8_t);
         case VK_FORMAT_R8G8B8A8_UINT:
         case VK_FORMAT_D32_SFLOAT:
         case VK_FORMAT_D24_UNORM_S8_UINT:

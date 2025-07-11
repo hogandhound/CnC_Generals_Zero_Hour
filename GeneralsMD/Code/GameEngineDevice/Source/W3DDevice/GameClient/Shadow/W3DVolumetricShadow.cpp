@@ -1405,11 +1405,12 @@ void W3DVolumetricShadow::RenderMeshVolume(Int meshIndex, Int lightIndex, const 
 
 	///@todo: W3D always does transpose on all of matrix sets.  Slow???  Better to hack view matrix.
 	DX8Wrapper::Set_Transform(VkTS::WORLD,mWorld.Transpose());
+	mWorld = mWorld.Transpose();
 	
 	W3DBufferManager::W3DVertexBufferSlot *vbSlot=m_shadowVolumeVB[lightIndex][ meshIndex ];
 	if (!vbSlot)
 		return;
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	if (vbSlot->m_VB->m_DX8VertexBuffer->Get_DX8_Vertex_Buffer() != lastActiveVertexBuffer)
 	{	lastActiveVertexBuffer=vbSlot->m_VB->m_DX8VertexBuffer->Get_DX8_Vertex_Buffer();
 		m_pDev->SetStreamSource(0,lastActiveVertexBuffer, 0,
@@ -1425,14 +1426,19 @@ void W3DVolumetricShadow::RenderMeshVolume(Int meshIndex, Int lightIndex, const 
 
 	DEBUG_ASSERTCRASH(ibSlot->m_size >= numIndex,("Overflowing Shadow Index Buffer Slot"));
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	m_pDev->SetIndices(ibSlot->m_IB->m_DX8IndexBuffer->Get_DX8_Index_Buffer());
 #endif
 
 	if (DX8Wrapper::_Is_Triangle_Draw_Enabled())
 	{
 		Debug_Statistics::Record_DX8_Polys_And_Vertices(numPolys,numVerts,ShaderClass::_PresetOpaqueShader);
-#ifdef TODO_VULKAN
+		std::vector<VkDescriptorSet> sets;
+		WWVK_UpdateVolumeShadowDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		WWVK_DrawVolumeShadow(WWVKPIPES, WWVKRENDER.currentCmd, sets, 
+			ibSlot->m_IB->m_DX8IndexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, VK_INDEX_TYPE_UINT16, 
+			vbSlot->m_VB->m_DX8VertexBuffer->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*) & mWorld);
+#ifdef INFO_VULKAN
 		m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, vbSlot->m_start,0,numVerts,ibSlot->m_start,numPolys);
 #endif
 	}
@@ -1446,7 +1452,7 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 	std::vector<UnsignedShort> pvIndices;
 
 	//Get D3D Device used by W3D for quicker access.
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 	if (!m_pDev)
@@ -1470,7 +1476,7 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 	if( numVerts == 0 || numPolys == 0 )
 		return;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	if (nShadowVertsInBuf > (SHADOW_VERTEX_SIZE-numVerts))	//check if room for model verts
 	{	//flush the buffer by drawing the contents and re-locking again
 		if (shadowVertexBufferD3D->Lock(0,numVerts*sizeof(SHADOW_DYNAMIC_VOLUME_VERTEX),(void**)&pvVertices,D3DLOCK_DISCARD) != D3D_OK)
@@ -1503,7 +1509,7 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 	DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(shadowVertexBufferD3D);
 	VkBufferTools::CreateVertexBuffer(&DX8Wrapper::_GetRenderTarget(), numVerts * sizeof(SHADOW_DYNAMIC_VOLUME_VERTEX),
 		pvVertices.data(), shadowVertexBufferD3D);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	shadowVertexBufferD3D->Unlock();
 
 	if (nShadowIndicesInBuf > (SHADOW_INDEX_SIZE-numIndex))	//check if room for model verts
@@ -1534,25 +1540,31 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 		pvIndices.data(), shadowIndexBufferD3D);
 
 
-#ifdef TODO_VULKAN
+	Matrix4x4 mWorld(*meshXform);
+	mWorld = mWorld.Transpose();
+#ifdef INFO_VULKAN
 	shadowIndexBufferD3D->Unlock();
 
 	m_pDev->SetIndices(shadowIndexBufferD3D);
-	
-	Matrix4x4 mWorld(*meshXform);
 
-	m_pDev->SetTransform(VkTS::WORLD,(_DirectX::XMMATRIX *)&mWorld.Transpose());
+	m_pDev->SetTransform(VkTS::WORLD,(_DirectX::XMMATRIX *)&mWorld);
 
 	if (shadowVertexBufferD3D != lastActiveVertexBuffer)
 	{	m_pDev->SetStreamSource(0,shadowVertexBufferD3D, 0, sizeof(SHADOW_DYNAMIC_VOLUME_VERTEX));
 		lastActiveVertexBuffer = shadowVertexBufferD3D;
 	}
 #endif
+	
 
 	if (DX8Wrapper::_Is_Triangle_Draw_Enabled())
 	{
 		Debug_Statistics::Record_DX8_Polys_And_Vertices(numPolys,numVerts,ShaderClass::_PresetOpaqueShader);
-#ifdef TODO_VULKAN
+		std::vector<VkDescriptorSet> sets;
+		WWVK_UpdateVolumeShadowDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		WWVK_DrawVolumeShadow(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			shadowIndexBufferD3D.buffer, numPolys * 3, VK_INDEX_TYPE_UINT16,
+			shadowVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
+#ifdef INFO_VULKAN
 		m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, nShadowStartBatchVertex,0,numVerts,nShadowStartBatchIndex,numPolys);
 #endif
 	}
@@ -1567,7 +1579,7 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 /** Debug function to draw bounding boxes around shadow volumes */
 void W3DVolumetricShadow::RenderMeshVolumeBounds(Int meshIndex, Int lightIndex, const Matrix3D *meshXform)
 {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN //This is for debugging and isn't actually hit, so we don't need to implement it
 	Geometry *geometry;
 	Int numVerts, numPolys, numIndex;
 	SHADOW_DYNAMIC_VOLUME_VERTEX* pvVertices;
@@ -3409,14 +3421,15 @@ void W3DVolumetricShadow::resetSilhouette( Int meshIndex )
 // ============================================================================
 void W3DVolumetricShadowManager::renderStencilShadows( void )
 {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 	if (!m_pDev)
 		return;	//need device to render anything.
+#endif
 
 	struct _TRANSLITVERTEX {
-	    D3DXVECTOR4 p;
+	    DirectX::XMVECTOR p;
 		DWORD color;   // diffuse color    
 	} v[4];
 
@@ -3426,10 +3439,10 @@ void W3DVolumetricShadowManager::renderStencilShadows( void )
 	width=TheTacticalView->getWidth();
 	height=TheTacticalView->getHeight();
 
-    v[0].p = D3DXVECTOR4( xpos+width, ypos+height, 0.0f, 1.0f );
-    v[1].p = D3DXVECTOR4( xpos+width, 0, 0.0f, 1.0f );
-    v[2].p = D3DXVECTOR4(  xpos, ypos+height, 0.0f, 1.0f );
-    v[3].p = D3DXVECTOR4(  xpos,  0, 0.0f, 1.0f );
+	v[0].p = { (float)xpos + width, (float)ypos + height, 0.0f, 1.0f };
+	v[1].p = { (float)xpos + width, 0, 0.0f, 1.0f };
+	v[2].p = { (float)xpos, (float)ypos + height, 0.0f, 1.0f };
+	v[3].p = { (float)xpos,  0, 0.0f, 1.0f };
     v[0].color = TheW3DShadowManager->getShadowColor();
     v[1].color = TheW3DShadowManager->getShadowColor();
     v[2].color = TheW3DShadowManager->getShadowColor();
@@ -3437,6 +3450,7 @@ void W3DVolumetricShadowManager::renderStencilShadows( void )
 
 	//draw polygons like this is very inefficient but for only 2 triangles, it's
 	//not worth bothering with index/vertex buffers.
+#ifdef INFO_VULKAN
 	m_pDev->SetFVF(VKFVF_XYZRHW | VKFVF_DIFFUSE);
 
 	// Use alpha blending to draw the transparent shadow
@@ -3460,8 +3474,16 @@ void W3DVolumetricShadowManager::renderStencilShadows( void )
 	//pixels and only use the lower bits for shadow calculations.
 	m_pDev->SetRenderState( D3DRS_STENCILMASK,     ~TheW3DShadowManager->getStencilShadowMask());
     m_pDev->SetRenderState( D3DRS_STENCILREF,      0x1 );
-
-
+#endif
+	vkCmdSetStencilCompareMask(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, ~TheW3DShadowManager->getStencilShadowMask());
+	std::vector<VkDescriptorSet> sets;
+	WWVK_UpdateVolumeStencilShadowDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+	Matrix4x4 ident(true);
+	VK::Buffer vbo;
+	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, 4 * sizeof(_TRANSLITVERTEX), v, vbo);
+	WWVK_DrawVolumeStencilShadow(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+	WWVKRENDER.PushSingleFrameBuffer(vbo);
+#ifdef INFO_VULKAN
 	m_pDev->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);
 
 	if (DX8Wrapper::_Is_Triangle_Draw_Enabled())
@@ -3476,10 +3498,8 @@ void W3DVolumetricShadowManager::renderStencilShadows( void )
 
 void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 {
-#ifdef TODO_VULKAN
 	W3DVolumetricShadow *shadow;
 	Int numRenderedShadows = 0;
-#endif
 
  	AABoxClass bbox;
 	SphereClass bsphere;
@@ -3499,7 +3519,7 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 
 	if (m_shadowList && TheGlobalData->m_useShadowVolumes)
 	{
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 
 		LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
@@ -3510,6 +3530,7 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
  		//new dynamic VB each frame - so we force a DISCARD by overflowing the counter.
  		nShadowIndicesInBuf = 0xffff;
  		nShadowVertsInBuf = 0xffff;
+#endif
 
 		//Set W3D to some known state
 		VertexMaterialClass *vmat=VertexMaterialClass::Get_Preset(VertexMaterialClass::PRELIT_DIFFUSE);
@@ -3522,6 +3543,7 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 		DX8Wrapper::Apply_Render_State_Changes();	//force update of view and projection matrices
 
 		// turn off z writing
+#if INFO_VULKANs
 		m_pDev->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 	  m_pDev->SetRenderState( D3DRS_ZENABLE,          TRUE );
 		m_pDev->SetRenderState(D3DRS_ZWRITEENABLE , FALSE);
@@ -3543,9 +3565,11 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 		m_pDev->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 1 );
 		m_pDev->SetTexture(0,NULL);
 		m_pDev->SetTexture(1,NULL);
-
 		DWORD oldColorWriteEnable=0x12345678;
+#endif
 
+
+#ifdef INFO_VULKAN
 	#ifdef SV_DEBUG
 		m_pDev->SetRenderState(D3DRS_ALPHABLENDENABLE , TRUE);
 		m_pDev->SetRenderState( D3DRS_STENCILENABLE, FALSE );
@@ -3581,15 +3605,21 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 		m_pDev->SetRenderState( D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP );
 		m_pDev->SetRenderState( D3DRS_STENCILFAIL,  D3DSTENCILOP_KEEP );
 		m_pDev->SetRenderState( D3DRS_STENCILPASS,  D3DSTENCILOP_INCR );
-		
-		m_pDev->SetFVF(SHADOW_DYNAMIC_VOLUME_FVF);
+#endif
+		vkCmdSetStencilOp(WWVKRENDER.currentCmd, VK_STENCIL_FRONT_AND_BACK, VK_STENCIL_OP_KEEP,
+			VK_STENCIL_OP_INCREMENT_AND_CLAMP, VK_STENCIL_OP_KEEP,
+			TheW3DShadowManager->getStencilShadowMask() == 0x80808080 ? VK_COMPARE_OP_NOT_EQUAL : VK_COMPARE_OP_GREATER_OR_EQUAL);
+		vkCmdSetStencilCompareMask(WWVKRENDER.currentCmd, VK_STENCIL_FRONT_AND_BACK, TheW3DShadowManager->getStencilShadowMask());
+		vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_CLOCKWISE);
+#ifdef INFO_VULKAN
+		m1_pDev->SetFVF(SHADOW_DYNAMIC_VOLUME_FVF);
 
 		m_pDev->SetRenderState(D3DRS_CULLMODE,D3DCULL_CW);
 //		m_pDev->SetRenderState(D3DRS_DEPTHBIAS,1);	///@todo: See if this helps or makes things worse.
 		//m_pDev->SetRenderState(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
+#endif
 
-
-		lastActiveVertexBuffer=NULL;	//reset
+		lastActiveVertexBuffer = {};	//reset
 
 		m_dynamicShadowVolumesToRender=NULL;	//clear list of pending dynamic shadows
 		W3DVolumetricShadowRenderTask *shadowDynamicTasksStart,*shadowDynamicTask;
@@ -3616,7 +3646,9 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 		}  // end for
 
 		// Set vertex format to that used by static shadow volumes
+#ifdef INFO_VULKAN
 		m_pDev->SetFVF(W3DBufferManager::getDX8Format(W3DBufferManager::VBM_FVF_XYZ));
+#endif
 
 		//Empty queue of static shadow volumes to render.
 		W3DBufferManager::W3DVertexBuffer *nextVb;
@@ -3633,6 +3665,12 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 		}
 
 		// change the stencil op to decrement
+		vkCmdSetStencilOp(WWVKRENDER.currentCmd, VK_STENCIL_FRONT_AND_BACK, VK_STENCIL_OP_KEEP,
+			VK_STENCIL_OP_DECREMENT_AND_CLAMP, VK_STENCIL_OP_KEEP,
+			TheW3DShadowManager->getStencilShadowMask() == 0x80808080 ? VK_COMPARE_OP_NOT_EQUAL : VK_COMPARE_OP_GREATER_OR_EQUAL);
+		vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_COUNTER_CLOCKWISE);
+
+#ifdef INFO_VULKAN
 		m_pDev->SetRenderState( D3DRS_STENCILPASS,  D3DSTENCILOP_DECRSAT);
 
 		//
@@ -3641,6 +3679,7 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 		//
 
 		m_pDev->SetRenderState(D3DRS_CULLMODE,D3DCULL_CCW);
+#endif
 
 		for (nextVb=TheW3DBufferManager->getNextVertexBuffer(NULL,W3DBufferManager::VBM_FVF_XYZ);nextVb != NULL; nextVb=TheW3DBufferManager->getNextVertexBuffer(nextVb,W3DBufferManager::VBM_FVF_XYZ))
 		{
@@ -3651,8 +3690,9 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 				nextTask=(W3DVolumetricShadowRenderTask *)nextTask->m_nextTask;
 			}
 		}
-
+#ifdef INFO_VULKAN
 		m_pDev->SetFVF(SHADOW_DYNAMIC_VOLUME_FVF);
+#endif
 		//flush any dynamic shadow volumes
 		shadowDynamicTask=m_dynamicShadowVolumesToRender;
 		while (shadowDynamicTask)
@@ -3668,6 +3708,8 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 			nextVb->m_renderTaskList=NULL;
 		}
 
+		vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_COUNTER_CLOCKWISE);
+#ifdef INFO_VULKAN
 		m_pDev->SetRenderState(D3DRS_CULLMODE,D3DCULL_CW);
 //		m_pDev->SetRenderState(D3DRS_DEPTHBIAS,0);	///@todo: See if this helps or makes things worse.
 		//m_pDev->SetRenderState(D3DRS_FILLMODE,D3DFILL_SOLID);
@@ -3675,6 +3717,7 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 
 		if (oldColorWriteEnable != 0x12345678)
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,oldColorWriteEnable);
+#endif
 
 		//
 		// render the big transparent square of shadows in the stencil buffer
@@ -3684,12 +3727,13 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 //		if (numRenderedShadows)
 			renderStencilShadows();
 
+#ifdef INFO_VULKAN
 		m_pDev->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
 		m_pDev->SetRenderState(D3DRS_ALPHABLENDENABLE , FALSE);
 		m_pDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+#endif
 
 		DX8Wrapper::Invalidate_Cached_Render_States();
-#endif
 	}
 	else
 	if (forceStencilFill)
@@ -3803,25 +3847,27 @@ W3DVolumetricShadowManager::~W3DVolumetricShadowManager( void )
 /** Releases all W3D/D3D assets before a reset.. */
 void W3DVolumetricShadowManager::ReleaseResources(void)
 {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	if (shadowIndexBufferD3D)
 		shadowIndexBufferD3D->Release();
 	if (shadowVertexBufferD3D)
 		shadowVertexBufferD3D->Release();
 	shadowIndexBufferD3D=NULL;
 	shadowVertexBufferD3D=NULL;
+#endif
+	WWVKRENDER.PushSingleFrameBuffer(shadowIndexBufferD3D);
+	WWVKRENDER.PushSingleFrameBuffer(shadowVertexBufferD3D);
 	if (TheW3DBufferManager)
 	{	TheW3DBufferManager->ReleaseResources();
 		invalidateCachedLightPositions();	//vertex buffers need to be refilled.
 	}
-#endif
 }
 
 /** (Re)allocates all W3D/D3D assets after a reset.. */
 Bool W3DVolumetricShadowManager::ReAcquireResources(void)
 {
 	ReleaseResources();
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 
 	LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
@@ -3851,10 +3897,10 @@ Bool W3DVolumetricShadowManager::ReAcquireResources(void)
 			return FALSE;
 	}
 
+#endif
 	if (TheW3DBufferManager)
 		if (!TheW3DBufferManager->ReAcquireResources())
 			return FALSE;
-#endif
 	return TRUE;
 }
 

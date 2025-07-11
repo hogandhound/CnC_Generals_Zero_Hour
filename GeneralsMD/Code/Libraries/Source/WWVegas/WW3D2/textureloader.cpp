@@ -1276,7 +1276,7 @@ bool TextureLoadTaskClass::Begin_Load(void)
 bool TextureLoadTaskClass::Load(void)
 {
 	WWMEMLOG(MEM_TEXTURE);
-	WWASSERT(Peek_D3D_Texture());
+	WWASSERT(Peek_D3D_Texture().image);
 
 	bool loaded = false;
 

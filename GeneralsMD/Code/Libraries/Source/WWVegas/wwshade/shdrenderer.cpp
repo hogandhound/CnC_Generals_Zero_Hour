@@ -638,6 +638,7 @@ void ShdDX8RendererNodeClass::Flush(int cur_pass)
 			);
 		}
 		else {
+#ifdef TODO_VULKAN
 			DX8Wrapper::Draw_Triangles
 			(
 				0,
@@ -645,6 +646,7 @@ void ShdDX8RendererNodeClass::Flush(int cur_pass)
 				0,
 				SubMesh->Get_Vertex_Count()
 			);
+#endif
 		}
 
 		return;
@@ -674,6 +676,7 @@ void ShdDX8RendererNodeClass::Flush(int cur_pass)
 		);
 	}
 	else {
+#ifdef TODO_VULKAN
 		DX8Wrapper::Draw_Triangles
 		(
 			0,
@@ -681,6 +684,7 @@ void ShdDX8RendererNodeClass::Flush(int cur_pass)
 			0,
 			SubMesh->Get_Vertex_Count()
 		);
+#endif
 	}
 
 }

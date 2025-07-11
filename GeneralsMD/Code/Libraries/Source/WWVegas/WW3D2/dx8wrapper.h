@@ -232,6 +232,7 @@ struct RenderStateStruct
 
 #define WWVKRENDER DX8Wrapper::_GetRenderTarget()
 #define WWVKPIPES DX8Wrapper::_GetPipelineCol()
+#define WWVKDSV std::vector<VkDescriptorSet> sets
 
 /**
 ** DX8Wrapper
@@ -365,9 +366,7 @@ public:
 	static LightEnvironmentClass* Get_Light_Environment() { return Light_Environment; }
 	static void Set_Fog(bool enable, const Vector3 &color, float start, float end);
 
-#ifdef TODO_VULKAN
-	static WWINLINE const D3DLIGHT9& Peek_Light(unsigned index);
-#endif
+	static WWINLINE const LightGeneric& Peek_Light(unsigned index);
 	static WWINLINE bool Is_Light_Enabled(unsigned index);
 
 	static bool Validate_Device(void);
@@ -386,6 +385,7 @@ public:
 
 	static void Apply_Render_State_Changes();	// Apply deferred render state changes (will be called automatically by Draw...)
 
+#ifdef TODO_VULKAN
 	static void Draw_Triangles(
 		unsigned buffer_type,
 		unsigned short start_index,
@@ -402,6 +402,7 @@ public:
 		unsigned short index_count,
 		unsigned short min_vertex_index,
 		unsigned short vertex_count);
+#endif
 
 	/*
 	** Resources
@@ -520,12 +521,8 @@ public:
 	*/
 	static TextureClass *	Create_Render_Target (int width, int height, WW3DFormat format = WW3D_FORMAT_UNKNOWN);
 
-	static void					Set_Render_Target (IDirect3DSurface9 *render_target, bool use_default_depth_buffer = false);
-	static void					Set_Render_Target (IDirect3DSurface9* render_target, IDirect3DSurface9* dpeth_buffer);
+	static void					Set_Render_Target(); //Clear to base
 
-#ifdef TODO_VULKAN
-	static void					Set_Render_Target (IDirect3DSwapChain9 *swap_chain);
-#endif
 	static bool					Is_Render_To_Texture(void) { return IsRenderToTexture; }
 
 	// for depth map support KJM V
@@ -538,7 +535,7 @@ public:
 		TextureClass** target,
 		ZTextureClass** depth_buffer
 	);
-	static void					Set_Render_Target_With_Z (TextureClass * texture, ZTextureClass* ztexture=NULL);
+	static void Set_Render_Target_With_Z (TextureClass * texture, ZTextureClass* ztexture=NULL);
 
 	static void Set_Shadow_Map(int idx, ZTextureClass* ztex) { Shadow_Map[idx]=ztex; }
 	static ZTextureClass* Get_Shadow_Map(int idx) { return Shadow_Map[idx]; }
@@ -813,7 +810,7 @@ WWINLINE void DX8Wrapper::Set_Pixel_Shader(IDirect3DPixelShader9* pixel_shader)
 	Pixel_Shader=pixel_shader;
 	DX8CALL(SetPixelShader(Pixel_Shader));
 }
-
+#endif
 WWINLINE void DX8Wrapper::Set_Vertex_Shader_Constant(int reg, const void* data, int count)
 {
 	int memsize=sizeof(Vector4)*count;
@@ -822,9 +819,10 @@ WWINLINE void DX8Wrapper::Set_Vertex_Shader_Constant(int reg, const void* data, 
 	if (memcmp(data, &Vertex_Shader_Constants[reg],memsize)==0) return;
 
 	memcpy(&Vertex_Shader_Constants[reg],data,memsize);
+#ifdef INFO_VULKAN
 	DX8CALL(SetVertexShaderConstantF(reg,(const float*)data,count));
+#endif
 }
-
 WWINLINE void DX8Wrapper::Set_Pixel_Shader_Constant(int reg, const void* data, int count)
 {
 	int memsize=sizeof(Vector4)*count;
@@ -833,7 +831,9 @@ WWINLINE void DX8Wrapper::Set_Pixel_Shader_Constant(int reg, const void* data, i
 	if (memcmp(data, &Pixel_Shader_Constants[reg],memsize)==0) return;
 
 	memcpy(&Pixel_Shader_Constants[reg],data,memsize);
+#ifdef INFO_VULKAN
 	DX8CALL(SetPixelShaderConstantF(reg,(float*)data,count));
+#endif
 }
 #endif
 // shader system updates KJM ^
@@ -1505,12 +1505,10 @@ WWINLINE void DX8Wrapper::Get_Transform(VkTransformState transform, Matrix4x4& m
 	}
 }
 
-#ifdef TODO_VULKAN
-WWINLINE const D3DLIGHT9& DX8Wrapper::Peek_Light(unsigned index)
+WWINLINE const LightGeneric& DX8Wrapper::Peek_Light(unsigned index)
 {
-	return render_state.Lights[index];;
+	return render_state.Lights.lights[index];;
 }
-#endif
 
 WWINLINE bool DX8Wrapper::Is_Light_Enabled(unsigned index)
 {
@@ -1672,4 +1670,3 @@ WWINLINE RenderStateStruct& RenderStateStruct::operator= (const RenderStateStruc
 }
 
 
-#endif

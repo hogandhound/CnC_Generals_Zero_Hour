@@ -483,7 +483,7 @@ void Shd6LegacyW3DClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 {
 	SNAPSHOT_SAY(("Shd6LegacyW3DClass::Apply_Shared(pass: %d)\n",pass));
 	// fixed function uses pass through by default
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_PASSTHRU);
 #endif
 }
@@ -566,7 +566,6 @@ void Shd6LegacyW3DClass::Copy_Vertex_Stream
 	unsigned vertex_count
 )
 {
-#ifdef TODO_VULKAN
 	FVFInfoClass fi(FVF);
 
 	/*
@@ -648,6 +647,5 @@ void Shd6LegacyW3DClass::Copy_Vertex_Stream
 
 		vb+=fi.Get_FVF_Size();
 	}
-#endif
 }
 

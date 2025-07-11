@@ -761,7 +761,6 @@ void W3DTerrainBackground::updateTexture(void)
 //=============================================================================
 void W3DTerrainBackground::drawVisiblePolys(RenderInfoClass & rinfo, Bool disableTextures)
 {
-#if 1
 	if (m_curNumTerrainIndices == 0) {
 		return;
 	}
@@ -780,26 +779,7 @@ void W3DTerrainBackground::drawVisiblePolys(RenderInfoClass & rinfo, Bool disabl
 			DX8Wrapper::Set_Texture(1, m_terrainTexture);
 		}
 	}
-	DX8Wrapper::Draw_Triangles(	0, m_curNumTerrainIndices/3, 0,	m_curNumTerrainVertices);
-#else
-	if (m_curNumTerrainIndices == 0) {
-		return;
-	}
-	if (m_cullStatus==CULL_STATUS_INVISIBLE) {
-		return;
-	}
-	// Setup the vertex buffer, shader & texture.
-	DX8Wrapper::Set_Index_Buffer(m_indexTerrain,0);
-	DX8Wrapper::Set_Vertex_Buffer(m_vertexTerrain);
-  if (!disableTextures) {
-		if (m_terrainTexture4X) {
-			DX8Wrapper::Set_Texture(0, m_terrainTexture4X);
-		}	else if (m_terrainTexture2X) {
-			DX8Wrapper::Set_Texture(0, m_terrainTexture2X);
-		}	else {
-			DX8Wrapper::Set_Texture(0, m_terrainTexture);
-		}
-	}
+#ifdef TODO_VULKAN
 	DX8Wrapper::Draw_Triangles(	0, m_curNumTerrainIndices/3, 0,	m_curNumTerrainVertices);
 #endif
 }

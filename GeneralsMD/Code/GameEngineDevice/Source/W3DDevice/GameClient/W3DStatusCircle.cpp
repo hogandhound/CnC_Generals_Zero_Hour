@@ -333,7 +333,9 @@ void W3DStatusCircle::Render(RenderInfoClass & rinfo)
 		tm.Set_Translation(vec);
 
 		DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
+#ifdef TODO_VULKAN
 		DX8Wrapper::Draw_Triangles(	0,NUM_TRI, 0,	(m_numTriangles*3));
+#endif
 	}
 
 

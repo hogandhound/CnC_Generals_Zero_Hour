@@ -356,10 +356,12 @@ void RigidDecalMeshClass::Render(void)
 
 		DX8Wrapper::Set_Index_Buffer(dynamic_ib,0);
 		DX8Wrapper::Set_Vertex_Buffer(dynamic_vb);
+#ifdef TODO_VULKAN
 		DX8Wrapper::Draw_Triangles(	3*cur_poly_index,
 												(next_poly_index - cur_poly_index), // poly count
 												Polys[cur_poly_index].I, 
 												1 + Polys[next_poly_index-1].K - Polys[cur_poly_index].I);
+#endif
 		cur_poly_index = next_poly_index;
 	}
 		
@@ -854,10 +856,12 @@ void SkinDecalMeshClass::Render(void)
 
 		DX8Wrapper::Set_Index_Buffer(dynamic_ib,0);
 		DX8Wrapper::Set_Vertex_Buffer(dynamic_vb);
+#ifdef TODO_VULKAN
 		DX8Wrapper::Draw_Triangles(3*cur_poly_index,
 											(next_poly_index - cur_poly_index), // poly count
 											Polys[cur_poly_index].I, 
 											1 + Polys[next_poly_index-1].K - Polys[cur_poly_index].I);
+#endif
 		
 		cur_poly_index = next_poly_index;
 	}

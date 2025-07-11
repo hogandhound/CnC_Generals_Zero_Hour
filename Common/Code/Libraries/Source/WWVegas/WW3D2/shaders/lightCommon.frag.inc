@@ -18,7 +18,7 @@ struct LightGeneric {
   uint  Type;
 };
 
-struct Material
+struct DX8Material
 {
 	vec4 Diffuse;
 	vec4 Ambient;
@@ -33,7 +33,7 @@ struct LightCollection
 	uint lightCount;
 };
 
-vec3 CalcDirLight(LightGeneric light, Material material, vec3 normal, vec3 viewDir,
+vec3 CalcDirLight(LightGeneric light, DX8Material material, vec3 normal, vec3 viewDir,
  vec3 inDiff, vec3 inAmb, vec3 inSpec)
 {
     vec3 lightDir = normalize(-light.Direction.xyz);
@@ -48,7 +48,7 @@ vec3 CalcDirLight(LightGeneric light, Material material, vec3 normal, vec3 viewD
     vec3 specular = light.Specular.rgb * material.Specular.rgb * spec * inSpec;
     return (ambient + diffuse + specular);
 }  
-vec3 CalcPointLight(LightGeneric light, Material material, vec3 normal, vec3 fragPos, vec3 viewDir,
+vec3 CalcPointLight(LightGeneric light, DX8Material material, vec3 normal, vec3 fragPos, vec3 viewDir,
  vec3 inDiff, vec3 inAmb, vec3 inSpec)
 {
     vec3 lightDir = normalize(light.Position.xyz - fragPos);
@@ -70,7 +70,7 @@ vec3 CalcPointLight(LightGeneric light, Material material, vec3 normal, vec3 fra
     specular *= attenuation;
     return (ambient + diffuse + specular);
 }
-vec3 CalcSpotLight(LightGeneric light, Material material, vec3 normal, vec3 fragPos, vec3 viewDir,
+vec3 CalcSpotLight(LightGeneric light, DX8Material material, vec3 normal, vec3 fragPos, vec3 viewDir,
  vec3 inDiff, vec3 inAmb, vec3 inSpec)
 {
     vec3 lightDir = normalize(light.Position.xyz - fragPos);
@@ -97,7 +97,7 @@ vec3 CalcSpotLight(LightGeneric light, Material material, vec3 normal, vec3 frag
     return (ambient + diffuse + specular);
 }
 
-vec4 CalculateLights(LightCollection col, Material material, vec3 normal, vec3 fragPos, vec3 viewDir,
+vec4 CalculateLights(LightCollection col, DX8Material material, vec3 normal, vec3 fragPos, vec3 viewDir,
  vec3 inDiff, vec3 inAmb, vec3 inSpec)
 {
 	if (col.lightCount == 0)

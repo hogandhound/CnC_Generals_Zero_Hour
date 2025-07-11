@@ -311,7 +311,7 @@ Bool W3DProjectedShadowManager::ReAcquireResources(void)
 	if (shadowDecalVertexBufferD3D.buffer == NULL)
 	{	// Create vertex buffer
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		if (FAILED(m_pDev->CreateVertexBuffer
 		(
 			SHADOW_DECAL_VERTEX_SIZE*sizeof(SHADOW_DECAL_VERTEX),
@@ -322,6 +322,7 @@ Bool W3DProjectedShadowManager::ReAcquireResources(void)
 		)))
 			return FALSE;
 #else
+		//I'm not sure if the single buffer is worth while in Vulkan.
 		//VkBufferTools::CreateVertexBuffer(&DX8Wrapper::_GetRenderTarget(), SHADOW_DECAL_INDEX_SIZE * sizeof(WORD), 0, shadowDecalVertexBufferD3D);
 #endif
 	}
@@ -419,7 +420,7 @@ Int W3DProjectedShadowManager::renderProjectedTerrainShadow(W3DProjectedShadow *
 			return 0;	//nothing to render
 
 		Int numVerts = vertsPerRow *vertsPerColumn;	//number of terrain vertices
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		if (nShadowVertsInBuf > (SHADOW_VERTEX_SIZE-numVerts))	//check if room for model verts
 		{	//flush the buffer by drawing the contents and re-locking again
 			if (shadowVertexBufferD3D->Lock(0,numVerts*sizeof(SHADOW_VOLUME_VERTEX),(void**)&pvVertices,D3DLOCK_DISCARD) != D3D_OK)
@@ -454,13 +455,13 @@ Int W3DProjectedShadowManager::renderProjectedTerrainShadow(W3DProjectedShadow *
 		DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(shadowVertexBufferD3D);
 		VkBufferTools::CreateVertexBuffer(&DX8Wrapper::_GetRenderTarget(), 
 			numVerts * sizeof(SHADOW_VOLUME_VERTEX), pvVertices.data(), shadowVertexBufferD3D);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		shadowVertexBufferD3D->Unlock();
 #endif
 
 		Int numIndex=(endX - startX) * (endY-startY)*6;	//6 indices per terrain cell (2 triangles).
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		if (nShadowIndicesInBuf > (SHADOW_INDEX_SIZE-numIndex))	//check if room for model verts
 		{	//flush the buffer by drawing the contents and re-locking again
 			if (shadowIndexBufferD3D->Lock(0,numIndex*sizeof(short),(void**)&pvIndices,D3DLOCK_DISCARD) != D3D_OK)
@@ -524,7 +525,8 @@ Int W3DProjectedShadowManager::renderProjectedTerrainShadow(W3DProjectedShadow *
 		DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(shadowIndexBufferD3D);
 		VkBufferTools::CreateIndexBuffer(&DX8Wrapper::_GetRenderTarget(),
 			numIndex * sizeof(uint16_t), pvVertices.data(), shadowIndexBufferD3D);
-#ifdef TODO_VULKAN
+		
+#ifdef INFO_VULKAN
 		shadowIndexBufferD3D->Unlock();
 
 		m_pDev->SetIndices(shadowIndexBufferD3D);
@@ -562,7 +564,21 @@ Int W3DProjectedShadowManager::renderProjectedTerrainShadow(W3DProjectedShadow *
 		m_pDev->SetRenderState( D3DRS_STENCILENABLE, FALSE );
 //    m_pDev->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
 		m_pDev->SetRenderState( D3DRS_LIGHTING, TRUE);
+#else
+		if (DX8Wrapper::_Is_Triangle_Draw_Enabled())
+		{
+			Int numPolys = (endX - startX) * (endY - startY) * 2;
+			Debug_Statistics::Record_DX8_Polys_And_Vertices(numPolys, numVerts, ShaderClass::_PresetOpaqueShader);
+			std::vector<VkDescriptorSet> sets;
+			WWVK_UpdateProjShadowDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+			WWVK_DrawProjShadow(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, numIndex, VK_INDEX_TYPE_UINT16, 
+				shadowVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
+#ifdef INFO_VULKAN
+			m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, nShadowStartBatchVertex, 0, numVerts, nShadowStartBatchIndex, numPolys);
 #endif
+		}
+#endif
+		
 
 		nShadowVertsInBuf += numVerts;
 		nShadowStartBatchVertex=nShadowVertsInBuf;
@@ -750,7 +766,6 @@ void W3DProjectedShadowManager::flushDecals(W3DShadowTexture *texture, ShadowTyp
 			DX8Wrapper::Set_Shader(ShaderClass::_PresetAdditiveShader);
 			break;
 	}
-
 //	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAREF,0x60);
 //	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAFUNC,D3DCMP_GREATEREQUAL);
 	//_PresetAlphaSpriteShader
@@ -772,7 +787,7 @@ void W3DProjectedShadowManager::flushDecals(W3DShadowTexture *texture, ShadowTyp
 */
 	 
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	m_pDev->SetTransform(VkTS::WORLD,(DirectX::XMMATRIX *)&mWorld);
 	m_pDev->SetIndices(shadowDecalIndexBufferD3D);
 
@@ -780,46 +795,37 @@ void W3DProjectedShadowManager::flushDecals(W3DShadowTexture *texture, ShadowTyp
 	m_pDev->SetFVF(SHADOW_DECAL_FVF);
 #endif
 
-//Hard Shadows using stencil
-/*	m_pDev->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ZERO);
-	m_pDev->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ONE );
-	m_pDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);	//should reject background pixels
-	m_pDev->SetRenderState( D3DRS_STENCILENABLE, TRUE );
-*/
-/*	m_pDev->SetRenderState( D3DRS_STENCILFUNC,     D3DCMP_ALWAYS );
-	m_pDev->SetRenderState( D3DRS_STENCILREF,      0x1 );
-	m_pDev->SetRenderState( D3DRS_STENCILMASK,     0xffffffff );
-	m_pDev->SetRenderState( D3DRS_STENCILWRITEMASK,0xffffffff );
-	m_pDev->SetRenderState( D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP );
-	m_pDev->SetRenderState( D3DRS_STENCILFAIL,  D3DSTENCILOP_KEEP );
-	m_pDev->SetRenderState( D3DRS_STENCILPASS,  D3DSTENCILOP_INCR );
-*/
-//m_pDev->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );	//useful to see bounds
 
 	if (DX8Wrapper::_Is_Triangle_Draw_Enabled())
 	{
 		Debug_Statistics::Record_DX8_Polys_And_Vertices(nShadowDecalPolysInBatch,nShadowDecalVertsInBatch,ShaderClass::_PresetOpaqueShader);
-#ifdef TODO_VULKAN
+		std::vector<VkDescriptorSet> sets;
+		switch (type)
+		{
+		case SHADOW_DECAL:
+			WWVK_UpdateFVF_DUV_MultBlendDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &texture->getTexture()->Peek_D3D_Texture(),
+				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+			WWVK_DrawFVF_DUV_MultBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3,
+				VK_INDEX_TYPE_UINT16, shadowVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
+			break;
+		case SHADOW_ALPHA_DECAL:
+			WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &texture->getTexture()->Peek_D3D_Texture(),
+				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+			WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3,
+				VK_INDEX_TYPE_UINT16, shadowVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
+			break;
+		case SHADOW_ADDITIVE_DECAL:
+			WWVK_UpdateFVF_DUV_AddBlendDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &texture->getTexture()->Peek_D3D_Texture(),
+				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+			WWVK_DrawFVF_DUV_AddBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3,
+				VK_INDEX_TYPE_UINT16, shadowVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
+			break;
+		}
+#ifdef INFO_VULKAN
 		m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, nShadowDecalStartBatchVertex,0,nShadowDecalVertsInBatch,nShadowDecalStartBatchIndex,nShadowDecalPolysInBatch);
 #endif
 	}
 
-//	m_pDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);	//should reject background pixels
-//	m_pDev->SetRenderState( D3DRS_STENCILENABLE, FALSE );
-//m_pDev->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-
-
-	//Restore multiplicative sprite shader
-//	m_pDev->SetRenderState(D3DRS_DESTBLEND,D3DBLEND_SRCCOLOR);	//restore W3D state
-//	m_pDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ZERO);
-
-/*	m_pDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-	m_pDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	m_pDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT);
-	m_pDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-	m_pDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-	m_pDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
-*/
 	nShadowDecalStartBatchVertex=nShadowDecalVertsInBuf;
 	nShadowDecalStartBatchIndex=nShadowDecalIndicesInBuf;
 	nShadowDecalPolysInBatch=0;	//reset number of polys in texture batch
@@ -867,7 +873,7 @@ void W3DProjectedShadowManager::queueDecal(W3DProjectedShadow *shadow)
 
 	if (TheTerrainRenderObject)
 	{
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 		if (!m_pDev)	return;	//no D3D Device to render
@@ -1055,7 +1061,7 @@ void W3DProjectedShadowManager::queueDecal(W3DProjectedShadow *shadow)
 		if (nShadowDecalVertsInBuf > (SHADOW_DECAL_VERTEX_SIZE-numVerts))	//check if room for model verts
 		{	//flush the buffer by drawing the contents and re-locking again
 			flushDecals(shadow->m_shadowTexture[0], shadow->m_type);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 			if (shadowDecalVertexBufferD3D->Lock(0,numVerts*sizeof(SHADOW_DECAL_VERTEX),(void**)&pvVertices,D3DLOCK_DISCARD) != D3D_OK)
 				return;
 #endif
@@ -1067,7 +1073,7 @@ void W3DProjectedShadowManager::queueDecal(W3DProjectedShadow *shadow)
 		}
 		else
 		{
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 			if (shadowDecalVertexBufferD3D->Lock(nShadowDecalVertsInBuf*sizeof(SHADOW_DECAL_VERTEX),numVerts*sizeof(SHADOW_DECAL_VERTEX), (void**)&pvVertices,D3DLOCK_NOOVERWRITE) != D3D_OK)
 				return;
 #endif
@@ -1131,14 +1137,14 @@ void W3DProjectedShadowManager::queueDecal(W3DProjectedShadow *shadow)
 		DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(shadowDecalVertexBufferD3D);
 		VkBufferTools::CreateVertexBuffer(&DX8Wrapper::_GetRenderTarget(), numVerts * sizeof(SHADOW_DECAL_VERTEX),
 			pvVertices.data(), shadowDecalVertexBufferD3D);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		shadowDecalVertexBufferD3D->Unlock();
 #endif
 
 		if (nShadowDecalIndicesInBuf > (SHADOW_DECAL_INDEX_SIZE-numIndex))	//check if room for model verts
 		{	//flush the buffer by drawing the contents and re-locking again
 			flushDecals(shadow->m_shadowTexture[0], shadow->m_type);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 			if (shadowDecalIndexBufferD3D->Lock(0,numIndex*sizeof(short),(void**)&pvIndices,D3DLOCK_DISCARD) != D3D_OK)
 				return;
 #endif
@@ -1150,7 +1156,7 @@ void W3DProjectedShadowManager::queueDecal(W3DProjectedShadow *shadow)
 		}
 		else
 		{
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 			if (shadowDecalIndexBufferD3D->Lock(nShadowDecalIndicesInBuf*sizeof(short),numIndex*sizeof(short), (void**)&pvIndices,D3DLOCK_NOOVERWRITE) != D3D_OK)
 				return;
 #endif
@@ -1193,7 +1199,7 @@ void W3DProjectedShadowManager::queueDecal(W3DProjectedShadow *shadow)
 		DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(shadowDecalIndexBufferD3D);
 		VkBufferTools::CreateIndexBuffer(&DX8Wrapper::_GetRenderTarget(), numIndex * sizeof(uint16_t),
 			pvIndices.data(), shadowDecalIndexBufferD3D);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		shadowDecalIndexBufferD3D->Unlock();
 #endif
 
@@ -1225,7 +1231,7 @@ void W3DProjectedShadowManager::queueSimpleDecal(W3DProjectedShadow *shadow)
 
 	if (TheTerrainRenderObject)
 	{
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 		if (!m_pDev)	return;	//no D3D Device to render
@@ -1254,7 +1260,7 @@ void W3DProjectedShadowManager::queueSimpleDecal(W3DProjectedShadow *shadow)
 		if (nShadowDecalVertsInBuf > (SHADOW_DECAL_VERTEX_SIZE-numVerts))	//check if room for model verts
 		{	//flush the buffer by drawing the contents and re-locking again
 			flushDecals(shadow->m_shadowTexture[0], shadow->m_type);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 			if (shadowDecalVertexBufferD3D->Lock(0,numVerts*sizeof(SHADOW_DECAL_VERTEX),(void**)&pvVertices,D3DLOCK_DISCARD) != D3D_OK)
 				return;
 #endif
@@ -1266,7 +1272,7 @@ void W3DProjectedShadowManager::queueSimpleDecal(W3DProjectedShadow *shadow)
 		}
 		else
 		{
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 			if (shadowDecalVertexBufferD3D->Lock(nShadowDecalVertsInBuf*sizeof(SHADOW_DECAL_VERTEX),numVerts*sizeof(SHADOW_DECAL_VERTEX), (void**)&pvVertices,D3DLOCK_NOOVERWRITE) != D3D_OK)
 				return;
 #endif
@@ -1318,7 +1324,7 @@ void W3DProjectedShadowManager::queueSimpleDecal(W3DProjectedShadow *shadow)
 		DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(shadowDecalVertexBufferD3D);
 		VkBufferTools::CreateVertexBuffer(&DX8Wrapper::_GetRenderTarget(), numVerts * sizeof(SHADOW_DECAL_VERTEX),
 			pvVertices.data(), shadowDecalVertexBufferD3D);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		shadowDecalVertexBufferD3D->Unlock();
 #endif
 
@@ -1326,7 +1332,7 @@ void W3DProjectedShadowManager::queueSimpleDecal(W3DProjectedShadow *shadow)
 		{	//flush the buffer by drawing the contents and re-locking again
 			flushDecals(shadow->m_shadowTexture[0],shadow->m_type);
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 			if (shadowDecalIndexBufferD3D->Lock(0,numIndex*sizeof(short),(void**)&pvIndices,D3DLOCK_DISCARD) != D3D_OK)
 				return;
 #endif
@@ -1338,7 +1344,7 @@ void W3DProjectedShadowManager::queueSimpleDecal(W3DProjectedShadow *shadow)
 		}
 		else
 		{	
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 			if (shadowDecalIndexBufferD3D->Lock(nShadowDecalIndicesInBuf*sizeof(short),numIndex*sizeof(short), (void**)&pvIndices,D3DLOCK_NOOVERWRITE) != D3D_OK)
 				return;
 #endif
@@ -1359,7 +1365,7 @@ void W3DProjectedShadowManager::queueSimpleDecal(W3DProjectedShadow *shadow)
 		DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(shadowDecalIndexBufferD3D);
 		VkBufferTools::CreateIndexBuffer(&DX8Wrapper::_GetRenderTarget(), numIndex * sizeof(uint16_t),
 			pvIndices.data(), shadowDecalIndexBufferD3D);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		shadowDecalIndexBufferD3D->Unlock();
 #endif
 

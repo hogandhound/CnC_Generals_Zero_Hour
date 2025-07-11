@@ -310,7 +310,9 @@ void W3DDebugIcons::Render(RenderInfoClass & rinfo)
 		DX8Wrapper::Set_Shader(ShaderClass(SC_ALPHA));
 		DX8Wrapper::Set_Index_Buffer(ib_access,0);
 		DX8Wrapper::Set_Vertex_Buffer(vb_access);
+#ifdef TODO_VULKAN
 		DX8Wrapper::Draw_Triangles(	0,curIndex/3, 0,	numVertex);	//draw a quad, 2 triangles, 4 verts
+#endif
 	}
 
 	if (anyVanished) {

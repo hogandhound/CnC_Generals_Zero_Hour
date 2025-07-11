@@ -578,28 +578,29 @@ void RTS3DScene::renderSpecificDrawables(RenderInfoClass &rinfo, Int numDrawable
 //=============================================================================
 void RTS3DScene::renderOneObject(RenderInfoClass &rinfo, RenderObjClass *robj, Int localPlayerIndex)
 {
-
-	Drawable *draw = NULL;
-	DrawableInfo *drawInfo = NULL;
-	Bool drawableHidden=FALSE;
+	Drawable* draw = NULL;
+	DrawableInfo* drawInfo = NULL;
+	Bool drawableHidden = FALSE;
 	Object* obj = NULL;
-	ObjectShroudStatus ss=OBJECTSHROUD_INVALID;
-	Bool doExtraMaterialPop=FALSE;
-	Bool doExtraFlagsPop=FALSE;
-	LightClass **sceneLights=m_globalLight;
+	ObjectShroudStatus ss = OBJECTSHROUD_INVALID;
+	Bool doExtraMaterialPop = FALSE;
+	Bool doExtraFlagsPop = FALSE;
+	LightClass** sceneLights = m_globalLight;
 
 
 
-	if (robj->Class_ID() == RenderObjClass::CLASSID_IMAGE3D	)
-	{	robj->Render(rinfo);	//notify decals system that this track is visible
+	if (robj->Class_ID() == RenderObjClass::CLASSID_IMAGE3D)
+	{
+		robj->Render(rinfo);	//notify decals system that this track is visible
 		return;	//decals are not lit by this system yet so skip rest of lighting
 	}
 
 	LightEnvironmentClass lightEnv;
 	SphereClass sph = robj->Get_Bounding_Sphere();
-	drawInfo = (DrawableInfo *)robj->Get_User_Data();
+	drawInfo = (DrawableInfo*)robj->Get_User_Data();
 	if (drawInfo)
-	{	draw = drawInfo->m_drawable;
+	{
+		draw = drawInfo->m_drawable;
 		//If we have a drawInfo but not drawable, we must be dealing with
 		//a ghost object which is always fogged.
 		if (!draw)
@@ -611,7 +612,7 @@ void RTS3DScene::renderOneObject(RenderInfoClass &rinfo, RenderObjClass *robj, I
 	// infantry test does, here...
 	// the tint has been delegated to the getTint() stuff, below... MLorenzen
 	Vector3 ambient = Get_Ambient_Light();
-	if (draw && (drawableHidden=draw->isDrawableEffectivelyHidden()) != TRUE)
+	if (draw && (drawableHidden = draw->isDrawableEffectivelyHidden()) != TRUE)
 	{
 #ifdef NOT_IN_USE
 		const Vector3* drawAmbient = draw->getAmbientLight();
@@ -626,18 +627,19 @@ void RTS3DScene::renderOneObject(RenderInfoClass &rinfo, RenderObjClass *robj, I
 			// so the player can see them and missiles chasing them.  jba.
 			if (ss == OBJECTSHROUD_CLEAR) {
 				draw->setShroudClearFrame(TheGameLogic->getFrame());
-			}	else if (ss >= OBJECTSHROUD_FOGGED && draw->getShroudClearFrame()!=0) {
-				UnsignedInt limit = 2*LOGICFRAMES_PER_SECOND;
+			}
+			else if (ss >= OBJECTSHROUD_FOGGED && draw->getShroudClearFrame() != 0) {
+				UnsignedInt limit = 2 * LOGICFRAMES_PER_SECOND;
 				if (obj->isEffectivelyDead()) {
-					limit += 3*LOGICFRAMES_PER_SECOND;
+					limit += 3 * LOGICFRAMES_PER_SECOND;
 				}
 				if (TheGameLogic->getFrame() < limit + draw->getShroudClearFrame()) {
 					// It's been less than 2 seconds since we could see them clear, so keep showing them.
 					ss = OBJECTSHROUD_PARTIAL_CLEAR;
 				}
 			}
- 			if (!robj->Peek_Scene())
- 				return;	//this object was removed by the getShroudedStatus() call.
+			if (!robj->Peek_Scene())
+				return;	//this object was removed by the getShroudedStatus() call.
 		}
 		else
 		{	//drawable with no object so no way to know if it's shrouded.
@@ -645,7 +647,8 @@ void RTS3DScene::renderOneObject(RenderInfoClass &rinfo, RenderObjClass *robj, I
 			//Check to see if there is another unrelated object which controls the shroud status
 			//(Hack for prison camps which contain enemy prisoner drawables)
 			if (drawInfo->m_shroudStatusObjectID != INVALID_ID)
-			{	Object *shroudObject=TheGameLogic->findObjectByID(drawInfo->m_shroudStatusObjectID);
+			{
+				Object* shroudObject = TheGameLogic->findObjectByID(drawInfo->m_shroudStatusObjectID);
 				if (shroudObject && shroudObject->getShroudedStatus(localPlayerIndex) >= OBJECTSHROUD_FOGGED)
 					ss = OBJECTSHROUD_SHROUDED;	//we will assume that drawables without objects are 'particle' like and therefore don't need drawing if fogged/shrouded.
 			}
@@ -661,18 +664,18 @@ void RTS3DScene::renderOneObject(RenderInfoClass &rinfo, RenderObjClass *robj, I
 
 		// HANDLE THE SPECIAL DRAWABLE-LEVEL COLORING SETTINGS FIRST
 
-		const Vector3 *tintColor = NULL;
-		const Vector3 *selectionColor = NULL;
+		const Vector3* tintColor = NULL;
+		const Vector3* selectionColor = NULL;
 
-		tintColor			 = draw->getTintColor();
+		tintColor = draw->getTintColor();
 		selectionColor = draw->getSelectionColor();
 
-		if ( tintColor || selectionColor )
+		if (tintColor || selectionColor)
 		{
 			Vector3 sumTint, temp, restore;
-			
-			sumTint.Set(0,0,0); 
-			
+
+			sumTint.Set(0, 0, 0);
+
 			if (tintColor)
 				Vector3::Add(sumTint, *tintColor, &sumTint);
 			if (selectionColor)
@@ -680,21 +683,21 @@ void RTS3DScene::renderOneObject(RenderInfoClass &rinfo, RenderObjClass *robj, I
 
 			for (Int globalLightIndex = 0; globalLightIndex < m_numGlobalLights; globalLightIndex++)
 			{
-				sceneLights[globalLightIndex]->Get_Diffuse( &temp );
+				sceneLights[globalLightIndex]->Get_Diffuse(&temp);
 				restore = temp;
 
 				Vector3::Add(temp, sumTint, &temp);
 
-				sceneLights[globalLightIndex]->Set_Diffuse( temp );
+				sceneLights[globalLightIndex]->Set_Diffuse(temp);
 				lightEnv.Add_Light(*sceneLights[globalLightIndex]);
-				sceneLights[globalLightIndex]->Set_Diffuse( restore );
+				sceneLights[globalLightIndex]->Set_Diffuse(restore);
 
 			} // next light
-			
-			temp = lightEnv.Get_Equivalent_Ambient();
-			Vector3::Add(sumTint, temp, &temp );
 
-			lightEnv.Set_Output_Ambient( temp );
+			temp = lightEnv.Get_Equivalent_Ambient();
+			Vector3::Add(sumTint, temp, &temp);
+
+			lightEnv.Set_Output_Ambient(temp);
 
 		}
 		else // no funny coloring going on, so just add the lights normally
@@ -706,27 +709,27 @@ void RTS3DScene::renderOneObject(RenderInfoClass &rinfo, RenderObjClass *robj, I
 		}
 
 		//Apply custom render pass for any drawables with heatvision enabled
-		if (draw->getSecondMaterialPassOpacity() != 0 ) 
+		if (draw->getSecondMaterialPassOpacity() != 0)
 		{
 			rinfo.materialPassEmissiveOverride = draw->getSecondMaterialPassOpacity();
 
-      //if ( draw->testTintStatus( TINT_STATUS_FRENZY ) )
-      //{
-			//	rinfo.Push_Material_Pass(m_heatVisionMaterialPass);
-      //}
-			//else 
-      if (draw->getStealthLook() == STEALTHLOOK_VISIBLE_DETECTED )
+			//if ( draw->testTintStatus( TINT_STATUS_FRENZY ) )
+			//{
+				  //	rinfo.Push_Material_Pass(m_heatVisionMaterialPass);
+			//}
+				  //else 
+			if (draw->getStealthLook() == STEALTHLOOK_VISIBLE_DETECTED)
 			{
-			  rinfo.materialPassEmissiveOverride = draw->getSecondMaterialPassOpacity();
+				rinfo.materialPassEmissiveOverride = draw->getSecondMaterialPassOpacity();
 				// THIS WILL EXPLICITLY SKIP THE FIRST PASS SO THAT HEATVISION ONLY WILL RENDER
 				rinfo.Push_Override_Flags(RenderInfoClass::RINFO_OVERRIDE_ADDITIONAL_PASSES_ONLY);
 				rinfo.Push_Material_Pass(m_heatVisionOnlyPass);
-        doExtraFlagsPop = TRUE;
+				doExtraFlagsPop = TRUE;
 			}
 			else
 			{
 				//THIS CALLS FOR THE HEATVISION TO RENDER
-			  rinfo.materialPassEmissiveOverride = draw->getSecondMaterialPassOpacity();
+				rinfo.materialPassEmissiveOverride = draw->getSecondMaterialPassOpacity();
 				rinfo.Push_Material_Pass(m_heatVisionMaterialPass);
 			}
 
@@ -748,7 +751,8 @@ void RTS3DScene::renderOneObject(RenderInfoClass &rinfo, RenderObjClass *robj, I
 			return;
 		}
 		else
-		{	lightEnv.Reset(sph.Center, ambient);
+		{
+			lightEnv.Reset(sph.Center, ambient);
 			for (Int globalLightIndex = 0; globalLightIndex < m_numGlobalLights; globalLightIndex++)
 				lightEnv.Add_Light(*m_globalLight[globalLightIndex]);
 		}
@@ -757,10 +761,10 @@ void RTS3DScene::renderOneObject(RenderInfoClass &rinfo, RenderObjClass *robj, I
 	if (!drawableHidden)
 	{
 		//standard scene lights
-		RefRenderObjListIterator it2(&LightList);	
+		RefRenderObjListIterator it2(&LightList);
 		for (it2.First(); !it2.Is_Done(); it2.Next())
-		{	
-			LightClass *pLight = (LightClass*)it2.Peek_Obj();
+		{
+			LightClass* pLight = (LightClass*)it2.Peek_Obj();
 			SphereClass lSph = pLight->Get_Bounding_Sphere();
 			Bool cull = (pLight->Get_Type() == LightClass::POINT && !Spheres_Intersect(sph, lSph));
 			if (!cull) {
@@ -768,24 +772,24 @@ void RTS3DScene::renderOneObject(RenderInfoClass &rinfo, RenderObjClass *robj, I
 			}
 		}
 
-    if( draw && draw->getReceivesDynamicLights() )
-    {
-		  // dynamic lights
-		  RefRenderObjListIterator dynaLightIt(&m_dynamicLightList);	
-		  for (dynaLightIt.First(); !dynaLightIt.Is_Done(); dynaLightIt.Next())
-		  {	
-			  W3DDynamicLight* pDyna = (W3DDynamicLight*)dynaLightIt.Peek_Obj();
-			  if (!pDyna->isEnabled()) {
-				  continue;
-			  }
-			  SphereClass lSph = pDyna->Get_Bounding_Sphere();
-			  if (pDyna->Get_Type() == LightClass::POINT && !Spheres_Intersect(sph, lSph)) {
-				  continue;
-			  }
-			  lightEnv.Add_Light(*(LightClass*)dynaLightIt.Peek_Obj());
-		  }
-    }
-		
+		if (draw && draw->getReceivesDynamicLights())
+		{
+			// dynamic lights
+			RefRenderObjListIterator dynaLightIt(&m_dynamicLightList);
+			for (dynaLightIt.First(); !dynaLightIt.Is_Done(); dynaLightIt.Next())
+			{
+				W3DDynamicLight* pDyna = (W3DDynamicLight*)dynaLightIt.Peek_Obj();
+				if (!pDyna->isEnabled()) {
+					continue;
+				}
+				SphereClass lSph = pDyna->Get_Bounding_Sphere();
+				if (pDyna->Get_Type() == LightClass::POINT && !Spheres_Intersect(sph, lSph)) {
+					continue;
+				}
+				lightEnv.Add_Light(*(LightClass*)dynaLightIt.Peek_Obj());
+			}
+		}
+
 		lightEnv.Pre_Render_Update(rinfo.Camera.Get_Transform());
 		rinfo.light_environment = &lightEnv;
 
@@ -795,26 +799,27 @@ void RTS3DScene::renderOneObject(RenderInfoClass &rinfo, RenderObjClass *robj, I
 			if (!TheGlobalData->m_shroudOn)
 				ss = OBJECTSHROUD_CLEAR;
 #endif
-			
-			if (m_customPassMode == SCENE_PASS_DEFAULT)	
+
+			if (m_customPassMode == SCENE_PASS_DEFAULT)
 			{
 				if (ss <= OBJECTSHROUD_CLEAR)
 					robj->Render(rinfo);
 				else
-				{	
-						rinfo.Push_Material_Pass(m_shroudMaterialPass);
-						robj->Render(rinfo);
-						rinfo.Pop_Material_Pass();
+				{
+					rinfo.Push_Material_Pass(m_shroudMaterialPass);
+					robj->Render(rinfo);
+					rinfo.Pop_Material_Pass();
 				}
 			}
 			else
-			if (m_maskMaterialPass)
-			{	rinfo.Push_Material_Pass(m_maskMaterialPass);
-				rinfo.Push_Override_Flags(RenderInfoClass::RINFO_OVERRIDE_ADDITIONAL_PASSES_ONLY);
-				robj->Render(rinfo);
-				rinfo.Pop_Override_Flags();
-				rinfo.Pop_Material_Pass();
-			}
+				if (m_maskMaterialPass)
+				{
+					rinfo.Push_Material_Pass(m_maskMaterialPass);
+					rinfo.Push_Override_Flags(RenderInfoClass::RINFO_OVERRIDE_ADDITIONAL_PASSES_ONLY);
+					robj->Render(rinfo);
+					rinfo.Pop_Override_Flags();
+					rinfo.Pop_Material_Pass();
+				}
 		}//drawInfo exists so rendering a drawable.
 		else
 		{
@@ -959,7 +964,6 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 	//Override the behind building selection if it's not available on current hardware (needs stencil).
 	TheWritableGlobalData->m_enableBehindBuildingMarkers = TheWritableGlobalData->m_enableBehindBuildingMarkers && DX8Wrapper::Has_Stencil();
 
-#ifdef TODO_VULKAN
 	if (Get_Extra_Pass_Polygon_Mode() == EXTRA_PASS_DISABLE)
 	{
 		if (m_customPassMode == SCENE_PASS_DEFAULT)
@@ -975,8 +979,10 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 			//a projected alpha texture which will later be used to determine where
 			//wireframe should be visible.
 			///@todo: Clearing to black may not be needed if the scene already did the clear.
+#ifdef INFO_VULKAN
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
 			DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 0);
+#endif
 			//Since all objects will be rendered with same material, disable resetting until all are done.
 			m_maskMaterialPass->setAllowUninstall(FALSE);
 
@@ -985,7 +991,9 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 			m_maskMaterialPass->setAllowUninstall(TRUE);
 			m_maskMaterialPass->UnInstall_Materials();
 
+#ifdef INFO_VULKAN
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+#endif
 
 			ShaderClass::Invalidate();
 		}
@@ -999,8 +1007,10 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 			//wireframe should be visible.
 			///@todo: Clearing to black may not be needed if the scene already did the clear.
 			DX8Wrapper::Clear(true, false, Vector3(0.0f,0.0f,0.0f),1.0f);	// Clear color but not z
+#ifdef INFO_VULKAN
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
 			DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 0);
+#endif
 			
 			//We're only filling the z-buffer so ignore normal textures and state changes to speed things up.
 			m_customPassMode = SCENE_PASS_ALPHA_MASK;
@@ -1011,11 +1021,15 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 
 			m_maskMaterialPass->setAllowUninstall(TRUE);
 			m_maskMaterialPass->UnInstall_Materials();
-			
+
+#ifdef INFO_VULKAN
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+#endif
 			WW3D::Enable_Coloring(0xff008000);
 			WW3D::Enable_Texturing(false);
+#ifdef INFO_VULKAN
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
+#endif
 
 			//Move maximum z-buffer value in a little to shift all z-values closer
 			//and thus forcing line to appear on top of previous pass.
@@ -1027,7 +1041,9 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 //			DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 4);
 			Customized_Render(rinfo);	//render wireframe where z-test passes
 			Flush(rinfo);
+#ifdef INFO_VULKAN
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_SOLID);
+#endif
 
 			rinfo.Camera.Set_Zbuffer_Range(nearZ, farZ);
 			rinfo.Camera.Apply();
@@ -1042,38 +1058,47 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 		{	//old W3D custom rendering code.
 
 			//Disable writes to color buffer to save memory bandwidth - we only need Z.
+#ifdef INFO_VULKAN
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,0);
 			DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 0);
+#endif
 			Customized_Render(rinfo);
 			Flush(rinfo);
 			//Re-enable writes to color buffer.
+#ifdef INFO_VULKAN
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+#endif
 
 			switch (Get_Extra_Pass_Polygon_Mode()) {
 			case EXTRA_PASS_LINE:
 				WW3D::Enable_Texturing(false);
+#ifdef INFO_VULKAN
 				DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
 				DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 7 * -0.000005f);
+#endif
 				Customized_Render(rinfo);
 				break;
 			case EXTRA_PASS_CLEAR_LINE:
 				DX8Wrapper::Clear(true, false, Vector3(0.0f,0.0f,0.0f), 0.0f);	// Clear color but not z
 				WW3D::Enable_Texturing(false);
 				WW3D::Enable_Coloring(0xff008000);
+#ifdef INFO_VULKAN
 				DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
 				DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 7 * -0.000005f);
+#endif
 				Customized_Render(rinfo);
 				break;
 			}
 			Flush(rinfo);
+#ifdef INFO_VULKAN
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_SOLID);
 			DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 0);
+#endif
 			WW3D::Enable_Texturing(old_enable);
 			WW3D::Enable_Coloring(0);
 			ShaderClass::Invalidate();
 		}
 	}
-#endif
 }
 
 //=============================================================================
@@ -1259,7 +1284,7 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 	REF_PTR_RELEASE(vmat);
 	DX8Wrapper::Apply_Render_State_Changes();	//force update all renderstates
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();
 
 	if (!m_pDev)
@@ -1311,10 +1336,44 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
 	}
-
+#endif
+	if (clear)
+	{
+		Int occludedMask = TheW3DShadowManager->getStencilShadowMask();
+		vkCmdSetStencilCompareMask(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, occludedMask);
+		vkCmdSetStencilReference(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, 0x80808080);
+		vkCmdSetStencilOp(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, VK_STENCIL_OP_ZERO, 
+			VK_STENCIL_OP_REPLACE, VK_STENCIL_OP_REPLACE, VK_COMPARE_OP_LESS);
+		vkCmdSetDepthWriteEnable(WWVKRENDER.currentCmd, false);
+		VkBool32 noColor[4] = { 0,0,0,0 };
+		vkCmdSetColorWriteEnableEXT(WWVKRENDER.currentCmd, 4, noColor);
+	}
+	else
+	{
+		vkCmdSetStencilCompareMask(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, 0xffffffff);
+		vkCmdSetStencilReference(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, stencilRef);
+		vkCmdSetStencilOp(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, VK_STENCIL_OP_KEEP,
+			VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_COMPARE_OP_EQUAL);
+		vkCmdSetDepthWriteEnable(WWVKRENDER.currentCmd, true);
+		VkBool32 noColor[4] = { 1,1,1,1 };
+		vkCmdSetColorWriteEnableEXT(WWVKRENDER.currentCmd, 4, noColor);
+	}
+	
 	if (DX8Wrapper::_Is_Triangle_Draw_Enabled())
-		m_pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANSLITVERTEX));
+	{
+		Matrix4x4 ident(true);
 
+		VK::Buffer vbo;
+		VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANSLITVERTEX) * 4, v, vbo);
+		WWVKDSV;
+		WWVK_UpdateStencilPlayerColorDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+		WWVK_DrawStencilPlayerColor(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+#ifdef INFO_VULKAN
+		m_pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANSLITVERTEX));
+#endif
+	}
+
+#ifdef INFO_VULKAN
 	// turn off the stencil buffer
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILENABLE, FALSE );
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE, FALSE);	//restore shader state
@@ -1338,12 +1397,10 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 	Int playerColorIndex[MAX_PLAYER_COUNT];
 	Vector3 hsv,rgb;
 
-#ifdef TODO_VULKAN
 	Int numObjects;
 	Int visiblePlayerColors[MAX_PLAYER_COUNT];	///<color assigned to each of the visible players
 	Int usedPlayerColorIndex=1;
 	Int numVisiblePlayerColors=0;
-#endif
 
 	//Clear pointers into temporary arrays where each player's objects will be stored.
 	//We do this so that all objects are sorted by color which reduces the number of
@@ -1393,6 +1450,7 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP );
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFAIL,  D3DSTENCILOP_KEEP );
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILPASS,  D3DSTENCILOP_REPLACE );
+#endif
 
 		//Find out which player indices are actually used and remap them to
 		//a color index.  Render all objects using the same color index at once.
@@ -1418,10 +1476,12 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 					visiblePlayerColors[numVisiblePlayerColors++]=DX8Wrapper::Convert_Color(rgb,0.5f);
 				}
 
-				Int thisPlayerColorIndex=playerColorIndex[i];
 
 				//Store this object's color index into bits 3-6 of stencil buffer
+#ifdef TODO_VULKAN
+				Int thisPlayerColorIndex=playerColorIndex[i];
 				DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILREF, thisPlayerColorIndex<<3);
+#endif
 
 				//Render all of this player's objects for which we care when they are occluded.
 				RenderObjClass **renderList=&playerObjects[i][0];
@@ -1433,13 +1493,17 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 						TheDX8MeshRenderer.Flush();	//render all the submitted meshes using current stencil function
 						SHD_FLUSH;
 						//Disable writing to color buffer since translucent objects are rendered at end of frame.
+#ifdef TODO_VULKAN
 						DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFUNC,  D3DCMP_NEVER );	//never allow frame buffer writes.
 						DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFAIL,  D3DSTENCILOP_REPLACE );	//always replace existing stencil value
+#endif
 						renderOneObject(rinfo, (*renderList), localPlayerIndex);
 						TheDX8MeshRenderer.Flush();	//render all the submitted meshes using current stencil function
 						SHD_FLUSH;
+#ifdef TODO_VULKAN
 						DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFAIL,  D3DSTENCILOP_KEEP );
 						DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFUNC,  D3DCMP_ALWAYS );
+#endif
 					}
 					else
 						renderOneObject(rinfo, (*renderList), localPlayerIndex);
@@ -1452,7 +1516,9 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 		//Stencil buffer is now filled with color indices of potentially occluded objects.  We now draw
 		//non-occluder or occludee objects such as small rocks, shrubs, etc. which we don't care about
 		//but need to render here so that they don't interfere with building occlusion.
+#ifdef TODO_VULKAN
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILENABLE, FALSE );	//these objects are not stored in stencil
+#endif
 		RenderObjClass **nonOccluderOrOccludeeList=m_nonOccludersOrOccludees;
 		for (i=0; i<m_numNonOccluderOrOccludee; i++)
 		{
@@ -1463,6 +1529,7 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 
 		//Stencil buffer is now filled with color indices of potentially occluded objects.  We now draw
 		//occluder objects so they cover up and modify stencil MSB wherever they are in front of other objects.
+#ifdef TODO_VULKAN
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILENABLE, TRUE );
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_ZENABLE, TRUE );
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILREF, 0xffffffff);
@@ -1472,6 +1539,7 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP );
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFAIL,  D3DSTENCILOP_KEEP );
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILPASS,  D3DSTENCILOP_REPLACE );
+#endif
 
 		//Render all potential occluders on top of already rendered potential occludees.
 		RenderObjClass **occluderList=m_potentialOccluders;
@@ -1505,6 +1573,7 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 			TheW3DShadowManager->setStencilShadowMask(0x80808080);	//msb indicates occluded player pixels so ignore it when filling screen with shadow
 		}
 
+#ifdef TODO_VULKAN
 		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILENABLE, FALSE );
 #endif
 	}

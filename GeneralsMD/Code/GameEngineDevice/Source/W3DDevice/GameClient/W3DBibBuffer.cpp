@@ -435,12 +435,16 @@ void W3DBibBuffer::renderBibs()
 	DX8Wrapper::Set_Shader(detailAlphaShader);
 	if (m_curNumNormalBibIndices) {
 		DX8Wrapper::Set_Texture(0,m_bibTexture);
+#ifdef TODO_VULKAN
 		DX8Wrapper::Draw_Triangles(	0, m_curNumNormalBibIndices/3, 0,	m_curNumNormalBibVertex);
+#endif
 	}
 	if (m_curNumBibIndices>m_curNumNormalBibIndices) {
 		DX8Wrapper::Set_Texture(0,m_highlightBibTexture);
+#ifdef TODO_VULKAN
 		DX8Wrapper::Draw_Triangles(	m_curNumNormalBibIndices, (m_curNumBibIndices-m_curNumNormalBibIndices)/3, 
 						m_curNumNormalBibVertex,	m_curNumBibVertices-m_curNumNormalBibVertex);
+#endif
 	}
 }
 

@@ -5,7 +5,7 @@
 
 layout(set = 0, binding = 2) uniform LightCollectionBlock {LightCollection lights;};
 
-layout(set = 0, binding = 3) uniform MaterialBlock { Material material;};
+layout(set = 0, binding = 3) uniform MaterialBlock { DX8Material material;};
 
 layout(binding = 4) uniform sampler2D tex1;
 layout(binding = 5) uniform sampler2D tex2;

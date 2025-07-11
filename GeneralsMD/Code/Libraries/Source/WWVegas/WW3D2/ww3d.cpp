@@ -784,10 +784,10 @@ WW3DErrorType WW3D::Begin_Render(bool clear,bool clearz,const Vector3 & color, f
 #ifdef INFO_VULKAN
 	if (DX8Wrapper::_Get_D3D_Device8() && (hr=DX8Wrapper::_Get_D3D_Device8()->TestCooperativeLevel()) != D3D_OK)
 #else
-	if (DX8Wrapper::_GetRenderTarget().currentCmd)
+	if (!DX8Wrapper::_GetRenderTarget().currentCmd)
 #endif
 	{
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
         // If the device was lost, do not render until we get it back
         if( D3DERR_DEVICELOST == hr )
             return WW3D_ERROR_GENERIC;	//other app has the device

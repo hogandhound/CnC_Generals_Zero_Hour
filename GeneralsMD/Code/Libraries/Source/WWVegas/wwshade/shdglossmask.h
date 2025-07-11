@@ -46,6 +46,7 @@
 #include "shddef.h"
 #include "saveload.h"
 #include "shader.h"
+#include "shaders/WWVK_shaderdef.h"
 
 class ShdGlossMaskDefClass : public ShdDefClass
 {
@@ -144,8 +145,10 @@ protected:
 
 	static Matrix4x4					View_Projection_Matrix;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	D3DMATERIAL9*			Material;
+#else
+	DX8Material* Material;
 #endif
 
 	TextureClass*			Texture;

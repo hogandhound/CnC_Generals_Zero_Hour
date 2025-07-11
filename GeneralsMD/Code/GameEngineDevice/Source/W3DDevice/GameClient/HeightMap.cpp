@@ -2095,7 +2095,9 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 				}
 #endif				
 				if (Is_Hidden() == 0) {
+#ifdef INFO_VULKAN
 					DX8Wrapper::Draw_Triangles(	0,numPolys, 0,	numVertex);
+#endif
 					std::vector<VkDescriptorSet> sets;
 					if (st == W3DShaderManager::ST_TERRAIN_BASE)
 					{
@@ -2262,7 +2264,9 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 			}
 #endif				
 			if (Is_Hidden() == 0) {
+#ifdef TODO_VULKAN
 				DX8Wrapper::Draw_Triangles(	0,numPolys, 0,	numVertex);
+#endif
 			}
 		}
 }
@@ -2441,7 +2445,9 @@ void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 			DX8Wrapper::Set_Shader(shader);
 			DX8Wrapper::Set_Texture(0,NULL);	//debug mode which draws terrain tiles in white.
 			if (Is_Hidden() == 0) {
+#ifdef TODO_VULKAN
 				DX8Wrapper::Draw_Triangles(	0,indexCount/3, 0,	vertexCount);	//draw a quad, 2 triangles, 4 verts
+#endif
 				m_numVisibleExtraBlendTiles += indexCount/6;
 			}
 		}
@@ -2477,7 +2483,9 @@ void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 			{
 				W3DShaderManager::setShader(st, pass);
 				if (Is_Hidden() == 0) {
+#ifdef TODO_VULKAN
 					DX8Wrapper::Draw_Triangles(	0,indexCount/3, 0,	vertexCount);	//draw a quad, 2 triangles, 4 verts
+#endif
 					m_numVisibleExtraBlendTiles += indexCount/6;
 				}
 			}

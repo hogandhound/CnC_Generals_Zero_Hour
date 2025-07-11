@@ -228,9 +228,9 @@ void Shd8BumpSpecClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 
 	// set vertex shader constants
 	Matrix4x4 world;
-#ifdef TODO_VULKAN
 	DX8Wrapper::Get_Transform(VkTS::WORLD, world);
 
+#ifdef TODO_VULKAN
 	Matrix4x4 world_view_proj_matrix;
 
 	Matrix4x4::Multiply(View_Projection_Matrix,world,&world_view_proj_matrix);

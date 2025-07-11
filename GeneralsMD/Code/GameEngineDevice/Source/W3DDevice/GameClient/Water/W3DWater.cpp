@@ -213,10 +213,11 @@ void WaterRenderObjClass::setupJbaWaterShader(void)
 
 
 	DX8Wrapper::Apply_Render_State_Changes();	//force update of view and projection matrices
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP,   D3DTOP_ADD );
 	if (!m_riverAlphaEdge->Is_Initialized())
 		m_riverAlphaEdge->Init();
+
+#ifdef TODO_VULKAN
+	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP,   D3DTOP_ADD );
 	DX8Wrapper::_Get_D3D_Device8()->SetTexture(3,m_riverAlphaEdge->Peek_D3D_Texture());	
 	DX8Wrapper::Set_DX8_Sampler_Stage_State(3,  D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
 	DX8Wrapper::Set_DX8_Sampler_Stage_State(3,  D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
@@ -441,7 +442,7 @@ HRESULT WaterRenderObjClass::initBumpMap(VK::Texture *pTex, TextureClass *pBumpS
 	SurfaceClass * surf;
 	DWORD dwSrcPitch;
 	BYTE* pSrc;
-	Int numLevels;
+	//Int numLevels;
 
 #ifdef MIPMAP_BUMP_TEXTURE
 
@@ -1500,7 +1501,7 @@ void WaterRenderObjClass::renderMirror(CameraClass *cam)
 	WW3D::End_Render(false);
 
 	// Change the rendertarget back to the main backbuffer
-	DX8Wrapper::Set_Render_Target((IDirect3DSurface9 *)NULL);
+	DX8Wrapper::Set_Render_Target();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1868,15 +1869,17 @@ void WaterRenderObjClass::drawSea(RenderInfoClass & rinfo)
 	m_pDev->SetTextureStageState( 2, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
 
 	m_pDev->SetRenderState(D3DRS_ZWRITEENABLE , FALSE);
+#endif
 
-	D3DXMATRIX mat;
-	memset(&mat,0,sizeof(D3DXMATRIX));
+	DirectX::XMMATRIX mat;
+	memset(&mat,0,sizeof(DirectX::XMMATRIX));
 
-	mat._11 = 0.5f; mat._12 = -0.5f; mat._13 = 0.5f;   mat._14=0.5f;
-	mat._21 = 0.5f; mat._22 = 0.5f; mat._23 = 0.0f;   mat._24=0.0f;
-	mat._31 = 0.0f; mat._32 = 0.0f; mat._33 = 0.0f;   mat._34=1.0f;
-	mat._41 = 0.0f; mat._42 = 0.0f; mat._43 = 0.0f;   mat._44=1.0f;
+	mat.r[0].m128_f32[0] = 0.5f; mat.r[0].m128_f32[1] = -0.5f; mat.r[0].m128_f32[2] = 0.5f;   mat.r[0].m128_f32[3] = 0.5f;
+	mat.r[1].m128_f32[0] = 0.5f; mat.r[1].m128_f32[1] = 0.5f; mat.r[1].m128_f32[2] = 0.0f;   mat.r[1].m128_f32[3] =0.0f;
+	mat.r[2].m128_f32[0] = 0.0f; mat.r[2].m128_f32[1] = 0.0f; mat.r[2].m128_f32[2] = 0.0f;   mat.r[2].m128_f32[3] =1.0f;
+	mat.r[3].m128_f32[0] = 0.0f; mat.r[3].m128_f32[1] = 0.0f; mat.r[3].m128_f32[2] = 0.0f;   mat.r[3].m128_f32[3] =1.0f;
 
+#ifdef TODO_VULKAN
 	m_pDev->SetVertexShaderConstantF(CV_TEXPROJ_0, mat, 4);
 
 	// Setup constants
@@ -1895,41 +1898,46 @@ void WaterRenderObjClass::drawSea(RenderInfoClass & rinfo)
 
 	m_pDev->SetRenderState(D3DRS_ALPHABLENDENABLE , TRUE);
 	m_pDev->SetTexture( 1, m_pReflectionTexture->Peek_D3D_Texture());
-
+#endif
 //	m_pDev->SetRenderState(D3DRS_FILLMODE,D3DFILL_WIREFRAME);//LORENZEN
 
 	Int patchX,patchY,startX,startY;
 
-	D3DXMATRIX patchMatrix;
-	memset(&patchMatrix,0,sizeof(D3DXMATRIX));
-	patchMatrix._11=PATCH_SCALE;
-	patchMatrix._22=1.0f;
-	patchMatrix._33=PATCH_SCALE;
-	patchMatrix._44=1.0f;
+	DirectX::XMMATRIX patchMatrix;
+	memset(&patchMatrix,0,sizeof(DirectX::XMMATRIX));
+	patchMatrix.r[0].m128_f32[0] = PATCH_SCALE;
+	patchMatrix.r[1].m128_f32[1] =1.0f;
+	patchMatrix.r[2].m128_f32[2] =PATCH_SCALE;
+	patchMatrix.r[3].m128_f32[3] =1.0f;
 
+#ifdef TOOD_VULKAN
 	m_pDev->SetStreamSource(0,m_vertexBufferD3D,0,sizeof(WaterRenderObjClass::SEA_PATCH_VERTEX));
 	m_pDev->SetIndices(m_indexBufferD3D);
+#endif
 
 	for (startY=patchY=(seaBox.Center.Y-seaBox.Extent.Y)/(PATCH_WIDTH*PATCH_SCALE); (patchY*PATCH_WIDTH*PATCH_SCALE)<(seaBox.Center.Y+seaBox.Extent.Y); patchY++)
 	{
 		for (startX=patchX=(seaBox.Center.X-seaBox.Extent.X)/(PATCH_WIDTH*PATCH_SCALE); (patchX*PATCH_WIDTH*PATCH_SCALE)<(seaBox.Center.X+seaBox.Extent.X); patchX++)
 		{
-			D3DXMATRIX matWorldViewProj, matTemp, matTempWorld;
-			patchMatrix._41=(float)(patchX*PATCH_WIDTH*PATCH_SCALE );
-			patchMatrix._43=(float)(patchY*PATCH_WIDTH*PATCH_SCALE );
+			DirectX::XMMATRIX matWorldViewProj, matTemp, matTempWorld;
+			patchMatrix.r[3].m128_f32[0] = (float)(patchX * PATCH_WIDTH * PATCH_SCALE);
+			patchMatrix.r[3].m128_f32[2] =(float)(patchY*PATCH_WIDTH*PATCH_SCALE );
 			//convert the default D3D coordinate system into ours
-			D3DXMatrixMultiply(&matTempWorld, &patchMatrix, &matWW3D);
+			matTempWorld = DirectX::XMMatrixMultiply(patchMatrix, matWW3D);
 
-			D3DXMatrixMultiply(&matTemp, &matTempWorld, &matView);
-			D3DXMatrixMultiply(&matWorldViewProj, &matTemp, &matProj);
+			matTemp = DirectX::XMMatrixMultiply(matTempWorld, matView);
+			matWorldViewProj = DirectX::XMMatrixMultiply(matTemp, matProj);
 			//matrices must be transposed before loading into vertex shader registers
-			D3DXMatrixTranspose(&matWorldViewProj, &matWorldViewProj);
+			matWorldViewProj = DirectX::XMMatrixTranspose(matWorldViewProj);
+#ifdef TODO_VULKAN
 			m_pDev->SetVertexShaderConstantF(CV_WORLDVIEWPROJ_0, matWorldViewProj, 4);	//pass transform matrix into shader
 
 			m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,0,0,m_numVertices,0,m_numIndices);
+#endif
 		}
 	}
 //	m_pDev->SetRenderState(D3DRS_FILLMODE,D3DFILL_SOLID);
+#ifdef TODO_VULKAN
 	m_pDev->SetRenderState(D3DRS_ALPHABLENDENABLE , FALSE);
 	m_pDev->SetTexture( 0, NULL);	//release reference to bump texture
 	m_pDev->SetTexture( 1, NULL);	//release reference to reflection texture
@@ -1952,13 +1960,16 @@ void WaterRenderObjClass::drawSea(RenderInfoClass & rinfo)
 	m_pDev->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
 	m_pDev->SetTextureStageState( 2, D3DTSS_COLOROP,   D3DTOP_DISABLE );
 	m_pDev->SetTextureStageState( 2, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+#endif
 
 	//Restore old transforms
 	DX8Wrapper::_Set_DX8_Transform(VkTS::VIEW, *(Matrix4x4*)&matView);
 	DX8Wrapper::_Set_DX8_Transform(VkTS::PROJECTION, *(Matrix4x4*)&matProj);
 
+#ifdef TODO_VULKAN
 	m_pDev->SetPixelShader(0);	//turn off pixel shader
 	m_pDev->SetFVF(0);	//turn off custom vertex shader
+#endif
 
 	DX8Wrapper::Invalidate_Cached_Render_States();
 
@@ -1967,26 +1978,28 @@ void WaterRenderObjClass::drawSea(RenderInfoClass & rinfo)
 		//do second pass to apply the shroud on water plane
 		W3DShaderManager::setTexture(0,TheTerrainRenderObject->getShroud()->getShroudTexture());
 		W3DShaderManager::setShader(W3DShaderManager::ST_SHROUD_TEXTURE, 0);
+#ifdef TODO_VULKAN
 		m_pDev->SetStreamSource(0,m_vertexBufferD3D, 0,sizeof(WaterRenderObjClass::SEA_PATCH_VERTEX));
 		m_pDev->SetIndices(m_indexBufferD3D);
+#endif
 		for (startY=patchY=(seaBox.Center.Y-seaBox.Extent.Y)/(PATCH_WIDTH*PATCH_SCALE); (patchY*PATCH_WIDTH*PATCH_SCALE)<(seaBox.Center.Y+seaBox.Extent.Y); patchY++)
 		{
 			for (startX=patchX=(seaBox.Center.X-seaBox.Extent.X)/(PATCH_WIDTH*PATCH_SCALE); (patchX*PATCH_WIDTH*PATCH_SCALE)<(seaBox.Center.X+seaBox.Extent.X); patchX++)
 			{
-				D3DXMATRIX matTemp;
-				patchMatrix._41=(float)(patchX*PATCH_WIDTH*PATCH_SCALE);
-				patchMatrix._43=(float)(patchY*PATCH_WIDTH*PATCH_SCALE);
+				DirectX::XMMATRIX matTemp;
+				patchMatrix.r[3].m128_f32[0] = (float)(patchX * PATCH_WIDTH * PATCH_SCALE);
+				patchMatrix.r[3].m128_f32[2] = (float)(patchY * PATCH_WIDTH * PATCH_SCALE);
 
-				D3DXMatrixMultiply(&matTemp, &patchMatrix, &matWW3D);
+				matTemp = DirectX::XMMatrixMultiply(patchMatrix, matWW3D);
 
 				DX8Wrapper::_Set_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&matTemp);
-
+#ifdef TODO_VULKAN
 				m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,0,0,m_numVertices,0,m_numIndices);
+#endif
 			}
 		}
 		W3DShaderManager::resetShader(W3DShaderManager::ST_SHROUD_TEXTURE);
 	}
-#endif
 }
 
 
@@ -2124,7 +2137,9 @@ void WaterRenderObjClass::renderSky(void)
 	tm.Set_Translation(Vector3(0,0,0));
 	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 
+#ifdef TODO_VULKAN
 	DX8Wrapper::Draw_Triangles(	0,2, 0,	4);	//draw a quad, 2 triangles, 4 verts
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2226,7 +2241,9 @@ void WaterRenderObjClass::renderSkyBody(Matrix3D *mat)
 	DX8Wrapper::Set_Vertex_Buffer(vb_access);
 #endif
 
+#ifdef TODO_VULKAN
 	DX8Wrapper::Draw_Triangles(	0,2, 0,	4);	//draw a quad, 2 triangles, 4 verts
+#endif
 }
 
 //Defines for procedural water animation.

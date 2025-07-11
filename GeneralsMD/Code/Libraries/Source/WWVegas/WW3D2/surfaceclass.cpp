@@ -436,7 +436,7 @@ void SurfaceClass::Copy(Vector2i &min,Vector2i &max, const unsigned char *other)
  * HISTORY:                                                                                    *
  *   3/16/2001  hy : Created.                                                                  *
  *=============================================================================================*/
-unsigned char *SurfaceClass::CreateCopy(int *width,int *height,int*size,bool flip)
+std::vector<uint8_t> SurfaceClass::CreateCopy(int *width,int *height,int*size,bool flip)
 {
 	SurfaceDescription sd;
 	Get_Description(sd);
@@ -448,9 +448,9 @@ unsigned char *SurfaceClass::CreateCopy(int *width,int *height,int*size,bool fli
 	*height=sd.Height;
 	*size=mysize;
 
+#ifdef TODO_VULKAN
 	unsigned char *other=W3DNEWARRAY unsigned char [sd.Height*sd.Width*mysize];
 
-#ifdef TODO_VULKAN
 	D3DLOCKED_RECT lock_rect;	
 	::ZeroMemory(&lock_rect, sizeof(D3DLOCKED_RECT));
 	DX8_ErrorCode(D3DSurface->LockRect(&lock_rect,0,D3DLOCK_READONLY));
@@ -470,6 +470,9 @@ unsigned char *SurfaceClass::CreateCopy(int *width,int *height,int*size,bool fli
 	}
 	
 	DX8_ErrorCode(D3DSurface->UnlockRect());
+#else
+	std::vector<uint8_t> other = this->buffer;
+	
 #endif
 
 	return other;

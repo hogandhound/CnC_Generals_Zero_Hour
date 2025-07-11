@@ -908,7 +908,9 @@ Try improving the fit to vertical surfaces like cliffs.
 			{
 				DX8Wrapper::Set_Texture(0,mod->m_stageZeroTexture);
 				DX8Wrapper::Set_Index_Buffer_Index_Offset(trackStartIndex);
+#ifdef TODO_VULKAN
 				DX8Wrapper::Draw_Triangles(	0,(mod->m_activeEdgeCount-1)*2, 0, mod->m_activeEdgeCount*2);
+#endif
 
 				trackStartIndex += mod->m_activeEdgeCount*2;
 			}

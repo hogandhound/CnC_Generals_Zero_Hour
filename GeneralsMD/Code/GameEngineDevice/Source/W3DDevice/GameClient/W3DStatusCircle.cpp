@@ -247,54 +247,42 @@ Int W3DStatusCircle::updateScreenVB(Int diffuse)
 	{
 		m_needUpdate = false;
 		DX8VertexBufferClass::WriteLockClass lockVtxBuffer(pVB);
-		VertexFormatXYZDUV1 *vb = (VertexFormatXYZDUV1*)lockVtxBuffer.Get_Vertex_Array();
+		VertexFormatXYZD *vb = (VertexFormatXYZD*)lockVtxBuffer.Get_Vertex_Array();
 							
 		vb->x =	-1;
 		vb->y =	-1;
 		vb->z = 0;
 		vb->diffuse = diffuse; 
-		vb->u1=0;
-		vb->v1=0;
 		vb++;	
 
 		vb->x =	1;
 		vb->y =	1;
 		vb->z = 0;
 		vb->diffuse = diffuse; 
-		vb->u1=0;
-		vb->v1=0;
 		vb++;	
 
 		vb->x =	-1;
 		vb->y =	1;
 		vb->z = 0;
 		vb->diffuse = diffuse; 
-		vb->u1=0;
-		vb->v1=0;
 		vb++;	
 
 		vb->x =	-1;
 		vb->y =	-1;
 		vb->z = 0;
 		vb->diffuse = diffuse; 
-		vb->u1=0;
-		vb->v1=0;
 		vb++;	
 
 		vb->x =	1;
 		vb->y =	-1;
 		vb->z = 0;
 		vb->diffuse = diffuse; 
-		vb->u1=0;
-		vb->v1=0;
 		vb++;	
 
 		vb->x =	1;
 		vb->y =	1;
 		vb->z = 0;
 		vb->diffuse = diffuse; 
-		vb->u1=0;
-		vb->v1=0;
 		vb++;	
 		return 0; //success.
 	}
@@ -328,12 +316,16 @@ void W3DStatusCircle::Render(RenderInfoClass & rinfo)
 		setIndex = true;
 
 		Vector3 vec(0.95f, 0.67f, 0);
-		Matrix3x3 rot(true);
 
 		tm.Set_Translation(vec);
 
 		DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
-#ifdef TODO_VULKAN
+		WWVKDSV;
+		WWVK_UpdateFVF_DDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		WWVK_DrawFVF_D(WWVKPIPES, WWVKRENDER.currentCmd, sets, 
+			m_indexBuffer->Get_DX8_Index_Buffer().buffer, NUM_TRI * 3, VK_INDEX_TYPE_UINT16,
+			m_vertexBufferCircle->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm);
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(	0,NUM_TRI, 0,	(m_numTriangles*3));
 #endif
 	}

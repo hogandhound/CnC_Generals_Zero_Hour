@@ -31,13 +31,14 @@
 layout(binding = 4) uniform sampler2D tex0;
 layout(binding = 5) uniform sampler2D tex1;
 
-layout(location = 0) in vec2 fragUv;
-layout(location = 1) in vec4 fragDiffuse;
+layout(location = 0) in vec4 fragDiffuse;
+layout(location = 1) in vec2 fragUv;
+layout(location = 2) in vec2 camUv;
 
 layout(location = 0) out vec4 finalColor;
 
 void main() {
-    finalColor = texture(tex0, fragUv) * texture(tex1, gl_FragCoord.xy) * fragDiffuse;
+    finalColor = texture(tex0, fragUv) * texture(tex1, camUv.xy) * fragDiffuse;
 }
 
 // Declare pixel shader version 1.1

@@ -423,9 +423,7 @@ void W3DShroud::fillShroudData(W3DShroudLevel level)
 
 void W3DShroud::fillBorderShroudData(W3DShroudLevel level, SurfaceClass* pDestSurface)
 {
-#ifdef TODO_VULKAN
 	Int x,y;
-#endif
 	UnsignedShort pixel;
 
 	if (level < TheGlobalData->m_shroudAlpha)
@@ -459,7 +457,6 @@ void W3DShroud::fillBorderShroudData(W3DShroudLevel level, SurfaceClass* pDestSu
 	}
 
 	//Skip to unused texels within the shroud data
-#ifdef TODO_VULKAN
 	UnsignedShort *ptr=(UnsignedShort *)m_srcTextureData + m_numCellsY*(m_srcTexturePitch >> 1);
 
 	//Fill unused texels with border color
@@ -486,7 +483,7 @@ void W3DShroud::fillBorderShroudData(W3DShroudLevel level, SurfaceClass* pDestSu
 	{
 		dstPoint.y=y;
 		dstPoint.x=0;
-
+#if TODO_VULKAN
 		for (x=0; x<numFullCopies; x++)
 		{	
 			dstPoint.x = x * srcRect.right;	//advance to next set of pixel in row.
@@ -510,9 +507,9 @@ void W3DShroud::fillBorderShroudData(W3DShroudLevel level, SurfaceClass* pDestSu
 				&dstPoint);
 			srcRect.right = oldVal;
 		}
+#endif
 	}
 	
-#endif
 }
 
 /**Set the shroud color within the border area of the map*/

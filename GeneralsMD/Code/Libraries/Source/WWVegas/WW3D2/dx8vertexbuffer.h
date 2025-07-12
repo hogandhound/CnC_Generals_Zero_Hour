@@ -52,7 +52,7 @@
 #include <VkRenderTarget.h>
 
 
-const unsigned dynamic_fvf_type = VKFVF_XYZ|VKFVF_NORMAL|VKFVF_TEX2|VKFVF_DIFFUSE;
+const unsigned dynamic_fvf_type = VKFVF_XYZ|VKFVF_TEX2|VKFVF_DIFFUSE;
 
 class DX8Wrapper;
 class SortingRendererClass;
@@ -167,6 +167,7 @@ public:
 	const FVFInfoClass& FVF_Info() const { return FVFInfo; }
 	unsigned Get_Type() const { return Type; }
 	unsigned short Get_Vertex_Count() const { return VertexCount; }
+	VertexBufferClass* Get_Vertex_Buffer() { return VertexBuffer; };
 
 	// Call at the end of the execution, or at whatever time you wish to release
 	// the recycled dynamic vertex buffer.

@@ -78,7 +78,7 @@ class SurfaceClass : public W3DMPO, public RefCountClass
 		SurfaceClass(const char *filename);
 
 		// Create the surface from a D3D pointer
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		SurfaceClass(IDirect3DSurface9 *d3d_surface);
 #endif
 
@@ -125,7 +125,7 @@ class SurfaceClass : public W3DMPO, public RefCountClass
 
 			// For use by TextureClass:
 		std::vector<uint8_t>& Peek_D3D_Surface(void) {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 			return D3DSurface; 
 #else
 			return buffer;
@@ -153,7 +153,7 @@ class SurfaceClass : public W3DMPO, public RefCountClass
 	private:
 
 		// Direct3D surface object
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		IDirect3DSurface9 *D3DSurface;
 #endif
 		std::vector<uint8_t> buffer;

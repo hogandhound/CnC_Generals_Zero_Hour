@@ -3364,6 +3364,7 @@ void W3DRoadBuffer::drawRoads(CameraClass * camera, TextureClass *cloudTexture, 
 	#ifdef _DEBUG
 			//DX8Wrapper::Set_Shader(detailShader); // shows clipping.
 	#endif	
+			std::vector<VkDescriptorSet> sets;
 			for (Int pass=0; pass < devicePasses; pass++)
 			{
 				if (!wireframe)
@@ -3373,14 +3374,56 @@ void W3DRoadBuffer::drawRoads(CameraClass * camera, TextureClass *cloudTexture, 
 				{
 				default:
 				case W3DShaderManager::ST_ROAD_BASE:
-					break;
-				case W3DShaderManager::ST_ROAD_BASE_NOISE1:
-				case W3DShaderManager::ST_ROAD_BASE_NOISE2:
-					break;
-				case W3DShaderManager::ST_ROAD_BASE_NOISE12:
+				{
+					WorldMatrix push;
+					DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+					WWVK_UpdateRoadDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+						&W3DShaderManager::getShaderTexture(0)->Peek_D3D_Texture(),
+						DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+					WWVK_DrawRoad(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+						m_roadTypes[i].getIB()->Get_DX8_Index_Buffer().buffer, m_roadTypes[i].getNumIndices(), VK_INDEX_TYPE_UINT16,
+						m_roadTypes[i].getVB()->Get_DX8_Vertex_Buffer().buffer, 0, &push);
 					break;
 				}
-#ifdef TODO_VULKAN
+				case W3DShaderManager::ST_ROAD_BASE_NOISE1:
+				case W3DShaderManager::ST_ROAD_BASE_NOISE2:
+				{
+					WorldMatrixUVT push;
+					VK::Texture noiseTex = st == W3DShaderManager::ST_ROAD_BASE_NOISE1 ? 
+						W3DShaderManager::getShaderTexture(1)->Peek_D3D_Texture() : 
+						W3DShaderManager::getShaderTexture(2)->Peek_D3D_Texture();
+					DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+					DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE1, *(Matrix4x4*)&push.uvt);
+					WWVK_UpdateRoadNoiseDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+						&W3DShaderManager::getShaderTexture(0)->Peek_D3D_Texture(), &noiseTex,
+						DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+					WWVK_DrawRoadNoise(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+						m_roadTypes[i].getIB()->Get_DX8_Index_Buffer().buffer, m_roadTypes[i].getNumIndices(), VK_INDEX_TYPE_UINT16,
+						m_roadTypes[i].getVB()->Get_DX8_Vertex_Buffer().buffer, 0, &push);
+					break;
+				}
+				case W3DShaderManager::ST_ROAD_BASE_NOISE12:
+				{
+					VK::Buffer uboUVT;
+					UVT2 uvt2;
+					Matrix4x4 world;
+					DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE1, *(Matrix4x4*)&uvt2.m1);
+					DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE2, *(Matrix4x4*)&uvt2.m2);
+					DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, world);
+					VkBufferTools::CreateUniformBuffer(&WWVKRENDER, sizeof(UVT2), &uvt2, uboUVT);
+					WWVK_UpdateRoadNoise12DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+						&W3DShaderManager::getShaderTexture(0)->Peek_D3D_Texture(),
+						&W3DShaderManager::getShaderTexture(1)->Peek_D3D_Texture(),
+						&W3DShaderManager::getShaderTexture(2)->Peek_D3D_Texture(),
+						DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uboUVT);
+					WWVK_DrawRoadNoise12(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+						m_roadTypes[i].getIB()->Get_DX8_Index_Buffer().buffer, m_roadTypes[i].getNumIndices(), VK_INDEX_TYPE_UINT16,
+						m_roadTypes[i].getVB()->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&world);
+					WWVKRENDER.PushSingleFrameBuffer(uboUVT);
+					break;
+				}
+				}
+#ifdef INFO_VULKAN
 				DX8Wrapper::Draw_Triangles(	0, m_roadTypes[i].getNumIndices()/3, 0,	m_roadTypes[i].getNumVertices());
 #endif
 #ifdef LOG_STATS

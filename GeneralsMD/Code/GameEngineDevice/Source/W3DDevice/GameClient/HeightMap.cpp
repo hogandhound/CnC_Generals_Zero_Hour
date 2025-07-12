@@ -2264,6 +2264,8 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 			}
 #endif				
 			if (Is_Hidden() == 0) {
+				WWVKDSV;
+				//Figure out the install materials
 #ifdef TODO_VULKAN
 				DX8Wrapper::Draw_Triangles(	0,numPolys, 0,	numVertex);
 #endif
@@ -2445,7 +2447,7 @@ void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 			DX8Wrapper::Set_Shader(shader);
 			DX8Wrapper::Set_Texture(0,NULL);	//debug mode which draws terrain tiles in white.
 			if (Is_Hidden() == 0) {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN //use3WayTerrainBlends == 2 is debug
 				DX8Wrapper::Draw_Triangles(	0,indexCount/3, 0,	vertexCount);	//draw a quad, 2 triangles, 4 verts
 #endif
 				m_numVisibleExtraBlendTiles += indexCount/6;
@@ -2479,11 +2481,63 @@ void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 
 			Int devicePasses=W3DShaderManager::getShaderPasses(st);
 
+			std::vector<VkDescriptorSet> sets;
 			for (Int pass=0; pass < devicePasses; pass++)
 			{
 				W3DShaderManager::setShader(st, pass);
 				if (Is_Hidden() == 0) {
-#ifdef TODO_VULKAN
+					switch (st)
+					{
+					default:
+					case W3DShaderManager::ST_ROAD_BASE:
+					{
+						WorldMatrix push;
+						DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+						WWVK_UpdateRoadDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+							&m_stageOneTexture->Peek_D3D_Texture(),
+							DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+						WWVK_DrawRoad(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+							((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, VK_INDEX_TYPE_UINT16,
+							((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, &push);
+						break;
+					}
+					case W3DShaderManager::ST_ROAD_BASE_NOISE1:
+					case W3DShaderManager::ST_ROAD_BASE_NOISE2:
+					{
+						WorldMatrixUVT push;
+						DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+						DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE1, *(Matrix4x4*)&push.uvt);
+						WWVK_UpdateRoadNoiseDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+							&m_stageOneTexture->Peek_D3D_Texture(),
+							&m_stageTwoTexture->Peek_D3D_Texture(),
+							DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+						WWVK_DrawRoadNoise(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+							((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, VK_INDEX_TYPE_UINT16,
+							((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, &push);
+						break;
+					}
+					case W3DShaderManager::ST_ROAD_BASE_NOISE12:
+					{
+						VK::Buffer uboUVT;
+						UVT2 uvt2;
+						Matrix4x4 world;
+						DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE1, *(Matrix4x4*)&uvt2.m1);
+						DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE2, *(Matrix4x4*)&uvt2.m2);
+						DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, world);
+						VkBufferTools::CreateUniformBuffer(&WWVKRENDER, sizeof(UVT2), &uvt2, uboUVT);
+						WWVK_UpdateRoadNoise12DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+							&m_stageOneTexture->Peek_D3D_Texture(),
+							&m_stageTwoTexture->Peek_D3D_Texture(),
+							&m_stageThreeTexture->Peek_D3D_Texture(),
+							DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uboUVT);
+						WWVK_DrawRoadNoise12(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+							((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, VK_INDEX_TYPE_UINT16,
+							((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&world);
+						WWVKRENDER.PushSingleFrameBuffer(uboUVT);
+						break;
+					}
+					}
+#ifdef INFO_VULKAN
 					DX8Wrapper::Draw_Triangles(	0,indexCount/3, 0,	vertexCount);	//draw a quad, 2 triangles, 4 verts
 #endif
 					m_numVisibleExtraBlendTiles += indexCount/6;

@@ -571,7 +571,7 @@ Int W3DProjectedShadowManager::renderProjectedTerrainShadow(W3DProjectedShadow *
 			Debug_Statistics::Record_DX8_Polys_And_Vertices(numPolys, numVerts, ShaderClass::_PresetOpaqueShader);
 			std::vector<VkDescriptorSet> sets;
 			WWVK_UpdateProjShadowDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-			WWVK_DrawProjShadow(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, numIndex, VK_INDEX_TYPE_UINT16, 
+			WWVK_DrawProjShadow(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, numIndex, nShadowStartBatchIndex, VK_INDEX_TYPE_UINT16,
 				shadowVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
 #ifdef INFO_VULKAN
 			m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, nShadowStartBatchVertex, 0, numVerts, nShadowStartBatchIndex, numPolys);
@@ -805,19 +805,19 @@ void W3DProjectedShadowManager::flushDecals(W3DShadowTexture *texture, ShadowTyp
 		case SHADOW_DECAL:
 			WWVK_UpdateFVF_DUV_MultBlendDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &texture->getTexture()->Peek_D3D_Texture(),
 				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-			WWVK_DrawFVF_DUV_MultBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3,
+			WWVK_DrawFVF_DUV_MultBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3, nShadowDecalStartBatchIndex,
 				VK_INDEX_TYPE_UINT16, shadowVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
 			break;
 		case SHADOW_ALPHA_DECAL:
 			WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &texture->getTexture()->Peek_D3D_Texture(),
 				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-			WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3,
+			WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3, nShadowDecalStartBatchIndex,
 				VK_INDEX_TYPE_UINT16, shadowVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
 			break;
 		case SHADOW_ADDITIVE_DECAL:
 			WWVK_UpdateFVF_DUV_AddBlendDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &texture->getTexture()->Peek_D3D_Texture(),
 				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-			WWVK_DrawFVF_DUV_AddBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3,
+			WWVK_DrawFVF_DUV_AddBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3, nShadowDecalStartBatchIndex,
 				VK_INDEX_TYPE_UINT16, shadowVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
 			break;
 		}
@@ -2277,7 +2277,8 @@ void W3DProjectedShadow::updateTexture(Vector3 &lightPos)
 		SurfaceClass *newSurface=TheW3DProjectedShadowManager->getRenderTarget()->Get_Surface_Level();
 		
 		//Copy shadow from temporary video-memory surface into a permanent texture
-		oldSurface->Copy(0,0,0,0,DEFAULT_RENDER_TARGET_WIDTH,DEFAULT_RENDER_TARGET_HEIGHT,newSurface);
+		oldSurface->Copy(0,0,0,0,DEFAULT_RENDER_TARGET_WIDTH,DEFAULT_RENDER_TARGET_HEIGHT,newSurface,
+			&m_shadowTexture[0]->getTexture()->Peek_D3D_Texture());
 		REF_PTR_RELEASE(newSurface);
 		REF_PTR_RELEASE(oldSurface);
 		m_shadowTexture[0]->updateBounds(TheW3DShadowManager->getLightPosWorld(0),m_robj);	//update local shadow bounds

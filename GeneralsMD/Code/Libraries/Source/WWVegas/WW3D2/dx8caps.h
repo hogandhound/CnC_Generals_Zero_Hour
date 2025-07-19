@@ -206,13 +206,13 @@ public:
 	};
 
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	DX8Caps(IDirect3D9* direct3d, const D3DCAPS9& caps,WW3DFormat display_format, const D3DADAPTER_IDENTIFIER9& adapter_id);
 	DX8Caps(IDirect3D9* direct3d, IDirect3DDevice9* D3DDevice,WW3DFormat display_format, const D3DADAPTER_IDENTIFIER9& adapter_id);
 #endif
 	static void Shutdown(void);
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	void Compute_Caps(WW3DFormat display_format, const D3DADAPTER_IDENTIFIER9& adapter_id);
 #endif
 	bool Support_TnL() const { return SupportTnL; };	
@@ -251,7 +251,7 @@ public:
 	bool Support_Render_To_Texture_Format(WW3DFormat format) const { return SupportRenderToTextureFormat[format]; }
 	bool Support_Depth_Stencil_Format(WW3DZFormat format) const { return SupportDepthStencilFormat[format]; }
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	D3DCAPS9 const & Get_DX8_Caps() const { return Caps; }
 #endif
 
@@ -276,7 +276,7 @@ private:
 	static DeviceTypePowerVR Get_PowerVR_Device(unsigned device_id);
 	static DeviceTypeS3 Get_S3_Device(unsigned device_id);
 	static DeviceTypeIntel Get_Intel_Device(unsigned device_id);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	void Init_Caps(IDirect3DDevice9* D3DDevice);
 	void Check_Texture_Format_Support(WW3DFormat display_format,const D3DCAPS9& caps);
 	void Check_Render_To_Texture_Support(WW3DFormat display_format,const D3DCAPS9& caps);
@@ -319,7 +319,7 @@ private:
 	DriverVersionStatusType DriverVersionStatus;
 	VendorIdType VendorId;
 	StringClass DriverDLL;
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	IDirect3D9* Direct3D; // warning XDK name conflict KJM
 #endif
 	StringClass CapsLog;

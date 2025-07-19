@@ -339,7 +339,7 @@ bool DX8Wrapper::Init(void * hwnd, bool lite)
 void DX8Wrapper::Shutdown(void)
 {
 	target.~VkRenderTarget();
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	if (D3DDevice) {
 
 		Set_Render_Target ();
@@ -366,7 +366,7 @@ void DX8Wrapper::Shutdown(void)
 		}
 	}
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	if (D3DInterface) {
 		UINT newRefCount=D3DInterface->Release();
 		D3DInterface=NULL;
@@ -390,7 +390,7 @@ void DX8Wrapper::Do_Onetime_Device_Dependent_Inits(void)
 	/*
 	** Set Global render states (some of which depend on caps)
 	*/
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	Compute_Caps(D3DFormat_To_WW3DFormat(DisplayFormat));
 #endif
 
@@ -414,7 +414,7 @@ inline DWORD F2DW(float f) { return *((unsigned*)&f); }
 void DX8Wrapper::Set_Default_Global_Render_States(void)
 {
 	DX8_THREAD_ASSERT();
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	const D3DCAPS9 &caps = Get_Current_Caps()->Get_DX8_Caps();
 
 	Set_DX8_Render_State(D3DRS_RANGEFOGENABLE, (caps.RasterCaps & D3DPRASTERCAPS_FOGRANGE) ? TRUE : FALSE);
@@ -440,7 +440,7 @@ bool DX8Wrapper::Validate_Device(void)
 {	DWORD numPasses=0;
 	HRESULT hRes = D3D_OK;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	hRes=_Get_D3D_Device8()->ValidateDevice(&numPasses);
 #endif
 
@@ -463,14 +463,14 @@ void DX8Wrapper::Invalidate_Cached_Render_States(void)
 		}
 		//Need to explicitly set texture to NULL, otherwise app will not be able to
 		//set it to null because of redundant state checker. MW
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		if (_Get_D3D_Device8())
 			_Get_D3D_Device8()->SetTexture(a,NULL);
 		if (Textures[a] != NULL) {
 			Textures[a]->Release();
 		}
-		Textures[a]=NULL;
 #endif
+		Textures[a] = {};
 	}
 
 	ShaderClass::Invalidate();
@@ -526,7 +526,7 @@ void DX8Wrapper::Do_Onetime_Device_Dependent_Shutdowns(void)
 
 bool DX8Wrapper::Create_Device(void)
 {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	WWASSERT(D3DDevice==NULL);	// for now, once you've created a device, you're stuck with it!
 
 	D3DCAPS9 caps;
@@ -640,8 +640,8 @@ bool DX8Wrapper::Create_Device(void)
 	/*
 	** Initialize all subsystems
 	*/
-	Do_Onetime_Device_Dependent_Inits();
 #endif
+	Do_Onetime_Device_Dependent_Inits();
 	return true;
 }
 
@@ -649,8 +649,8 @@ bool DX8Wrapper::Reset_Device(bool reload_assets)
 {
 	WWDEBUG_SAY(("Resetting device.\n"));
 	DX8_THREAD_ASSERT();
-#ifdef TODO_VULKAN
-	if ((IsInitted) && (D3DDevice != NULL)) {
+	if ((IsInitted) //&& (D3DDevice != NULL)
+		) {
 		// Release all non-MANAGED stuff
 		WW3D::_Invalidate_Textures();
 
@@ -673,6 +673,7 @@ bool DX8Wrapper::Reset_Device(bool reload_assets)
 		memset(Vertex_Shader_Constants,0,sizeof(Vector4)*MAX_VERTEX_SHADER_CONSTANTS);
 		memset(Pixel_Shader_Constants,0,sizeof(Vector4)*MAX_PIXEL_SHADER_CONSTANTS);
 
+#ifdef TODO_VULKAN
 		HRESULT hr=_Get_D3D_Device8()->TestCooperativeLevel();
 		if (hr != D3DERR_DEVICELOST )
 		{	DX8CALL_HRES(Reset(&_PresentParameters),hr)
@@ -682,6 +683,7 @@ bool DX8Wrapper::Reset_Device(bool reload_assets)
 		else
 			return false;	//device is lost and can't be reset.
 
+#endif
 		if (reload_assets)
 		{
 			DX8TextureManagerClass::Recreate_Textures();
@@ -696,13 +698,12 @@ bool DX8Wrapper::Reset_Device(bool reload_assets)
 		return true;
 	}
 	WWDEBUG_SAY(("Device reset failed\n"));
-#endif
 	return false;
 }
 
 void DX8Wrapper::Release_Device(void)
 {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	if (D3DDevice) {
 
 		for (int a=0;a<MAX_TEXTURE_STAGES;++a)
@@ -728,7 +729,9 @@ void DX8Wrapper::Release_Device(void)
 		/*
 		** Shutdown all subsystems
 		*/
+#endif
 		Do_Onetime_Device_Dependent_Shutdowns();
+#ifdef INFO_VULKAN
 
 		/*
 		** Release the device
@@ -744,7 +747,7 @@ void DX8Wrapper::Enumerate_Devices()
 {
 	DX8_Assert();
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	int adapter_count = D3DInterface->GetAdapterCount();
 	for (int adapter_index=0; adapter_index<adapter_count; adapter_index++) {
 
@@ -1718,7 +1721,7 @@ unsigned long DX8Wrapper::Get_FrameCount(void) {return FrameCount;}
 
 void DX8_Assert()
 {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	WWASSERT(DX8Wrapper::_Get_D3D8());
 #endif
 	DX8_THREAD_ASSERT();
@@ -1740,7 +1743,7 @@ void DX8Wrapper::Begin_Scene(void)
 void DX8Wrapper::End_Scene(bool flip_frames)
 {
 	DX8_THREAD_ASSERT();
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	DX8CALL(EndScene());
 
 	DX8WebBrowser::Render(0);

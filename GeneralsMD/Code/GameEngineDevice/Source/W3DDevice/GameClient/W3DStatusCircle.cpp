@@ -323,7 +323,7 @@ void W3DStatusCircle::Render(RenderInfoClass & rinfo)
 		WWVKDSV;
 		WWVK_UpdateFVF_DDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 		WWVK_DrawFVF_D(WWVKPIPES, WWVKRENDER.currentCmd, sets, 
-			m_indexBuffer->Get_DX8_Index_Buffer().buffer, NUM_TRI * 3, VK_INDEX_TYPE_UINT16,
+			m_indexBuffer->Get_DX8_Index_Buffer().buffer, NUM_TRI * 3, 0, VK_INDEX_TYPE_UINT16,
 			m_vertexBufferCircle->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm);
 #ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(	0,NUM_TRI, 0,	(m_numTriangles*3));

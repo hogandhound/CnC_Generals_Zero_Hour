@@ -140,7 +140,7 @@ Render2DSentenceClass::Reset (void)
 	//	Make sure we unlock the current surface (if necessary)
 	//
 	if (LockedPtr != NULL) {
-		CurSurface->Unlock ();
+		CurSurface->Unlock (0);
 		LockedPtr = NULL;
 	}
 
@@ -353,7 +353,7 @@ Render2DSentenceClass::Build_Textures (void)
 	//	Make sure we unlock the current surface
 	//
 	if (LockedPtr != NULL) {
-		CurSurface->Unlock ();
+		CurSurface->Unlock (0);
 		LockedPtr = NULL;
 	}
 	
@@ -642,7 +642,7 @@ Render2DSentenceClass::Allocate_New_Surface (const WCHAR *text, bool justCalcExt
 		//	Unlock the last surface (if necessary)
 		//
 		if (LockedPtr != NULL) {
-			CurSurface->Unlock ();
+			CurSurface->Unlock (0);
 			LockedPtr = NULL;
 		}
 	}

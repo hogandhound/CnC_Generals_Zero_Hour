@@ -98,7 +98,6 @@ public:
 
 	TextureMapperClass*	Clone(void) const { 	WWASSERT(0);	return NULL; }
 
-	virtual void			Apply(int uv_array_index);
 	virtual void			Calculate_Texture_Matrix(Matrix4x4 &tex_matrix);
 
 protected:
@@ -132,7 +131,6 @@ public:
 
 	virtual TextureMapperClass *Clone(void) const { return NEW_REF( CompositeMatrixMapperClass, (*this)); }
 
-	virtual void Apply(int uv_array_index);
 	virtual void Calculate_Texture_Matrix(Matrix4x4 &tex_matrix);
 
 protected:

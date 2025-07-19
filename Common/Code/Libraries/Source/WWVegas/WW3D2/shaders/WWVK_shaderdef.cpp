@@ -90,10 +90,9 @@ void WWVK_CreateFVF_DPipeline(VkRenderTarget* target, VKPipelineData& pipeline) 
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -299,10 +298,9 @@ void WWVK_CreateFVF_DUVPipeline(VkRenderTarget* target, VKPipelineData& pipeline
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -447,6 +445,460 @@ void WWVK_UpdateFVF_DUVDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Col
     output.clear();
     output.push_back(descriptorSet);
 }
+void WWVK_CreateFVF_DUV_NoDepthPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
+    VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyzduv_vert, sizeof(WWVK_fvf_xyzduv_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_fvf_duv_frag, sizeof(WWVK_fvf_duv_frag));
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertShaderModule;
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragShaderModule;
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    VkVertexInputBindingDescription bindingDescription[1] = {};
+    {
+        bindingDescription[0].binding = 0;
+        bindingDescription[0].stride = sizeof(float) * 6;
+        bindingDescription[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    }
+    VkVertexInputAttributeDescription attributeDescriptions[3] = {};
+    {
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 2;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].offset = sizeof(float) * 4;
+    }
+    {
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 1;
+        attributeDescriptions[1].format = VK_FORMAT_R32_UINT;
+        attributeDescriptions[1].offset = sizeof(float) * 3;
+    }
+    {
+        attributeDescriptions[2].binding = 0;
+        attributeDescriptions[2].location = 0;
+        attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[2].offset = sizeof(float) * 0;
+    }
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = 3;
+
+    vertexInputInfo.pVertexBindingDescriptions = bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions;
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = nullptr;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = nullptr;
+
+    VkDynamicState dynamicState[2] = { VK_DYNAMIC_STATE_VIEWPORT , VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
+    dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicStateCreateInfo.dynamicStateCount = 2;
+    dynamicStateCreateInfo.pDynamicStates = dynamicState;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+
+
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &pipeline.descriptorSetLayout;
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.size = sizeof(WorldMatrix);
+    pushConstantRange.offset = 0;
+
+    // Push constant ranges are part of the pipeline layout
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+    if (vkCreatePipelineLayout(target->device, &pipelineLayoutInfo, nullptr, &pipeline.pipelineLayout) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    VkPipelineDepthStencilStateCreateInfo depthStencil{};
+    depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depthStencil.depthTestEnable = VK_FALSE;
+    depthStencil.depthWriteEnable = VK_FALSE;
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f; // Optional
+    depthStencil.maxDepthBounds = 1.0f; // Optional
+    depthStencil.depthCompareOp = VK_COMPARE_OP_NEVER;
+    pipelineInfo.pDepthStencilState = &depthStencil;
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.layout = pipeline.pipelineLayout;
+    pipelineInfo.renderPass = target->renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    if (vkCreateGraphicsPipelines(target->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline.graphicsPipeline) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create graphics pipeline!");
+    }
+
+    vkDestroyShaderModule(target->device, fragShaderModule, nullptr);
+    vkDestroyShaderModule(target->device, vertShaderModule, nullptr);
+}
+
+
+void WWVK_CreateFVF_DUV_NoDepthDescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
+    VkDescriptorSetLayoutBinding bindings[3] = {};
+    {
+        bindings[0].binding = 4;
+        bindings[0].descriptorCount = 1;
+        bindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[0].pImmutableSamplers = nullptr;
+        bindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[1].binding = 0;
+        bindings[1].descriptorCount = 1;
+        bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[1].pImmutableSamplers = nullptr;
+        bindings[1].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[2].binding = 1;
+        bindings[2].descriptorCount = 1;
+        bindings[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[2].pImmutableSamplers = nullptr;
+        bindings[2].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 3;
+    layoutInfo.pBindings = bindings;
+
+    pipeline.subIndex = target->getDescSetSubIndex(VkDS_TUU, bindings, 3);
+    if (vkCreateDescriptorSetLayout(target->device, &layoutInfo, nullptr, &pipeline.descriptorSetLayout) != VK_SUCCESS) {}
+}
+void WWVK_UpdateFVF_DUV_NoDepthDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex, VK::Buffer ubo_Projection, VK::Buffer ubo_ViewMatrix) {
+    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TUU, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_NoDepth].subIndex, &pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_NoDepth].descriptorSetLayout);
+    VkWriteDescriptorSet descriptorWrites[3] = {};
+
+    VkDescriptorImageInfo imageInfo_tex = {};
+    imageInfo_tex.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex.imageView = texture_tex->imageView;
+    imageInfo_tex.sampler = texture_tex->sampler;
+    
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSet;
+    descriptorWrites[0].dstBinding = 4;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pImageInfo = &imageInfo_tex;
+    VkDescriptorBufferInfo bufferInfo_Projection = {};
+    bufferInfo_Projection.buffer = ubo_Projection.buffer;
+    bufferInfo_Projection.offset = 0;
+    bufferInfo_Projection.range = sizeof(Projection);
+    
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = descriptorSet;
+    descriptorWrites[1].dstBinding = 0;
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pBufferInfo = &bufferInfo_Projection;
+    VkDescriptorBufferInfo bufferInfo_ViewMatrix = {};
+    bufferInfo_ViewMatrix.buffer = ubo_ViewMatrix.buffer;
+    bufferInfo_ViewMatrix.offset = 0;
+    bufferInfo_ViewMatrix.range = sizeof(ViewMatrix);
+    
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = descriptorSet;
+    descriptorWrites[2].dstBinding = 1;
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pBufferInfo = &bufferInfo_ViewMatrix;
+    vkUpdateDescriptorSets(target->device, 3, descriptorWrites, 0, nullptr);
+    output.clear();
+    output.push_back(descriptorSet);
+}
+void WWVK_CreateFVF_DUV_Grayscale_NoDepthPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
+    VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyzduv_vert, sizeof(WWVK_fvf_xyzduv_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_fvf_duv_grayscale_frag, sizeof(WWVK_fvf_duv_grayscale_frag));
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertShaderModule;
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragShaderModule;
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    VkVertexInputBindingDescription bindingDescription[1] = {};
+    {
+        bindingDescription[0].binding = 0;
+        bindingDescription[0].stride = sizeof(float) * 6;
+        bindingDescription[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    }
+    VkVertexInputAttributeDescription attributeDescriptions[3] = {};
+    {
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 2;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].offset = sizeof(float) * 4;
+    }
+    {
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 1;
+        attributeDescriptions[1].format = VK_FORMAT_R32_UINT;
+        attributeDescriptions[1].offset = sizeof(float) * 3;
+    }
+    {
+        attributeDescriptions[2].binding = 0;
+        attributeDescriptions[2].location = 0;
+        attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[2].offset = sizeof(float) * 0;
+    }
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = 3;
+
+    vertexInputInfo.pVertexBindingDescriptions = bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions;
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = nullptr;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = nullptr;
+
+    VkDynamicState dynamicState[2] = { VK_DYNAMIC_STATE_VIEWPORT , VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
+    dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicStateCreateInfo.dynamicStateCount = 2;
+    dynamicStateCreateInfo.pDynamicStates = dynamicState;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+
+
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &pipeline.descriptorSetLayout;
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.size = sizeof(WorldMatrix);
+    pushConstantRange.offset = 0;
+
+    // Push constant ranges are part of the pipeline layout
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+    if (vkCreatePipelineLayout(target->device, &pipelineLayoutInfo, nullptr, &pipeline.pipelineLayout) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    VkPipelineDepthStencilStateCreateInfo depthStencil{};
+    depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depthStencil.depthTestEnable = VK_FALSE;
+    depthStencil.depthWriteEnable = VK_FALSE;
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f; // Optional
+    depthStencil.maxDepthBounds = 1.0f; // Optional
+    depthStencil.depthCompareOp = VK_COMPARE_OP_NEVER;
+    pipelineInfo.pDepthStencilState = &depthStencil;
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.layout = pipeline.pipelineLayout;
+    pipelineInfo.renderPass = target->renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    if (vkCreateGraphicsPipelines(target->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline.graphicsPipeline) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create graphics pipeline!");
+    }
+
+    vkDestroyShaderModule(target->device, fragShaderModule, nullptr);
+    vkDestroyShaderModule(target->device, vertShaderModule, nullptr);
+}
+
+
+void WWVK_CreateFVF_DUV_Grayscale_NoDepthDescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
+    VkDescriptorSetLayoutBinding bindings[3] = {};
+    {
+        bindings[0].binding = 4;
+        bindings[0].descriptorCount = 1;
+        bindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[0].pImmutableSamplers = nullptr;
+        bindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[1].binding = 0;
+        bindings[1].descriptorCount = 1;
+        bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[1].pImmutableSamplers = nullptr;
+        bindings[1].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[2].binding = 1;
+        bindings[2].descriptorCount = 1;
+        bindings[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[2].pImmutableSamplers = nullptr;
+        bindings[2].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 3;
+    layoutInfo.pBindings = bindings;
+
+    pipeline.subIndex = target->getDescSetSubIndex(VkDS_TUU, bindings, 3);
+    if (vkCreateDescriptorSetLayout(target->device, &layoutInfo, nullptr, &pipeline.descriptorSetLayout) != VK_SUCCESS) {}
+}
+void WWVK_UpdateFVF_DUV_Grayscale_NoDepthDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex, VK::Buffer ubo_Projection, VK::Buffer ubo_ViewMatrix) {
+    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TUU, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_Grayscale_NoDepth].subIndex, &pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_Grayscale_NoDepth].descriptorSetLayout);
+    VkWriteDescriptorSet descriptorWrites[3] = {};
+
+    VkDescriptorImageInfo imageInfo_tex = {};
+    imageInfo_tex.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex.imageView = texture_tex->imageView;
+    imageInfo_tex.sampler = texture_tex->sampler;
+    
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSet;
+    descriptorWrites[0].dstBinding = 4;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pImageInfo = &imageInfo_tex;
+    VkDescriptorBufferInfo bufferInfo_Projection = {};
+    bufferInfo_Projection.buffer = ubo_Projection.buffer;
+    bufferInfo_Projection.offset = 0;
+    bufferInfo_Projection.range = sizeof(Projection);
+    
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = descriptorSet;
+    descriptorWrites[1].dstBinding = 0;
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pBufferInfo = &bufferInfo_Projection;
+    VkDescriptorBufferInfo bufferInfo_ViewMatrix = {};
+    bufferInfo_ViewMatrix.buffer = ubo_ViewMatrix.buffer;
+    bufferInfo_ViewMatrix.offset = 0;
+    bufferInfo_ViewMatrix.range = sizeof(ViewMatrix);
+    
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = descriptorSet;
+    descriptorWrites[2].dstBinding = 1;
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pBufferInfo = &bufferInfo_ViewMatrix;
+    vkUpdateDescriptorSets(target->device, 3, descriptorWrites, 0, nullptr);
+    output.clear();
+    output.push_back(descriptorSet);
+}
 void WWVK_CreateFVF_NDUV_CAMUV_NOLPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
     VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyznduv1_camuv_vert, sizeof(WWVK_fvf_xyznduv1_camuv_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_fvf_nduv2_noL_frag, sizeof(WWVK_fvf_nduv2_noL_frag));
 
@@ -533,10 +985,9 @@ void WWVK_CreateFVF_NDUV_CAMUV_NOLPipeline(VkRenderTarget* target, VKPipelineDat
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -786,10 +1237,9 @@ void WWVK_CreateFVF_NDUV_NOLPipeline(VkRenderTarget* target, VKPipelineData& pip
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -1020,10 +1470,9 @@ void WWVK_CreateFVF_NDUV_UVT_NOLPipeline(VkRenderTarget* target, VKPipelineData&
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -1248,10 +1697,9 @@ void WWVK_CreateFVF_DUV_MultBlendPipeline(VkRenderTarget* target, VKPipelineData
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ZERO;
@@ -1476,10 +1924,9 @@ void WWVK_CreateFVF_DUV_AddBlendPipeline(VkRenderTarget* target, VKPipelineData&
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
@@ -1704,10 +2151,9 @@ void WWVK_CreateFVF_DUV_StripPipeline(VkRenderTarget* target, VKPipelineData& pi
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -1852,6 +2298,725 @@ void WWVK_UpdateFVF_DUV_StripDescriptorSets(VkRenderTarget * target, WWVK_Pipeli
     output.clear();
     output.push_back(descriptorSet);
 }
+void WWVK_CreateFVF_DUV_CAMUVT_StripPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
+    VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyzduv_camuvt_vert, sizeof(WWVK_fvf_xyzduv_camuvt_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_fvf_duv2_frag, sizeof(WWVK_fvf_duv2_frag));
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertShaderModule;
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragShaderModule;
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    VkVertexInputBindingDescription bindingDescription[1] = {};
+    {
+        bindingDescription[0].binding = 0;
+        bindingDescription[0].stride = sizeof(float) * 6;
+        bindingDescription[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    }
+    VkVertexInputAttributeDescription attributeDescriptions[3] = {};
+    {
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 2;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].offset = sizeof(float) * 4;
+    }
+    {
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 1;
+        attributeDescriptions[1].format = VK_FORMAT_R32_UINT;
+        attributeDescriptions[1].offset = sizeof(float) * 3;
+    }
+    {
+        attributeDescriptions[2].binding = 0;
+        attributeDescriptions[2].location = 0;
+        attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[2].offset = sizeof(float) * 0;
+    }
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = 3;
+
+    vertexInputInfo.pVertexBindingDescriptions = bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions;
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+    inputAssembly.primitiveRestartEnable = VK_TRUE;
+
+
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = nullptr;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = nullptr;
+
+    VkDynamicState dynamicState[2] = { VK_DYNAMIC_STATE_VIEWPORT , VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
+    dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicStateCreateInfo.dynamicStateCount = 2;
+    dynamicStateCreateInfo.pDynamicStates = dynamicState;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+
+
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &pipeline.descriptorSetLayout;
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.size = sizeof(WorldMatrixUVT);
+    pushConstantRange.offset = 0;
+
+    // Push constant ranges are part of the pipeline layout
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+    if (vkCreatePipelineLayout(target->device, &pipelineLayoutInfo, nullptr, &pipeline.pipelineLayout) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    VkPipelineDepthStencilStateCreateInfo depthStencil{};
+    depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f; // Optional
+    depthStencil.maxDepthBounds = 1.0f; // Optional
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    pipelineInfo.pDepthStencilState = &depthStencil;
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.layout = pipeline.pipelineLayout;
+    pipelineInfo.renderPass = target->renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    if (vkCreateGraphicsPipelines(target->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline.graphicsPipeline) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create graphics pipeline!");
+    }
+
+    vkDestroyShaderModule(target->device, fragShaderModule, nullptr);
+    vkDestroyShaderModule(target->device, vertShaderModule, nullptr);
+}
+
+
+void WWVK_CreateFVF_DUV_CAMUVT_StripDescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
+    VkDescriptorSetLayoutBinding bindings[4] = {};
+    {
+        bindings[0].binding = 4;
+        bindings[0].descriptorCount = 1;
+        bindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[0].pImmutableSamplers = nullptr;
+        bindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[1].binding = 5;
+        bindings[1].descriptorCount = 1;
+        bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[1].pImmutableSamplers = nullptr;
+        bindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[2].binding = 0;
+        bindings[2].descriptorCount = 1;
+        bindings[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[2].pImmutableSamplers = nullptr;
+        bindings[2].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[3].binding = 1;
+        bindings[3].descriptorCount = 1;
+        bindings[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[3].pImmutableSamplers = nullptr;
+        bindings[3].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 4;
+    layoutInfo.pBindings = bindings;
+
+    pipeline.subIndex = target->getDescSetSubIndex(VkDS_TTUU, bindings, 4);
+    if (vkCreateDescriptorSetLayout(target->device, &layoutInfo, nullptr, &pipeline.descriptorSetLayout) != VK_SUCCESS) {}
+}
+void WWVK_UpdateFVF_DUV_CAMUVT_StripDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex1, VK::Texture* texture_tex2, VK::Buffer ubo_Projection, VK::Buffer ubo_ViewMatrix) {
+    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TTUU, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_Strip].subIndex, &pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_Strip].descriptorSetLayout);
+    VkWriteDescriptorSet descriptorWrites[4] = {};
+
+    VkDescriptorImageInfo imageInfo_tex1 = {};
+    imageInfo_tex1.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex1.imageView = texture_tex1->imageView;
+    imageInfo_tex1.sampler = texture_tex1->sampler;
+    
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSet;
+    descriptorWrites[0].dstBinding = 4;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pImageInfo = &imageInfo_tex1;
+    VkDescriptorImageInfo imageInfo_tex2 = {};
+    imageInfo_tex2.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex2.imageView = texture_tex2->imageView;
+    imageInfo_tex2.sampler = texture_tex2->sampler;
+    
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = descriptorSet;
+    descriptorWrites[1].dstBinding = 5;
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pImageInfo = &imageInfo_tex2;
+    VkDescriptorBufferInfo bufferInfo_Projection = {};
+    bufferInfo_Projection.buffer = ubo_Projection.buffer;
+    bufferInfo_Projection.offset = 0;
+    bufferInfo_Projection.range = sizeof(Projection);
+    
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = descriptorSet;
+    descriptorWrites[2].dstBinding = 0;
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pBufferInfo = &bufferInfo_Projection;
+    VkDescriptorBufferInfo bufferInfo_ViewMatrix = {};
+    bufferInfo_ViewMatrix.buffer = ubo_ViewMatrix.buffer;
+    bufferInfo_ViewMatrix.offset = 0;
+    bufferInfo_ViewMatrix.range = sizeof(ViewMatrix);
+    
+    descriptorWrites[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[3].dstSet = descriptorSet;
+    descriptorWrites[3].dstBinding = 1;
+    descriptorWrites[3].dstArrayElement = 0;
+    descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[3].descriptorCount = 1;
+    descriptorWrites[3].pBufferInfo = &bufferInfo_ViewMatrix;
+    vkUpdateDescriptorSets(target->device, 4, descriptorWrites, 0, nullptr);
+    output.clear();
+    output.push_back(descriptorSet);
+}
+void WWVK_CreateFVF_DUV_DepthBias_StripPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
+    VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyzduv_vert, sizeof(WWVK_fvf_xyzduv_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_fvf_duv_frag, sizeof(WWVK_fvf_duv_frag));
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertShaderModule;
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragShaderModule;
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    VkVertexInputBindingDescription bindingDescription[1] = {};
+    {
+        bindingDescription[0].binding = 0;
+        bindingDescription[0].stride = sizeof(float) * 6;
+        bindingDescription[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    }
+    VkVertexInputAttributeDescription attributeDescriptions[3] = {};
+    {
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 2;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].offset = sizeof(float) * 4;
+    }
+    {
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 1;
+        attributeDescriptions[1].format = VK_FORMAT_R32_UINT;
+        attributeDescriptions[1].offset = sizeof(float) * 3;
+    }
+    {
+        attributeDescriptions[2].binding = 0;
+        attributeDescriptions[2].location = 0;
+        attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[2].offset = sizeof(float) * 0;
+    }
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = 3;
+
+    vertexInputInfo.pVertexBindingDescriptions = bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions;
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+    inputAssembly.primitiveRestartEnable = VK_TRUE;
+
+
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = nullptr;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = nullptr;
+
+    VkDynamicState dynamicState[2] = { VK_DYNAMIC_STATE_VIEWPORT , VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
+    dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicStateCreateInfo.dynamicStateCount = 2;
+    dynamicStateCreateInfo.pDynamicStates = dynamicState;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+
+
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &pipeline.descriptorSetLayout;
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.size = sizeof(WorldMatrix);
+    pushConstantRange.offset = 0;
+
+    // Push constant ranges are part of the pipeline layout
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+    if (vkCreatePipelineLayout(target->device, &pipelineLayoutInfo, nullptr, &pipeline.pipelineLayout) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    VkPipelineDepthStencilStateCreateInfo depthStencil{};
+    depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f; // Optional
+    depthStencil.maxDepthBounds = 1.0f; // Optional
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    pipelineInfo.pDepthStencilState = &depthStencil;
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.layout = pipeline.pipelineLayout;
+    pipelineInfo.renderPass = target->renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    if (vkCreateGraphicsPipelines(target->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline.graphicsPipeline) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create graphics pipeline!");
+    }
+
+    vkDestroyShaderModule(target->device, fragShaderModule, nullptr);
+    vkDestroyShaderModule(target->device, vertShaderModule, nullptr);
+}
+
+
+void WWVK_CreateFVF_DUV_DepthBias_StripDescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
+    VkDescriptorSetLayoutBinding bindings[3] = {};
+    {
+        bindings[0].binding = 4;
+        bindings[0].descriptorCount = 1;
+        bindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[0].pImmutableSamplers = nullptr;
+        bindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[1].binding = 0;
+        bindings[1].descriptorCount = 1;
+        bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[1].pImmutableSamplers = nullptr;
+        bindings[1].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[2].binding = 1;
+        bindings[2].descriptorCount = 1;
+        bindings[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[2].pImmutableSamplers = nullptr;
+        bindings[2].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 3;
+    layoutInfo.pBindings = bindings;
+
+    pipeline.subIndex = target->getDescSetSubIndex(VkDS_TUU, bindings, 3);
+    if (vkCreateDescriptorSetLayout(target->device, &layoutInfo, nullptr, &pipeline.descriptorSetLayout) != VK_SUCCESS) {}
+}
+void WWVK_UpdateFVF_DUV_DepthBias_StripDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex, VK::Buffer ubo_Projection, VK::Buffer ubo_ViewMatrix) {
+    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TUU, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_DepthBias_Strip].subIndex, &pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_DepthBias_Strip].descriptorSetLayout);
+    VkWriteDescriptorSet descriptorWrites[3] = {};
+
+    VkDescriptorImageInfo imageInfo_tex = {};
+    imageInfo_tex.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex.imageView = texture_tex->imageView;
+    imageInfo_tex.sampler = texture_tex->sampler;
+    
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSet;
+    descriptorWrites[0].dstBinding = 4;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pImageInfo = &imageInfo_tex;
+    VkDescriptorBufferInfo bufferInfo_Projection = {};
+    bufferInfo_Projection.buffer = ubo_Projection.buffer;
+    bufferInfo_Projection.offset = 0;
+    bufferInfo_Projection.range = sizeof(Projection);
+    
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = descriptorSet;
+    descriptorWrites[1].dstBinding = 0;
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pBufferInfo = &bufferInfo_Projection;
+    VkDescriptorBufferInfo bufferInfo_ViewMatrix = {};
+    bufferInfo_ViewMatrix.buffer = ubo_ViewMatrix.buffer;
+    bufferInfo_ViewMatrix.offset = 0;
+    bufferInfo_ViewMatrix.range = sizeof(ViewMatrix);
+    
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = descriptorSet;
+    descriptorWrites[2].dstBinding = 1;
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pBufferInfo = &bufferInfo_ViewMatrix;
+    vkUpdateDescriptorSets(target->device, 3, descriptorWrites, 0, nullptr);
+    output.clear();
+    output.push_back(descriptorSet);
+}
+void WWVK_CreateFVF_DUV_CAMUVT_DepthBias_StripPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
+    VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyzduv_camuvt_vert, sizeof(WWVK_fvf_xyzduv_camuvt_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_fvf_duv2_frag, sizeof(WWVK_fvf_duv2_frag));
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertShaderModule;
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragShaderModule;
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    VkVertexInputBindingDescription bindingDescription[1] = {};
+    {
+        bindingDescription[0].binding = 0;
+        bindingDescription[0].stride = sizeof(float) * 6;
+        bindingDescription[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    }
+    VkVertexInputAttributeDescription attributeDescriptions[3] = {};
+    {
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 2;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].offset = sizeof(float) * 4;
+    }
+    {
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 1;
+        attributeDescriptions[1].format = VK_FORMAT_R32_UINT;
+        attributeDescriptions[1].offset = sizeof(float) * 3;
+    }
+    {
+        attributeDescriptions[2].binding = 0;
+        attributeDescriptions[2].location = 0;
+        attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[2].offset = sizeof(float) * 0;
+    }
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = 3;
+
+    vertexInputInfo.pVertexBindingDescriptions = bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions;
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+    inputAssembly.primitiveRestartEnable = VK_TRUE;
+
+
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = nullptr;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = nullptr;
+
+    VkDynamicState dynamicState[2] = { VK_DYNAMIC_STATE_VIEWPORT , VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
+    dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicStateCreateInfo.dynamicStateCount = 2;
+    dynamicStateCreateInfo.pDynamicStates = dynamicState;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+
+
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &pipeline.descriptorSetLayout;
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.size = sizeof(WorldMatrixUVT);
+    pushConstantRange.offset = 0;
+
+    // Push constant ranges are part of the pipeline layout
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+    if (vkCreatePipelineLayout(target->device, &pipelineLayoutInfo, nullptr, &pipeline.pipelineLayout) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    VkPipelineDepthStencilStateCreateInfo depthStencil{};
+    depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f; // Optional
+    depthStencil.maxDepthBounds = 1.0f; // Optional
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    pipelineInfo.pDepthStencilState = &depthStencil;
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.layout = pipeline.pipelineLayout;
+    pipelineInfo.renderPass = target->renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    if (vkCreateGraphicsPipelines(target->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline.graphicsPipeline) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create graphics pipeline!");
+    }
+
+    vkDestroyShaderModule(target->device, fragShaderModule, nullptr);
+    vkDestroyShaderModule(target->device, vertShaderModule, nullptr);
+}
+
+
+void WWVK_CreateFVF_DUV_CAMUVT_DepthBias_StripDescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
+    VkDescriptorSetLayoutBinding bindings[4] = {};
+    {
+        bindings[0].binding = 4;
+        bindings[0].descriptorCount = 1;
+        bindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[0].pImmutableSamplers = nullptr;
+        bindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[1].binding = 5;
+        bindings[1].descriptorCount = 1;
+        bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[1].pImmutableSamplers = nullptr;
+        bindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[2].binding = 0;
+        bindings[2].descriptorCount = 1;
+        bindings[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[2].pImmutableSamplers = nullptr;
+        bindings[2].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[3].binding = 1;
+        bindings[3].descriptorCount = 1;
+        bindings[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[3].pImmutableSamplers = nullptr;
+        bindings[3].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 4;
+    layoutInfo.pBindings = bindings;
+
+    pipeline.subIndex = target->getDescSetSubIndex(VkDS_TTUU, bindings, 4);
+    if (vkCreateDescriptorSetLayout(target->device, &layoutInfo, nullptr, &pipeline.descriptorSetLayout) != VK_SUCCESS) {}
+}
+void WWVK_UpdateFVF_DUV_CAMUVT_DepthBias_StripDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex1, VK::Texture* texture_tex2, VK::Buffer ubo_Projection, VK::Buffer ubo_ViewMatrix) {
+    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TTUU, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_DepthBias_Strip].subIndex, &pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_DepthBias_Strip].descriptorSetLayout);
+    VkWriteDescriptorSet descriptorWrites[4] = {};
+
+    VkDescriptorImageInfo imageInfo_tex1 = {};
+    imageInfo_tex1.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex1.imageView = texture_tex1->imageView;
+    imageInfo_tex1.sampler = texture_tex1->sampler;
+    
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSet;
+    descriptorWrites[0].dstBinding = 4;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pImageInfo = &imageInfo_tex1;
+    VkDescriptorImageInfo imageInfo_tex2 = {};
+    imageInfo_tex2.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex2.imageView = texture_tex2->imageView;
+    imageInfo_tex2.sampler = texture_tex2->sampler;
+    
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = descriptorSet;
+    descriptorWrites[1].dstBinding = 5;
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pImageInfo = &imageInfo_tex2;
+    VkDescriptorBufferInfo bufferInfo_Projection = {};
+    bufferInfo_Projection.buffer = ubo_Projection.buffer;
+    bufferInfo_Projection.offset = 0;
+    bufferInfo_Projection.range = sizeof(Projection);
+    
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = descriptorSet;
+    descriptorWrites[2].dstBinding = 0;
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pBufferInfo = &bufferInfo_Projection;
+    VkDescriptorBufferInfo bufferInfo_ViewMatrix = {};
+    bufferInfo_ViewMatrix.buffer = ubo_ViewMatrix.buffer;
+    bufferInfo_ViewMatrix.offset = 0;
+    bufferInfo_ViewMatrix.range = sizeof(ViewMatrix);
+    
+    descriptorWrites[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[3].dstSet = descriptorSet;
+    descriptorWrites[3].dstBinding = 1;
+    descriptorWrites[3].dstArrayElement = 0;
+    descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[3].descriptorCount = 1;
+    descriptorWrites[3].pBufferInfo = &bufferInfo_ViewMatrix;
+    vkUpdateDescriptorSets(target->device, 4, descriptorWrites, 0, nullptr);
+    output.clear();
+    output.push_back(descriptorSet);
+}
 void WWVK_CreateFVF_DUV2_StripPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
     VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyzduv2_vert, sizeof(WWVK_fvf_xyzduv2_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_fvf_duv2_frag, sizeof(WWVK_fvf_duv2_frag));
 
@@ -1938,10 +3103,9 @@ void WWVK_CreateFVF_DUV2_StripPipeline(VkRenderTarget* target, VKPipelineData& p
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -2191,10 +3355,9 @@ void WWVK_CreateFVF_NDUVPipeline(VkRenderTarget* target, VKPipelineData& pipelin
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -2469,10 +3632,9 @@ void WWVK_CreateFVF_NDUV2Pipeline(VkRenderTarget* target, VKPipelineData& pipeli
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -2674,7 +3836,7 @@ void WWVK_UpdateFVF_NDUV2DescriptorSets(VkRenderTarget * target, WWVK_Pipeline_C
     output.clear();
     output.push_back(descriptorSet);
 }
-void WWVK_CreateFVF_NDUV2Pipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
+void WWVK_CreateFVF_NDUV2_NOLPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
     VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyznduv2_vert, sizeof(WWVK_fvf_xyznduv2_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_fvf_nduv2_noL_frag, sizeof(WWVK_fvf_nduv2_noL_frag));
 
     VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
@@ -2766,10 +3928,9 @@ void WWVK_CreateFVF_NDUV2Pipeline(VkRenderTarget* target, VKPipelineData& pipeli
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -2838,7 +3999,7 @@ void WWVK_CreateFVF_NDUV2Pipeline(VkRenderTarget* target, VKPipelineData& pipeli
 }
 
 
-void WWVK_CreateFVF_NDUV2DescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
+void WWVK_CreateFVF_NDUV2_NOLDescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
     VkDescriptorSetLayoutBinding bindings[4] = {};
     {
         bindings[0].binding = 4;
@@ -2877,8 +4038,8 @@ void WWVK_CreateFVF_NDUV2DescriptorSetLayout(VkRenderTarget * target, VKPipeline
     pipeline.subIndex = target->getDescSetSubIndex(VkDS_TTUU, bindings, 4);
     if (vkCreateDescriptorSetLayout(target->device, &layoutInfo, nullptr, &pipeline.descriptorSetLayout) != VK_SUCCESS) {}
 }
-void WWVK_UpdateFVF_NDUV2DescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex1, VK::Texture* texture_tex2, VK::Buffer ubo_ViewMatrix, VK::Buffer ubo_Projection) {
-    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TTUU, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2].subIndex, &pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2].descriptorSetLayout);
+void WWVK_UpdateFVF_NDUV2_NOLDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex1, VK::Texture* texture_tex2, VK::Buffer ubo_ViewMatrix, VK::Buffer ubo_Projection) {
+    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TTUU, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2_NOL].subIndex, &pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2_NOL].descriptorSetLayout);
     VkWriteDescriptorSet descriptorWrites[4] = {};
 
     VkDescriptorImageInfo imageInfo_tex1 = {};
@@ -3025,10 +4186,9 @@ void WWVK_CreateFVF_NDUV2_DepthLEPipeline(VkRenderTarget* target, VKPipelineData
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -3192,6 +4352,460 @@ void WWVK_UpdateFVF_NDUV2_DepthLEDescriptorSets(VkRenderTarget * target, WWVK_Pi
     output.clear();
     output.push_back(descriptorSet);
 }
+void WWVK_CreateHaloPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
+    VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyzduv_vert, sizeof(WWVK_fvf_xyzduv_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_fvf_duv_frag, sizeof(WWVK_fvf_duv_frag));
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertShaderModule;
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragShaderModule;
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    VkVertexInputBindingDescription bindingDescription[1] = {};
+    {
+        bindingDescription[0].binding = 0;
+        bindingDescription[0].stride = sizeof(float) * 6;
+        bindingDescription[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    }
+    VkVertexInputAttributeDescription attributeDescriptions[3] = {};
+    {
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 2;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].offset = sizeof(float) * 4;
+    }
+    {
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 1;
+        attributeDescriptions[1].format = VK_FORMAT_R32_UINT;
+        attributeDescriptions[1].offset = sizeof(float) * 3;
+    }
+    {
+        attributeDescriptions[2].binding = 0;
+        attributeDescriptions[2].location = 0;
+        attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[2].offset = sizeof(float) * 0;
+    }
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = 3;
+
+    vertexInputInfo.pVertexBindingDescriptions = bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions;
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = nullptr;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = nullptr;
+
+    VkDynamicState dynamicState[2] = { VK_DYNAMIC_STATE_VIEWPORT , VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
+    dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicStateCreateInfo.dynamicStateCount = 2;
+    dynamicStateCreateInfo.pDynamicStates = dynamicState;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+    colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE;
+    colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+
+
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &pipeline.descriptorSetLayout;
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.size = sizeof(WorldMatrix);
+    pushConstantRange.offset = 0;
+
+    // Push constant ranges are part of the pipeline layout
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+    if (vkCreatePipelineLayout(target->device, &pipelineLayoutInfo, nullptr, &pipeline.pipelineLayout) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    VkPipelineDepthStencilStateCreateInfo depthStencil{};
+    depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depthStencil.depthTestEnable = VK_FALSE;
+    depthStencil.depthWriteEnable = VK_FALSE;
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f; // Optional
+    depthStencil.maxDepthBounds = 1.0f; // Optional
+    depthStencil.depthCompareOp = VK_COMPARE_OP_NEVER;
+    pipelineInfo.pDepthStencilState = &depthStencil;
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.layout = pipeline.pipelineLayout;
+    pipelineInfo.renderPass = target->renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    if (vkCreateGraphicsPipelines(target->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline.graphicsPipeline) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create graphics pipeline!");
+    }
+
+    vkDestroyShaderModule(target->device, fragShaderModule, nullptr);
+    vkDestroyShaderModule(target->device, vertShaderModule, nullptr);
+}
+
+
+void WWVK_CreateHaloDescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
+    VkDescriptorSetLayoutBinding bindings[3] = {};
+    {
+        bindings[0].binding = 4;
+        bindings[0].descriptorCount = 1;
+        bindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[0].pImmutableSamplers = nullptr;
+        bindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[1].binding = 0;
+        bindings[1].descriptorCount = 1;
+        bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[1].pImmutableSamplers = nullptr;
+        bindings[1].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[2].binding = 1;
+        bindings[2].descriptorCount = 1;
+        bindings[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[2].pImmutableSamplers = nullptr;
+        bindings[2].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 3;
+    layoutInfo.pBindings = bindings;
+
+    pipeline.subIndex = target->getDescSetSubIndex(VkDS_TUU, bindings, 3);
+    if (vkCreateDescriptorSetLayout(target->device, &layoutInfo, nullptr, &pipeline.descriptorSetLayout) != VK_SUCCESS) {}
+}
+void WWVK_UpdateHaloDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex, VK::Buffer ubo_Projection, VK::Buffer ubo_ViewMatrix) {
+    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TUU, pipeline.pipelines[PIPELINE_WWVK_Halo].subIndex, &pipeline.pipelines[PIPELINE_WWVK_Halo].descriptorSetLayout);
+    VkWriteDescriptorSet descriptorWrites[3] = {};
+
+    VkDescriptorImageInfo imageInfo_tex = {};
+    imageInfo_tex.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex.imageView = texture_tex->imageView;
+    imageInfo_tex.sampler = texture_tex->sampler;
+    
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSet;
+    descriptorWrites[0].dstBinding = 4;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pImageInfo = &imageInfo_tex;
+    VkDescriptorBufferInfo bufferInfo_Projection = {};
+    bufferInfo_Projection.buffer = ubo_Projection.buffer;
+    bufferInfo_Projection.offset = 0;
+    bufferInfo_Projection.range = sizeof(Projection);
+    
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = descriptorSet;
+    descriptorWrites[1].dstBinding = 0;
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pBufferInfo = &bufferInfo_Projection;
+    VkDescriptorBufferInfo bufferInfo_ViewMatrix = {};
+    bufferInfo_ViewMatrix.buffer = ubo_ViewMatrix.buffer;
+    bufferInfo_ViewMatrix.offset = 0;
+    bufferInfo_ViewMatrix.range = sizeof(ViewMatrix);
+    
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = descriptorSet;
+    descriptorWrites[2].dstBinding = 1;
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pBufferInfo = &bufferInfo_ViewMatrix;
+    vkUpdateDescriptorSets(target->device, 3, descriptorWrites, 0, nullptr);
+    output.clear();
+    output.push_back(descriptorSet);
+}
+void WWVK_CreateDazzlePipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
+    VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyzduv_vert, sizeof(WWVK_fvf_xyzduv_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_fvf_duv_frag, sizeof(WWVK_fvf_duv_frag));
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertShaderModule;
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragShaderModule;
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    VkVertexInputBindingDescription bindingDescription[1] = {};
+    {
+        bindingDescription[0].binding = 0;
+        bindingDescription[0].stride = sizeof(float) * 6;
+        bindingDescription[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    }
+    VkVertexInputAttributeDescription attributeDescriptions[3] = {};
+    {
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 2;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].offset = sizeof(float) * 4;
+    }
+    {
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 1;
+        attributeDescriptions[1].format = VK_FORMAT_R32_UINT;
+        attributeDescriptions[1].offset = sizeof(float) * 3;
+    }
+    {
+        attributeDescriptions[2].binding = 0;
+        attributeDescriptions[2].location = 0;
+        attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[2].offset = sizeof(float) * 0;
+    }
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = 3;
+
+    vertexInputInfo.pVertexBindingDescriptions = bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions;
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = nullptr;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = nullptr;
+
+    VkDynamicState dynamicState[2] = { VK_DYNAMIC_STATE_VIEWPORT , VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
+    dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicStateCreateInfo.dynamicStateCount = 2;
+    dynamicStateCreateInfo.pDynamicStates = dynamicState;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+    colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE;
+    colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+
+
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &pipeline.descriptorSetLayout;
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.size = sizeof(WorldMatrix);
+    pushConstantRange.offset = 0;
+
+    // Push constant ranges are part of the pipeline layout
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+    if (vkCreatePipelineLayout(target->device, &pipelineLayoutInfo, nullptr, &pipeline.pipelineLayout) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    VkPipelineDepthStencilStateCreateInfo depthStencil{};
+    depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_FALSE;
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f; // Optional
+    depthStencil.maxDepthBounds = 1.0f; // Optional
+    depthStencil.depthCompareOp = VK_COMPARE_OP_ALWAYS;
+    pipelineInfo.pDepthStencilState = &depthStencil;
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.layout = pipeline.pipelineLayout;
+    pipelineInfo.renderPass = target->renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    if (vkCreateGraphicsPipelines(target->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline.graphicsPipeline) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create graphics pipeline!");
+    }
+
+    vkDestroyShaderModule(target->device, fragShaderModule, nullptr);
+    vkDestroyShaderModule(target->device, vertShaderModule, nullptr);
+}
+
+
+void WWVK_CreateDazzleDescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
+    VkDescriptorSetLayoutBinding bindings[3] = {};
+    {
+        bindings[0].binding = 4;
+        bindings[0].descriptorCount = 1;
+        bindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[0].pImmutableSamplers = nullptr;
+        bindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[1].binding = 0;
+        bindings[1].descriptorCount = 1;
+        bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[1].pImmutableSamplers = nullptr;
+        bindings[1].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[2].binding = 1;
+        bindings[2].descriptorCount = 1;
+        bindings[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[2].pImmutableSamplers = nullptr;
+        bindings[2].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 3;
+    layoutInfo.pBindings = bindings;
+
+    pipeline.subIndex = target->getDescSetSubIndex(VkDS_TUU, bindings, 3);
+    if (vkCreateDescriptorSetLayout(target->device, &layoutInfo, nullptr, &pipeline.descriptorSetLayout) != VK_SUCCESS) {}
+}
+void WWVK_UpdateDazzleDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex, VK::Buffer ubo_Projection, VK::Buffer ubo_ViewMatrix) {
+    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TUU, pipeline.pipelines[PIPELINE_WWVK_Dazzle].subIndex, &pipeline.pipelines[PIPELINE_WWVK_Dazzle].descriptorSetLayout);
+    VkWriteDescriptorSet descriptorWrites[3] = {};
+
+    VkDescriptorImageInfo imageInfo_tex = {};
+    imageInfo_tex.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex.imageView = texture_tex->imageView;
+    imageInfo_tex.sampler = texture_tex->sampler;
+    
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSet;
+    descriptorWrites[0].dstBinding = 4;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pImageInfo = &imageInfo_tex;
+    VkDescriptorBufferInfo bufferInfo_Projection = {};
+    bufferInfo_Projection.buffer = ubo_Projection.buffer;
+    bufferInfo_Projection.offset = 0;
+    bufferInfo_Projection.range = sizeof(Projection);
+    
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = descriptorSet;
+    descriptorWrites[1].dstBinding = 0;
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pBufferInfo = &bufferInfo_Projection;
+    VkDescriptorBufferInfo bufferInfo_ViewMatrix = {};
+    bufferInfo_ViewMatrix.buffer = ubo_ViewMatrix.buffer;
+    bufferInfo_ViewMatrix.offset = 0;
+    bufferInfo_ViewMatrix.range = sizeof(ViewMatrix);
+    
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = descriptorSet;
+    descriptorWrites[2].dstBinding = 1;
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pBufferInfo = &bufferInfo_ViewMatrix;
+    vkUpdateDescriptorSets(target->device, 3, descriptorWrites, 0, nullptr);
+    output.clear();
+    output.push_back(descriptorSet);
+}
 void WWVK_CreateSnowPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
     VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_snow_vert, sizeof(WWVK_snow_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_snow_frag, sizeof(WWVK_snow_frag));
 
@@ -3260,10 +4874,9 @@ void WWVK_CreateSnowPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -3488,10 +5101,9 @@ void WWVK_CreateFTerrainPipeline(VkRenderTarget* target, VKPipelineData& pipelin
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -3735,10 +5347,9 @@ void WWVK_CreateFTerrainNoisePipeline(VkRenderTarget* target, VKPipelineData& pi
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -4001,10 +5612,9 @@ void WWVK_CreateFTerrainNoise2Pipeline(VkRenderTarget* target, VKPipelineData& p
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -4286,10 +5896,9 @@ void WWVK_CreateRoadPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -4514,10 +6123,9 @@ void WWVK_CreateRoadNoisePipeline(VkRenderTarget* target, VKPipelineData& pipeli
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -4761,10 +6369,9 @@ void WWVK_CreateRoadNoise12Pipeline(VkRenderTarget* target, VKPipelineData& pipe
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -5046,10 +6653,9 @@ void WWVK_CreateMonochromePipeline(VkRenderTarget* target, VKPipelineData& pipel
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -5278,10 +6884,9 @@ void WWVK_CreateMotionBlurPipeline(VkRenderTarget* target, VKPipelineData& pipel
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -5591,10 +7196,9 @@ void WWVK_CreateBumpDiffPipeline(VkRenderTarget* target, VKPipelineData& pipelin
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -5881,10 +7485,9 @@ void WWVK_CreateBumpSpecPipeline(VkRenderTarget* target, VKPipelineData& pipelin
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -6165,10 +7768,9 @@ void WWVK_CreateSSBumpDiffPipeline(VkRenderTarget* target, VKPipelineData& pipel
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -6436,10 +8038,9 @@ void WWVK_CreateSSBumpSpecPipeline(VkRenderTarget* target, VKPipelineData& pipel
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -6708,10 +8309,9 @@ void WWVK_CreateTerrainPipeline(VkRenderTarget* target, VKPipelineData& pipeline
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -6748,12 +8348,12 @@ void WWVK_CreateTerrainPipeline(VkRenderTarget* target, VKPipelineData& pipeline
     VkGraphicsPipelineCreateInfo pipelineInfo = {};
     VkPipelineDepthStencilStateCreateInfo depthStencil{};
     depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-    depthStencil.depthTestEnable = VK_FALSE;
-    depthStencil.depthWriteEnable = VK_FALSE;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_NEVER;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -6961,10 +8561,9 @@ void WWVK_CreateTerrainNoisePipeline(VkRenderTarget* target, VKPipelineData& pip
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -7001,12 +8600,12 @@ void WWVK_CreateTerrainNoisePipeline(VkRenderTarget* target, VKPipelineData& pip
     VkGraphicsPipelineCreateInfo pipelineInfo = {};
     VkPipelineDepthStencilStateCreateInfo depthStencil{};
     depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-    depthStencil.depthTestEnable = VK_FALSE;
-    depthStencil.depthWriteEnable = VK_FALSE;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_NEVER;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -7233,10 +8832,9 @@ void WWVK_CreateTerrainNoise2Pipeline(VkRenderTarget* target, VKPipelineData& pi
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -7273,12 +8871,12 @@ void WWVK_CreateTerrainNoise2Pipeline(VkRenderTarget* target, VKPipelineData& pi
     VkGraphicsPipelineCreateInfo pipelineInfo = {};
     VkPipelineDepthStencilStateCreateInfo depthStencil{};
     depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-    depthStencil.depthTestEnable = VK_FALSE;
-    depthStencil.depthWriteEnable = VK_FALSE;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_NEVER;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -7524,10 +9122,9 @@ void WWVK_CreateTreesPipeline(VkRenderTarget* target, VKPipelineData& pipeline) 
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -7564,12 +9161,12 @@ void WWVK_CreateTreesPipeline(VkRenderTarget* target, VKPipelineData& pipeline) 
     VkGraphicsPipelineCreateInfo pipelineInfo = {};
     VkPipelineDepthStencilStateCreateInfo depthStencil{};
     depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-    depthStencil.depthTestEnable = VK_FALSE;
-    depthStencil.depthWriteEnable = VK_FALSE;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_NEVER;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -7762,8 +9359,8 @@ void WWVK_CreateWavePipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
 
     VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
     inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-    inputAssembly.primitiveRestartEnable = VK_FALSE;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+    inputAssembly.primitiveRestartEnable = VK_TRUE;
 
 
     VkPipelineViewportStateCreateInfo viewportState = {};
@@ -7790,10 +9387,9 @@ void WWVK_CreateWavePipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -7830,12 +9426,12 @@ void WWVK_CreateWavePipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
     VkGraphicsPipelineCreateInfo pipelineInfo = {};
     VkPipelineDepthStencilStateCreateInfo depthStencil{};
     depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-    depthStencil.depthTestEnable = VK_FALSE;
-    depthStencil.depthWriteEnable = VK_FALSE;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_NEVER;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -7957,6 +9553,2155 @@ void WWVK_UpdateWaveDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collec
     output.clear();
     output.push_back(descriptorSet);
 }
+void WWVK_CreateRiverWaterPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
+    VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyzduv2_camuvt_vert, sizeof(WWVK_fvf_xyzduv2_camuvt_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_RiverWater_frag, sizeof(WWVK_RiverWater_frag));
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertShaderModule;
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragShaderModule;
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    VkVertexInputBindingDescription bindingDescription[1] = {};
+    {
+        bindingDescription[0].binding = 0;
+        bindingDescription[0].stride = sizeof(float) * 8;
+        bindingDescription[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    }
+    VkVertexInputAttributeDescription attributeDescriptions[4] = {};
+    {
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 2;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].offset = sizeof(float) * 4;
+    }
+    {
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 3;
+        attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[1].offset = sizeof(float) * 6;
+    }
+    {
+        attributeDescriptions[2].binding = 0;
+        attributeDescriptions[2].location = 1;
+        attributeDescriptions[2].format = VK_FORMAT_R32_UINT;
+        attributeDescriptions[2].offset = sizeof(float) * 3;
+    }
+    {
+        attributeDescriptions[3].binding = 0;
+        attributeDescriptions[3].location = 0;
+        attributeDescriptions[3].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[3].offset = sizeof(float) * 0;
+    }
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = 4;
+
+    vertexInputInfo.pVertexBindingDescriptions = bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions;
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = nullptr;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = nullptr;
+
+    VkDynamicState dynamicState[2] = { VK_DYNAMIC_STATE_VIEWPORT , VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
+    dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicStateCreateInfo.dynamicStateCount = 2;
+    dynamicStateCreateInfo.pDynamicStates = dynamicState;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+
+
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &pipeline.descriptorSetLayout;
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.size = sizeof(WorldMatrixUVT);
+    pushConstantRange.offset = 0;
+
+    // Push constant ranges are part of the pipeline layout
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+    if (vkCreatePipelineLayout(target->device, &pipelineLayoutInfo, nullptr, &pipeline.pipelineLayout) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    VkPipelineDepthStencilStateCreateInfo depthStencil{};
+    depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f; // Optional
+    depthStencil.maxDepthBounds = 1.0f; // Optional
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
+    pipelineInfo.pDepthStencilState = &depthStencil;
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.layout = pipeline.pipelineLayout;
+    pipelineInfo.renderPass = target->renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    if (vkCreateGraphicsPipelines(target->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline.graphicsPipeline) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create graphics pipeline!");
+    }
+
+    vkDestroyShaderModule(target->device, fragShaderModule, nullptr);
+    vkDestroyShaderModule(target->device, vertShaderModule, nullptr);
+}
+
+
+void WWVK_CreateRiverWaterDescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
+    VkDescriptorSetLayoutBinding bindings[6] = {};
+    {
+        bindings[0].binding = 4;
+        bindings[0].descriptorCount = 1;
+        bindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[0].pImmutableSamplers = nullptr;
+        bindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[1].binding = 5;
+        bindings[1].descriptorCount = 1;
+        bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[1].pImmutableSamplers = nullptr;
+        bindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[2].binding = 6;
+        bindings[2].descriptorCount = 1;
+        bindings[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[2].pImmutableSamplers = nullptr;
+        bindings[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[3].binding = 7;
+        bindings[3].descriptorCount = 1;
+        bindings[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[3].pImmutableSamplers = nullptr;
+        bindings[3].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[4].binding = 0;
+        bindings[4].descriptorCount = 1;
+        bindings[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[4].pImmutableSamplers = nullptr;
+        bindings[4].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[5].binding = 1;
+        bindings[5].descriptorCount = 1;
+        bindings[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[5].pImmutableSamplers = nullptr;
+        bindings[5].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 6;
+    layoutInfo.pBindings = bindings;
+
+    pipeline.subIndex = target->getDescSetSubIndex(VkDS_TTTTUU, bindings, 6);
+    if (vkCreateDescriptorSetLayout(target->device, &layoutInfo, nullptr, &pipeline.descriptorSetLayout) != VK_SUCCESS) {}
+}
+void WWVK_UpdateRiverWaterDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex1, VK::Texture* texture_tex2, VK::Texture* texture_tex3, VK::Texture* texture_tex4, VK::Buffer ubo_Projection, VK::Buffer ubo_ViewMatrix) {
+    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TTTTUU, pipeline.pipelines[PIPELINE_WWVK_RiverWater].subIndex, &pipeline.pipelines[PIPELINE_WWVK_RiverWater].descriptorSetLayout);
+    VkWriteDescriptorSet descriptorWrites[6] = {};
+
+    VkDescriptorImageInfo imageInfo_tex1 = {};
+    imageInfo_tex1.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex1.imageView = texture_tex1->imageView;
+    imageInfo_tex1.sampler = texture_tex1->sampler;
+    
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSet;
+    descriptorWrites[0].dstBinding = 4;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pImageInfo = &imageInfo_tex1;
+    VkDescriptorImageInfo imageInfo_tex2 = {};
+    imageInfo_tex2.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex2.imageView = texture_tex2->imageView;
+    imageInfo_tex2.sampler = texture_tex2->sampler;
+    
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = descriptorSet;
+    descriptorWrites[1].dstBinding = 5;
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pImageInfo = &imageInfo_tex2;
+    VkDescriptorImageInfo imageInfo_tex3 = {};
+    imageInfo_tex3.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex3.imageView = texture_tex3->imageView;
+    imageInfo_tex3.sampler = texture_tex3->sampler;
+    
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = descriptorSet;
+    descriptorWrites[2].dstBinding = 6;
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pImageInfo = &imageInfo_tex3;
+    VkDescriptorImageInfo imageInfo_tex4 = {};
+    imageInfo_tex4.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex4.imageView = texture_tex4->imageView;
+    imageInfo_tex4.sampler = texture_tex4->sampler;
+    
+    descriptorWrites[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[3].dstSet = descriptorSet;
+    descriptorWrites[3].dstBinding = 7;
+    descriptorWrites[3].dstArrayElement = 0;
+    descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[3].descriptorCount = 1;
+    descriptorWrites[3].pImageInfo = &imageInfo_tex4;
+    VkDescriptorBufferInfo bufferInfo_Projection = {};
+    bufferInfo_Projection.buffer = ubo_Projection.buffer;
+    bufferInfo_Projection.offset = 0;
+    bufferInfo_Projection.range = sizeof(Projection);
+    
+    descriptorWrites[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[4].dstSet = descriptorSet;
+    descriptorWrites[4].dstBinding = 0;
+    descriptorWrites[4].dstArrayElement = 0;
+    descriptorWrites[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[4].descriptorCount = 1;
+    descriptorWrites[4].pBufferInfo = &bufferInfo_Projection;
+    VkDescriptorBufferInfo bufferInfo_ViewMatrix = {};
+    bufferInfo_ViewMatrix.buffer = ubo_ViewMatrix.buffer;
+    bufferInfo_ViewMatrix.offset = 0;
+    bufferInfo_ViewMatrix.range = sizeof(ViewMatrix);
+    
+    descriptorWrites[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[5].dstSet = descriptorSet;
+    descriptorWrites[5].dstBinding = 1;
+    descriptorWrites[5].dstArrayElement = 0;
+    descriptorWrites[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[5].descriptorCount = 1;
+    descriptorWrites[5].pBufferInfo = &bufferInfo_ViewMatrix;
+    vkUpdateDescriptorSets(target->device, 6, descriptorWrites, 0, nullptr);
+    output.clear();
+    output.push_back(descriptorSet);
+}
+void WWVK_CreateRiverWaterAddPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
+    VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyzduv2_camuvt_vert, sizeof(WWVK_fvf_xyzduv2_camuvt_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_RiverWater_frag, sizeof(WWVK_RiverWater_frag));
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertShaderModule;
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragShaderModule;
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    VkVertexInputBindingDescription bindingDescription[1] = {};
+    {
+        bindingDescription[0].binding = 0;
+        bindingDescription[0].stride = sizeof(float) * 8;
+        bindingDescription[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    }
+    VkVertexInputAttributeDescription attributeDescriptions[4] = {};
+    {
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 2;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].offset = sizeof(float) * 4;
+    }
+    {
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 3;
+        attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[1].offset = sizeof(float) * 6;
+    }
+    {
+        attributeDescriptions[2].binding = 0;
+        attributeDescriptions[2].location = 1;
+        attributeDescriptions[2].format = VK_FORMAT_R32_UINT;
+        attributeDescriptions[2].offset = sizeof(float) * 3;
+    }
+    {
+        attributeDescriptions[3].binding = 0;
+        attributeDescriptions[3].location = 0;
+        attributeDescriptions[3].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[3].offset = sizeof(float) * 0;
+    }
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = 4;
+
+    vertexInputInfo.pVertexBindingDescriptions = bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions;
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = nullptr;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = nullptr;
+
+    VkDynamicState dynamicState[2] = { VK_DYNAMIC_STATE_VIEWPORT , VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
+    dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicStateCreateInfo.dynamicStateCount = 2;
+    dynamicStateCreateInfo.pDynamicStates = dynamicState;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+    colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE;
+    colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+
+
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &pipeline.descriptorSetLayout;
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.size = sizeof(WorldMatrixUVT);
+    pushConstantRange.offset = 0;
+
+    // Push constant ranges are part of the pipeline layout
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+    if (vkCreatePipelineLayout(target->device, &pipelineLayoutInfo, nullptr, &pipeline.pipelineLayout) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    VkPipelineDepthStencilStateCreateInfo depthStencil{};
+    depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f; // Optional
+    depthStencil.maxDepthBounds = 1.0f; // Optional
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
+    pipelineInfo.pDepthStencilState = &depthStencil;
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.layout = pipeline.pipelineLayout;
+    pipelineInfo.renderPass = target->renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    if (vkCreateGraphicsPipelines(target->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline.graphicsPipeline) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create graphics pipeline!");
+    }
+
+    vkDestroyShaderModule(target->device, fragShaderModule, nullptr);
+    vkDestroyShaderModule(target->device, vertShaderModule, nullptr);
+}
+
+
+void WWVK_CreateRiverWaterAddDescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
+    VkDescriptorSetLayoutBinding bindings[6] = {};
+    {
+        bindings[0].binding = 4;
+        bindings[0].descriptorCount = 1;
+        bindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[0].pImmutableSamplers = nullptr;
+        bindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[1].binding = 5;
+        bindings[1].descriptorCount = 1;
+        bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[1].pImmutableSamplers = nullptr;
+        bindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[2].binding = 6;
+        bindings[2].descriptorCount = 1;
+        bindings[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[2].pImmutableSamplers = nullptr;
+        bindings[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[3].binding = 7;
+        bindings[3].descriptorCount = 1;
+        bindings[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[3].pImmutableSamplers = nullptr;
+        bindings[3].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[4].binding = 0;
+        bindings[4].descriptorCount = 1;
+        bindings[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[4].pImmutableSamplers = nullptr;
+        bindings[4].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[5].binding = 1;
+        bindings[5].descriptorCount = 1;
+        bindings[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[5].pImmutableSamplers = nullptr;
+        bindings[5].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 6;
+    layoutInfo.pBindings = bindings;
+
+    pipeline.subIndex = target->getDescSetSubIndex(VkDS_TTTTUU, bindings, 6);
+    if (vkCreateDescriptorSetLayout(target->device, &layoutInfo, nullptr, &pipeline.descriptorSetLayout) != VK_SUCCESS) {}
+}
+void WWVK_UpdateRiverWaterAddDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex1, VK::Texture* texture_tex2, VK::Texture* texture_tex3, VK::Texture* texture_tex4, VK::Buffer ubo_Projection, VK::Buffer ubo_ViewMatrix) {
+    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TTTTUU, pipeline.pipelines[PIPELINE_WWVK_RiverWaterAdd].subIndex, &pipeline.pipelines[PIPELINE_WWVK_RiverWaterAdd].descriptorSetLayout);
+    VkWriteDescriptorSet descriptorWrites[6] = {};
+
+    VkDescriptorImageInfo imageInfo_tex1 = {};
+    imageInfo_tex1.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex1.imageView = texture_tex1->imageView;
+    imageInfo_tex1.sampler = texture_tex1->sampler;
+    
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSet;
+    descriptorWrites[0].dstBinding = 4;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pImageInfo = &imageInfo_tex1;
+    VkDescriptorImageInfo imageInfo_tex2 = {};
+    imageInfo_tex2.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex2.imageView = texture_tex2->imageView;
+    imageInfo_tex2.sampler = texture_tex2->sampler;
+    
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = descriptorSet;
+    descriptorWrites[1].dstBinding = 5;
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pImageInfo = &imageInfo_tex2;
+    VkDescriptorImageInfo imageInfo_tex3 = {};
+    imageInfo_tex3.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex3.imageView = texture_tex3->imageView;
+    imageInfo_tex3.sampler = texture_tex3->sampler;
+    
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = descriptorSet;
+    descriptorWrites[2].dstBinding = 6;
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pImageInfo = &imageInfo_tex3;
+    VkDescriptorImageInfo imageInfo_tex4 = {};
+    imageInfo_tex4.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex4.imageView = texture_tex4->imageView;
+    imageInfo_tex4.sampler = texture_tex4->sampler;
+    
+    descriptorWrites[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[3].dstSet = descriptorSet;
+    descriptorWrites[3].dstBinding = 7;
+    descriptorWrites[3].dstArrayElement = 0;
+    descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[3].descriptorCount = 1;
+    descriptorWrites[3].pImageInfo = &imageInfo_tex4;
+    VkDescriptorBufferInfo bufferInfo_Projection = {};
+    bufferInfo_Projection.buffer = ubo_Projection.buffer;
+    bufferInfo_Projection.offset = 0;
+    bufferInfo_Projection.range = sizeof(Projection);
+    
+    descriptorWrites[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[4].dstSet = descriptorSet;
+    descriptorWrites[4].dstBinding = 0;
+    descriptorWrites[4].dstArrayElement = 0;
+    descriptorWrites[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[4].descriptorCount = 1;
+    descriptorWrites[4].pBufferInfo = &bufferInfo_Projection;
+    VkDescriptorBufferInfo bufferInfo_ViewMatrix = {};
+    bufferInfo_ViewMatrix.buffer = ubo_ViewMatrix.buffer;
+    bufferInfo_ViewMatrix.offset = 0;
+    bufferInfo_ViewMatrix.range = sizeof(ViewMatrix);
+    
+    descriptorWrites[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[5].dstSet = descriptorSet;
+    descriptorWrites[5].dstBinding = 1;
+    descriptorWrites[5].dstArrayElement = 0;
+    descriptorWrites[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[5].descriptorCount = 1;
+    descriptorWrites[5].pBufferInfo = &bufferInfo_ViewMatrix;
+    vkUpdateDescriptorSets(target->device, 6, descriptorWrites, 0, nullptr);
+    output.clear();
+    output.push_back(descriptorSet);
+}
+void WWVK_CreateRiverWaterShroudPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
+    VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyzduv2_camuvt2_vert, sizeof(WWVK_fvf_xyzduv2_camuvt2_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_RiverWaterShroud_frag, sizeof(WWVK_RiverWaterShroud_frag));
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertShaderModule;
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragShaderModule;
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    VkVertexInputBindingDescription bindingDescription[1] = {};
+    {
+        bindingDescription[0].binding = 0;
+        bindingDescription[0].stride = sizeof(float) * 8;
+        bindingDescription[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    }
+    VkVertexInputAttributeDescription attributeDescriptions[4] = {};
+    {
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 2;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].offset = sizeof(float) * 4;
+    }
+    {
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 3;
+        attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[1].offset = sizeof(float) * 6;
+    }
+    {
+        attributeDescriptions[2].binding = 0;
+        attributeDescriptions[2].location = 1;
+        attributeDescriptions[2].format = VK_FORMAT_R32_UINT;
+        attributeDescriptions[2].offset = sizeof(float) * 3;
+    }
+    {
+        attributeDescriptions[3].binding = 0;
+        attributeDescriptions[3].location = 0;
+        attributeDescriptions[3].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[3].offset = sizeof(float) * 0;
+    }
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = 4;
+
+    vertexInputInfo.pVertexBindingDescriptions = bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions;
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = nullptr;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = nullptr;
+
+    VkDynamicState dynamicState[2] = { VK_DYNAMIC_STATE_VIEWPORT , VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
+    dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicStateCreateInfo.dynamicStateCount = 2;
+    dynamicStateCreateInfo.pDynamicStates = dynamicState;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+
+
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &pipeline.descriptorSetLayout;
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.size = sizeof(WorldMatrix);
+    pushConstantRange.offset = 0;
+
+    // Push constant ranges are part of the pipeline layout
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+    if (vkCreatePipelineLayout(target->device, &pipelineLayoutInfo, nullptr, &pipeline.pipelineLayout) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    VkPipelineDepthStencilStateCreateInfo depthStencil{};
+    depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f; // Optional
+    depthStencil.maxDepthBounds = 1.0f; // Optional
+    depthStencil.depthCompareOp = VK_COMPARE_OP_EQUAL;
+    pipelineInfo.pDepthStencilState = &depthStencil;
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.layout = pipeline.pipelineLayout;
+    pipelineInfo.renderPass = target->renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    if (vkCreateGraphicsPipelines(target->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline.graphicsPipeline) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create graphics pipeline!");
+    }
+
+    vkDestroyShaderModule(target->device, fragShaderModule, nullptr);
+    vkDestroyShaderModule(target->device, vertShaderModule, nullptr);
+}
+
+
+void WWVK_CreateRiverWaterShroudDescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
+    VkDescriptorSetLayoutBinding bindings[7] = {};
+    {
+        bindings[0].binding = 4;
+        bindings[0].descriptorCount = 1;
+        bindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[0].pImmutableSamplers = nullptr;
+        bindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[1].binding = 5;
+        bindings[1].descriptorCount = 1;
+        bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[1].pImmutableSamplers = nullptr;
+        bindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[2].binding = 6;
+        bindings[2].descriptorCount = 1;
+        bindings[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[2].pImmutableSamplers = nullptr;
+        bindings[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[3].binding = 7;
+        bindings[3].descriptorCount = 1;
+        bindings[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[3].pImmutableSamplers = nullptr;
+        bindings[3].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[4].binding = 0;
+        bindings[4].descriptorCount = 1;
+        bindings[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[4].pImmutableSamplers = nullptr;
+        bindings[4].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[5].binding = 1;
+        bindings[5].descriptorCount = 1;
+        bindings[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[5].pImmutableSamplers = nullptr;
+        bindings[5].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[6].binding = 2;
+        bindings[6].descriptorCount = 1;
+        bindings[6].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[6].pImmutableSamplers = nullptr;
+        bindings[6].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 7;
+    layoutInfo.pBindings = bindings;
+
+    pipeline.subIndex = target->getDescSetSubIndex(VkDS_TTTTUUU, bindings, 7);
+    if (vkCreateDescriptorSetLayout(target->device, &layoutInfo, nullptr, &pipeline.descriptorSetLayout) != VK_SUCCESS) {}
+}
+void WWVK_UpdateRiverWaterShroudDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex1, VK::Texture* texture_tex2, VK::Texture* texture_tex3, VK::Texture* texture_tex4, VK::Buffer ubo_Projection, VK::Buffer ubo_ViewMatrix, VK::Buffer ubo_UVT2) {
+    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TTTTUUU, pipeline.pipelines[PIPELINE_WWVK_RiverWaterShroud].subIndex, &pipeline.pipelines[PIPELINE_WWVK_RiverWaterShroud].descriptorSetLayout);
+    VkWriteDescriptorSet descriptorWrites[7] = {};
+
+    VkDescriptorImageInfo imageInfo_tex1 = {};
+    imageInfo_tex1.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex1.imageView = texture_tex1->imageView;
+    imageInfo_tex1.sampler = texture_tex1->sampler;
+    
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSet;
+    descriptorWrites[0].dstBinding = 4;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pImageInfo = &imageInfo_tex1;
+    VkDescriptorImageInfo imageInfo_tex2 = {};
+    imageInfo_tex2.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex2.imageView = texture_tex2->imageView;
+    imageInfo_tex2.sampler = texture_tex2->sampler;
+    
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = descriptorSet;
+    descriptorWrites[1].dstBinding = 5;
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pImageInfo = &imageInfo_tex2;
+    VkDescriptorImageInfo imageInfo_tex3 = {};
+    imageInfo_tex3.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex3.imageView = texture_tex3->imageView;
+    imageInfo_tex3.sampler = texture_tex3->sampler;
+    
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = descriptorSet;
+    descriptorWrites[2].dstBinding = 6;
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pImageInfo = &imageInfo_tex3;
+    VkDescriptorImageInfo imageInfo_tex4 = {};
+    imageInfo_tex4.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex4.imageView = texture_tex4->imageView;
+    imageInfo_tex4.sampler = texture_tex4->sampler;
+    
+    descriptorWrites[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[3].dstSet = descriptorSet;
+    descriptorWrites[3].dstBinding = 7;
+    descriptorWrites[3].dstArrayElement = 0;
+    descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[3].descriptorCount = 1;
+    descriptorWrites[3].pImageInfo = &imageInfo_tex4;
+    VkDescriptorBufferInfo bufferInfo_Projection = {};
+    bufferInfo_Projection.buffer = ubo_Projection.buffer;
+    bufferInfo_Projection.offset = 0;
+    bufferInfo_Projection.range = sizeof(Projection);
+    
+    descriptorWrites[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[4].dstSet = descriptorSet;
+    descriptorWrites[4].dstBinding = 0;
+    descriptorWrites[4].dstArrayElement = 0;
+    descriptorWrites[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[4].descriptorCount = 1;
+    descriptorWrites[4].pBufferInfo = &bufferInfo_Projection;
+    VkDescriptorBufferInfo bufferInfo_ViewMatrix = {};
+    bufferInfo_ViewMatrix.buffer = ubo_ViewMatrix.buffer;
+    bufferInfo_ViewMatrix.offset = 0;
+    bufferInfo_ViewMatrix.range = sizeof(ViewMatrix);
+    
+    descriptorWrites[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[5].dstSet = descriptorSet;
+    descriptorWrites[5].dstBinding = 1;
+    descriptorWrites[5].dstArrayElement = 0;
+    descriptorWrites[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[5].descriptorCount = 1;
+    descriptorWrites[5].pBufferInfo = &bufferInfo_ViewMatrix;
+    VkDescriptorBufferInfo bufferInfo_UVT2 = {};
+    bufferInfo_UVT2.buffer = ubo_UVT2.buffer;
+    bufferInfo_UVT2.offset = 0;
+    bufferInfo_UVT2.range = sizeof(UVT2);
+    
+    descriptorWrites[6].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[6].dstSet = descriptorSet;
+    descriptorWrites[6].dstBinding = 2;
+    descriptorWrites[6].dstArrayElement = 0;
+    descriptorWrites[6].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[6].descriptorCount = 1;
+    descriptorWrites[6].pBufferInfo = &bufferInfo_UVT2;
+    vkUpdateDescriptorSets(target->device, 7, descriptorWrites, 0, nullptr);
+    output.clear();
+    output.push_back(descriptorSet);
+}
+void WWVK_CreateWaterTrapezoidPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
+    VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyznduv2_camuvt2_vert, sizeof(WWVK_fvf_xyznduv2_camuvt2_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_WaterTrapezoid_frag, sizeof(WWVK_WaterTrapezoid_frag));
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertShaderModule;
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragShaderModule;
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    VkVertexInputBindingDescription bindingDescription[1] = {};
+    {
+        bindingDescription[0].binding = 0;
+        bindingDescription[0].stride = sizeof(float) * 11;
+        bindingDescription[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    }
+    VkVertexInputAttributeDescription attributeDescriptions[5] = {};
+    {
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 3;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].offset = sizeof(float) * 7;
+    }
+    {
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 4;
+        attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[1].offset = sizeof(float) * 9;
+    }
+    {
+        attributeDescriptions[2].binding = 0;
+        attributeDescriptions[2].location = 1;
+        attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[2].offset = sizeof(float) * 3;
+    }
+    {
+        attributeDescriptions[3].binding = 0;
+        attributeDescriptions[3].location = 2;
+        attributeDescriptions[3].format = VK_FORMAT_R32_UINT;
+        attributeDescriptions[3].offset = sizeof(float) * 6;
+    }
+    {
+        attributeDescriptions[4].binding = 0;
+        attributeDescriptions[4].location = 0;
+        attributeDescriptions[4].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[4].offset = sizeof(float) * 0;
+    }
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = 5;
+
+    vertexInputInfo.pVertexBindingDescriptions = bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions;
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = nullptr;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = nullptr;
+
+    VkDynamicState dynamicState[2] = { VK_DYNAMIC_STATE_VIEWPORT , VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
+    dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicStateCreateInfo.dynamicStateCount = 2;
+    dynamicStateCreateInfo.pDynamicStates = dynamicState;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+
+
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &pipeline.descriptorSetLayout;
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.size = sizeof(WorldMatrix);
+    pushConstantRange.offset = 0;
+
+    // Push constant ranges are part of the pipeline layout
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+    if (vkCreatePipelineLayout(target->device, &pipelineLayoutInfo, nullptr, &pipeline.pipelineLayout) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    VkPipelineDepthStencilStateCreateInfo depthStencil{};
+    depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f; // Optional
+    depthStencil.maxDepthBounds = 1.0f; // Optional
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
+    pipelineInfo.pDepthStencilState = &depthStencil;
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.layout = pipeline.pipelineLayout;
+    pipelineInfo.renderPass = target->renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    if (vkCreateGraphicsPipelines(target->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline.graphicsPipeline) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create graphics pipeline!");
+    }
+
+    vkDestroyShaderModule(target->device, fragShaderModule, nullptr);
+    vkDestroyShaderModule(target->device, vertShaderModule, nullptr);
+}
+
+
+void WWVK_CreateWaterTrapezoidDescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
+    VkDescriptorSetLayoutBinding bindings[7] = {};
+    {
+        bindings[0].binding = 4;
+        bindings[0].descriptorCount = 1;
+        bindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[0].pImmutableSamplers = nullptr;
+        bindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[1].binding = 5;
+        bindings[1].descriptorCount = 1;
+        bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[1].pImmutableSamplers = nullptr;
+        bindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[2].binding = 6;
+        bindings[2].descriptorCount = 1;
+        bindings[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[2].pImmutableSamplers = nullptr;
+        bindings[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[3].binding = 7;
+        bindings[3].descriptorCount = 1;
+        bindings[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[3].pImmutableSamplers = nullptr;
+        bindings[3].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[4].binding = 1;
+        bindings[4].descriptorCount = 1;
+        bindings[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[4].pImmutableSamplers = nullptr;
+        bindings[4].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[5].binding = 0;
+        bindings[5].descriptorCount = 1;
+        bindings[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[5].pImmutableSamplers = nullptr;
+        bindings[5].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[6].binding = 2;
+        bindings[6].descriptorCount = 1;
+        bindings[6].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[6].pImmutableSamplers = nullptr;
+        bindings[6].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 7;
+    layoutInfo.pBindings = bindings;
+
+    pipeline.subIndex = target->getDescSetSubIndex(VkDS_TTTTUUU, bindings, 7);
+    if (vkCreateDescriptorSetLayout(target->device, &layoutInfo, nullptr, &pipeline.descriptorSetLayout) != VK_SUCCESS) {}
+}
+void WWVK_UpdateWaterTrapezoidDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex1, VK::Texture* texture_tex2, VK::Texture* texture_tex3, VK::Texture* texture_tex4, VK::Buffer ubo_ViewMatrix, VK::Buffer ubo_Projection, VK::Buffer ubo_UVT2) {
+    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TTTTUUU, pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid].subIndex, &pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid].descriptorSetLayout);
+    VkWriteDescriptorSet descriptorWrites[7] = {};
+
+    VkDescriptorImageInfo imageInfo_tex1 = {};
+    imageInfo_tex1.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex1.imageView = texture_tex1->imageView;
+    imageInfo_tex1.sampler = texture_tex1->sampler;
+    
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSet;
+    descriptorWrites[0].dstBinding = 4;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pImageInfo = &imageInfo_tex1;
+    VkDescriptorImageInfo imageInfo_tex2 = {};
+    imageInfo_tex2.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex2.imageView = texture_tex2->imageView;
+    imageInfo_tex2.sampler = texture_tex2->sampler;
+    
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = descriptorSet;
+    descriptorWrites[1].dstBinding = 5;
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pImageInfo = &imageInfo_tex2;
+    VkDescriptorImageInfo imageInfo_tex3 = {};
+    imageInfo_tex3.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex3.imageView = texture_tex3->imageView;
+    imageInfo_tex3.sampler = texture_tex3->sampler;
+    
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = descriptorSet;
+    descriptorWrites[2].dstBinding = 6;
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pImageInfo = &imageInfo_tex3;
+    VkDescriptorImageInfo imageInfo_tex4 = {};
+    imageInfo_tex4.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex4.imageView = texture_tex4->imageView;
+    imageInfo_tex4.sampler = texture_tex4->sampler;
+    
+    descriptorWrites[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[3].dstSet = descriptorSet;
+    descriptorWrites[3].dstBinding = 7;
+    descriptorWrites[3].dstArrayElement = 0;
+    descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[3].descriptorCount = 1;
+    descriptorWrites[3].pImageInfo = &imageInfo_tex4;
+    VkDescriptorBufferInfo bufferInfo_ViewMatrix = {};
+    bufferInfo_ViewMatrix.buffer = ubo_ViewMatrix.buffer;
+    bufferInfo_ViewMatrix.offset = 0;
+    bufferInfo_ViewMatrix.range = sizeof(ViewMatrix);
+    
+    descriptorWrites[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[4].dstSet = descriptorSet;
+    descriptorWrites[4].dstBinding = 1;
+    descriptorWrites[4].dstArrayElement = 0;
+    descriptorWrites[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[4].descriptorCount = 1;
+    descriptorWrites[4].pBufferInfo = &bufferInfo_ViewMatrix;
+    VkDescriptorBufferInfo bufferInfo_Projection = {};
+    bufferInfo_Projection.buffer = ubo_Projection.buffer;
+    bufferInfo_Projection.offset = 0;
+    bufferInfo_Projection.range = sizeof(Projection);
+    
+    descriptorWrites[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[5].dstSet = descriptorSet;
+    descriptorWrites[5].dstBinding = 0;
+    descriptorWrites[5].dstArrayElement = 0;
+    descriptorWrites[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[5].descriptorCount = 1;
+    descriptorWrites[5].pBufferInfo = &bufferInfo_Projection;
+    VkDescriptorBufferInfo bufferInfo_UVT2 = {};
+    bufferInfo_UVT2.buffer = ubo_UVT2.buffer;
+    bufferInfo_UVT2.offset = 0;
+    bufferInfo_UVT2.range = sizeof(UVT2);
+    
+    descriptorWrites[6].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[6].dstSet = descriptorSet;
+    descriptorWrites[6].dstBinding = 2;
+    descriptorWrites[6].dstArrayElement = 0;
+    descriptorWrites[6].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[6].descriptorCount = 1;
+    descriptorWrites[6].pBufferInfo = &bufferInfo_UVT2;
+    vkUpdateDescriptorSets(target->device, 7, descriptorWrites, 0, nullptr);
+    output.clear();
+    output.push_back(descriptorSet);
+}
+void WWVK_CreateWaterTrapezoid_DstAlphaPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
+    VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyznduv2_camuvt2_vert, sizeof(WWVK_fvf_xyznduv2_camuvt2_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_WaterTrapezoid_frag, sizeof(WWVK_WaterTrapezoid_frag));
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertShaderModule;
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragShaderModule;
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    VkVertexInputBindingDescription bindingDescription[1] = {};
+    {
+        bindingDescription[0].binding = 0;
+        bindingDescription[0].stride = sizeof(float) * 11;
+        bindingDescription[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    }
+    VkVertexInputAttributeDescription attributeDescriptions[5] = {};
+    {
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 3;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].offset = sizeof(float) * 7;
+    }
+    {
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 4;
+        attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[1].offset = sizeof(float) * 9;
+    }
+    {
+        attributeDescriptions[2].binding = 0;
+        attributeDescriptions[2].location = 1;
+        attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[2].offset = sizeof(float) * 3;
+    }
+    {
+        attributeDescriptions[3].binding = 0;
+        attributeDescriptions[3].location = 2;
+        attributeDescriptions[3].format = VK_FORMAT_R32_UINT;
+        attributeDescriptions[3].offset = sizeof(float) * 6;
+    }
+    {
+        attributeDescriptions[4].binding = 0;
+        attributeDescriptions[4].location = 0;
+        attributeDescriptions[4].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[4].offset = sizeof(float) * 0;
+    }
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = 5;
+
+    vertexInputInfo.pVertexBindingDescriptions = bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions;
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = nullptr;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = nullptr;
+
+    VkDynamicState dynamicState[2] = { VK_DYNAMIC_STATE_VIEWPORT , VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
+    dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicStateCreateInfo.dynamicStateCount = 2;
+    dynamicStateCreateInfo.pDynamicStates = dynamicState;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_DST_ALPHA;
+    colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+
+
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &pipeline.descriptorSetLayout;
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.size = sizeof(WorldMatrix);
+    pushConstantRange.offset = 0;
+
+    // Push constant ranges are part of the pipeline layout
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+    if (vkCreatePipelineLayout(target->device, &pipelineLayoutInfo, nullptr, &pipeline.pipelineLayout) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    VkPipelineDepthStencilStateCreateInfo depthStencil{};
+    depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f; // Optional
+    depthStencil.maxDepthBounds = 1.0f; // Optional
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
+    pipelineInfo.pDepthStencilState = &depthStencil;
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.layout = pipeline.pipelineLayout;
+    pipelineInfo.renderPass = target->renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    if (vkCreateGraphicsPipelines(target->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline.graphicsPipeline) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create graphics pipeline!");
+    }
+
+    vkDestroyShaderModule(target->device, fragShaderModule, nullptr);
+    vkDestroyShaderModule(target->device, vertShaderModule, nullptr);
+}
+
+
+void WWVK_CreateWaterTrapezoid_DstAlphaDescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
+    VkDescriptorSetLayoutBinding bindings[7] = {};
+    {
+        bindings[0].binding = 4;
+        bindings[0].descriptorCount = 1;
+        bindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[0].pImmutableSamplers = nullptr;
+        bindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[1].binding = 5;
+        bindings[1].descriptorCount = 1;
+        bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[1].pImmutableSamplers = nullptr;
+        bindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[2].binding = 6;
+        bindings[2].descriptorCount = 1;
+        bindings[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[2].pImmutableSamplers = nullptr;
+        bindings[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[3].binding = 7;
+        bindings[3].descriptorCount = 1;
+        bindings[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[3].pImmutableSamplers = nullptr;
+        bindings[3].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[4].binding = 1;
+        bindings[4].descriptorCount = 1;
+        bindings[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[4].pImmutableSamplers = nullptr;
+        bindings[4].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[5].binding = 0;
+        bindings[5].descriptorCount = 1;
+        bindings[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[5].pImmutableSamplers = nullptr;
+        bindings[5].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[6].binding = 2;
+        bindings[6].descriptorCount = 1;
+        bindings[6].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[6].pImmutableSamplers = nullptr;
+        bindings[6].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 7;
+    layoutInfo.pBindings = bindings;
+
+    pipeline.subIndex = target->getDescSetSubIndex(VkDS_TTTTUUU, bindings, 7);
+    if (vkCreateDescriptorSetLayout(target->device, &layoutInfo, nullptr, &pipeline.descriptorSetLayout) != VK_SUCCESS) {}
+}
+void WWVK_UpdateWaterTrapezoid_DstAlphaDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex1, VK::Texture* texture_tex2, VK::Texture* texture_tex3, VK::Texture* texture_tex4, VK::Buffer ubo_ViewMatrix, VK::Buffer ubo_Projection, VK::Buffer ubo_UVT2) {
+    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TTTTUUU, pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlpha].subIndex, &pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlpha].descriptorSetLayout);
+    VkWriteDescriptorSet descriptorWrites[7] = {};
+
+    VkDescriptorImageInfo imageInfo_tex1 = {};
+    imageInfo_tex1.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex1.imageView = texture_tex1->imageView;
+    imageInfo_tex1.sampler = texture_tex1->sampler;
+    
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSet;
+    descriptorWrites[0].dstBinding = 4;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pImageInfo = &imageInfo_tex1;
+    VkDescriptorImageInfo imageInfo_tex2 = {};
+    imageInfo_tex2.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex2.imageView = texture_tex2->imageView;
+    imageInfo_tex2.sampler = texture_tex2->sampler;
+    
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = descriptorSet;
+    descriptorWrites[1].dstBinding = 5;
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pImageInfo = &imageInfo_tex2;
+    VkDescriptorImageInfo imageInfo_tex3 = {};
+    imageInfo_tex3.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex3.imageView = texture_tex3->imageView;
+    imageInfo_tex3.sampler = texture_tex3->sampler;
+    
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = descriptorSet;
+    descriptorWrites[2].dstBinding = 6;
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pImageInfo = &imageInfo_tex3;
+    VkDescriptorImageInfo imageInfo_tex4 = {};
+    imageInfo_tex4.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex4.imageView = texture_tex4->imageView;
+    imageInfo_tex4.sampler = texture_tex4->sampler;
+    
+    descriptorWrites[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[3].dstSet = descriptorSet;
+    descriptorWrites[3].dstBinding = 7;
+    descriptorWrites[3].dstArrayElement = 0;
+    descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[3].descriptorCount = 1;
+    descriptorWrites[3].pImageInfo = &imageInfo_tex4;
+    VkDescriptorBufferInfo bufferInfo_ViewMatrix = {};
+    bufferInfo_ViewMatrix.buffer = ubo_ViewMatrix.buffer;
+    bufferInfo_ViewMatrix.offset = 0;
+    bufferInfo_ViewMatrix.range = sizeof(ViewMatrix);
+    
+    descriptorWrites[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[4].dstSet = descriptorSet;
+    descriptorWrites[4].dstBinding = 1;
+    descriptorWrites[4].dstArrayElement = 0;
+    descriptorWrites[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[4].descriptorCount = 1;
+    descriptorWrites[4].pBufferInfo = &bufferInfo_ViewMatrix;
+    VkDescriptorBufferInfo bufferInfo_Projection = {};
+    bufferInfo_Projection.buffer = ubo_Projection.buffer;
+    bufferInfo_Projection.offset = 0;
+    bufferInfo_Projection.range = sizeof(Projection);
+    
+    descriptorWrites[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[5].dstSet = descriptorSet;
+    descriptorWrites[5].dstBinding = 0;
+    descriptorWrites[5].dstArrayElement = 0;
+    descriptorWrites[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[5].descriptorCount = 1;
+    descriptorWrites[5].pBufferInfo = &bufferInfo_Projection;
+    VkDescriptorBufferInfo bufferInfo_UVT2 = {};
+    bufferInfo_UVT2.buffer = ubo_UVT2.buffer;
+    bufferInfo_UVT2.offset = 0;
+    bufferInfo_UVT2.range = sizeof(UVT2);
+    
+    descriptorWrites[6].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[6].dstSet = descriptorSet;
+    descriptorWrites[6].dstBinding = 2;
+    descriptorWrites[6].dstArrayElement = 0;
+    descriptorWrites[6].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[6].descriptorCount = 1;
+    descriptorWrites[6].pBufferInfo = &bufferInfo_UVT2;
+    vkUpdateDescriptorSets(target->device, 7, descriptorWrites, 0, nullptr);
+    output.clear();
+    output.push_back(descriptorSet);
+}
+void WWVK_CreateWaterTrapezoid_DstAlphaInvDestPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
+    VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyznduv2_camuvt2_vert, sizeof(WWVK_fvf_xyznduv2_camuvt2_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_WaterTrapezoid_frag, sizeof(WWVK_WaterTrapezoid_frag));
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertShaderModule;
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragShaderModule;
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    VkVertexInputBindingDescription bindingDescription[1] = {};
+    {
+        bindingDescription[0].binding = 0;
+        bindingDescription[0].stride = sizeof(float) * 11;
+        bindingDescription[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    }
+    VkVertexInputAttributeDescription attributeDescriptions[5] = {};
+    {
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 3;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].offset = sizeof(float) * 7;
+    }
+    {
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 4;
+        attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[1].offset = sizeof(float) * 9;
+    }
+    {
+        attributeDescriptions[2].binding = 0;
+        attributeDescriptions[2].location = 1;
+        attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[2].offset = sizeof(float) * 3;
+    }
+    {
+        attributeDescriptions[3].binding = 0;
+        attributeDescriptions[3].location = 2;
+        attributeDescriptions[3].format = VK_FORMAT_R32_UINT;
+        attributeDescriptions[3].offset = sizeof(float) * 6;
+    }
+    {
+        attributeDescriptions[4].binding = 0;
+        attributeDescriptions[4].location = 0;
+        attributeDescriptions[4].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[4].offset = sizeof(float) * 0;
+    }
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = 5;
+
+    vertexInputInfo.pVertexBindingDescriptions = bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions;
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = nullptr;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = nullptr;
+
+    VkDynamicState dynamicState[2] = { VK_DYNAMIC_STATE_VIEWPORT , VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
+    dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicStateCreateInfo.dynamicStateCount = 2;
+    dynamicStateCreateInfo.pDynamicStates = dynamicState;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_DST_ALPHA;
+    colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA;
+    colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+
+
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &pipeline.descriptorSetLayout;
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.size = sizeof(WorldMatrix);
+    pushConstantRange.offset = 0;
+
+    // Push constant ranges are part of the pipeline layout
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+    if (vkCreatePipelineLayout(target->device, &pipelineLayoutInfo, nullptr, &pipeline.pipelineLayout) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    VkPipelineDepthStencilStateCreateInfo depthStencil{};
+    depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f; // Optional
+    depthStencil.maxDepthBounds = 1.0f; // Optional
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
+    pipelineInfo.pDepthStencilState = &depthStencil;
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.layout = pipeline.pipelineLayout;
+    pipelineInfo.renderPass = target->renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    if (vkCreateGraphicsPipelines(target->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline.graphicsPipeline) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create graphics pipeline!");
+    }
+
+    vkDestroyShaderModule(target->device, fragShaderModule, nullptr);
+    vkDestroyShaderModule(target->device, vertShaderModule, nullptr);
+}
+
+
+void WWVK_CreateWaterTrapezoid_DstAlphaInvDestDescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
+    VkDescriptorSetLayoutBinding bindings[7] = {};
+    {
+        bindings[0].binding = 4;
+        bindings[0].descriptorCount = 1;
+        bindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[0].pImmutableSamplers = nullptr;
+        bindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[1].binding = 5;
+        bindings[1].descriptorCount = 1;
+        bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[1].pImmutableSamplers = nullptr;
+        bindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[2].binding = 6;
+        bindings[2].descriptorCount = 1;
+        bindings[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[2].pImmutableSamplers = nullptr;
+        bindings[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[3].binding = 7;
+        bindings[3].descriptorCount = 1;
+        bindings[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[3].pImmutableSamplers = nullptr;
+        bindings[3].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[4].binding = 1;
+        bindings[4].descriptorCount = 1;
+        bindings[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[4].pImmutableSamplers = nullptr;
+        bindings[4].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[5].binding = 0;
+        bindings[5].descriptorCount = 1;
+        bindings[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[5].pImmutableSamplers = nullptr;
+        bindings[5].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[6].binding = 2;
+        bindings[6].descriptorCount = 1;
+        bindings[6].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[6].pImmutableSamplers = nullptr;
+        bindings[6].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 7;
+    layoutInfo.pBindings = bindings;
+
+    pipeline.subIndex = target->getDescSetSubIndex(VkDS_TTTTUUU, bindings, 7);
+    if (vkCreateDescriptorSetLayout(target->device, &layoutInfo, nullptr, &pipeline.descriptorSetLayout) != VK_SUCCESS) {}
+}
+void WWVK_UpdateWaterTrapezoid_DstAlphaInvDestDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex1, VK::Texture* texture_tex2, VK::Texture* texture_tex3, VK::Texture* texture_tex4, VK::Buffer ubo_ViewMatrix, VK::Buffer ubo_Projection, VK::Buffer ubo_UVT2) {
+    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TTTTUUU, pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlphaInvDest].subIndex, &pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlphaInvDest].descriptorSetLayout);
+    VkWriteDescriptorSet descriptorWrites[7] = {};
+
+    VkDescriptorImageInfo imageInfo_tex1 = {};
+    imageInfo_tex1.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex1.imageView = texture_tex1->imageView;
+    imageInfo_tex1.sampler = texture_tex1->sampler;
+    
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSet;
+    descriptorWrites[0].dstBinding = 4;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pImageInfo = &imageInfo_tex1;
+    VkDescriptorImageInfo imageInfo_tex2 = {};
+    imageInfo_tex2.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex2.imageView = texture_tex2->imageView;
+    imageInfo_tex2.sampler = texture_tex2->sampler;
+    
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = descriptorSet;
+    descriptorWrites[1].dstBinding = 5;
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pImageInfo = &imageInfo_tex2;
+    VkDescriptorImageInfo imageInfo_tex3 = {};
+    imageInfo_tex3.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex3.imageView = texture_tex3->imageView;
+    imageInfo_tex3.sampler = texture_tex3->sampler;
+    
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = descriptorSet;
+    descriptorWrites[2].dstBinding = 6;
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pImageInfo = &imageInfo_tex3;
+    VkDescriptorImageInfo imageInfo_tex4 = {};
+    imageInfo_tex4.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex4.imageView = texture_tex4->imageView;
+    imageInfo_tex4.sampler = texture_tex4->sampler;
+    
+    descriptorWrites[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[3].dstSet = descriptorSet;
+    descriptorWrites[3].dstBinding = 7;
+    descriptorWrites[3].dstArrayElement = 0;
+    descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[3].descriptorCount = 1;
+    descriptorWrites[3].pImageInfo = &imageInfo_tex4;
+    VkDescriptorBufferInfo bufferInfo_ViewMatrix = {};
+    bufferInfo_ViewMatrix.buffer = ubo_ViewMatrix.buffer;
+    bufferInfo_ViewMatrix.offset = 0;
+    bufferInfo_ViewMatrix.range = sizeof(ViewMatrix);
+    
+    descriptorWrites[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[4].dstSet = descriptorSet;
+    descriptorWrites[4].dstBinding = 1;
+    descriptorWrites[4].dstArrayElement = 0;
+    descriptorWrites[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[4].descriptorCount = 1;
+    descriptorWrites[4].pBufferInfo = &bufferInfo_ViewMatrix;
+    VkDescriptorBufferInfo bufferInfo_Projection = {};
+    bufferInfo_Projection.buffer = ubo_Projection.buffer;
+    bufferInfo_Projection.offset = 0;
+    bufferInfo_Projection.range = sizeof(Projection);
+    
+    descriptorWrites[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[5].dstSet = descriptorSet;
+    descriptorWrites[5].dstBinding = 0;
+    descriptorWrites[5].dstArrayElement = 0;
+    descriptorWrites[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[5].descriptorCount = 1;
+    descriptorWrites[5].pBufferInfo = &bufferInfo_Projection;
+    VkDescriptorBufferInfo bufferInfo_UVT2 = {};
+    bufferInfo_UVT2.buffer = ubo_UVT2.buffer;
+    bufferInfo_UVT2.offset = 0;
+    bufferInfo_UVT2.range = sizeof(UVT2);
+    
+    descriptorWrites[6].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[6].dstSet = descriptorSet;
+    descriptorWrites[6].dstBinding = 2;
+    descriptorWrites[6].dstArrayElement = 0;
+    descriptorWrites[6].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[6].descriptorCount = 1;
+    descriptorWrites[6].pBufferInfo = &bufferInfo_UVT2;
+    vkUpdateDescriptorSets(target->device, 7, descriptorWrites, 0, nullptr);
+    output.clear();
+    output.push_back(descriptorSet);
+}
+void WWVK_CreateWaterTrapezoidStripPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
+    VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_fvf_xyznduv2_camuvt2_vert, sizeof(WWVK_fvf_xyznduv2_camuvt2_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_WaterTrapezoid_frag, sizeof(WWVK_WaterTrapezoid_frag));
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertShaderModule;
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragShaderModule;
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    VkVertexInputBindingDescription bindingDescription[1] = {};
+    {
+        bindingDescription[0].binding = 0;
+        bindingDescription[0].stride = sizeof(float) * 11;
+        bindingDescription[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    }
+    VkVertexInputAttributeDescription attributeDescriptions[5] = {};
+    {
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 3;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].offset = sizeof(float) * 7;
+    }
+    {
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 4;
+        attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[1].offset = sizeof(float) * 9;
+    }
+    {
+        attributeDescriptions[2].binding = 0;
+        attributeDescriptions[2].location = 1;
+        attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[2].offset = sizeof(float) * 3;
+    }
+    {
+        attributeDescriptions[3].binding = 0;
+        attributeDescriptions[3].location = 2;
+        attributeDescriptions[3].format = VK_FORMAT_R32_UINT;
+        attributeDescriptions[3].offset = sizeof(float) * 6;
+    }
+    {
+        attributeDescriptions[4].binding = 0;
+        attributeDescriptions[4].location = 0;
+        attributeDescriptions[4].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[4].offset = sizeof(float) * 0;
+    }
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = 5;
+
+    vertexInputInfo.pVertexBindingDescriptions = bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions;
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+    inputAssembly.primitiveRestartEnable = VK_TRUE;
+
+
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = nullptr;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = nullptr;
+
+    VkDynamicState dynamicState[2] = { VK_DYNAMIC_STATE_VIEWPORT , VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
+    dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicStateCreateInfo.dynamicStateCount = 2;
+    dynamicStateCreateInfo.pDynamicStates = dynamicState;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+
+
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &pipeline.descriptorSetLayout;
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.size = sizeof(WorldMatrix);
+    pushConstantRange.offset = 0;
+
+    // Push constant ranges are part of the pipeline layout
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+    if (vkCreatePipelineLayout(target->device, &pipelineLayoutInfo, nullptr, &pipeline.pipelineLayout) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    VkPipelineDepthStencilStateCreateInfo depthStencil{};
+    depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f; // Optional
+    depthStencil.maxDepthBounds = 1.0f; // Optional
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
+    pipelineInfo.pDepthStencilState = &depthStencil;
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.layout = pipeline.pipelineLayout;
+    pipelineInfo.renderPass = target->renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    if (vkCreateGraphicsPipelines(target->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline.graphicsPipeline) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create graphics pipeline!");
+    }
+
+    vkDestroyShaderModule(target->device, fragShaderModule, nullptr);
+    vkDestroyShaderModule(target->device, vertShaderModule, nullptr);
+}
+
+
+void WWVK_CreateWaterTrapezoidStripDescriptorSetLayout(VkRenderTarget * target, VKPipelineData& pipeline) {
+    VkDescriptorSetLayoutBinding bindings[7] = {};
+    {
+        bindings[0].binding = 4;
+        bindings[0].descriptorCount = 1;
+        bindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[0].pImmutableSamplers = nullptr;
+        bindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[1].binding = 5;
+        bindings[1].descriptorCount = 1;
+        bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[1].pImmutableSamplers = nullptr;
+        bindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[2].binding = 6;
+        bindings[2].descriptorCount = 1;
+        bindings[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[2].pImmutableSamplers = nullptr;
+        bindings[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[3].binding = 7;
+        bindings[3].descriptorCount = 1;
+        bindings[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        bindings[3].pImmutableSamplers = nullptr;
+        bindings[3].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    }
+    {
+        bindings[4].binding = 1;
+        bindings[4].descriptorCount = 1;
+        bindings[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[4].pImmutableSamplers = nullptr;
+        bindings[4].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[5].binding = 0;
+        bindings[5].descriptorCount = 1;
+        bindings[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[5].pImmutableSamplers = nullptr;
+        bindings[5].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+    {
+        bindings[6].binding = 2;
+        bindings[6].descriptorCount = 1;
+        bindings[6].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[6].pImmutableSamplers = nullptr;
+        bindings[6].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 7;
+    layoutInfo.pBindings = bindings;
+
+    pipeline.subIndex = target->getDescSetSubIndex(VkDS_TTTTUUU, bindings, 7);
+    if (vkCreateDescriptorSetLayout(target->device, &layoutInfo, nullptr, &pipeline.descriptorSetLayout) != VK_SUCCESS) {}
+}
+void WWVK_UpdateWaterTrapezoidStripDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collection& pipeline, std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex1, VK::Texture* texture_tex2, VK::Texture* texture_tex3, VK::Texture* texture_tex4, VK::Buffer ubo_ViewMatrix, VK::Buffer ubo_Projection, VK::Buffer ubo_UVT2) {
+    VkDescriptorSet descriptorSet = target->getDescSet(VkDS_TTTTUUU, pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoidStrip].subIndex, &pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoidStrip].descriptorSetLayout);
+    VkWriteDescriptorSet descriptorWrites[7] = {};
+
+    VkDescriptorImageInfo imageInfo_tex1 = {};
+    imageInfo_tex1.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex1.imageView = texture_tex1->imageView;
+    imageInfo_tex1.sampler = texture_tex1->sampler;
+    
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSet;
+    descriptorWrites[0].dstBinding = 4;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pImageInfo = &imageInfo_tex1;
+    VkDescriptorImageInfo imageInfo_tex2 = {};
+    imageInfo_tex2.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex2.imageView = texture_tex2->imageView;
+    imageInfo_tex2.sampler = texture_tex2->sampler;
+    
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = descriptorSet;
+    descriptorWrites[1].dstBinding = 5;
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pImageInfo = &imageInfo_tex2;
+    VkDescriptorImageInfo imageInfo_tex3 = {};
+    imageInfo_tex3.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex3.imageView = texture_tex3->imageView;
+    imageInfo_tex3.sampler = texture_tex3->sampler;
+    
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = descriptorSet;
+    descriptorWrites[2].dstBinding = 6;
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pImageInfo = &imageInfo_tex3;
+    VkDescriptorImageInfo imageInfo_tex4 = {};
+    imageInfo_tex4.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo_tex4.imageView = texture_tex4->imageView;
+    imageInfo_tex4.sampler = texture_tex4->sampler;
+    
+    descriptorWrites[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[3].dstSet = descriptorSet;
+    descriptorWrites[3].dstBinding = 7;
+    descriptorWrites[3].dstArrayElement = 0;
+    descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[3].descriptorCount = 1;
+    descriptorWrites[3].pImageInfo = &imageInfo_tex4;
+    VkDescriptorBufferInfo bufferInfo_ViewMatrix = {};
+    bufferInfo_ViewMatrix.buffer = ubo_ViewMatrix.buffer;
+    bufferInfo_ViewMatrix.offset = 0;
+    bufferInfo_ViewMatrix.range = sizeof(ViewMatrix);
+    
+    descriptorWrites[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[4].dstSet = descriptorSet;
+    descriptorWrites[4].dstBinding = 1;
+    descriptorWrites[4].dstArrayElement = 0;
+    descriptorWrites[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[4].descriptorCount = 1;
+    descriptorWrites[4].pBufferInfo = &bufferInfo_ViewMatrix;
+    VkDescriptorBufferInfo bufferInfo_Projection = {};
+    bufferInfo_Projection.buffer = ubo_Projection.buffer;
+    bufferInfo_Projection.offset = 0;
+    bufferInfo_Projection.range = sizeof(Projection);
+    
+    descriptorWrites[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[5].dstSet = descriptorSet;
+    descriptorWrites[5].dstBinding = 0;
+    descriptorWrites[5].dstArrayElement = 0;
+    descriptorWrites[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[5].descriptorCount = 1;
+    descriptorWrites[5].pBufferInfo = &bufferInfo_Projection;
+    VkDescriptorBufferInfo bufferInfo_UVT2 = {};
+    bufferInfo_UVT2.buffer = ubo_UVT2.buffer;
+    bufferInfo_UVT2.offset = 0;
+    bufferInfo_UVT2.range = sizeof(UVT2);
+    
+    descriptorWrites[6].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[6].dstSet = descriptorSet;
+    descriptorWrites[6].dstBinding = 2;
+    descriptorWrites[6].dstArrayElement = 0;
+    descriptorWrites[6].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[6].descriptorCount = 1;
+    descriptorWrites[6].pBufferInfo = &bufferInfo_UVT2;
+    vkUpdateDescriptorSets(target->device, 7, descriptorWrites, 0, nullptr);
+    output.clear();
+    output.push_back(descriptorSet);
+}
 void WWVK_CreateVolumeShadowPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
     VkShaderModule vertShaderModule = createShaderModule(target->device, WWVK_ProjShadow_vert, sizeof(WWVK_ProjShadow_vert));    VkShaderModule fragShaderModule = createShaderModule(target->device, WWVK_DummyFrag_frag, sizeof(WWVK_DummyFrag_frag));
 
@@ -8025,10 +11770,9 @@ void WWVK_CreateVolumeShadowPipeline(VkRenderTarget* target, VKPipelineData& pip
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_FRONT_BIT;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_FRONT_BIT;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = (VkColorComponentFlagBits)0;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -8237,10 +11981,9 @@ void WWVK_CreateVolumeStencilShadowPipeline(VkRenderTarget* target, VKPipelineDa
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -8443,10 +12186,9 @@ void WWVK_CreateProjShadowPipeline(VkRenderTarget* target, VKPipelineData& pipel
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_DST_COLOR;
@@ -8655,10 +12397,9 @@ void WWVK_CreateStencilPlayerColorPipeline(VkRenderTarget* target, VKPipelineDat
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.depthBiasEnable = VK_FALSE;
-    rasterizer.cullMode = VK_CULL_MODE_NONE;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;    rasterizer.cullMode = VK_CULL_MODE_NONE;    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    rasterizer.cullMode = VK_CULL_MODE_NONE;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.colorWriteMask = (VkColorComponentFlagBits)0;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -8799,6 +12540,10 @@ void WWVK_PopulatePipeline(VkRenderTarget* target, WWVK_Pipeline_Collection& col
     WWVK_CreateFVF_DPipeline(target, col.pipelines[PIPELINE_WWVK_FVF_D]);
     WWVK_CreateFVF_DUVDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FVF_DUV]);
     WWVK_CreateFVF_DUVPipeline(target, col.pipelines[PIPELINE_WWVK_FVF_DUV]);
+    WWVK_CreateFVF_DUV_NoDepthDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FVF_DUV_NoDepth]);
+    WWVK_CreateFVF_DUV_NoDepthPipeline(target, col.pipelines[PIPELINE_WWVK_FVF_DUV_NoDepth]);
+    WWVK_CreateFVF_DUV_Grayscale_NoDepthDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FVF_DUV_Grayscale_NoDepth]);
+    WWVK_CreateFVF_DUV_Grayscale_NoDepthPipeline(target, col.pipelines[PIPELINE_WWVK_FVF_DUV_Grayscale_NoDepth]);
     WWVK_CreateFVF_NDUV_CAMUV_NOLDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FVF_NDUV_CAMUV_NOL]);
     WWVK_CreateFVF_NDUV_CAMUV_NOLPipeline(target, col.pipelines[PIPELINE_WWVK_FVF_NDUV_CAMUV_NOL]);
     WWVK_CreateFVF_NDUV_NOLDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FVF_NDUV_NOL]);
@@ -8811,16 +12556,26 @@ void WWVK_PopulatePipeline(VkRenderTarget* target, WWVK_Pipeline_Collection& col
     WWVK_CreateFVF_DUV_AddBlendPipeline(target, col.pipelines[PIPELINE_WWVK_FVF_DUV_AddBlend]);
     WWVK_CreateFVF_DUV_StripDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FVF_DUV_Strip]);
     WWVK_CreateFVF_DUV_StripPipeline(target, col.pipelines[PIPELINE_WWVK_FVF_DUV_Strip]);
+    WWVK_CreateFVF_DUV_CAMUVT_StripDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_Strip]);
+    WWVK_CreateFVF_DUV_CAMUVT_StripPipeline(target, col.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_Strip]);
+    WWVK_CreateFVF_DUV_DepthBias_StripDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FVF_DUV_DepthBias_Strip]);
+    WWVK_CreateFVF_DUV_DepthBias_StripPipeline(target, col.pipelines[PIPELINE_WWVK_FVF_DUV_DepthBias_Strip]);
+    WWVK_CreateFVF_DUV_CAMUVT_DepthBias_StripDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_DepthBias_Strip]);
+    WWVK_CreateFVF_DUV_CAMUVT_DepthBias_StripPipeline(target, col.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_DepthBias_Strip]);
     WWVK_CreateFVF_DUV2_StripDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FVF_DUV2_Strip]);
     WWVK_CreateFVF_DUV2_StripPipeline(target, col.pipelines[PIPELINE_WWVK_FVF_DUV2_Strip]);
     WWVK_CreateFVF_NDUVDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FVF_NDUV]);
     WWVK_CreateFVF_NDUVPipeline(target, col.pipelines[PIPELINE_WWVK_FVF_NDUV]);
     WWVK_CreateFVF_NDUV2DescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FVF_NDUV2]);
     WWVK_CreateFVF_NDUV2Pipeline(target, col.pipelines[PIPELINE_WWVK_FVF_NDUV2]);
-    WWVK_CreateFVF_NDUV2DescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FVF_NDUV2]);
-    WWVK_CreateFVF_NDUV2Pipeline(target, col.pipelines[PIPELINE_WWVK_FVF_NDUV2]);
+    WWVK_CreateFVF_NDUV2_NOLDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FVF_NDUV2_NOL]);
+    WWVK_CreateFVF_NDUV2_NOLPipeline(target, col.pipelines[PIPELINE_WWVK_FVF_NDUV2_NOL]);
     WWVK_CreateFVF_NDUV2_DepthLEDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FVF_NDUV2_DepthLE]);
     WWVK_CreateFVF_NDUV2_DepthLEPipeline(target, col.pipelines[PIPELINE_WWVK_FVF_NDUV2_DepthLE]);
+    WWVK_CreateHaloDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_Halo]);
+    WWVK_CreateHaloPipeline(target, col.pipelines[PIPELINE_WWVK_Halo]);
+    WWVK_CreateDazzleDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_Dazzle]);
+    WWVK_CreateDazzlePipeline(target, col.pipelines[PIPELINE_WWVK_Dazzle]);
     WWVK_CreateSnowDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_Snow]);
     WWVK_CreateSnowPipeline(target, col.pipelines[PIPELINE_WWVK_Snow]);
     WWVK_CreateFTerrainDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_FTerrain]);
@@ -8857,6 +12612,20 @@ void WWVK_PopulatePipeline(VkRenderTarget* target, WWVK_Pipeline_Collection& col
     WWVK_CreateTreesPipeline(target, col.pipelines[PIPELINE_WWVK_Trees]);
     WWVK_CreateWaveDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_Wave]);
     WWVK_CreateWavePipeline(target, col.pipelines[PIPELINE_WWVK_Wave]);
+    WWVK_CreateRiverWaterDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_RiverWater]);
+    WWVK_CreateRiverWaterPipeline(target, col.pipelines[PIPELINE_WWVK_RiverWater]);
+    WWVK_CreateRiverWaterAddDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_RiverWaterAdd]);
+    WWVK_CreateRiverWaterAddPipeline(target, col.pipelines[PIPELINE_WWVK_RiverWaterAdd]);
+    WWVK_CreateRiverWaterShroudDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_RiverWaterShroud]);
+    WWVK_CreateRiverWaterShroudPipeline(target, col.pipelines[PIPELINE_WWVK_RiverWaterShroud]);
+    WWVK_CreateWaterTrapezoidDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_WaterTrapezoid]);
+    WWVK_CreateWaterTrapezoidPipeline(target, col.pipelines[PIPELINE_WWVK_WaterTrapezoid]);
+    WWVK_CreateWaterTrapezoid_DstAlphaDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlpha]);
+    WWVK_CreateWaterTrapezoid_DstAlphaPipeline(target, col.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlpha]);
+    WWVK_CreateWaterTrapezoid_DstAlphaInvDestDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlphaInvDest]);
+    WWVK_CreateWaterTrapezoid_DstAlphaInvDestPipeline(target, col.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlphaInvDest]);
+    WWVK_CreateWaterTrapezoidStripDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_WaterTrapezoidStrip]);
+    WWVK_CreateWaterTrapezoidStripPipeline(target, col.pipelines[PIPELINE_WWVK_WaterTrapezoidStrip]);
     WWVK_CreateVolumeShadowDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_VolumeShadow]);
     WWVK_CreateVolumeShadowPipeline(target, col.pipelines[PIPELINE_WWVK_VolumeShadow]);
     WWVK_CreateVolumeStencilShadowDescriptorSetLayout(target, col.pipelines[PIPELINE_WWVK_VolumeStencilShadow]);
@@ -8868,7 +12637,7 @@ void WWVK_PopulatePipeline(VkRenderTarget* target, WWVK_Pipeline_Collection& col
 }
 
 
-void WWVK_DrawFVF_D(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer diffuse, VkDeviceSize offset_diffuse, WorldMatrix* push)
+void WWVK_DrawFVF_D_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer diffuse, VkDeviceSize offset_diffuse, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_D].graphicsPipeline);
 
@@ -8890,7 +12659,7 @@ void WWVK_DrawFVF_D(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command,
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFVF_D(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer diffuse, VkDeviceSize offset_diffuse, WorldMatrix* push)
+void WWVK_DrawFVF_D(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer diffuse, VkDeviceSize offset_diffuse, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_D].graphicsPipeline);
 
@@ -8914,7 +12683,7 @@ void WWVK_DrawFVF_D(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command,
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawFVF_DUV(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFVF_DUV_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV].graphicsPipeline);
 
@@ -8936,7 +12705,7 @@ void WWVK_DrawFVF_DUV(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comman
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFVF_DUV(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFVF_DUV(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV].graphicsPipeline);
 
@@ -8960,7 +12729,99 @@ void WWVK_DrawFVF_DUV(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comman
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawFVF_NDUV_CAMUV_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFVF_DUV_NoDepth_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_NoDepth].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv,  };
+    VkDeviceSize offsets[] = { offset_uv,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_NoDepth].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_NoDepth].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDraw(command, vertexCount, 1, 0, 0); 
+}
+
+void WWVK_DrawFVF_DUV_NoDepth(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_NoDepth].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv,  };
+    VkDeviceSize offsets[] = { offset_uv,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_NoDepth].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(command, indexBuffer, 0, indexType);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_NoDepth].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
+}
+
+void WWVK_DrawFVF_DUV_Grayscale_NoDepth_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_Grayscale_NoDepth].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv,  };
+    VkDeviceSize offsets[] = { offset_uv,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_Grayscale_NoDepth].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_Grayscale_NoDepth].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDraw(command, vertexCount, 1, 0, 0); 
+}
+
+void WWVK_DrawFVF_DUV_Grayscale_NoDepth(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_Grayscale_NoDepth].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv,  };
+    VkDeviceSize offsets[] = { offset_uv,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_Grayscale_NoDepth].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(command, indexBuffer, 0, indexType);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_Grayscale_NoDepth].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
+}
+
+void WWVK_DrawFVF_NDUV_CAMUV_NOL_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV_CAMUV_NOL].graphicsPipeline);
 
@@ -8982,7 +12843,7 @@ void WWVK_DrawFVF_NDUV_CAMUV_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBu
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFVF_NDUV_CAMUV_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFVF_NDUV_CAMUV_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV_CAMUV_NOL].graphicsPipeline);
 
@@ -9006,7 +12867,7 @@ void WWVK_DrawFVF_NDUV_CAMUV_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBu
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawFVF_NDUV_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFVF_NDUV_NOL_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV_NOL].graphicsPipeline);
 
@@ -9028,7 +12889,7 @@ void WWVK_DrawFVF_NDUV_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer c
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFVF_NDUV_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFVF_NDUV_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV_NOL].graphicsPipeline);
 
@@ -9052,7 +12913,7 @@ void WWVK_DrawFVF_NDUV_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer c
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawFVF_NDUV_UVT_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrixUvt* push)
+void WWVK_DrawFVF_NDUV_UVT_NOL_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrixUvt* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV_UVT_NOL].graphicsPipeline);
 
@@ -9074,7 +12935,7 @@ void WWVK_DrawFVF_NDUV_UVT_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBuff
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFVF_NDUV_UVT_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrixUvt* push)
+void WWVK_DrawFVF_NDUV_UVT_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrixUvt* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV_UVT_NOL].graphicsPipeline);
 
@@ -9098,7 +12959,7 @@ void WWVK_DrawFVF_NDUV_UVT_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBuff
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawFVF_DUV_MultBlend(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFVF_DUV_MultBlend_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_MultBlend].graphicsPipeline);
 
@@ -9120,7 +12981,7 @@ void WWVK_DrawFVF_DUV_MultBlend(WWVK_Pipeline_Collection& pipeline, VkCommandBuf
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFVF_DUV_MultBlend(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFVF_DUV_MultBlend(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_MultBlend].graphicsPipeline);
 
@@ -9144,7 +13005,7 @@ void WWVK_DrawFVF_DUV_MultBlend(WWVK_Pipeline_Collection& pipeline, VkCommandBuf
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawFVF_DUV_AddBlend(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFVF_DUV_AddBlend_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_AddBlend].graphicsPipeline);
 
@@ -9166,7 +13027,7 @@ void WWVK_DrawFVF_DUV_AddBlend(WWVK_Pipeline_Collection& pipeline, VkCommandBuff
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFVF_DUV_AddBlend(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFVF_DUV_AddBlend(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_AddBlend].graphicsPipeline);
 
@@ -9190,7 +13051,7 @@ void WWVK_DrawFVF_DUV_AddBlend(WWVK_Pipeline_Collection& pipeline, VkCommandBuff
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawFVF_DUV_Strip(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFVF_DUV_Strip_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_Strip].graphicsPipeline);
 
@@ -9212,7 +13073,7 @@ void WWVK_DrawFVF_DUV_Strip(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer 
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFVF_DUV_Strip(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFVF_DUV_Strip(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_Strip].graphicsPipeline);
 
@@ -9236,7 +13097,145 @@ void WWVK_DrawFVF_DUV_Strip(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer 
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawFVF_DUV2_Strip(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
+void WWVK_DrawFVF_DUV_CAMUVT_Strip_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrixUVT* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_Strip].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv,  };
+    VkDeviceSize offsets[] = { offset_uv,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_Strip].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrixUVT),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_Strip].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDraw(command, vertexCount, 1, 0, 0); 
+}
+
+void WWVK_DrawFVF_DUV_CAMUVT_Strip(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrixUVT* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_Strip].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv,  };
+    VkDeviceSize offsets[] = { offset_uv,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_Strip].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrixUVT),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(command, indexBuffer, 0, indexType);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_Strip].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
+}
+
+void WWVK_DrawFVF_DUV_DepthBias_Strip_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_DepthBias_Strip].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv,  };
+    VkDeviceSize offsets[] = { offset_uv,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_DepthBias_Strip].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_DepthBias_Strip].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDraw(command, vertexCount, 1, 0, 0); 
+}
+
+void WWVK_DrawFVF_DUV_DepthBias_Strip(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_DepthBias_Strip].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv,  };
+    VkDeviceSize offsets[] = { offset_uv,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_DepthBias_Strip].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(command, indexBuffer, 0, indexType);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_DepthBias_Strip].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
+}
+
+void WWVK_DrawFVF_DUV_CAMUVT_DepthBias_Strip_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrixUVT* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_DepthBias_Strip].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv,  };
+    VkDeviceSize offsets[] = { offset_uv,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_DepthBias_Strip].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrixUVT),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_DepthBias_Strip].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDraw(command, vertexCount, 1, 0, 0); 
+}
+
+void WWVK_DrawFVF_DUV_CAMUVT_DepthBias_Strip(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrixUVT* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_DepthBias_Strip].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv,  };
+    VkDeviceSize offsets[] = { offset_uv,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_DepthBias_Strip].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrixUVT),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(command, indexBuffer, 0, indexType);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_FVF_DUV_CAMUVT_DepthBias_Strip].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
+}
+
+void WWVK_DrawFVF_DUV2_Strip_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV2_Strip].graphicsPipeline);
 
@@ -9258,7 +13257,7 @@ void WWVK_DrawFVF_DUV2_Strip(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFVF_DUV2_Strip(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
+void WWVK_DrawFVF_DUV2_Strip(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_DUV2_Strip].graphicsPipeline);
 
@@ -9282,7 +13281,7 @@ void WWVK_DrawFVF_DUV2_Strip(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawFVF_NDUV(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFVF_NDUV_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV].graphicsPipeline);
 
@@ -9304,7 +13303,7 @@ void WWVK_DrawFVF_NDUV(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comma
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFVF_NDUV(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFVF_NDUV(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV].graphicsPipeline);
 
@@ -9328,7 +13327,7 @@ void WWVK_DrawFVF_NDUV(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comma
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawFVF_NDUV2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+void WWVK_DrawFVF_NDUV2_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2].graphicsPipeline);
 
@@ -9350,7 +13349,7 @@ void WWVK_DrawFVF_NDUV2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comm
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFVF_NDUV2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+void WWVK_DrawFVF_NDUV2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2].graphicsPipeline);
 
@@ -9374,15 +13373,15 @@ void WWVK_DrawFVF_NDUV2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comm
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawFVF_NDUV2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+void WWVK_DrawFVF_NDUV2_NOL_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
 {
-    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2].graphicsPipeline);
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2_NOL].graphicsPipeline);
 
     VkBuffer vertexBuffers[] = { uv1,  };
     VkDeviceSize offsets[] = { offset_uv1,  };
     vkCmdPushConstants(
         command,
-        pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2].pipelineLayout,
+        pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2_NOL].pipelineLayout,
         VK_SHADER_STAGE_VERTEX_BIT,
         0,
         sizeof(WorldMatrix),
@@ -9391,20 +13390,20 @@ void WWVK_DrawFVF_NDUV2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comm
     vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
 
     vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
-        pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+        pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2_NOL].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
 
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFVF_NDUV2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+void WWVK_DrawFVF_NDUV2_NOL(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
 {
-    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2].graphicsPipeline);
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2_NOL].graphicsPipeline);
 
     VkBuffer vertexBuffers[] = { uv1,  };
     VkDeviceSize offsets[] = { offset_uv1,  };
     vkCmdPushConstants(
         command,
-        pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2].pipelineLayout,
+        pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2_NOL].pipelineLayout,
         VK_SHADER_STAGE_VERTEX_BIT,
         0,
         sizeof(WorldMatrix),
@@ -9415,12 +13414,12 @@ void WWVK_DrawFVF_NDUV2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comm
     vkCmdBindIndexBuffer(command, indexBuffer, 0, indexType);
 
     vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
-        pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+        pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2_NOL].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
 
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawFVF_NDUV2_DepthLE(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+void WWVK_DrawFVF_NDUV2_DepthLE_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2_DepthLE].graphicsPipeline);
 
@@ -9442,7 +13441,7 @@ void WWVK_DrawFVF_NDUV2_DepthLE(WWVK_Pipeline_Collection& pipeline, VkCommandBuf
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFVF_NDUV2_DepthLE(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+void WWVK_DrawFVF_NDUV2_DepthLE(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FVF_NDUV2_DepthLE].graphicsPipeline);
 
@@ -9466,7 +13465,99 @@ void WWVK_DrawFVF_NDUV2_DepthLE(WWVK_Pipeline_Collection& pipeline, VkCommandBuf
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawSnow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
+void WWVK_DrawHalo_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Halo].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv,  };
+    VkDeviceSize offsets[] = { offset_uv,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_Halo].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_Halo].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDraw(command, vertexCount, 1, 0, 0); 
+}
+
+void WWVK_DrawHalo(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Halo].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv,  };
+    VkDeviceSize offsets[] = { offset_uv,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_Halo].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(command, indexBuffer, 0, indexType);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_Halo].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
+}
+
+void WWVK_DrawDazzle_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Dazzle].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv,  };
+    VkDeviceSize offsets[] = { offset_uv,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_Dazzle].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_Dazzle].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDraw(command, vertexCount, 1, 0, 0); 
+}
+
+void WWVK_DrawDazzle(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Dazzle].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv,  };
+    VkDeviceSize offsets[] = { offset_uv,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_Dazzle].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(command, indexBuffer, 0, indexType);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_Dazzle].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
+}
+
+void WWVK_DrawSnow_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Snow].graphicsPipeline);
 
@@ -9488,7 +13579,7 @@ void WWVK_DrawSnow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, 
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawSnow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
+void WWVK_DrawSnow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Snow].graphicsPipeline);
 
@@ -9512,7 +13603,7 @@ void WWVK_DrawSnow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, 
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawFTerrain(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFTerrain_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FTerrain].graphicsPipeline);
 
@@ -9534,7 +13625,7 @@ void WWVK_DrawFTerrain(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comma
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFTerrain(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFTerrain(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FTerrain].graphicsPipeline);
 
@@ -9558,7 +13649,7 @@ void WWVK_DrawFTerrain(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comma
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawFTerrainNoise(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFTerrainNoise_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FTerrainNoise].graphicsPipeline);
 
@@ -9580,7 +13671,7 @@ void WWVK_DrawFTerrainNoise(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer 
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFTerrainNoise(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFTerrainNoise(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FTerrainNoise].graphicsPipeline);
 
@@ -9604,7 +13695,7 @@ void WWVK_DrawFTerrainNoise(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer 
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawFTerrainNoise2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFTerrainNoise2_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FTerrainNoise2].graphicsPipeline);
 
@@ -9626,7 +13717,7 @@ void WWVK_DrawFTerrainNoise2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawFTerrainNoise2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawFTerrainNoise2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_FTerrainNoise2].graphicsPipeline);
 
@@ -9650,7 +13741,7 @@ void WWVK_DrawFTerrainNoise2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawRoad(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawRoad_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Road].graphicsPipeline);
 
@@ -9672,7 +13763,7 @@ void WWVK_DrawRoad(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, 
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawRoad(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawRoad(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Road].graphicsPipeline);
 
@@ -9696,7 +13787,7 @@ void WWVK_DrawRoad(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, 
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawRoadNoise(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrixUVT* push)
+void WWVK_DrawRoadNoise_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrixUVT* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_RoadNoise].graphicsPipeline);
 
@@ -9718,7 +13809,7 @@ void WWVK_DrawRoadNoise(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comm
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawRoadNoise(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrixUVT* push)
+void WWVK_DrawRoadNoise(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrixUVT* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_RoadNoise].graphicsPipeline);
 
@@ -9742,7 +13833,7 @@ void WWVK_DrawRoadNoise(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comm
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawRoadNoise12(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawRoadNoise12_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_RoadNoise12].graphicsPipeline);
 
@@ -9764,7 +13855,7 @@ void WWVK_DrawRoadNoise12(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer co
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawRoadNoise12(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawRoadNoise12(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_RoadNoise12].graphicsPipeline);
 
@@ -9788,7 +13879,7 @@ void WWVK_DrawRoadNoise12(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer co
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawMonochrome(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix_Monochrome* push)
+void WWVK_DrawMonochrome_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix_Monochrome* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Monochrome].graphicsPipeline);
 
@@ -9817,7 +13908,7 @@ void WWVK_DrawMonochrome(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer com
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawMonochrome(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix_Monochrome* push)
+void WWVK_DrawMonochrome(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix_Monochrome* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Monochrome].graphicsPipeline);
 
@@ -9848,7 +13939,7 @@ void WWVK_DrawMonochrome(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer com
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawMotionBlur(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix_BumpEnv* push)
+void WWVK_DrawMotionBlur_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix_BumpEnv* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_MotionBlur].graphicsPipeline);
 
@@ -9877,7 +13968,7 @@ void WWVK_DrawMotionBlur(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer com
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawMotionBlur(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix_BumpEnv* push)
+void WWVK_DrawMotionBlur(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix_BumpEnv* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_MotionBlur].graphicsPipeline);
 
@@ -9908,7 +13999,7 @@ void WWVK_DrawMotionBlur(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer com
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawBumpDiff(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
+void WWVK_DrawBumpDiff_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_BumpDiff].graphicsPipeline);
 
@@ -9930,7 +14021,7 @@ void WWVK_DrawBumpDiff(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comma
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawBumpDiff(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
+void WWVK_DrawBumpDiff(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_BumpDiff].graphicsPipeline);
 
@@ -9954,7 +14045,7 @@ void WWVK_DrawBumpDiff(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comma
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawBumpSpec(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
+void WWVK_DrawBumpSpec_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_BumpSpec].graphicsPipeline);
 
@@ -9976,7 +14067,7 @@ void WWVK_DrawBumpSpec(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comma
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawBumpSpec(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
+void WWVK_DrawBumpSpec(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_BumpSpec].graphicsPipeline);
 
@@ -10000,7 +14091,7 @@ void WWVK_DrawBumpSpec(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comma
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawSSBumpDiff(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
+void WWVK_DrawSSBumpDiff_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_SSBumpDiff].graphicsPipeline);
 
@@ -10022,7 +14113,7 @@ void WWVK_DrawSSBumpDiff(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer com
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawSSBumpDiff(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
+void WWVK_DrawSSBumpDiff(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_SSBumpDiff].graphicsPipeline);
 
@@ -10046,7 +14137,7 @@ void WWVK_DrawSSBumpDiff(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer com
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawSSBumpSpec(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
+void WWVK_DrawSSBumpSpec_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_SSBumpSpec].graphicsPipeline);
 
@@ -10068,7 +14159,7 @@ void WWVK_DrawSSBumpSpec(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer com
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawSSBumpSpec(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
+void WWVK_DrawSSBumpSpec(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_SSBumpSpec].graphicsPipeline);
 
@@ -10092,7 +14183,7 @@ void WWVK_DrawSSBumpSpec(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer com
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawTerrain(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
+void WWVK_DrawTerrain_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Terrain].graphicsPipeline);
 
@@ -10114,7 +14205,7 @@ void WWVK_DrawTerrain(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comman
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawTerrain(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
+void WWVK_DrawTerrain(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Terrain].graphicsPipeline);
 
@@ -10138,7 +14229,7 @@ void WWVK_DrawTerrain(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comman
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawTerrainNoise(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
+void WWVK_DrawTerrainNoise_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_TerrainNoise].graphicsPipeline);
 
@@ -10160,7 +14251,7 @@ void WWVK_DrawTerrainNoise(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer c
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawTerrainNoise(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
+void WWVK_DrawTerrainNoise(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_TerrainNoise].graphicsPipeline);
 
@@ -10184,7 +14275,7 @@ void WWVK_DrawTerrainNoise(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer c
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawTerrainNoise2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
+void WWVK_DrawTerrainNoise2_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_TerrainNoise2].graphicsPipeline);
 
@@ -10206,7 +14297,7 @@ void WWVK_DrawTerrainNoise2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer 
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawTerrainNoise2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
+void WWVK_DrawTerrainNoise2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv0, VkDeviceSize offset_uv0, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_TerrainNoise2].graphicsPipeline);
 
@@ -10230,7 +14321,7 @@ void WWVK_DrawTerrainNoise2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer 
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawTrees(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawTrees_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Trees].graphicsPipeline);
 
@@ -10252,7 +14343,7 @@ void WWVK_DrawTrees(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command,
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawTrees(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawTrees(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Trees].graphicsPipeline);
 
@@ -10276,7 +14367,7 @@ void WWVK_DrawTrees(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command,
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawWave(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, Wave* push)
+void WWVK_DrawWave_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, Wave* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Wave].graphicsPipeline);
 
@@ -10298,7 +14389,7 @@ void WWVK_DrawWave(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, 
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawWave(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, Wave* push)
+void WWVK_DrawWave(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, Wave* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Wave].graphicsPipeline);
 
@@ -10322,7 +14413,329 @@ void WWVK_DrawWave(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, 
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawVolumeShadow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
+void WWVK_DrawRiverWater_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrixUVT* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_RiverWater].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv1,  };
+    VkDeviceSize offsets[] = { offset_uv1,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_RiverWater].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrixUVT),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_RiverWater].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDraw(command, vertexCount, 1, 0, 0); 
+}
+
+void WWVK_DrawRiverWater(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrixUVT* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_RiverWater].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv1,  };
+    VkDeviceSize offsets[] = { offset_uv1,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_RiverWater].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrixUVT),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(command, indexBuffer, 0, indexType);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_RiverWater].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
+}
+
+void WWVK_DrawRiverWaterAdd_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrixUVT* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_RiverWaterAdd].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv1,  };
+    VkDeviceSize offsets[] = { offset_uv1,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_RiverWaterAdd].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrixUVT),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_RiverWaterAdd].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDraw(command, vertexCount, 1, 0, 0); 
+}
+
+void WWVK_DrawRiverWaterAdd(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrixUVT* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_RiverWaterAdd].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv1,  };
+    VkDeviceSize offsets[] = { offset_uv1,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_RiverWaterAdd].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrixUVT),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(command, indexBuffer, 0, indexType);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_RiverWaterAdd].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
+}
+
+void WWVK_DrawRiverWaterShroud_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_RiverWaterShroud].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv1,  };
+    VkDeviceSize offsets[] = { offset_uv1,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_RiverWaterShroud].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_RiverWaterShroud].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDraw(command, vertexCount, 1, 0, 0); 
+}
+
+void WWVK_DrawRiverWaterShroud(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_RiverWaterShroud].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv1,  };
+    VkDeviceSize offsets[] = { offset_uv1,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_RiverWaterShroud].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(command, indexBuffer, 0, indexType);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_RiverWaterShroud].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
+}
+
+void WWVK_DrawWaterTrapezoid_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv1,  };
+    VkDeviceSize offsets[] = { offset_uv1,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDraw(command, vertexCount, 1, 0, 0); 
+}
+
+void WWVK_DrawWaterTrapezoid(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv1,  };
+    VkDeviceSize offsets[] = { offset_uv1,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(command, indexBuffer, 0, indexType);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
+}
+
+void WWVK_DrawWaterTrapezoid_DstAlpha_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlpha].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv1,  };
+    VkDeviceSize offsets[] = { offset_uv1,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlpha].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlpha].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDraw(command, vertexCount, 1, 0, 0); 
+}
+
+void WWVK_DrawWaterTrapezoid_DstAlpha(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlpha].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv1,  };
+    VkDeviceSize offsets[] = { offset_uv1,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlpha].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(command, indexBuffer, 0, indexType);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlpha].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
+}
+
+void WWVK_DrawWaterTrapezoid_DstAlphaInvDest_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlphaInvDest].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv1,  };
+    VkDeviceSize offsets[] = { offset_uv1,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlphaInvDest].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlphaInvDest].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDraw(command, vertexCount, 1, 0, 0); 
+}
+
+void WWVK_DrawWaterTrapezoid_DstAlphaInvDest(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlphaInvDest].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv1,  };
+    VkDeviceSize offsets[] = { offset_uv1,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlphaInvDest].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(command, indexBuffer, 0, indexType);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoid_DstAlphaInvDest].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
+}
+
+void WWVK_DrawWaterTrapezoidStrip_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoidStrip].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv1,  };
+    VkDeviceSize offsets[] = { offset_uv1,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoidStrip].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoidStrip].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDraw(command, vertexCount, 1, 0, 0); 
+}
+
+void WWVK_DrawWaterTrapezoidStrip(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+{
+    vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoidStrip].graphicsPipeline);
+
+    VkBuffer vertexBuffers[] = { uv1,  };
+    VkDeviceSize offsets[] = { offset_uv1,  };
+    vkCmdPushConstants(
+        command,
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoidStrip].pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(WorldMatrix),
+        push);
+
+    vkCmdBindVertexBuffers(command, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(command, indexBuffer, 0, indexType);
+
+    vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        pipeline.pipelines[PIPELINE_WWVK_WaterTrapezoidStrip].pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+
+    vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
+}
+
+void WWVK_DrawVolumeShadow_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_VolumeShadow].graphicsPipeline);
 
@@ -10344,7 +14757,7 @@ void WWVK_DrawVolumeShadow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer c
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawVolumeShadow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
+void WWVK_DrawVolumeShadow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_VolumeShadow].graphicsPipeline);
 
@@ -10368,7 +14781,7 @@ void WWVK_DrawVolumeShadow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer c
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawVolumeStencilShadow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer diffuse, VkDeviceSize offset_diffuse, WorldMatrix* push)
+void WWVK_DrawVolumeStencilShadow_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer diffuse, VkDeviceSize offset_diffuse, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_VolumeStencilShadow].graphicsPipeline);
 
@@ -10390,7 +14803,7 @@ void WWVK_DrawVolumeStencilShadow(WWVK_Pipeline_Collection& pipeline, VkCommandB
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawVolumeStencilShadow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer diffuse, VkDeviceSize offset_diffuse, WorldMatrix* push)
+void WWVK_DrawVolumeStencilShadow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer diffuse, VkDeviceSize offset_diffuse, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_VolumeStencilShadow].graphicsPipeline);
 
@@ -10414,7 +14827,7 @@ void WWVK_DrawVolumeStencilShadow(WWVK_Pipeline_Collection& pipeline, VkCommandB
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawProjShadow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
+void WWVK_DrawProjShadow_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_ProjShadow].graphicsPipeline);
 
@@ -10436,7 +14849,7 @@ void WWVK_DrawProjShadow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer com
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawProjShadow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
+void WWVK_DrawProjShadow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer vert, VkDeviceSize offset_vert, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_ProjShadow].graphicsPipeline);
 
@@ -10460,7 +14873,7 @@ void WWVK_DrawProjShadow(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer com
     vkCmdDrawIndexed(command, indexCount, 1, 0, 0, 0);
 }
 
-void WWVK_DrawStencilPlayerColor(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer diffuse, VkDeviceSize offset_diffuse, WorldMatrix* push)
+void WWVK_DrawStencilPlayerColor_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer diffuse, VkDeviceSize offset_diffuse, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_StencilPlayerColor].graphicsPipeline);
 
@@ -10482,7 +14895,7 @@ void WWVK_DrawStencilPlayerColor(WWVK_Pipeline_Collection& pipeline, VkCommandBu
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawStencilPlayerColor(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer diffuse, VkDeviceSize offset_diffuse, WorldMatrix* push)
+void WWVK_DrawStencilPlayerColor(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer diffuse, VkDeviceSize offset_diffuse, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_StencilPlayerColor].graphicsPipeline);
 

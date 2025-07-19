@@ -254,7 +254,7 @@ void DebugHintObject::Render(RenderInfoClass & rinfo)
 		WWVK_UpdateFVF_DDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets, DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 		//void WWVK_DrawFVF_D(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, 
 		// uint32_t vertexCount, VkBuffer diffuse, VkDeviceSize offset_diffuse, WorldMatrix* push);
-		WWVK_DrawFVF_D(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets, 
+		WWVK_DrawFVF_D_NI(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets, 
 			(uint32_t)3U, m_vertexBufferTile->Get_DX8_Vertex_Buffer().buffer, (VkDeviceSize)0ULL, (WorldMatrix*) & tm);
 	}
 }

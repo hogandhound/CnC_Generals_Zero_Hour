@@ -61,6 +61,7 @@
 #include "camera.h"
 #include "assetmgr.h"
 #include "WW3D2/DX8Wrapper.h"
+#include "VkTexture.h"
 
 //#pragma optimize("", off)
 
@@ -310,7 +311,6 @@ Int WaterTracksObj::update(Int msElapsed)
 
 Int WaterTracksObj::render(DX8VertexBufferClass	*vertexBuffer, Int batchStart)
 {
-#ifdef TODO_VULKAN
 	VertexFormatXYZDUV1 *vb;
 	Vector2	waveTailOrigin,waveFrontOrigin;
 	Real	ooWaveDirLen=1.0f/m_waveDir.Length();	//one over length
@@ -319,6 +319,7 @@ Int WaterTracksObj::render(DX8VertexBufferClass	*vertexBuffer, Int batchStart)
 	Real	widthFrac;
 	Real	heightFrac;
 
+#ifdef INFO_VULKAN
 	if (batchStart < (WATER_VB_PAGES*WATER_STRIP_X*WATER_STRIP_Y-m_x*m_y))
 	{	//we have room in current VB, append new verts
 		if(vertexBuffer->Get_DX8_Vertex_Buffer()->Lock(batchStart*vertexBuffer->FVF_Info().Get_FVF_Size(),m_x*m_y*vertexBuffer->FVF_Info().Get_FVF_Size(),(void**)&vb,D3DLOCK_NOOVERWRITE) != D3D_OK)
@@ -330,6 +331,10 @@ Int WaterTracksObj::render(DX8VertexBufferClass	*vertexBuffer, Int batchStart)
 			return batchStart;
 		batchStart=0;	//reset start of page to first vertex
 	}
+#endif
+	std::vector< VertexFormatXYZDUV1> buffer;
+	buffer.resize(m_x * m_y);
+	vb = buffer.data();
 
 	//Adjust wave position in a non-linear way so that it slows down as it hits the target.  Using 1/4 sine wave
 	//seems to work okay since it maxes out at 1.0 at our final position.
@@ -482,17 +487,46 @@ Int WaterTracksObj::render(DX8VertexBufferClass	*vertexBuffer, Int batchStart)
 	vb->v1=1.0f;
 	vb++;
 
+#ifdef INFO_VULKAN
 	vertexBuffer->Get_DX8_Vertex_Buffer()->Unlock();
+#endif
 
 	Int idxCount=(m_y-1)*(m_x*2+2) - 2;	//index count
 
 	DX8Wrapper::Set_Index_Buffer(TheWaterTracksRenderSystem->m_indexBuffer,batchStart);
+	VK::Buffer vbo;
+	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, m_x* m_y * sizeof(VertexFormatXYZDUV1), buffer.data(), vbo);
+	WWVKDSV;
+	if (TheTerrainRenderObject->getShroud())
+	{
+		WorldMatrixUVT push;
+		DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+		DX8Wrapper::Get_Transform(VkTS::TEXTURE1, *(Matrix4x4*)&push.uvt);
+
+		WWVK_UpdateFVF_DUV_CAMUVT_DepthBias_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(),
+			&DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		WWVK_DrawFVF_DUV_CAMUVT_DepthBias_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			TheWaterTracksRenderSystem->m_indexBuffer->Get_DX8_Index_Buffer().buffer, (idxCount - 2) * 3, 0, VK_INDEX_TYPE_UINT16,
+			vbo.buffer, 0, &push);
+	}
+	else
+	{
+		WorldMatrix push;
+		DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+
+		WWVK_UpdateFVF_DUV_DepthBias_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(),
+			DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		WWVK_DrawFVF_DUV_DepthBias_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			TheWaterTracksRenderSystem->m_indexBuffer->Get_DX8_Index_Buffer().buffer, (idxCount-2) * 3, 0, VK_INDEX_TYPE_UINT16,
+			vbo.buffer, 0, &push);
+	}
+	
+	WWVKRENDER.PushSingleFrameBuffer(vbo);
+#ifdef INFO_VULKAN
 	DX8Wrapper::Draw_Strip(0,idxCount-2,0,m_x*m_y);	//there are always n-2 primitives for n index strip.
+#endif
 
 	return batchStart+m_x*m_y;	//return new offset into unused area of vertex buffer
-#else
-	return 0;
-#endif
 }
 
 //=============================================================================
@@ -907,7 +941,7 @@ Try improving the fit to vertical surfaces like cliffs.
 
 	Matrix3D tm(1);	///set to identity
 	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);	//position the water surface
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 
 	DX8Wrapper::Set_Material(m_vertexMaterialClass);
 	DX8Wrapper::Set_Shader(m_shaderClass);
@@ -950,7 +984,7 @@ Try improving the fit to vertical surfaces like cliffs.
 		mod = mod->m_nextSystem;
 	}	//while (mod)
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_DEPTHBIAS,0);
 
 	if (TheTerrainRenderObject->getShroud())
@@ -1072,34 +1106,6 @@ void WaterTracksRenderSystem::loadTracks(void)
 		file->close();
 	}
 
-#if 0	//Obsolete code used before there was another editor to place waves.
-	//Look for all waypoints that start with "waveStart_"
-	for (Waypoint *way = TheTerrainLogic->getFirstWaypoint(); way; way = way->getNext())
-	{
-		if (way->getName().startsWith("waveStart_") && way->getNumLinks() == 1)
-		{
-			Waypoint *nextWay = way->getLink(0);
-			Coord3D startPos = *way->getLocation();
-			Coord3D endPos = *nextWay->getLocation();
-
-			//initialize surface layer (1)
-			WaterTracksObj *umod=TheWaterTracksRenderSystem->bindTrack(1);
-			if (umod)
-			{
-				umod->init(DEFAULT_FINAL_WAVE_HEIGHT,DEFAULT_FINAL_WAVE_WIDTH,Vector2(startPos.x,startPos.y),Vector2(endPos.x,endPos.y),"wave1.tga",0);
-			}
-/*
-			//initialize foam layer (0)
-			umod=TheWaterTracksRenderSystem->bindTrack(0);
-			if (umod)
-			{
-				umod->init(2.5f*MAP_XY_FACTOR,5.0f*MAP_XY_FACTOR,Vector2(startPos.x,startPos.y),Vector2(endPos.x,endPos.y),"wave2.tga");
-//				umod->m_fadeMs += 1500;	//take extra 500 ms to fade out wave.
-//				umod->m_retreatFrac = 1.0f;	//don't move wave back after it hits final position.
-			}*/
-		}
-	}
-#endif
 }
 
 /**@todo: this is a quick hack for adding/removing/testing breaking waves inside the client.

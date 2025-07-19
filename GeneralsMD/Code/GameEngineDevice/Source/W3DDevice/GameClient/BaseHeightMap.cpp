@@ -194,7 +194,7 @@ void BaseHeightMapRenderObjClass::drawScorches(void)
 		WWVK_UpdateFVF_DUVDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets,
 			&m_scorchTexture->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 		WWVK_DrawFVF_DUV(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets,
-			m_indexScorch->Get_DX8_Index_Buffer().buffer, (uint32_t)m_curNumScorchIndices, VK_INDEX_TYPE_UINT16,
+			m_indexScorch->Get_DX8_Index_Buffer().buffer, (uint32_t)m_curNumScorchIndices, 0, VK_INDEX_TYPE_UINT16,
 			(VkBuffer)m_vertexScorch->Get_DX8_Vertex_Buffer().buffer, 0ULL, (WorldMatrix*)&world);
 	}
 }
@@ -1775,7 +1775,7 @@ void BaseHeightMapRenderObjClass::initDestAlphaLUT(void)
 				*pData=(alpha<<24)|0x00ffffff;
 				pData++;
 			}
-			surf->Unlock();
+			surf->Unlock(&m_destAlphaTexture->Peek_D3D_Texture());
 		}
 
 		m_destAlphaTexture->Get_Filter().Set_U_Addr_Mode(TextureFilterClass::TEXTURE_ADDRESS_CLAMP);
@@ -2622,7 +2622,7 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 				&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
 				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 			WWVK_DrawFVF_NDUV2_DepthLE(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-				((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, VK_INDEX_TYPE_UINT16,
+				((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
 				((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
 #ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles(	0,indexCount/3, 0,	vertexCount);	//draw a quad, 2 triangles, 4 verts
@@ -2983,7 +2983,7 @@ flushVertexBuffer1:
 				&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
 				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 			WWVK_DrawFVF_NDUV2_DepthLE(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-				((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, VK_INDEX_TYPE_UINT16,
+				((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
 				((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
 #ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles(	0,indexCount/3, 0,	vertexCount);	//draw a quad, 2 triangles, 4 verts

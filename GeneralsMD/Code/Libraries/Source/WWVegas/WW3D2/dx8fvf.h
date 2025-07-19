@@ -309,7 +309,7 @@ class FVFInfoClass : public W3DMPO
 	unsigned							location_offset;
 	unsigned							normal_offset;
 	unsigned							blend_offset;
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	unsigned							texcoord_offset[D3DDP_MAXTEXCOORD];	
 #else
 	unsigned							texcoord_offset[8];	
@@ -323,7 +323,7 @@ public:
 	inline unsigned Get_Normal_Offset() const { return normal_offset; }
 #ifdef WWDEBUG
 	inline unsigned Get_Tex_Offset(unsigned int n) const {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		WWASSERT(n<D3DDP_MAXTEXCOORD); 
 #endif
 		return texcoord_offset[n]; }	

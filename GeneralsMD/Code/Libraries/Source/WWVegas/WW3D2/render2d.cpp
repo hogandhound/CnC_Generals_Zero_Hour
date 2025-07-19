@@ -638,7 +638,7 @@ void Render2DClass::Render(void)
 	DX8Wrapper::Set_View_Identity();
 	DX8Wrapper::Set_Transform(VkTS::PROJECTION,identity);
 
-	DynamicVBAccessClass vb(BUFFER_TYPE_DYNAMIC_DX8,dynamic_fvf_type,Vertices.Count());
+	DynamicVBAccessClass vb(BUFFER_TYPE_DYNAMIC_DX8, VKFVF_XYZ | VKFVF_TEX1 | VKFVF_DIFFUSE,Vertices.Count());
 	{
 		DynamicVBAccessClass::WriteLockClass Lock(&vb);
 		const FVFInfoClass &fi=vb.FVF_Info();
@@ -670,11 +670,12 @@ void Render2DClass::Render(void)
 	DX8Wrapper::Set_Vertex_Buffer(vb);
 	DX8Wrapper::Set_Index_Buffer(ib,0);
 
+	WWVKDSV;
 	if (IsGrayScale)
 	{	//special case added to draw grayscale non-alpha blended images.
 		DX8Wrapper::Set_Shader(ShaderClass::_PresetOpaqueShader);
 		DX8Wrapper::Apply_Render_State_Changes();	//force update of all regular W3D states.
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		if (DX8Wrapper::Get_Current_Caps()->Support_Dot3())
 		{	//Override W3D states with customizations for grayscale
 			DX8Wrapper::Set_DX8_Render_State(D3DRS_TEXTUREFACTOR, 0x80A5CA8E);
@@ -695,10 +696,22 @@ void Render2DClass::Render(void)
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP, D3DTOP_MODULATE);
 		}
 #endif
+		WWVK_UpdateFVF_DUV_Grayscale_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &Texture->Peek_D3D_Texture(),
+			DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+		WWVK_DrawFVF_DUV_Grayscale_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
+			((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
 	}
 	else
+	{
 		DX8Wrapper::Set_Shader(Shader);
-#ifdef TODO_VULKAN
+		WWVK_UpdateFVF_DUV_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &Texture->Peek_D3D_Texture(),
+			DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+		WWVK_DrawFVF_DUV_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
+			((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
+	}
+#ifdef INFO_VULKAN
 	DX8Wrapper::Draw_Triangles(0,Indices.Count()/3,0,Vertices.Count());	
 #endif
 

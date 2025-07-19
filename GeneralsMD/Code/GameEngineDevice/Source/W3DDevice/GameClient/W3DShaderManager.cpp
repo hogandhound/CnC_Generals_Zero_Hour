@@ -247,7 +247,7 @@ Bool ScreenDefaultFilter::postRender(enum FilterModes mode, Coord2D& scrollDelta
 
 	std::vector<VkDescriptorSet> sets;
 	WWVK_UpdateFVF_DUV_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
-	WWVK_DrawFVF_DUV_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+	WWVK_DrawFVF_DUV_Strip_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
 	WWVKRENDER.PushSingleFrameBuffer(vbo);
 #endif
 
@@ -397,7 +397,7 @@ Bool ScreenBWFilter::postRender(enum FilterModes mode, Coord2D &scrollDelta,Bool
 
 	std::vector<VkDescriptorSet> sets;
 	WWVK_UpdateFVF_DUV_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
-	WWVK_DrawFVF_DUV_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+	WWVK_DrawFVF_DUV_Strip_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
 	WWVKRENDER.PushSingleFrameBuffer(vbo);
 #endif
 
@@ -722,7 +722,7 @@ Bool ScreenCrossFadeFilter::postRender(enum FilterModes mode, Coord2D &scrollDel
 	std::vector<VkDescriptorSet> sets;
 	WWVK_UpdateFVF_DUV2_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(), 
 		DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
-	WWVK_DrawFVF_DUV2_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+	WWVK_DrawFVF_DUV2_Strip_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
 	WWVKRENDER.PushSingleFrameBuffer(vbo);
 #endif
 
@@ -964,7 +964,7 @@ Bool ScreenMotionBlurFilter::postRender(enum FilterModes mode, Coord2D &scrollDe
 	std::vector<VkDescriptorSet> sets;
 	WWVK_UpdateFVF_DUV2_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
 		DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
-	WWVK_DrawFVF_DUV2_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+	WWVK_DrawFVF_DUV2_Strip_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
 	WWVKRENDER.PushSingleFrameBuffer(vbo);
 #endif
 
@@ -1004,7 +1004,7 @@ Bool ScreenMotionBlurFilter::postRender(enum FilterModes mode, Coord2D &scrollDe
 			std::vector<VkDescriptorSet> sets;
 			WWVK_UpdateFVF_DUV2_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
 				DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
-			WWVK_DrawFVF_DUV2_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+			WWVK_DrawFVF_DUV2_Strip_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
 			WWVKRENDER.PushSingleFrameBuffer(vbo);
 #endif
 		}
@@ -2409,7 +2409,7 @@ void W3DShaderManager::drawViewport(Int color)
 	std::vector<VkDescriptorSet> sets;
 	WWVK_UpdateFVF_DUV_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(),
 		DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
-	WWVK_DrawFVF_DUV_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+	WWVK_DrawFVF_DUV_Strip_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
 	WWVKRENDER.PushSingleFrameBuffer(vbo);
 #endif
 }

@@ -2225,15 +2225,16 @@ void DX8MeshRendererClass::Render_Decal_Meshes(void)
 	DecalMeshClass * decal_mesh = visible_decal_meshes;
 	if (!decal_mesh) return;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_DEPTHBIAS,8 * -0.000005f);
+#endif
 	
 	while (decal_mesh != NULL) {
 		decal_mesh->Render();
 		decal_mesh = decal_mesh->Peek_Next_Visible();
 	}
 	visible_decal_meshes = NULL;
-
+#ifdef INFO_VULKAN
 	DX8Wrapper::Set_DX8_Render_State(D3DRS_DEPTHBIAS,0);
 #endif
 }

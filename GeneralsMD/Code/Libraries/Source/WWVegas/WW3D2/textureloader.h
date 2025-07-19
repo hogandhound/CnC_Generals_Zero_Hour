@@ -260,11 +260,12 @@ class TextureLoadTaskClass : public TextureLoadTaskListNodeClass
 		IDirect3DBaseTexture9*	D3DTexture;
 #else
 		VK::Texture D3DTexture;
+		VK::Surface Surface;
 #endif
-		WW3DFormat				Format;
+		//WW3DFormat				Format;
 
-		unsigned int			Width;
-		unsigned	int			Height;
+		//unsigned int			Width;
+		//unsigned	int			Height;
 		unsigned	int			MipLevelCount;
 		unsigned	int			Reduction;
 		Vector3					HSVShift;

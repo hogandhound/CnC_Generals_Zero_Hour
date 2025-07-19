@@ -1436,7 +1436,7 @@ void W3DVolumetricShadow::RenderMeshVolume(Int meshIndex, Int lightIndex, const 
 		std::vector<VkDescriptorSet> sets;
 		WWVK_UpdateVolumeShadowDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 		WWVK_DrawVolumeShadow(WWVKPIPES, WWVKRENDER.currentCmd, sets, 
-			ibSlot->m_IB->m_DX8IndexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, VK_INDEX_TYPE_UINT16, 
+			ibSlot->m_IB->m_DX8IndexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, ibSlot->m_start, VK_INDEX_TYPE_UINT16,
 			vbSlot->m_VB->m_DX8VertexBuffer->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*) & mWorld);
 #ifdef INFO_VULKAN
 		m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, vbSlot->m_start,0,numVerts,ibSlot->m_start,numPolys);
@@ -1562,7 +1562,7 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 		std::vector<VkDescriptorSet> sets;
 		WWVK_UpdateVolumeShadowDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 		WWVK_DrawVolumeShadow(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-			shadowIndexBufferD3D.buffer, numPolys * 3, VK_INDEX_TYPE_UINT16,
+			shadowIndexBufferD3D.buffer, numPolys * 3, nShadowStartBatchIndex, VK_INDEX_TYPE_UINT16,
 			shadowVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
 #ifdef INFO_VULKAN
 		m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, nShadowStartBatchVertex,0,numVerts,nShadowStartBatchIndex,numPolys);
@@ -3481,7 +3481,7 @@ void W3DVolumetricShadowManager::renderStencilShadows( void )
 	Matrix4x4 ident(true);
 	VK::Buffer vbo;
 	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, 4 * sizeof(_TRANSLITVERTEX), v, vbo);
-	WWVK_DrawVolumeStencilShadow(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+	WWVK_DrawVolumeStencilShadow_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
 	WWVKRENDER.PushSingleFrameBuffer(vbo);
 #ifdef INFO_VULKAN
 	m_pDev->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);

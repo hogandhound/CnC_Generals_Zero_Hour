@@ -215,19 +215,6 @@ protected:
 	static Real m_curFadeValue;
 };
 
-class ScreenBWFilterDOT3 : public ScreenBWFilter
-{
-public:
-	virtual Int init(void);			///<perform any one time initialization and validation
-	virtual Int shutdown(void);		///<release resources used by shader
-	virtual Bool preRender(Bool &skipRender, CustomScenePassModes &scenePassMode); ///< Set up at start of render.  Only applies to screen filter shaders.
-	virtual Bool postRender(enum FilterModes mode, Coord2D &scrollDelta,Bool &doExtraRender); ///< Called after render.  Only applies to screen filter shaders.
-	virtual Bool setup(enum FilterModes mode){return true;} ///< Called when the filter is started, one time before the first prerender.
-protected:
-	virtual Int set(enum FilterModes mode);		///<setup shader for the specified rendering pass.
-	virtual void reset(void);		///<do any custom resetting necessary to bring W3D in sync.
-};
-
 /*=========  ScreenCrossFadeFilter	=============================================================*/
 ///Fades between 2 different rendered frames.
 class ScreenCrossFadeFilter : public W3DFilterInterface

@@ -3381,7 +3381,7 @@ void W3DRoadBuffer::drawRoads(CameraClass * camera, TextureClass *cloudTexture, 
 						&W3DShaderManager::getShaderTexture(0)->Peek_D3D_Texture(),
 						DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 					WWVK_DrawRoad(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-						m_roadTypes[i].getIB()->Get_DX8_Index_Buffer().buffer, m_roadTypes[i].getNumIndices(), VK_INDEX_TYPE_UINT16,
+						m_roadTypes[i].getIB()->Get_DX8_Index_Buffer().buffer, m_roadTypes[i].getNumIndices(), 0, VK_INDEX_TYPE_UINT16,
 						m_roadTypes[i].getVB()->Get_DX8_Vertex_Buffer().buffer, 0, &push);
 					break;
 				}
@@ -3398,7 +3398,7 @@ void W3DRoadBuffer::drawRoads(CameraClass * camera, TextureClass *cloudTexture, 
 						&W3DShaderManager::getShaderTexture(0)->Peek_D3D_Texture(), &noiseTex,
 						DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 					WWVK_DrawRoadNoise(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-						m_roadTypes[i].getIB()->Get_DX8_Index_Buffer().buffer, m_roadTypes[i].getNumIndices(), VK_INDEX_TYPE_UINT16,
+						m_roadTypes[i].getIB()->Get_DX8_Index_Buffer().buffer, m_roadTypes[i].getNumIndices(), 0, VK_INDEX_TYPE_UINT16,
 						m_roadTypes[i].getVB()->Get_DX8_Vertex_Buffer().buffer, 0, &push);
 					break;
 				}
@@ -3417,7 +3417,7 @@ void W3DRoadBuffer::drawRoads(CameraClass * camera, TextureClass *cloudTexture, 
 						&W3DShaderManager::getShaderTexture(2)->Peek_D3D_Texture(),
 						DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uboUVT);
 					WWVK_DrawRoadNoise12(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-						m_roadTypes[i].getIB()->Get_DX8_Index_Buffer().buffer, m_roadTypes[i].getNumIndices(), VK_INDEX_TYPE_UINT16,
+						m_roadTypes[i].getIB()->Get_DX8_Index_Buffer().buffer, m_roadTypes[i].getNumIndices(), 0, VK_INDEX_TYPE_UINT16,
 						m_roadTypes[i].getVB()->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&world);
 					WWVKRENDER.PushSingleFrameBuffer(uboUVT);
 					break;

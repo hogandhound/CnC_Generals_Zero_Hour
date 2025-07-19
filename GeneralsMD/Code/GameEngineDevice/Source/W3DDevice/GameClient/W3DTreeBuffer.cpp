@@ -1773,7 +1773,7 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 		//void WWVK_DrawTrees(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, 
 		// VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push);
 		WWVK_DrawTrees(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets,
-			m_indexTree[bNdx]->Get_DX8_Index_Buffer().buffer, (uint32_t)m_curNumTreeIndices[bNdx], VK_INDEX_TYPE_UINT16, 
+			m_indexTree[bNdx]->Get_DX8_Index_Buffer().buffer, (uint32_t)m_curNumTreeIndices[bNdx], 0, VK_INDEX_TYPE_UINT16, 
 			m_vertexTree[bNdx]->Get_DX8_Vertex_Buffer().buffer, (VkDeviceSize)0, (WorldMatrix*)& matWorld);
 	}
 

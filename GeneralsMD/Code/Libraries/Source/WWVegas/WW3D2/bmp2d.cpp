@@ -167,7 +167,7 @@ Bitmap2DObjClass::Bitmap2DObjClass
 
 			// create the texture and turn MIP-mapping off.
 			SurfaceClass *piece_surface=NEW_REF(SurfaceClass,(pot,pot,sd.Format));			
-			piece_surface->Copy(0,0,tlpx,tlpy,pot,pot,surface);
+			piece_surface->Copy(0,0,tlpx,tlpy,pot,pot,surface,0);
 			TextureClass *piece_texture =NEW_REF(TextureClass,(piece_surface,MIP_LEVELS_1));			
 			piece_texture->Get_Filter().Set_U_Addr_Mode(TextureFilterClass::TEXTURE_ADDRESS_CLAMP);
 			piece_texture->Get_Filter().Set_V_Addr_Mode(TextureFilterClass::TEXTURE_ADDRESS_CLAMP);

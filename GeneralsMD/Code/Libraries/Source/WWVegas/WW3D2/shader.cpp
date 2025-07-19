@@ -49,9 +49,7 @@
 
 bool ShaderClass::ShaderDirty=true;
 unsigned long ShaderClass::CurrentShader=0;
-#ifdef TODO_VULKAN
-unsigned long _PolygonCullMode = D3DCULL_CW;
-#endif
+unsigned long _PolygonCullMode = VK_FRONT_FACE_CLOCKWISE;// D3DCULL_CW;
 
 
 /*
@@ -415,7 +413,7 @@ void ShaderClass::Apply()
 {
 	unsigned long diff;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	unsigned int TextureOpCaps=DX8Wrapper::Get_Current_Caps()->Get_DX8_Caps().TextureOpCaps;
 #endif
 
@@ -1073,13 +1071,11 @@ void ShaderClass::Apply()
  *=============================================================================================*/
 void ShaderClass::Invert_Backface_Culling(bool onoff)
 {
-#ifdef TODO_VULKAN
 	if (onoff == true) {
-		_PolygonCullMode = D3DCULL_CCW;
+		_PolygonCullMode = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	} else {
-		_PolygonCullMode = D3DCULL_CW;
+		_PolygonCullMode = VK_FRONT_FACE_CLOCKWISE;
 	}
-#endif
 	Invalidate();
 }
 
@@ -1175,11 +1171,7 @@ int ShaderClass::Guess_Sort_Level(void) const
  *=============================================================================================*/
 bool ShaderClass::Is_Backface_Culling_Inverted(void)
 {
-#ifdef TODO_VULKAN
-	return (_PolygonCullMode == D3DCULL_CCW);
-#else
-	return false;
-#endif
+	return (_PolygonCullMode == VK_FRONT_FACE_COUNTER_CLOCKWISE);
 }
 
 const StringClass& ShaderClass::Get_Description(StringClass& str) const

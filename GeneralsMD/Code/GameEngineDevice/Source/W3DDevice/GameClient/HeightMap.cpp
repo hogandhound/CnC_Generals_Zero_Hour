@@ -2105,7 +2105,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 							&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
 							DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 						WWVK_DrawTerrain(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets,
-							m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, VK_INDEX_TYPE_UINT16,
+							m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, 0, VK_INDEX_TYPE_UINT16,
 							m_vertexBufferTiles[j * m_numVBTilesX + i]->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm);
 					}
 					else if (st == W3DShaderManager::ST_TERRAIN_BASE_NOISE1 || W3DShaderManager::ST_TERRAIN_BASE_NOISE2)
@@ -2114,7 +2114,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 							&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
 							&DX8Wrapper::Get_Texture(2)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 						WWVK_DrawTerrainNoise(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets,
-							m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, VK_INDEX_TYPE_UINT16,
+							m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, 0, VK_INDEX_TYPE_UINT16,
 							m_vertexBufferTiles[j * m_numVBTilesX + i]->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm);
 					}
 					else if (st == W3DShaderManager::ST_TERRAIN_BASE_NOISE12)
@@ -2124,7 +2124,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 							&DX8Wrapper::Get_Texture(2)->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(3)->Peek_D3D_Texture(),
 							DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 						WWVK_DrawTerrainNoise2(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets,
-							m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, VK_INDEX_TYPE_UINT16,
+							m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, 0, VK_INDEX_TYPE_UINT16,
 							m_vertexBufferTiles[j * m_numVBTilesX + i]->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm);
 					}
 				}
@@ -2497,7 +2497,7 @@ void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 							&m_stageOneTexture->Peek_D3D_Texture(),
 							DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 						WWVK_DrawRoad(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-							((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, VK_INDEX_TYPE_UINT16,
+							((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
 							((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, &push);
 						break;
 					}
@@ -2512,7 +2512,7 @@ void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 							&m_stageTwoTexture->Peek_D3D_Texture(),
 							DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 						WWVK_DrawRoadNoise(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-							((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, VK_INDEX_TYPE_UINT16,
+							((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
 							((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, &push);
 						break;
 					}
@@ -2531,7 +2531,7 @@ void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 							&m_stageThreeTexture->Peek_D3D_Texture(),
 							DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uboUVT);
 						WWVK_DrawRoadNoise12(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-							((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, VK_INDEX_TYPE_UINT16,
+							((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
 							((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&world);
 						WWVKRENDER.PushSingleFrameBuffer(uboUVT);
 						break;

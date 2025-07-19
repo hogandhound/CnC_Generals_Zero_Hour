@@ -966,14 +966,14 @@ void W3DRadar::reset( void )
 	surface = m_terrainTexture->Get_Surface_Level();
 	if( surface )
 	{
-		surface->Clear();
+		surface->Clear(&m_terrainTexture->Peek_D3D_Texture());
 		REF_PTR_RELEASE(surface);
 	}
 
 	surface = m_overlayTexture->Get_Surface_Level();
 	if( surface )
 	{
-		surface->Clear();
+		surface->Clear(&m_overlayTexture->Peek_D3D_Texture());
 		REF_PTR_RELEASE(surface);
 	}
 
@@ -1398,7 +1398,7 @@ void W3DRadar::draw( Int pixelX, Int pixelY, Int width, Int height )
 
 		// reset the overlay texture
 		SurfaceClass *surface = m_overlayTexture->Get_Surface_Level();
-		surface->Clear();
+		surface->Clear(&m_overlayTexture->Peek_D3D_Texture());
 		REF_PTR_RELEASE(surface);
 
 		// rebuild the object overlay

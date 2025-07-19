@@ -1367,7 +1367,7 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 		VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANSLITVERTEX) * 4, v, vbo);
 		WWVKDSV;
 		WWVK_UpdateStencilPlayerColorDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
-		WWVK_DrawStencilPlayerColor(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+		WWVK_DrawStencilPlayerColor_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
 #ifdef INFO_VULKAN
 		m_pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANSLITVERTEX));
 #endif

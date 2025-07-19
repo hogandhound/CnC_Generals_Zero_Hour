@@ -200,6 +200,7 @@ VertexBufferClass::WriteLockClass::~WriteLockClass()
 		WWDEBUG_SAY(("VertexBuffer->Unlock()\n"));
 #endif
 		DX8_Assert();
+		static_cast<DX8VertexBufferClass*>(VertexBuffer)->Upload();
 #ifdef INFO_VULKAN
 		DX8_ErrorCode(static_cast<DX8VertexBufferClass*>(VertexBuffer)->Get_DX8_Vertex_Buffer()->Unlock());
 #endif
@@ -271,6 +272,7 @@ VertexBufferClass::AppendLockClass::~AppendLockClass()
 #ifdef VERTEX_BUFFER_LOG
 		WWDEBUG_SAY(("VertexBuffer->Unlock()\n"));
 #endif
+		static_cast<DX8VertexBufferClass*>(VertexBuffer)->Upload();
 #ifdef INFO_VULKAN
 		DX8_ErrorCode(static_cast<DX8VertexBufferClass*>(VertexBuffer)->Get_DX8_Vertex_Buffer()->Unlock());
 #endif
@@ -425,6 +427,12 @@ DX8VertexBufferClass::~DX8VertexBufferClass()
 //
 //
 // ----------------------------------------------------------------------------
+
+void DX8VertexBufferClass::Upload()
+{
+	WWVKRENDER.PushSingleFrameBuffer(this->VertexBuffer);
+	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, Vertices.size() * sizeof(VertexFormatXYZNDUV2), Vertices.data(), VertexBuffer);
+}
 
 void DX8VertexBufferClass::Create_Vertex_Buffer(UsageType usage)
 {
@@ -851,7 +859,7 @@ DynamicVBAccessClass::WriteLockClass::WriteLockClass(DynamicVBAccessClass* dynam
 	DynamicVBAccess(dynamic_vb_access_)
 {
 	DX8_THREAD_ASSERT();
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	switch (DynamicVBAccess->Get_Type()) {
 	case BUFFER_TYPE_DYNAMIC_DX8:
 #ifdef VERTEX_BUFFER_LOG
@@ -888,6 +896,9 @@ DynamicVBAccessClass::WriteLockClass::WriteLockClass(DynamicVBAccessClass* dynam
 		WWASSERT(0);
 		break;
 	}
+#else
+	Vertices = (VertexFormatXYZNDUV2*)DynamicVBAccess->VertexBuffer->Get_Vertices();
+	Vertices += DynamicVBAccess->VertexBufferOffset;
 #endif
 }
 
@@ -896,7 +907,7 @@ DynamicVBAccessClass::WriteLockClass::WriteLockClass(DynamicVBAccessClass* dynam
 DynamicVBAccessClass::WriteLockClass::~WriteLockClass()
 {
 	DX8_THREAD_ASSERT();
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	switch (DynamicVBAccess->Get_Type()) {
 	case BUFFER_TYPE_DYNAMIC_DX8:
 #ifdef VERTEX_BUFFER_LOG
@@ -914,6 +925,18 @@ DynamicVBAccessClass::WriteLockClass::~WriteLockClass()
 		WWASSERT(0);
 		break;
 	}
+#else
+	switch (DynamicVBAccess->Get_Type()) {
+	case BUFFER_TYPE_DYNAMIC_DX8:
+		static_cast<DX8VertexBufferClass*>(DynamicVBAccess->VertexBuffer)->Upload();
+		break;
+	case BUFFER_TYPE_DYNAMIC_SORTING:
+		break;
+	default:
+		WWASSERT(0);
+		break;
+	}
+
 #endif
 }
 

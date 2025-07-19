@@ -158,8 +158,6 @@ public:
 	const VK::Texture& Peek_D3D_Base_Texture() const;
 	void Set_D3D_Base_Texture(VK::Texture tex);
 
-	bool Is_Missing_Texture();
-
 	// Support for self managed textures
 	bool Is_Dirty() { return Dirty; };
 	void Set_Dirty() { Dirty=true; }
@@ -316,7 +314,7 @@ public:
 
 	// Get the surface of one of the mipmap levels (defaults to highest-resolution one)
 	SurfaceClass *Get_Surface_Level(unsigned int level = 0);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	IDirect3DSurface9 *Get_D3D_Surface_Level(unsigned int level = 0);
 #endif
 	void Get_Level_Description( SurfaceClass::SurfaceDescription & desc, unsigned int level = 0 );
@@ -362,7 +360,7 @@ public:
 
 	virtual void Apply(unsigned int stage);
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	IDirect3DSurface9 *Get_D3D_Surface_Level(unsigned int level = 0);
 #endif
 	virtual unsigned Get_Texture_Memory_Usage() const;
@@ -420,7 +418,7 @@ class VolumeTextureClass : public TextureClass
 {
 public:
 	// Create texture with desired height, width and format.
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	VolumeTextureClass
 	(
 		unsigned width, 
@@ -447,7 +445,7 @@ public:
 	);
 
 	// Create texture from a surface.
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	VolumeTextureClass
 	(
 		SurfaceClass *surface, 

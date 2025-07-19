@@ -340,7 +340,7 @@ void MetalMapManagerClass::Update_Textures(void)
 			}
 			map+=pitch;
 		}
-		metal_map_surface->Unlock();
+		metal_map_surface->Unlock(&Textures[i]->Peek_D3D_Texture());
 		REF_PTR_RELEASE(metal_map_surface);
 	} // for i
 }

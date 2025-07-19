@@ -23,6 +23,24 @@
 	  "frag": { "name": "fvf_duv.frag" }
   },
   {
+	  "name": "FVF_DUV_NoDepth",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "fvf_xyzduv.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_duv.frag" }
+  },
+  {
+	  "name": "FVF_DUV_Grayscale_NoDepth",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "vert":{
+		  "name": "fvf_xyzduv.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_duv_grayscale.frag" }
+  },
+  {
 	  "name": "FVF_NDUV_CAMUV_NOL",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS",
@@ -91,6 +109,38 @@
 	  "frag": { "name": "fvf_duv.frag" }
   },
   {
+	  "name": "FVF_DUV_CAMUVT_Strip",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
+	  "depth": "VK_COMPARE_OP_LESS",
+	  "vert":{
+		  "name": "fvf_xyzduv_camuvt.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_duv2.frag" }
+  },
+  {
+	  "name": "FVF_DUV_DepthBias_Strip",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
+	  "depth": "VK_COMPARE_OP_LESS",
+	  "depthBias": { "depthBiasConstantFactor": "8 * -0.000005f"},
+	  "vert":{
+		  "name": "fvf_xyzduv.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_duv.frag" }
+  },
+  {
+	  "name": "FVF_DUV_CAMUVT_DepthBias_Strip",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
+	  "depth": "VK_COMPARE_OP_LESS",
+	  "depthBias": { "depthBiasConstantFactor": "8 * -0.000005f"},
+	  "vert":{
+		  "name": "fvf_xyzduv_camuvt.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_duv2.frag" }
+  },
+  {
 	  "name": "FVF_DUV2_Strip",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS",
@@ -121,7 +171,7 @@
 	  "frag": { "name": "fvf_nduv2.frag" }
   },
   {
-	  "name": "FVF_NDUV2",
+	  "name": "FVF_NDUV2_NOL",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS",
 	  "vert":{
@@ -139,6 +189,36 @@
 		  "inputs": {}
 	  },
 	  "frag": { "name": "fvf_nduv2_noL.frag" }
+  },
+  {
+	  "name": "Halo",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "blend": {
+		  "srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		  "dstColorBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyzduv.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_duv.frag" }
+  },
+  {
+	  "name": "Dazzle",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "depth": "VK_COMPARE_OP_ALWAYS",
+	  "depthWrite": "VK_FALSE",
+	  "blend": {
+		  "srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		  "dstColorBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyzduv.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_duv.frag" }
   },
   {
 	  "name": "Snow",
@@ -266,6 +346,7 @@
   {
 	  "name": "Terrain",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
 		  "name": "fvf_xyzduv2.vert",
 		  "inputs": {}
@@ -275,6 +356,7 @@
   {
 	  "name": "TerrainNoise",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
 		  "name": "fvf_xyzduv2.vert",
 		  "inputs": {}
@@ -284,6 +366,7 @@
   {
 	  "name": "TerrainNoise2",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
 		  "name": "fvf_xyzduv2.vert",
 		  "inputs": {}
@@ -293,6 +376,7 @@
   {
 	  "name": "Trees",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
 		  "name": "Trees.vert",
 		  "inputs": {}
@@ -301,12 +385,98 @@
   },
   {
 	  "name": "Wave",
-	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
 		  "name": "wave.vert",
 		  "inputs": {}
 	  },
 	  "frag": { "name": "wave.frag" }
+  },
+  {
+	  "name": "RiverWater",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "vert":{
+		  "name": "fvf_xyzduv2_camuvt.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "RiverWater.frag" }
+  },
+  {
+	  "name": "RiverWaterAdd",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "blend": {
+		  "srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		  "dstColorBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyzduv2_camuvt.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "RiverWater.frag" }
+  },
+  {
+	  "name": "RiverWaterShroud",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_EQUAL",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "vert":{
+		  "name": "fvf_xyzduv2_camuvt2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "RiverWaterShroud.frag" }
+  },
+  {
+	  "name": "WaterTrapezoid",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "vert":{
+		  "name": "fvf_xyznduv2_camuvt2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "WaterTrapezoid.frag" }
+  },
+  {
+	  "name": "WaterTrapezoid_DstAlpha",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "blend": { 
+		  "srcColorBlendFactor": "VK_BLEND_FACTOR_DST_ALPHA"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2_camuvt2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "WaterTrapezoid.frag" }
+  },
+  {
+	  "name": "WaterTrapezoid_DstAlphaInvDest",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "blend": { 
+		  "srcColorBlendFactor": "VK_BLEND_FACTOR_DST_ALPHA",
+		  "dstColorBlendFactor": "VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2_camuvt2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "WaterTrapezoid.frag" }
+  },
+  {
+	  "name": "WaterTrapezoidStrip",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "vert":{
+		  "name": "fvf_xyznduv2_camuvt2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "WaterTrapezoid.frag" }
   },
   {
 	  "name": "VolumeShadow",

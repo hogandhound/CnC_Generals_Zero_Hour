@@ -162,7 +162,6 @@ void W3DShroud::init(WorldHeightMap *pMap, Real worldCellSizeX, Real worldCellSi
  	memset(m_finalFogData,0,srcWidth*srcHeight);
 #endif
 
-#ifdef TODO_VULKAN
 #if defined(_DEBUG) || defined(_INTERNAL)
 	if (TheGlobalData && TheGlobalData->m_fogOfWarOn)
 		m_pSrcTexture = DX8Wrapper::_Create_DX8_Surface(srcWidth,srcHeight, WW3D_FORMAT_A4R4G4B4);
@@ -170,8 +169,9 @@ void W3DShroud::init(WorldHeightMap *pMap, Real worldCellSizeX, Real worldCellSi
 #endif
 		m_pSrcTexture = DX8Wrapper::_Create_DX8_Surface(srcWidth,srcHeight, WW3D_FORMAT_R5G6B5);
 
-	DEBUG_ASSERTCRASH( m_pSrcTexture != NULL, ("Failed to Allocate Shroud Src Surface"));
+	DEBUG_ASSERTCRASH( m_pSrcTexture.buffer.empty() != false, ("Failed to Allocate Shroud Src Surface"));
 
+#ifdef INFO_VULKAN
 	D3DLOCKED_RECT rect;
 
 	//Get a pointer to source surface pixels.
@@ -183,7 +183,10 @@ void W3DShroud::init(WorldHeightMap *pMap, Real worldCellSizeX, Real worldCellSi
 
 	m_srcTextureData=rect.pBits;
 	m_srcTexturePitch=rect.Pitch;
+#endif
 
+	m_srcTextureData = m_pSrcTexture.buffer.data();
+	m_srcTexturePitch = srcWidth * sizeof(uint16_t);
 	//clear entire texture to black
 	memset(m_srcTextureData,0,m_srcTexturePitch*srcHeight);
 
@@ -204,7 +207,6 @@ void W3DShroud::init(WorldHeightMap *pMap, Real worldCellSizeX, Real worldCellSi
 	//Force a refresh of shroud data since we just created a new source texture.
 	if (ThePartitionManager)
 		ThePartitionManager->refreshShroudForLocalPlayer();
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -479,35 +481,58 @@ void W3DShroud::fillBorderShroudData(W3DShroudLevel level, SurfaceClass* pDestSu
 	Int numFullCopies = m_dstTextureWidth/srcRect.right;
 	Int numExtraPixels = m_dstTextureWidth%srcRect.right;
 
+	//auto& dstBuf = pDestSurface->Peek_D3D_Surface();
+	SurfaceClass::SurfaceDescription dstDesc;
+	pDestSurface->Get_Description(dstDesc);
 	for (y=0; y<m_dstTextureHeight; y++)
 	{
 		dstPoint.y=y;
 		dstPoint.x=0;
-#if TODO_VULKAN
 		for (x=0; x<numFullCopies; x++)
 		{	
 			dstPoint.x = x * srcRect.right;	//advance to next set of pixel in row.
 
+			for (int sy = srcRect.top; sy < srcRect.bottom; ++sy)
+			{
+				UnsignedShort* ssy = ((uint16_t*)m_pSrcTexture.buffer.data()) + m_pSrcTexture.width * sy;
+				UnsignedShort* sdy = ((uint16_t*)pDestSurface->Peek_D3D_Surface().data()) + dstPoint.x + (sy + dstPoint.y) * dstDesc.Width;
+				for (int sx = srcRect.left; sx < srcRect.right; ++sx)
+				{
+					sdy[sx] = ssy[sx];
+				}
+			}
+#ifdef INFO_VULKAN
 			DX8Wrapper::_Copy_DX8_Rects(
 				m_pSrcTexture,
 				&srcRect,
 				1,
 				pDestSurface->Peek_D3D_Surface(),
 				&dstPoint);
+#endif
 		}
 		if (numExtraPixels)
 		{	Int oldVal=srcRect.right;
 			dstPoint.x = numFullCopies * oldVal;
 			srcRect.right = numExtraPixels;
+			for (int sy = srcRect.top; sy < srcRect.bottom; ++sy)
+			{
+				UnsignedShort* ssy = ((uint16_t*)m_pSrcTexture.buffer.data()) + m_pSrcTexture.width * sy;
+				UnsignedShort* sdy = ((uint16_t*)pDestSurface->Peek_D3D_Surface().data()) + dstPoint.x + (sy + dstPoint.y) * dstDesc.Width;
+				for (int sx = srcRect.left; sx < srcRect.right; ++sx)
+				{
+					sdy[sx] = ssy[sx];
+				}
+			}
+#ifdef INFO_VULKAN
 			DX8Wrapper::_Copy_DX8_Rects(
 				m_pSrcTexture,
 				&srcRect,
 				1,
 				pDestSurface->Peek_D3D_Surface(),
 				&dstPoint);
+#endif
 			srcRect.right = oldVal;
 		}
-#endif
 	}
 	
 }
@@ -724,7 +749,18 @@ void W3DShroud::render(CameraClass *cam)
 	}
 
 	{
-#ifdef TODO_VULKAN
+		SurfaceClass::SurfaceDescription dstDesc;
+		pDestSurface->Get_Description(dstDesc);
+		for (int sy = srcRect.top; sy < srcRect.bottom; ++sy)
+		{
+			UnsignedShort* ssy = ((uint16_t*)m_pSrcTexture.buffer.data()) + m_pSrcTexture.width * sy;
+			UnsignedShort* sdy = ((uint16_t*)pDestSurface->Peek_D3D_Surface().data()) + dstPoint.x + (sy + dstPoint.y) * dstDesc.Width;
+			for (int sx = srcRect.left; sx < srcRect.right; ++sx)
+			{
+				sdy[sx] = ssy[sx];
+			}
+		}
+#ifdef INFO_VULKAN
 		//USE_PERF_TIMER(shroudCopy)
 		DX8Wrapper::_Copy_DX8_Rects(
 				m_pSrcTexture,

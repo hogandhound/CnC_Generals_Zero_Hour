@@ -441,7 +441,7 @@ void W3DBibBuffer::renderBibs()
 		WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, 
 			&m_bibTexture->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 		WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-			m_indexBib->Get_DX8_Index_Buffer().buffer, m_curNumNormalBibIndices, VK_INDEX_TYPE_UINT16,
+			m_indexBib->Get_DX8_Index_Buffer().buffer, m_curNumNormalBibIndices, 0, VK_INDEX_TYPE_UINT16,
 			m_vertexBib->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
 #ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(	0, m_curNumNormalBibIndices/3, 0,	m_curNumNormalBibVertex);
@@ -455,7 +455,7 @@ void W3DBibBuffer::renderBibs()
 		WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 			&m_highlightBibTexture->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 		WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-			m_indexBib->Get_DX8_Index_Buffer().buffer, m_curNumNormalBibIndices, VK_INDEX_TYPE_UINT16,
+			m_indexBib->Get_DX8_Index_Buffer().buffer, (m_curNumBibIndices - m_curNumNormalBibIndices), m_curNumNormalBibIndices, VK_INDEX_TYPE_UINT16,
 			m_vertexBib->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
 #ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(	m_curNumNormalBibIndices, (m_curNumBibIndices-m_curNumNormalBibIndices)/3, 

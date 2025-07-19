@@ -210,113 +210,9 @@ error:
 #define UNIQUE_COLOR	(0x12345678)
 #define BLOCK_SIZE	(8)
 
-Bool W3DSmudgeManager::testHardwareSupport(void)
-{
-	if (m_hardwareSupportStatus == SMUDGE_SUPPORT_UNKNOWN)
-	{	//we have not done the test yet.
-
-		VK::Texture backTexture=W3DShaderManager::getRenderTexture();
-		if (!backTexture.image)
-		{	//do trivial test first to see if render target exists.
-			m_hardwareSupportStatus = SMUDGE_SUPPORT_NO;
-			return FALSE;
-		}
-
-		if (!W3DShaderManager::isRenderingToTexture())
-			return FALSE;	//can't do the test unless we're rendering to texture.
-
-		VertexMaterialClass *vmat=VertexMaterialClass::Get_Preset(VertexMaterialClass::PRELIT_DIFFUSE);
-		DX8Wrapper::Set_Material(vmat);
-		REF_PTR_RELEASE(vmat);	//no need to keep a reference since it's a preset.
-		
-		ShaderClass shader=ShaderClass::_PresetOpaqueShader;
-		shader.Set_Depth_Compare(ShaderClass::PASS_ALWAYS);
-		shader.Set_Depth_Mask(ShaderClass::DEPTH_WRITE_DISABLE);
-		DX8Wrapper::Set_Shader(shader);
-		DX8Wrapper::Set_Texture(0,NULL);
-		DX8Wrapper::Apply_Render_State_Changes();	//force update of view and projection matrices
-
-		struct _TRANS_LIT_TEX_VERTEX {
-			Vector4 p;
-			DWORD color;   // diffuse color    
-			float	u;
-			float	v;
-		} v[4];
-
-		//bottom right
-		v[0].p = Vector4( BLOCK_SIZE-0.5f, BLOCK_SIZE-0.5f, 0.0f, 1.0f );
-		v[0].u = BLOCK_SIZE/(Real)TheDisplay->getWidth();	v[0].v = BLOCK_SIZE/(Real)TheDisplay->getHeight();;
-		//top right
-		v[1].p = Vector4( BLOCK_SIZE-0.5f, 0-0.5f, 0.0f, 1.0f );
-		v[1].u = BLOCK_SIZE/(Real)TheDisplay->getWidth();	v[1].v = 0;
-		//bottom left
-		v[2].p = Vector4(  0-0.5f, BLOCK_SIZE-0.5f, 0.0f, 1.0f );
-		v[2].u = 0;	v[2].v = BLOCK_SIZE/(Real)TheDisplay->getHeight();
-		//top left
-		v[3].p = Vector4(  0-0.5f,  0-0.5f, 0.0f, 1.0f );
-		v[3].u = 0;	v[3].v = 0;
-
-		v[0].color = UNIQUE_COLOR;
-		v[1].color = UNIQUE_COLOR;
-		v[2].color = UNIQUE_COLOR;
-		v[3].color = UNIQUE_COLOR;
-
-#ifdef TODO_VULKAN
-		LPDIRECT3DDEVICE9 pDev=DX8Wrapper::_Get_D3D_Device8();
-
-		//draw polygons like this is very inefficient but for only 2 triangles, it's
-		//not worth bothering with index/vertex buffers.
-		pDev->SetFVF(VKFVF_XYZRHW | VKFVF_DIFFUSE | VKFVF_TEX1);
-
-		pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANS_LIT_TEX_VERTEX));
-
-		DWORD refData[BLOCK_SIZE*BLOCK_SIZE];
-		memset(refData,0,sizeof(refData));
-		Int bufSize=copyRect((unsigned char *)refData,sizeof(refData),0,0,BLOCK_SIZE,BLOCK_SIZE);	//copy area we just rendered using solid color
-		if (!bufSize)
-		{
-			m_hardwareSupportStatus = SMUDGE_SUPPORT_NO;
-			return FALSE;
-		}
-
-		DX8Wrapper::Set_DX8_Texture(0,backTexture);
-
-		DWORD testData[BLOCK_SIZE*BLOCK_SIZE];
-		memset(testData,0xff,sizeof(testData));
-
-		v[0].color = 0xffffffff;
-		v[1].color = 0xffffffff;
-		v[2].color = 0xffffffff;
-		v[3].color = 0xffffffff;
-
-		pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANS_LIT_TEX_VERTEX));
-		bufSize=copyRect((unsigned char *)testData,sizeof(testData),0,0,BLOCK_SIZE,BLOCK_SIZE);
-
-		if (!bufSize)
-		{
-			m_hardwareSupportStatus = SMUDGE_SUPPORT_NO;
-			return FALSE;
-		}
-
-		//compare the 2 buffers to see if they match.
-		if (memcmp(testData,refData,bufSize) == 0)
-		{
-			m_hardwareSupportStatus = SMUDGE_SUPPORT_YES;
-			return TRUE;
-		}
-		m_hardwareSupportStatus = SMUDGE_SUPPORT_NO;
-#endif
-	}
-	return (SMUDGE_SUPPORT_YES == m_hardwareSupportStatus);
-}
-
 void W3DSmudgeManager::render(RenderInfoClass &rinfo)
 {
-#ifdef TODO_VULKAN
 	//Verify that the card supports the effect.
-	if (!testHardwareSupport())
-		return;
-
 	CameraClass &camera=rinfo.Camera;
 	Vector3 vsVert;
 	Vector4 ssVert;
@@ -343,16 +239,16 @@ void W3DSmudgeManager::render(RenderInfoClass &rinfo)
 	SurfaceClass *background=m_backgroundTexture->Get_Surface_Level();
 	background->Get_Description(surface_desc);
 #else
-	D3DSURFACE_DESC D3DDesc;
+	//D3DSURFACE_DESC D3DDesc;
 
-	IDirect3DTexture9 *backTexture=W3DShaderManager::getRenderTexture();
-	if (!backTexture || !W3DShaderManager::isRenderingToTexture())
+	VK::Texture backTexture=W3DShaderManager::getRenderTexture();
+	if (!backTexture.image || !W3DShaderManager::isRenderingToTexture())
 		return;	//this card doesn't support render targets.
 
-	backTexture->GetLevelDesc(0,&D3DDesc);
+	//backTexture->GetLevelDesc(0,&D3DDesc);
 
-	surface_desc.Width = D3DDesc.Width;
-	surface_desc.Height = D3DDesc.Height;
+	surface_desc.Width = backTexture.width;
+	surface_desc.Height = backTexture.height;
 #endif
 
 	Real texClampX = (Real)TheTacticalView->getWidth()/(Real)surface_desc.Width;
@@ -463,6 +359,7 @@ void W3DSmudgeManager::render(RenderInfoClass &rinfo)
 #else
 	DX8Wrapper::Set_DX8_Texture(0,backTexture);
 	//Need these states in case texture is non-power-of-2
+#ifdef TODO_VULKAN
 	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
 	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSW, D3DTADDRESS_CLAMP);
@@ -470,14 +367,17 @@ void W3DSmudgeManager::render(RenderInfoClass &rinfo)
 	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
 #endif
+#endif
 	VertexMaterialClass *vmat=VertexMaterialClass::Get_Preset(VertexMaterialClass::PRELIT_DIFFUSE);
 	DX8Wrapper::Set_Material(vmat);
 	REF_PTR_RELEASE(vmat);
 	DX8Wrapper::Apply_Render_State_Changes();
 
 	//Disable reading texture alpha since it's undefined.
-	//DX8Wrapper::Set_DX8_Texture_Stage_State(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);			
+	//DX8Wrapper::Set_DX8_Texture_Stage_State(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);		
+#ifdef INFO_VULKAN	
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0,D3DTSS_ALPHAOP,D3DTOP_SELECTARG2);			
+#endif
 
 	Int smudgesRemaining=count;
 	set=m_usedSmudgeSetList.Head();	//first smudge set that needs rendering.
@@ -545,7 +445,11 @@ flushSmudges:
 			DX8Wrapper::Set_Vertex_Buffer(vb_access);
 		}
 
-		DX8Wrapper::Draw_Triangles(	0,smudgesInRenderBatch*4, 0, smudgesInRenderBatch*5);	
+		//DX8Wrapper::Draw_Triangles(	0,smudgesInRenderBatch*4, 0, smudgesInRenderBatch*5);	
+		WWVKDSV;
+		WWVK_UpdateFVF_NDUV2_NOLDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &backTexture, &backTexture, DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		WWVK_DrawFVF_NDUV2_NOL_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, smudgesInRenderBatch * 5,
+			((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*) & identity);
 
 //Debug Code which draws outline around smudge
 /*		DX8Wrapper::_Get_D3D_Device8()->SetRenderState(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
@@ -558,7 +462,7 @@ flushSmudges:
 */
 		smudgesRemaining -= smudgesInRenderBatch;
 	}
-
+#ifdef INFO_VULKAN
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0,D3DTSS_COLOROP,D3DTOP_MODULATE);			
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0,D3DTSS_ALPHAOP,D3DTOP_MODULATE);			
 #endif

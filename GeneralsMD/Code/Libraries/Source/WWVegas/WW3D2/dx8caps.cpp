@@ -47,7 +47,7 @@
 
 static StringClass CapsWorkString;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 static D3DCAPS9 hwVPCaps;
 static D3DCAPS9 swVPCaps;
 #endif
@@ -479,7 +479,7 @@ DX8Caps::DeviceTypeIntel DX8Caps::Get_Intel_Device(unsigned device_id)
 	}
 }
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 DX8Caps::DX8Caps(
 	IDirect3D9* direct3d,
 	IDirect3DDevice9* D3DDevice, 
@@ -528,7 +528,7 @@ void DX8Caps::Shutdown(void)
 //
 // ----------------------------------------------------------------------------
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 void DX8Caps::Init_Caps(IDirect3DDevice9* D3DDevice)
 {
 	D3DDevice->SetSoftwareVertexProcessing(TRUE);
@@ -1023,7 +1023,7 @@ bool DX8Caps::Is_Valid_Display_Format(int width, int height, WW3DFormat format)
 //
 // ----------------------------------------------------------------------------
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 void DX8Caps::Vendor_Specific_Hacks(const D3DADAPTER_IDENTIFIER9& adapter_id)
 {
 	if (VendorId==VENDOR_NVIDIA) 

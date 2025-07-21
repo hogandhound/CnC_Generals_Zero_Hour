@@ -1,8 +1,9 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-layout( push_constant ) uniform WorldMatrix {
+layout( push_constant ) uniform WorldMatrixUVT {
   mat4 world;
+  mat4 uvt;
 } push;
 layout(set = 0, binding = 0) uniform Projection{
 	mat4 m;
@@ -30,5 +31,5 @@ void main() {
     
 	viewDir = (view.m * vec4(0,0,1,1)).xyz;
     gl_Position = proj.m*view.m*push.world*vec4(vert, 1);
-	camuv = (view.m*push.world*vec4(vert, 1)).xy;
+	camuv = (push.uvt*view.m*push.world*vec4(vert, 1)).xy;
 }

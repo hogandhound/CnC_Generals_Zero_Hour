@@ -141,10 +141,10 @@ void W3DSmudgeManager::ReAcquireResources(void)
 }
 
 /*Copies a portion of the current render target into a specified buffer*/
+#ifdef INFO_VULKAN
 Int copyRect(unsigned char *buf, Int bufSize, int oX, int oY, int width, int height)
 {
 	Int result = 0;
-#ifdef TODO_VULKAN
  	IDirect3DSurface9 *surface=NULL;	///<previous render target
  	IDirect3DSurface9 *tempSurface=NULL;
 	HRESULT hr = S_OK;
@@ -203,9 +203,9 @@ error:
 		surface->Release();
 	if (tempSurface)
 		tempSurface->Release();
-#endif
 	return result;
 }
+#endif
 
 #define UNIQUE_COLOR	(0x12345678)
 #define BLOCK_SIZE	(8)
@@ -359,14 +359,11 @@ void W3DSmudgeManager::render(RenderInfoClass &rinfo)
 #else
 	DX8Wrapper::Set_DX8_Texture(0,backTexture);
 	//Need these states in case texture is non-power-of-2
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_ADDRESSW, D3DTADDRESS_CLAMP);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
-#endif
+	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, VKSAMP_ADDRESSU, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, VKSAMP_ADDRESSV, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, VKSAMP_MAGFILTER, VK_FILTER_LINEAR);
+	DX8Wrapper::Set_DX8_Sampler_Stage_State( 0, VKSAMP_MINFILTER, VK_FILTER_LINEAR);
+	DX8Wrapper::Set_DX8_Sampler_Stage_State(0, VKSAMP_MIPFILTER, VK_FILTER_NEAREST);
 #endif
 	VertexMaterialClass *vmat=VertexMaterialClass::Get_Preset(VertexMaterialClass::PRELIT_DIFFUSE);
 	DX8Wrapper::Set_Material(vmat);
@@ -374,9 +371,9 @@ void W3DSmudgeManager::render(RenderInfoClass &rinfo)
 	DX8Wrapper::Apply_Render_State_Changes();
 
 	//Disable reading texture alpha since it's undefined.
-	//DX8Wrapper::Set_DX8_Texture_Stage_State(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);		
+	//DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_COLOROP,VKTOP_SELECTARG1);		
 #ifdef INFO_VULKAN	
-	DX8Wrapper::Set_DX8_Texture_Stage_State(0,D3DTSS_ALPHAOP,D3DTOP_SELECTARG2);			
+	DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_ALPHAOP,VKTOP_SELECTARG2);			
 #endif
 
 	Int smudgesRemaining=count;
@@ -452,18 +449,18 @@ flushSmudges:
 			((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*) & identity);
 
 //Debug Code which draws outline around smudge
-/*		DX8Wrapper::_Get_D3D_Device8()->SetRenderState(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
-		DX8Wrapper::_Get_D3D_Device8()->SetRenderState(D3DRS_ALPHABLENDENABLE,FALSE);
-		DX8Wrapper::Set_DX8_Texture_Stage_State(0,D3DTSS_COLOROP,D3DTOP_SELECTARG2);			
+/*		DX8Wrapper::_Get_D3D_Device8()->SetRenderState(VKRS_FILLMODE,D3DFILL_WIREFRAME);
+		DX8Wrapper::_Get_D3D_Device8()->SetRenderState(VKRS_ALPHABLENDENABLE,FALSE);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_COLOROP,VKTOP_SELECTARG2);			
 		DX8Wrapper::Draw_Triangles(	0,smudgesInRenderBatch*4, 0, smudgesInRenderBatch*5);	
-		DX8Wrapper::_Get_D3D_Device8()->SetRenderState(D3DRS_FILLMODE,D3DFILL_SOLID);
-		DX8Wrapper::_Get_D3D_Device8()->SetRenderState(D3DRS_ALPHABLENDENABLE,TRUE);
-		DX8Wrapper::Set_DX8_Texture_Stage_State(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);			
+		DX8Wrapper::_Get_D3D_Device8()->SetRenderState(VKRS_FILLMODE,D3DFILL_SOLID);
+		DX8Wrapper::_Get_D3D_Device8()->SetRenderState(VKRS_ALPHABLENDENABLE,TRUE);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_COLOROP,VKTOP_SELECTARG1);			
 */
 		smudgesRemaining -= smudgesInRenderBatch;
 	}
 #ifdef INFO_VULKAN
-	DX8Wrapper::Set_DX8_Texture_Stage_State(0,D3DTSS_COLOROP,D3DTOP_MODULATE);			
-	DX8Wrapper::Set_DX8_Texture_Stage_State(0,D3DTSS_ALPHAOP,D3DTOP_MODULATE);			
+	DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_COLOROP,VKTOP_MODULATE);			
+	DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_ALPHAOP,VKTOP_MODULATE);			
 #endif
 }

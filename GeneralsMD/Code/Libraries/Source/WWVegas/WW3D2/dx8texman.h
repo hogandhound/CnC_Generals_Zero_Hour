@@ -108,7 +108,7 @@ public:
 	virtual void Recreate() const
 	{
 		WWASSERT(Texture->Peek_D3D_Base_Texture().image==NULL);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		Texture->Poke_Texture
 		(
 			DX8Wrapper::_Create_DX8_Texture
@@ -147,7 +147,7 @@ public:
 	virtual void Recreate() const
 	{
 		WWASSERT(Texture->Peek_D3D_Base_Texture().image==NULL);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		Texture->Poke_Texture
 		(
 			DX8Wrapper::_Create_DX8_ZTexture

@@ -678,22 +678,22 @@ void Render2DClass::Render(void)
 #ifdef INFO_VULKAN
 		if (DX8Wrapper::Get_Current_Caps()->Support_Dot3())
 		{	//Override W3D states with customizations for grayscale
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_TEXTUREFACTOR, 0x80A5CA8E);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG0, D3DTA_TFACTOR | D3DTA_ALPHAREPLICATE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_TFACTOR | D3DTA_ALPHAREPLICATE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP, D3DTOP_MULTIPLYADD);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_TEXTUREFACTOR, 0x80A5CA8E);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG0, VKTA_TFACTOR | VKTA_ALPHAREPLICATE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG1, VKTA_TEXTURE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG2, VKTA_TFACTOR | VKTA_ALPHAREPLICATE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLOROP, VKTOP_MULTIPLYADD);
 
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG1, D3DTA_CURRENT);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLOROP, D3DTOP_DOTPRODUCT3);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLORARG1, VKTA_CURRENT);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLORARG2, VKTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLOROP, VKTOP_DOTPRODUCT3);
 		}
 		else
 		{	//doesn't have DOT3 blend mode so fake it another way.
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_TEXTUREFACTOR, 0x60606060);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_TEXTUREFACTOR, 0x60606060);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG1, VKTA_TEXTURE);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG2, VKTA_TFACTOR);
+			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLOROP, VKTOP_MODULATE);
 		}
 #endif
 		WWVK_UpdateFVF_DUV_Grayscale_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &Texture->Peek_D3D_Texture(),

@@ -779,7 +779,13 @@ void W3DTerrainBackground::drawVisiblePolys(RenderInfoClass & rinfo, Bool disabl
 			DX8Wrapper::Set_Texture(1, m_terrainTexture);
 		}
 	}
-#ifdef TODO_VULKAN
+  auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexTerrain->FVF_Info().FVF);
+  assert(pipelines.size() == 1);
+  switch (pipelines[0]) {
+  case 0:
+  default: assert(false);
+  }
+#ifdef INFO_VULKAN
 	DX8Wrapper::Draw_Triangles(	0, m_curNumTerrainIndices/3, 0,	m_curNumTerrainVertices);
 #endif
 }

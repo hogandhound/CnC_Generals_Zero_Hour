@@ -1727,7 +1727,7 @@ void DX8TextureCategoryClass::Render(void)
 		//REF_PTR_RELEASE(material);
 		DX8Wrapper::Apply_Render_State_Changes();
 #ifdef INFO_VULKAN
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND,D3DBLEND_DESTCOLOR);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND,VK_BLEND_FACTOR_DST_COLOR);
 #endif
 	}
 
@@ -1872,7 +1872,7 @@ void DX8TextureCategoryClass::Render(void)
 //--------------------------------------------------------------------
 #ifdef INFO_VULKAN
 		if (mesh->Get_ObjectScale() != 1.0f)
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_NORMALIZENORMALS, TRUE);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_NORMALIZENORMALS, TRUE);
 #endif
 //--------------------------------------------------------------------
 		/*
@@ -1915,11 +1915,9 @@ void DX8TextureCategoryClass::Render(void)
 					vmaterial->Set_Opacity(mesh->Get_Alpha_Override());
 					DX8Wrapper::Set_Shader(theAlphaShader);
 					DX8Wrapper::Apply_Render_State_Changes();
-#ifdef TODO_VULKAN
-					DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAREF,(int)((float)0x60*mesh->Get_Alpha_Override()));
+					DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAREF,(int)((float)0x60*mesh->Get_Alpha_Override()));
 					renderer->Render(mesh->Get_Base_Vertex_Offset());
-					DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAREF,0x60);
-#endif
+					DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAREF,0x60);
 					vmaterial->Set_Opacity(oldOpacity);	//restore previous value
 					vmaterial->Set_Diffuse(oldDiffuse.X,oldDiffuse.Y,oldDiffuse.Z);
 					DX8Wrapper::Set_Shader(theShader);	//restore previous value
@@ -1940,7 +1938,7 @@ void DX8TextureCategoryClass::Render(void)
 //--------------------------------------------------------------------
 #ifdef INFO_VULKAN
 		if (mesh->Get_ObjectScale() != 1.0f)
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_NORMALIZENORMALS, FALSE);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_NORMALIZENORMALS, FALSE);
 #endif
 //--------------------------------------------------------------------
 
@@ -2226,7 +2224,7 @@ void DX8MeshRendererClass::Render_Decal_Meshes(void)
 	if (!decal_mesh) return;
 
 #ifdef INFO_VULKAN
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_DEPTHBIAS,8 * -0.000005f);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_DEPTHBIAS,8 * -0.000005f);
 #endif
 	
 	while (decal_mesh != NULL) {
@@ -2235,7 +2233,7 @@ void DX8MeshRendererClass::Render_Decal_Meshes(void)
 	}
 	visible_decal_meshes = NULL;
 #ifdef INFO_VULKAN
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_DEPTHBIAS,0);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_DEPTHBIAS,0);
 #endif
 }
 

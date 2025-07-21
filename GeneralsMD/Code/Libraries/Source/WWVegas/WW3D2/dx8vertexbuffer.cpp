@@ -391,7 +391,7 @@ DX8VertexBufferClass::DX8VertexBufferClass(
 }
 
 // ----------------------------------------------------------------------------
-
+#if 0
 DX8VertexBufferClass::DX8VertexBufferClass(
 	const Vector3* vertices,
 	const Vector2* tex_coords, 
@@ -409,6 +409,7 @@ DX8VertexBufferClass::DX8VertexBufferClass(
 	Create_Vertex_Buffer(usage);
 	Copy(vertices,tex_coords,0,VertexCount);
 }
+#endif
 
 // ----------------------------------------------------------------------------
 

@@ -47,6 +47,7 @@
 #include "random.h"
 #include "v3_rnd.h"
 #include "meshgeometry.h"
+#include "VkTexture.h"
 
 
 /* We have chunking logic which handles N segments at a time. To simplify the subdivision logic,
@@ -1137,7 +1138,8 @@ void SegLineRendererClass::Render
 		** Render
 		*/		
 		
-		DynamicVBAccessClass Verts((sorting?BUFFER_TYPE_DYNAMIC_SORTING:BUFFER_TYPE_DYNAMIC_DX8),dynamic_fvf_type,vnum);
+		DynamicVBAccessClass Verts((sorting?BUFFER_TYPE_DYNAMIC_SORTING:BUFFER_TYPE_DYNAMIC_DX8), 
+			VKFVF_XYZ | VKFVF_TEX1 | VKFVF_DIFFUSE,vnum);
 		// Copy in the data to the  VB
 		{
 			DynamicVBAccessClass::WriteLockClass Lock(&Verts);
@@ -1193,7 +1195,23 @@ void SegLineRendererClass::Render
 		if (sorting) {	
 			SortingRendererClass::Insert_Triangles(obj_sphere,0,tidx,0,vnum);
 		} else {
-#ifdef TODO_VULKAN
+			VK::Texture tex = {};
+			if (!Texture)
+			{
+				tex = Texture->Peek_D3D_Texture();
+			}
+			else
+			{
+				uint32_t white = 0xFFFFFFFF;
+				VK::CreateTexture(&WWVKRENDER, tex, 1, 1, (uint8_t*)&white);
+				WWVKRENDER.PushSingleTexture(tex);
+			}
+			WWVKDSV;
+			WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+			WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, tidx * 3, 0, VK_INDEX_TYPE_UINT16,
+				((DX8VertexBufferClass*)Verts.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
+#ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles(0,tidx,0,vnum);
 #endif
 		}

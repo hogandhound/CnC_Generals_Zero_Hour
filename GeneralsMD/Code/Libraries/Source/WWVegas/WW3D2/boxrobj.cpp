@@ -514,7 +514,13 @@ void BoxRenderObjClass::render_box(RenderInfoClass & rinfo,const Vector3 & cente
 		SphereClass sphere;
 		Get_Obj_Space_Bounding_Sphere(sphere); 
 
-#ifdef TODO_VULKAN
+		auto pipelines = DX8Wrapper::FindClosestPipelines(vbaccess.FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(buffer_type,0,NUM_BOX_FACES,0,NUM_BOX_VERTS);
 #endif
 	}

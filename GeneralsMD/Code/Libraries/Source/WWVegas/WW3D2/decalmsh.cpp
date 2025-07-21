@@ -356,7 +356,13 @@ void RigidDecalMeshClass::Render(void)
 
 		DX8Wrapper::Set_Index_Buffer(dynamic_ib,0);
 		DX8Wrapper::Set_Vertex_Buffer(dynamic_vb);
-#ifdef TODO_VULKAN
+		auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_vb.FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(	3*cur_poly_index,
 												(next_poly_index - cur_poly_index), // poly count
 												Polys[cur_poly_index].I, 
@@ -856,7 +862,13 @@ void SkinDecalMeshClass::Render(void)
 
 		DX8Wrapper::Set_Index_Buffer(dynamic_ib,0);
 		DX8Wrapper::Set_Vertex_Buffer(dynamic_vb);
-#ifdef TODO_VULKAN
+		auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_vb.FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(3*cur_poly_index,
 											(next_poly_index - cur_poly_index), // poly count
 											Polys[cur_poly_index].I, 

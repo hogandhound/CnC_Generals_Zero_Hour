@@ -954,7 +954,13 @@ void MeshClass::Render_Material_Pass(MaterialPassClass * pass,IndexBufferClass *
 
 			DX8Wrapper::Set_Index_Buffer(dynamic_ib,vertex_offset);
 
-#ifdef TODO_VULKAN
+			auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
+			assert(pipelines.size() == 1);
+			switch (pipelines[0]) {
+			case 0:
+			default: assert(false);
+			}
+#ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles(
 				0,
 				temp_apt.Count(),

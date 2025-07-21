@@ -69,33 +69,31 @@ TextureFilterClass::TextureFilterClass(MipCountType mip_level_count=MIP_LEVELS_1
 */
 void TextureFilterClass::Apply(unsigned int stage)
 {
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_DX8_Sampler_Stage_State(stage,D3DSAMP_MINFILTER,_MinTextureFilters[stage][TextureMinFilter]);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State(stage,D3DSAMP_MAGFILTER,_MagTextureFilters[stage][TextureMagFilter]);
-	DX8Wrapper::Set_DX8_Sampler_Stage_State(stage,D3DSAMP_MIPFILTER,_MipMapFilters[stage][MipMapFilter]);
+	DX8Wrapper::Set_DX8_Sampler_Stage_State(stage,VKSAMP_MINFILTER,_MinTextureFilters[stage][TextureMinFilter]);
+	DX8Wrapper::Set_DX8_Sampler_Stage_State(stage,VKSAMP_MAGFILTER,_MagTextureFilters[stage][TextureMagFilter]);
+	DX8Wrapper::Set_DX8_Sampler_Stage_State(stage,VKSAMP_MIPFILTER,_MipMapFilters[stage][MipMapFilter]);
 
 	switch (Get_U_Addr_Mode()) 
 	{
 	case TEXTURE_ADDRESS_REPEAT:
-		DX8Wrapper::Set_DX8_Sampler_Stage_State(stage, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State(stage, VKSAMP_ADDRESSU, VK_SAMPLER_ADDRESS_MODE_REPEAT);
 		break;
 
 	case TEXTURE_ADDRESS_CLAMP:
-		DX8Wrapper::Set_DX8_Sampler_Stage_State(stage, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State(stage, VKSAMP_ADDRESSU, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
 		break;
 	}
 
 	switch (Get_V_Addr_Mode()) 
 	{
 	case TEXTURE_ADDRESS_REPEAT:
-		DX8Wrapper::Set_DX8_Sampler_Stage_State(stage, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State(stage, VKSAMP_ADDRESSV, VK_SAMPLER_ADDRESS_MODE_REPEAT);
 		break;
 
 	case TEXTURE_ADDRESS_CLAMP:
-		DX8Wrapper::Set_DX8_Sampler_Stage_State(stage, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+		DX8Wrapper::Set_DX8_Sampler_Stage_State(stage, VKSAMP_ADDRESSV, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
 		break;
 	}
-#endif
 }
 
 //**********************************************************************************************
@@ -199,9 +197,7 @@ void TextureFilterClass::_Init_Filters(TextureFilterMode filter_type)
 		_MagTextureFilters[i][FILTER_TYPE_DEFAULT]=_MagTextureFilters[i][FILTER_TYPE_BEST];
 		_MipMapFilters[i][FILTER_TYPE_DEFAULT]=_MipMapFilters[i][FILTER_TYPE_BEST];
 
-#ifdef TODO_VULKAN
-		DX8Wrapper::Set_DX8_Sampler_Stage_State(i,D3DSAMP_MAXANISOTROPY,2);
-#endif
+		DX8Wrapper::Set_DX8_Sampler_Stage_State(i,VKSAMP_MAXANISOTROPY,2);
 	}
 
 }

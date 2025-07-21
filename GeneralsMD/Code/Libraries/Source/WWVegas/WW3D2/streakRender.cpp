@@ -1393,7 +1393,13 @@ void StreakRendererClass::RenderStreak
 		} 
 		else 
 		{
-#ifdef TODO_VULKAN
+			auto pipelines = DX8Wrapper::FindClosestPipelines(Verts.FVF_Info().FVF);
+			assert(pipelines.size() == 1);
+			switch (pipelines[0]) {
+			case 0:
+			default: assert(false);
+			}
+#ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles(0,triangleIndex,0,vnum);
 #endif
 		}

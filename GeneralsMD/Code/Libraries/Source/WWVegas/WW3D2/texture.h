@@ -80,9 +80,7 @@ class TextureBaseClass : public RefCountClass
 public:
 	enum TexAssetType
 	{
-		TEX_REGULAR,
-		TEX_CUBEMAP,
-		TEX_VOLUME
+		TEX_REGULAR
 	};
 
 	// base constructor for derived classes
@@ -238,7 +236,6 @@ private:
 	bool Dirty;
 
 	friend class TextureLoadTaskClass;
-	friend class CubeTextureLoadTaskClass;
 	friend class VolumeTextureLoadTaskClass;
 	TextureLoadTaskClass* TextureLoadTask;
 	TextureLoadTaskClass* ThumbnailLoadTask;
@@ -368,102 +365,6 @@ public:
 private:
 
 	WW3DZFormat DepthStencilTextureFormat;
-};
-
-class CubeTextureClass : public TextureClass
-{
-public:
-	// Create texture with desired height, width and format.
-	CubeTextureClass
-	(
-		unsigned width, 
-		unsigned height, 
-		WW3DFormat format,
-		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		bool rendertarget=false,
-		bool allow_reduction=true
-	);
-
-	// Create texture from a file. If format is specified the texture is converted to that format.
-	// Note that the format must be supported by the current device and that a texture can't exist
-	// in the system with the same name in multiple formats.
-	CubeTextureClass
-	(
-		const char *name,
-		const char *full_path=NULL,
-		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		WW3DFormat texture_format=WW3D_FORMAT_UNKNOWN,
-		bool allow_compression=true,
-		bool allow_reduction=true
-	);
-
-	// Create texture from a surface.
-	CubeTextureClass
-	(
-		SurfaceClass *surface, 
-		MipCountType mip_level_count=MIP_LEVELS_ALL
-	);		
-
-	CubeTextureClass(VK::Texture d3d_texture);
-
-	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
-
-	virtual TexAssetType Get_Asset_Type() const { return TEX_CUBEMAP; }
-
-	virtual CubeTextureClass* As_CubeTextureClass() { return this; }
-
-};
-
-class VolumeTextureClass : public TextureClass
-{
-public:
-	// Create texture with desired height, width and format.
-#ifdef INFO_VULKAN
-	VolumeTextureClass
-	(
-		unsigned width, 
-		unsigned height, 
-		unsigned depth,
-		WW3DFormat format,
-		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		bool rendertarget=false,
-		bool allow_reduction=true
-	);
-#endif
-
-	// Create texture from a file. If format is specified the texture is converted to that format.
-	// Note that the format must be supported by the current device and that a texture can't exist
-	// in the system with the same name in multiple formats.
-	VolumeTextureClass
-	(
-		const char *name,
-		const char *full_path=NULL,
-		MipCountType mip_level_count=MIP_LEVELS_ALL,
-		WW3DFormat texture_format=WW3D_FORMAT_UNKNOWN,
-		bool allow_compression=true,
-		bool allow_reduction=true
-	);
-
-	// Create texture from a surface.
-#ifdef INFO_VULKAN
-	VolumeTextureClass
-	(
-		SurfaceClass *surface, 
-		MipCountType mip_level_count=MIP_LEVELS_ALL
-	);		
-#endif
-
-	VolumeTextureClass(VK::Texture d3d_texture);
-
-	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
-
-	virtual TexAssetType Get_Asset_Type() const { return TEX_VOLUME; }
-
-	virtual VolumeTextureClass* As_VolumeTextureClass() { return this; }
-
-protected:
-
-	int Depth;
 };
 
 // Utility functions for loading and saving texture descriptions from/to W3D files

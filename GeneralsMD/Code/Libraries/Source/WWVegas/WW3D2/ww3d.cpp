@@ -942,19 +942,17 @@ WW3DErrorType WW3D::Render(SceneClass * scene,CameraClass * cam,bool clear,bool 
 	}
 
 	// set the rendering mode
-#ifdef TODO_VULKAN
 	switch(scene->Get_Polygon_Mode()) {
 		case SceneClass::POINT:
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_POINT);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,VK_POLYGON_MODE_POINT);
 			break;
 		case SceneClass::LINE:
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE, VK_POLYGON_MODE_LINE);
 			break;
 		case SceneClass::FILL:
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_SOLID);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE, VK_POLYGON_MODE_FILL);
 			break;
 	}
-#endif
 
 	// Set the global ambient light value here.  If the scene is using the LightEnvironment system
 	// this setting will get overriden.
@@ -1006,9 +1004,7 @@ WW3DErrorType WW3D::Render(
 	rinfo.Camera.Apply();
 
 	// set the rendering mode
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_SOLID);
-#endif
+	DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE, VK_POLYGON_MODE_FILL);
 
 	// Install the lighting environment if one is supplied
 	if (rinfo.light_environment != NULL) {

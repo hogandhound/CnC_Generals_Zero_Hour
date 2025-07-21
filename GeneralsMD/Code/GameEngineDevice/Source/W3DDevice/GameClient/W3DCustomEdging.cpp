@@ -372,9 +372,9 @@ void W3DCustomEdging::drawEdging(WorldHeightMap *pMap, Int minX, Int maxX, Int m
 	DX8Wrapper::Apply_Render_State_Changes();
 
 #ifdef INFO_VULKAN //This is disabled test code
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAREF,0x7B);
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAFUNC,D3DCMP_LESSEQUAL);	//pass pixels who's alpha is not zero
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHATESTENABLE, true);	//test pixels if transparent(clipped) before rendering.
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAREF,0x7B);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAFUNC,VK_COMPARE_OP_LESS_OR_EQUAL);	//pass pixels who's alpha is not zero
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHATESTENABLE, true);	//test pixels if transparent(clipped) before rendering.
 	DX8Wrapper::Draw_Triangles(	m_curEdgingIndexOffset, m_curNumEdgingIndices/3, 0,	m_curNumEdgingVertices);
 #endif
 	DX8Wrapper::Set_Texture(0,edgeTex);
@@ -383,14 +383,14 @@ void W3DCustomEdging::drawEdging(WorldHeightMap *pMap, Int minX, Int maxX, Int m
 	DX8Wrapper::Apply_Render_State_Changes();
 
 #ifdef INFO_VULKAN //This is disabled test code
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAREF,0x84);
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAFUNC,D3DCMP_GREATEREQUAL);	//pass pixels who's alpha is not zero
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHATESTENABLE, true);	//test pixels if transparent(clipped) before rendering.
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAREF,0x84);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAFUNC,VK_COMPARE_OP_GREATER_OR_EQUAL);	//pass pixels who's alpha is not zero
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHATESTENABLE, true);	//test pixels if transparent(clipped) before rendering.
 	DX8Wrapper::Draw_Triangles(	m_curEdgingIndexOffset, m_curNumEdgingIndices/3, 0,	m_curNumEdgingVertices);
 
 #if 0 // Dumps out unmasked data.
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE,false);
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHATESTENABLE, false);	//test pixels if transparent(clipped) before rendering.
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE,false);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHATESTENABLE, false);	//test pixels if transparent(clipped) before rendering.
 	DX8Wrapper::Draw_Triangles(	m_curEdgingIndexOffset, m_curNumEdgingIndices/3, 0,	m_curNumEdgingVertices);
 #endif
 #endif
@@ -404,23 +404,23 @@ void W3DCustomEdging::drawEdging(WorldHeightMap *pMap, Int minX, Int maxX, Int m
 		DX8Wrapper::Apply_Render_State_Changes();
 #ifdef INFO_VULKAN //This is disabled test code
 #if 1
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAARG1,   D3DTA_CURRENT );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_ALPHAARG1,   VKTA_CURRENT );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_ALPHAOP,   VKTOP_SELECTARG1 );
 
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG1, D3DTA_CURRENT );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLORARG2, D3DTA_TEXTURE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAARG1,   D3DTA_CURRENT );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAARG2,   D3DTA_TEXTURE );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG2 );
-		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, D3DTSS_TEXCOORDINDEX, 1 );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLORARG1, VKTA_CURRENT );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLORARG2, VKTA_TEXTURE );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLOROP,   VKTOP_SELECTARG1 );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_ALPHAARG1,   VKTA_CURRENT );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_ALPHAARG2,   VKTA_TEXTURE );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_ALPHAOP,   VKTOP_SELECTARG2 );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_TEXCOORDINDEX, 1 );
 #endif
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAREF,0x80);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAFUNC,D3DCMP_NOTEQUAL);	//pass pixels who's alpha is not zero
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHATESTENABLE, true);	//test pixels if transparent(clipped) before rendering.
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE,true);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND,D3DBLEND_DESTCOLOR);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND,D3DBLEND_ZERO);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAREF,0x80);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAFUNC,VK_COMPARE_OP_NOTEQUAL);	//pass pixels who's alpha is not zero
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHATESTENABLE, true);	//test pixels if transparent(clipped) before rendering.
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE,true);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND,VK_BLEND_FACTOR_DST_COLOR);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND,VK_BLEND_FACTOR_ZERO);
 		DX8Wrapper::Draw_Triangles(	m_curEdgingIndexOffset, m_curNumEdgingIndices/3, 0,	m_curNumEdgingVertices);
 #endif
 	}
@@ -431,12 +431,12 @@ void W3DCustomEdging::drawEdging(WorldHeightMap *pMap, Int minX, Int maxX, Int m
 		DX8Wrapper::Set_Texture(1,edgeTex);
 		DX8Wrapper::Apply_Render_State_Changes();
 #ifdef INFO_VULKAN //This is disabled test code
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAREF,0x80);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHAFUNC,D3DCMP_NOTEQUAL);	//pass pixels who's alpha is not zero
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHATESTENABLE, true);	//test pixels if transparent(clipped) before rendering.
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE,true);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND,D3DBLEND_DESTCOLOR);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND,D3DBLEND_ZERO);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAREF,0x80);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAFUNC,VK_COMPARE_OP_NOTEQUAL);	//pass pixels who's alpha is not zero
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHATESTENABLE, true);	//test pixels if transparent(clipped) before rendering.
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE,true);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND,VK_BLEND_FACTOR_DST_COLOR);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND,VK_BLEND_FACTOR_ZERO);
 		DX8Wrapper::Draw_Triangles(	m_curEdgingIndexOffset, m_curNumEdgingIndices/3, 0,	m_curNumEdgingVertices);
 #endif
 	}

@@ -221,7 +221,13 @@ void SortingRendererClass::Insert_Triangles(
 	unsigned short vertex_count)
 {
 	if (!WW3D::Is_Sorting_Enabled()) {
-#ifdef TODO_VULKAN
+		auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(start_index,polygon_count,min_vertex_index,vertex_count);
 #endif
 		return;

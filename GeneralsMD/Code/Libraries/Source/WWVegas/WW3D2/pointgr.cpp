@@ -983,7 +983,13 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 		}
 		else
 		{
-#ifdef TODO_VULKAN
+			auto pipelines = DX8Wrapper::FindClosestPipelines(PointVerts.FVF_Info().FVF);
+			assert(pipelines.size() == 1);
+			switch (pipelines[0]) {
+			case 0:
+			default: assert(false);
+			}
+#ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles (0, delta / verticesperprimitive, 0, delta);
 #endif
 		}
@@ -1829,10 +1835,8 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 		// so set world and view matrices to identity and render
 		
 		Matrix4x4 identity(true);
-#ifdef TODO_VULKAN
 		DX8Wrapper::Set_Transform(VkTS::WORLD,identity);	
 		DX8Wrapper::Set_Transform(VkTS::VIEW,identity);	
-#endif
 
 		DX8Wrapper::Set_Material(PointMaterial);
 		DX8Wrapper::Set_Shader(Shader);
@@ -1902,7 +1906,13 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 					SortingRendererClass::Insert_Triangles (0, delta / verticesperprimitive, 0, delta);
 			else
 			{
-#ifdef TODO_VULKAN
+				auto pipelines = DX8Wrapper::FindClosestPipelines(PointVerts.FVF_Info().FVF);
+				assert(pipelines.size() == 1);
+				switch (pipelines[0]) {
+				case 0:
+				default: assert(false);
+				}
+#ifdef INFO_VULKAN
 				DX8Wrapper::Draw_Triangles(0, delta / verticesperprimitive, 0, delta);
 #endif
 			}

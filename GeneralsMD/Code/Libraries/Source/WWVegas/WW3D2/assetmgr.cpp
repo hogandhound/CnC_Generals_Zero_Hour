@@ -1122,14 +1122,6 @@ TextureClass * WW3DAssetManager::Get_Texture
 		{
 			tex = NEW_REF (TextureClass, (lower_case_name, NULL, mip_level_count, texture_format, allow_compression, allow_reduction));
 		}
-		else if (type==TextureBaseClass::TEX_CUBEMAP)
-		{
-			tex = NEW_REF (CubeTextureClass, (lower_case_name, NULL, mip_level_count, texture_format, allow_compression, allow_reduction));
-		}
-		else if (type==TextureBaseClass::TEX_VOLUME)
-		{
-			tex = NEW_REF (VolumeTextureClass, (lower_case_name, NULL, mip_level_count, texture_format, allow_compression, allow_reduction));
-		}
 		TextureHash.Insert(tex->Get_Texture_Name(),tex);
 	}
 

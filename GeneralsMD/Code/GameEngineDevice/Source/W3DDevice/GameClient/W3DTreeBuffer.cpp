@@ -1683,8 +1683,8 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 	DX8Wrapper::Set_Texture(0,m_treeTexture);
 	DX8Wrapper::Set_Texture(1,NULL);
 
-	//DX8Wrapper::Set_DX8_Texture_Stage_State(0, D3DTSS_TEXCOORDINDEX, 0);
-	//DX8Wrapper::Set_DX8_Texture_Stage_State(1, D3DTSS_TEXCOORDINDEX, 1);
+	//DX8Wrapper::Set_DX8_Texture_Stage_State(0, VKTSS_TEXCOORDINDEX, 0);
+	//DX8Wrapper::Set_DX8_Texture_Stage_State(1, VKTSS_TEXCOORDINDEX, 1);
 	// Draw all the trees.
 	DX8Wrapper::Apply_Render_State_Changes();
 	W3DShaderManager::setShroudTex(1);
@@ -1778,8 +1778,8 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 	}
 
 #ifdef TODO_VULKAN
-	DX8Wrapper::Set_DX8_Texture_Stage_State(0,  D3DTSS_TEXCOORDINDEX, 0);
-	DX8Wrapper::Set_DX8_Texture_Stage_State(1,  D3DTSS_TEXCOORDINDEX, 1);
+	DX8Wrapper::Set_DX8_Texture_Stage_State(0,  VKTSS_TEXCOORDINDEX, 0);
+	DX8Wrapper::Set_DX8_Texture_Stage_State(1,  VKTSS_TEXCOORDINDEX, 1);
 	// Draw all the trees.
 	DX8Wrapper::Apply_Render_State_Changes();
 	W3DShaderManager::setShroudTex(1);
@@ -1855,9 +1855,9 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 		DX8Wrapper::Apply_Render_State_Changes();
 		if (m_dwTreeVertexShader) {
 			DX8Wrapper::_Get_D3D_Device8()->SetVertexShader(m_dwTreeVertexShader);
-			DX8Wrapper::_Get_D3D_Device8()->SetTextureStageState(0,  D3DTSS_TEXCOORDINDEX, 0);
-			DX8Wrapper::_Get_D3D_Device8()->SetTextureStageState(1,  D3DTSS_TEXCOORDINDEX, 1);
-			DX8Wrapper::_Get_D3D_Device8()->SetTextureStageState(1,  D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
+			DX8Wrapper::_Get_D3D_Device8()->SetTextureStageState(0,  VKTSS_TEXCOORDINDEX, 0);
+			DX8Wrapper::_Get_D3D_Device8()->SetTextureStageState(1,  VKTSS_TEXCOORDINDEX, 1);
+			DX8Wrapper::_Get_D3D_Device8()->SetTextureStageState(1,  VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_DISABLE);
 		}
 		DX8Wrapper::Draw_Triangles(	0, m_curNumTreeIndices[bNdx]/3, 0,	m_curNumTreeVertices[bNdx]);
 	}

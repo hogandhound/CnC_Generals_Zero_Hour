@@ -142,20 +142,18 @@ void W3DBridge::renderBridge(Bool wireframe, VK::Buffer index, VK::Buffer vertex
 		auto cloudTexture = DX8Wrapper::Get_Texture(1);
 		// Draw all the bridges.
 		WWVKDSV;
-		Matrix4x4 world;
-		DX8Wrapper::Get_Transform(VkTS::WORLD, world);
+		WorldMatrixUvt push;
+		DX8Wrapper::Get_Transform(VkTS::TEXTURE0, *(Matrix4x4*)&push.uvt);
+		DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)push.world);
 		if (!wireframe && cloudTexture)
 		{
-			WWVK_UpdateFVF_NDUV_CAMUV_NOLDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &baseTexture->Peek_D3D_Texture(),
+			WWVK_UpdateFVF_NDUV_CAMUVT_NOLDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &baseTexture->Peek_D3D_Texture(),
 				&cloudTexture->Peek_D3D_Texture(), DX8Wrapper::UboView(), DX8Wrapper::UboProj());
-			WWVK_DrawFVF_NDUV_CAMUV_NOL(WWVKPIPES, WWVKRENDER.currentCmd, sets, index.buffer, m_numPolygons * 3, m_firstIndex,
-				VK_INDEX_TYPE_UINT16, vertex.buffer, 0, (WorldMatrix*)&world);
+			WWVK_DrawFVF_NDUV_CAMUVT_NOL(WWVKPIPES, WWVKRENDER.currentCmd, sets, index.buffer, m_numPolygons * 3, m_firstIndex,
+				VK_INDEX_TYPE_UINT16, vertex.buffer, 0, (WorldMatrixUVT*)&push);
 		}
 		else
 		{
-			WorldMatrixUvt push;
-			memcpy(push.world, &world, sizeof(float) * 16);
-			DX8Wrapper::Get_Transform(VkTS::TEXTURE0, *(Matrix4x4*)&push.uvt);
 			WWVK_UpdateFVF_NDUV_UVT_NOLDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &baseTexture->Peek_D3D_Texture(),
 				DX8Wrapper::UboView(), DX8Wrapper::UboProj());
 			WWVK_DrawFVF_NDUV_UVT_NOL(WWVKPIPES, WWVKRENDER.currentCmd, sets, index.buffer, m_numPolygons * 3, m_firstIndex,

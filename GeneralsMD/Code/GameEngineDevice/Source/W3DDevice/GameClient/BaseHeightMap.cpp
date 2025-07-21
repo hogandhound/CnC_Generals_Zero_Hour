@@ -2495,8 +2495,8 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 	DX8Wrapper::Set_Transform(VkTS::WORLD,Matrix3D(1));
 	//Enabled writes to destination alpha only
 #ifdef INFO_VULKAN
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
-	DX8Wrapper::Set_DX8_Texture_Stage_State(0,  D3DTSS_TEXCOORDINDEX, 0);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
+	DX8Wrapper::Set_DX8_Texture_Stage_State(0,  VKTSS_TEXCOORDINDEX, 0);
 #endif
 
 	while (j != m_numShoreLineTiles)
@@ -2511,7 +2511,7 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 			UnsignedShort *ib=lockib.Get_Index_Array();
 			if (!ib || !vb)
 			{	
-				//DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+				//DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
 				return;
 			}
 
@@ -2635,7 +2635,7 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 	}//for all shore tiles
 
 	//Disable writes to destination alpha
-	//DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+	//DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
 	ShaderClass::Invalidate();
 }
 
@@ -2697,8 +2697,8 @@ void BaseHeightMapRenderObjClass::renderShoreLinesSorted(CameraClass *pCamera)
 	DX8Wrapper::Set_Transform(VkTS::WORLD,Matrix3D(1));
 	//Enabled writes to destination alpha only
 #ifdef INFO_VULKAN
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
-	DX8Wrapper::Set_DX8_Texture_Stage_State(0,  D3DTSS_TEXCOORDINDEX, 0);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
+	DX8Wrapper::Set_DX8_Texture_Stage_State(0,  VKTSS_TEXCOORDINDEX, 0);
 #endif
 
 	Bool isDone=FALSE;
@@ -2716,7 +2716,7 @@ void BaseHeightMapRenderObjClass::renderShoreLinesSorted(CameraClass *pCamera)
 			UnsignedShort *ib=lockib.Get_Index_Array();
 			if (!ib || !vb)
 			{	
-				//DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+				//DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
 				return;
 			}
 
@@ -2996,7 +2996,7 @@ flushVertexBuffer1:
 	}//for all shore tiles
 
 	//Disable writes to destination alpha
-	//DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+	//DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
 	ShaderClass::Invalidate();
 }
 

@@ -333,7 +333,13 @@ void DynamicMeshModel::Render(RenderInfoClass & rinfo)
 				SortingRendererClass::Insert_Triangles(sphere,0, DynamicMeshPNum, 0, DynamicMeshVNum);
 			}
 			else {
-#ifdef TODO_VULKAN
+				auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_vb.FVF_Info().FVF);
+				assert(pipelines.size() == 1);
+				switch (pipelines[0]) {
+				case 0:
+				default: assert(false);
+				}
+#ifdef INFO_VULKAN
 				DX8Wrapper::Draw_Triangles(0, DynamicMeshPNum, 0, DynamicMeshVNum);
 #endif
 			}
@@ -375,7 +381,13 @@ void DynamicMeshModel::Render(RenderInfoClass & rinfo)
 						1 + max_vert_idx - min_vert_idx);
 				}
 				else {
-#ifdef TODO_VULKAN
+					auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_vb.FVF_Info().FVF);
+					assert(pipelines.size() == 1);
+					switch (pipelines[0]) {
+					case 0:
+					default: assert(false);
+					}
+#ifdef INFO_VULKAN
 					DX8Wrapper::Draw_Triangles(
 						(start_tri_idx * 3),
 						(1 + cur_tri_idx - start_tri_idx), 

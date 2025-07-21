@@ -1997,13 +1997,13 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 				devicePasses=1;	//one pass solid, next in wireframe.
 				DX8Wrapper::Apply_Render_State_Changes();
 #ifdef INFO_VULKAN
-				DX8Wrapper::Set_DX8_Texture_Stage_State( 0, D3DTSS_COLORARG2, D3DTA_TFACTOR );
-				DX8Wrapper::Set_DX8_Render_State(D3DRS_TEXTUREFACTOR,0xff808080);
+				DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG2, VKTA_TFACTOR );
+				DX8Wrapper::Set_DX8_Render_State(VKRS_TEXTUREFACTOR,0xff808080);
 #endif
 				doMultiPassWireFrame=TRUE;
 				renderTerrainPass(&rinfo.Camera);
 #ifdef INFO_VULKAN
-				DX8Wrapper::Set_DX8_Render_State(D3DRS_TEXTUREFACTOR,0xff008000);
+				DX8Wrapper::Set_DX8_Render_State(VKRS_TEXTUREFACTOR,0xff008000);
 #endif
 				return;
 			}
@@ -2052,7 +2052,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 		//Disable writes to destination alpha channel (if there is one)
 #ifdef INFO_VULKAN
 		if (DX8Wrapper::getBackBufferFormat() == WW3D_FORMAT_A8R8G8B8)
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
 #endif
 	}
 
@@ -2266,7 +2266,13 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 			if (Is_Hidden() == 0) {
 				WWVKDSV;
 				//Figure out the install materials
-#ifdef TODO_VULKAN
+				auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
+				assert(pipelines.size() == 1);
+				switch (pipelines[0]) {
+				case 0:
+				default: assert(false);
+				}
+#ifdef INFO_VULKAN
 				DX8Wrapper::Draw_Triangles(	0,numPolys, 0,	numVertex);
 #endif
 			}

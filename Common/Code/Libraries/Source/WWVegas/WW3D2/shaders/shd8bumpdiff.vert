@@ -36,9 +36,10 @@ layout(set = 0, binding = 1) uniform SSBumpDiff{
 	vec4 lightColor[4];
 	vec4 diffuse;
 	vec4 ambient;
-	vec4 constVal;
+	//vec4 constVal; 0.0f, 1.0f, 0.5f, 2.0f
 	vec4 bumpiness;
 } bump;
+
 
 layout(location = 0) in vec3 vert;
 layout(location = 1) in vec3 vS;
@@ -81,11 +82,12 @@ void main() {
 	col = col * diffuse * bump.diffuse;
 	fragSpec = col + bump.ambient;
 	
-	lightLocal.xyz = (lightLocal.xyz + bump.constVal.yyy) * bump.constVal.zzz * bump.bumpiness.xxx;
+	vec4 constVal = vec4(0.0, 1.0, 0.5, 2.0);
+	lightLocal.xyz = (lightLocal.xyz + constVal.yyy) * constVal.zzz * bump.bumpiness.xxx;
 	fragDiff.xyz = vec3(lightLocal.xyz + bump.bumpiness.yyy);
 	
-	light.x = (bump.constVal.y - light.x) * bump.lightColor[0].x;
-	light.y = (bump.constVal.y - light.y) * bump.lightColor[0].y;
+	light.x = (constVal.y - light.x) * bump.lightColor[0].x;
+	light.y = (constVal.y - light.y) * bump.lightColor[0].y;
 	fragDiff.w = light.x + light.y;
 	
 	fragUv = vec4(uv,0,0);

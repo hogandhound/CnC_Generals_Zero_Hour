@@ -538,7 +538,7 @@ void FlatHeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 	//Disable writes to destination alpha channel (if there is one)
 #ifdef INFO_VULKAN
 	if (DX8Wrapper::getBackBufferFormat() == WW3D_FORMAT_A8R8G8B8) {
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
 	}
 #endif
 

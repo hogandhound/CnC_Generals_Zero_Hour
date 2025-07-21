@@ -902,13 +902,20 @@ Try improving the fit to vertical surfaces like cliffs.
 		mod=m_usedModules;
 		Matrix3D tm(mod->Transform);
 		DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
+		auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBuffer->FVF_Info().FVF);
+		assert(pipelines.size() == 1);
 		while (mod)
 		{
 			if (mod->m_activeEdgeCount >= 2 && mod->Is_Really_Visible())
 			{
 				DX8Wrapper::Set_Texture(0,mod->m_stageZeroTexture);
 				DX8Wrapper::Set_Index_Buffer_Index_Offset(trackStartIndex);
-#ifdef TODO_VULKAN
+				switch (pipelines[0])
+				{
+				case 0:
+				default: assert(false);
+				}
+#ifdef INFO_VULKAN
 				DX8Wrapper::Draw_Triangles(	0,(mod->m_activeEdgeCount-1)*2, 0, mod->m_activeEdgeCount*2);
 #endif
 

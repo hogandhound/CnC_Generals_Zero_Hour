@@ -393,8 +393,10 @@ Render2DSentenceClass::Build_Textures (void)
 		//
 		//	Copy the contents of the texture from the surface
 		//
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		DX8Wrapper::_Copy_DX8_Rects(curr_surface->Peek_D3D_Surface(), NULL, 0, texture_surface->Peek_D3D_Surface(), NULL);
+#else
+		texture_surface->Copy(curr_surface->Peek_D3D_Surface().data(), &new_texture->Peek_D3D_Texture());
 #endif
 		//DX8Wrapper::_Stretch_DX9_Rects (curr_surface->Peek_D3D_Surface (), NULL, 0, texture_surface->Peek_D3D_Surface (), NULL, D3DTEXF_LINEAR);
 		REF_PTR_RELEASE (texture_surface);

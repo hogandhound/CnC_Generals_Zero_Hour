@@ -348,34 +348,74 @@ void W3DStatusCircle::Render(RenderInfoClass & rinfo)
 	Int diffuse = (0xff<<24)|(clr<<16)|(clr<<8)|clr;	 // b g<<8 r<<16 a<<24.		 
 	updateScreenVB(diffuse);
 	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
-#ifdef TODO_VULKAN
 	DX8Wrapper::Set_Shader(ShaderClass(SC_ADD));
 	DX8Wrapper::Set_Vertex_Buffer(m_vertexBufferScreen);
 	DX8Wrapper::Apply_Render_State_Changes();
 	switch (fade) {
 		default:
 		case ScriptEngine::FADE_ADD:
-			DX8Wrapper::Draw_Triangles(	0,2, 0,	(2*3));
-			break;
-		case ScriptEngine::FADE_SUBTRACT:
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT );
-			DX8Wrapper::Draw_Triangles(	0,2, 0,	(2*3));
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_BLENDOP, D3DBLENDOP_ADD );
-			break;
-		case ScriptEngine::FADE_SATURATE:
-			// 4x multiply
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND,D3DBLEND_DESTCOLOR);
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND,D3DBLEND_SRCCOLOR);
-			DX8Wrapper::Draw_Triangles(	0,2, 0,	(2*3));
-			DX8Wrapper::Draw_Triangles(	0,2, 0,	(2*3));
-			break;
-		case ScriptEngine::FADE_MULTIPLY:
-			// Straight multiply
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND,D3DBLEND_ZERO);
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND,D3DBLEND_SRCCOLOR);
-			DX8Wrapper::Draw_Triangles(	0,2, 0,	(2*3));
-			break;
-	}
+		{
+			auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBufferScreen->FVF_Info().FVF);
+			assert(pipelines.size() == 1);
+			switch (pipelines[0]) {
+			case 0:
+			default: assert(false);
+			}
+#ifdef INFO_VULKAN
+			DX8Wrapper::Draw_Triangles(0, 2, 0, (2 * 3));
 #endif
+			break;
+		}
+		case ScriptEngine::FADE_SUBTRACT:
+		{
+			DX8Wrapper::Set_DX8_Render_State(VKRS_BLENDOP, VK_BLEND_OP_REVERSE_SUBTRACT);
+#ifdef INFO_VULKAN
+			DX8Wrapper::Draw_Triangles(0, 2, 0, (2 * 3));
+#endif
+			auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBufferScreen->FVF_Info().FVF);
+			assert(pipelines.size() == 1);
+			switch (pipelines[0]) {
+			case 0:
+			default: assert(false);
+			}
+			
+			DX8Wrapper::Set_DX8_Render_State(VKRS_BLENDOP, VK_BLEND_OP_ADD);
+			break;
+		}
+		case ScriptEngine::FADE_SATURATE:
+		{
+			// 4x multiply
+			DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND, VK_BLEND_FACTOR_DST_COLOR);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_SRC_COLOR);
+			auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBufferScreen->FVF_Info().FVF);
+			assert(pipelines.size() == 1);
+			switch (pipelines[0]) {
+			case 0:
+			default: assert(false);
+			}
+#ifdef INFO_VULKAN
+			DX8Wrapper::Draw_Triangles(0, 2, 0, (2 * 3));
+			DX8Wrapper::Draw_Triangles(0, 2, 0, (2 * 3));
+#endif
+			break;
+		}
+		case ScriptEngine::FADE_MULTIPLY:
+		{
+			// Straight multiply
+			
+			DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND, VK_BLEND_FACTOR_ZERO);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_SRC_COLOR);
+			auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBufferScreen->FVF_Info().FVF);
+			assert(pipelines.size() == 1);
+			switch (pipelines[0]) {
+			case 0:
+			default: assert(false);
+			}
+#ifdef INFO_VULKAN
+			DX8Wrapper::Draw_Triangles(0, 2, 0, (2 * 3));
+#endif
+			break;
+		}
+	}
 	ShaderClass::Invalidate();
 }

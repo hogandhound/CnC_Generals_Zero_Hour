@@ -980,8 +980,8 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 			//wireframe should be visible.
 			///@todo: Clearing to black may not be needed if the scene already did the clear.
 #ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
-			DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 0);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
+			DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 0);
 #endif
 			//Since all objects will be rendered with same material, disable resetting until all are done.
 			m_maskMaterialPass->setAllowUninstall(FALSE);
@@ -992,7 +992,7 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 			m_maskMaterialPass->UnInstall_Materials();
 
 #ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
 #endif
 
 			ShaderClass::Invalidate();
@@ -1008,8 +1008,8 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 			///@todo: Clearing to black may not be needed if the scene already did the clear.
 			DX8Wrapper::Clear(true, false, Vector3(0.0f,0.0f,0.0f),1.0f);	// Clear color but not z
 #ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
-			DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 0);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
+			DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 0);
 #endif
 			
 			//We're only filling the z-buffer so ignore normal textures and state changes to speed things up.
@@ -1023,12 +1023,12 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 			m_maskMaterialPass->UnInstall_Materials();
 
 #ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
 #endif
 			WW3D::Enable_Coloring(0xff008000);
 			WW3D::Enable_Texturing(false);
 #ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,D3DFILL_WIREFRAME);
 #endif
 
 			//Move maximum z-buffer value in a little to shift all z-values closer
@@ -1038,17 +1038,17 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 			rinfo.Camera.Set_Zbuffer_Range(nearZ, farZ-ZBias);
 			rinfo.Camera.Apply();
 
-//			DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 4);
+//			DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 4);
 			Customized_Render(rinfo);	//render wireframe where z-test passes
 			Flush(rinfo);
 #ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_SOLID);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,D3DFILL_SOLID);
 #endif
 
 			rinfo.Camera.Set_Zbuffer_Range(nearZ, farZ);
 			rinfo.Camera.Apply();
 
-//			DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 0);
+//			DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 0);
 			WW3D::Enable_Texturing(old_enable);
 			WW3D::Enable_Coloring(0);
 
@@ -1059,40 +1059,32 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 
 			//Disable writes to color buffer to save memory bandwidth - we only need Z.
 #ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,0);
-			DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 0);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,0);
+			DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 0);
 #endif
 			Customized_Render(rinfo);
 			Flush(rinfo);
 			//Re-enable writes to color buffer.
 #ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
 #endif
 
 			switch (Get_Extra_Pass_Polygon_Mode()) {
-			case EXTRA_PASS_LINE:
-				WW3D::Enable_Texturing(false);
-#ifdef INFO_VULKAN
-				DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
-				DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 7 * -0.000005f);
-#endif
-				Customized_Render(rinfo);
-				break;
 			case EXTRA_PASS_CLEAR_LINE:
 				DX8Wrapper::Clear(true, false, Vector3(0.0f,0.0f,0.0f), 0.0f);	// Clear color but not z
 				WW3D::Enable_Texturing(false);
 				WW3D::Enable_Coloring(0xff008000);
 #ifdef INFO_VULKAN
-				DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
-				DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 7 * -0.000005f);
+				DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,D3DFILL_WIREFRAME);
+				DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 7 * -0.000005f);
 #endif
 				Customized_Render(rinfo);
 				break;
 			}
 			Flush(rinfo);
 #ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_SOLID);
-			DX8Wrapper::Set_DX8_Render_State (D3DRS_DEPTHBIAS, 0);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,D3DFILL_SOLID);
+			DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 0);
 #endif
 			WW3D::Enable_Texturing(old_enable);
 			WW3D::Enable_Coloring(0);
@@ -1295,46 +1287,46 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 	m_pDev->SetFVF(VKFVF_XYZRHW | VKFVF_DIFFUSE);
 
 	// Set stencil states
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILENABLE, TRUE );
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_ZENABLE, TRUE );
+	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILENABLE, TRUE );
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ZENABLE, TRUE );
 	DWORD	oldColorWriteEnable=0x12345678;
 	if (clear)
 	{	//we want to clear the stencil buffer to some known value whereever a player index is stored
 		Int occludedMask=TheW3DShadowManager->getStencilShadowMask();
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILREF,      0x80808080 );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILMASK,     occludedMask );	//isolate bits containing occluder|playerIndex
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILWRITEMASK,0xffffffff );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFUNC,  D3DCMP_LESS );	//only draw to pixels that match the reference value
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILZFAIL, D3DSTENCILOP_REPLACE );	
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILPASS,  D3DSTENCILOP_REPLACE );	//pixels which had occluded player colors, get MSB set.
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFAIL,  D3DSTENCILOP_ZERO );	//pixels which had no occluded player colors are cleared.
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ZFUNC, D3DCMP_NEVER  );	//fail all access to the frame buffer to improve memory bandwidth
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILREF,      0x80808080 );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILMASK,     occludedMask );	//isolate bits containing occluder|playerIndex
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILWRITEMASK,0xffffffff );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFUNC,  VK_COMPARE_OP_LESS );	//only draw to pixels that match the reference value
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILZFAIL, VK_STENCIL_OP_REPLACE );	
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILPASS,  VK_STENCIL_OP_REPLACE );	//pixels which had occluded player colors, get MSB set.
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFAIL,  VK_STENCIL_OP_ZERO );	//pixels which had no occluded player colors are cleared.
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ZFUNC, VK_COMPARE_OP_NEVER  );	//fail all access to the frame buffer to improve memory bandwidth
 
 		//disable writes to color buffer
 		if (DX8Wrapper::Get_Current_Caps()->Get_DX8_Caps().PrimitiveMiscCaps & D3DPMISCCAPS_COLORWRITEENABLE)
-		{	DX8Wrapper::_Get_D3D_Device8()->GetRenderState(D3DRS_COLORWRITEENABLE, &oldColorWriteEnable);
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,0);
+		{	DX8Wrapper::_Get_D3D_Device8()->GetRenderState(VKRS_COLORWRITEENABLE, &oldColorWriteEnable);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,0);
 		}
 		else
 		{	//device does not support disabling writes to color buffer so fake it through alpha blending
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE, TRUE);
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND, D3DBLEND_ZERO );
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND, D3DBLEND_ONE );
+			DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE, TRUE);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND, VK_BLEND_FACTOR_ZERO );
+			DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_ONE );
 		}
 	}
 	else
-	{	DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILREF,      stencilRef );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILMASK,     0xffffffff );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILWRITEMASK,0xffffffff );	
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFUNC,  D3DCMP_EQUAL );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILPASS,  D3DSTENCILOP_KEEP );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFAIL,  D3DSTENCILOP_KEEP );
+	{	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILREF,      stencilRef );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILMASK,     0xffffffff );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILWRITEMASK,0xffffffff );	
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFUNC,  VK_COMPARE_OP_EQUAL );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILZFAIL, VK_STENCIL_OP_KEEP );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILPASS,  VK_STENCIL_OP_KEEP );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFAIL,  VK_STENCIL_OP_KEEP );
 
 		//Make occluded pixels transparent
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE, TRUE);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE, TRUE);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND, VK_BLEND_FACTOR_SRCALPHA );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_INVSRCALPHA );
 	}
 #endif
 	if (clear)
@@ -1345,8 +1337,6 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 		vkCmdSetStencilOp(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, VK_STENCIL_OP_ZERO, 
 			VK_STENCIL_OP_REPLACE, VK_STENCIL_OP_REPLACE, VK_COMPARE_OP_LESS);
 		vkCmdSetDepthWriteEnable(WWVKRENDER.currentCmd, false);
-		VkBool32 noColor[4] = { 0,0,0,0 };
-		vkCmdSetColorWriteEnableEXT(WWVKRENDER.currentCmd, 4, noColor);
 	}
 	else
 	{
@@ -1355,8 +1345,6 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 		vkCmdSetStencilOp(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, VK_STENCIL_OP_KEEP,
 			VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_COMPARE_OP_EQUAL);
 		vkCmdSetDepthWriteEnable(WWVKRENDER.currentCmd, true);
-		VkBool32 noColor[4] = { 1,1,1,1 };
-		vkCmdSetColorWriteEnableEXT(WWVKRENDER.currentCmd, 4, noColor);
 	}
 	
 	if (DX8Wrapper::_Is_Triangle_Draw_Enabled())
@@ -1366,8 +1354,16 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 		VK::Buffer vbo;
 		VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANSLITVERTEX) * 4, v, vbo);
 		WWVKDSV;
-		WWVK_UpdateStencilPlayerColorDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
-		WWVK_DrawStencilPlayerColor_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+		if (clear)
+		{
+			WWVK_UpdateStencilPlayerColorClearDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+			WWVK_DrawStencilPlayerColorClear_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+		}
+		else
+		{
+			WWVK_UpdateStencilPlayerColorDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+			WWVK_DrawStencilPlayerColor_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
+		}
 #ifdef INFO_VULKAN
 		m_pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANSLITVERTEX));
 #endif
@@ -1375,14 +1371,14 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 
 #ifdef INFO_VULKAN
 	// turn off the stencil buffer
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILENABLE, FALSE );
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_ALPHABLENDENABLE, FALSE);	//restore shader state
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_SRCBLEND, D3DBLEND_ONE );
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_DESTBLEND, D3DBLEND_ZERO );
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILENABLE, FALSE );
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE, FALSE);	//restore shader state
+	DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND, VK_BLEND_FACTOR_ONE );
+	DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_ZERO );
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ZFUNC, VK_COMPARE_OP_ALWAYS);
 
 	if (oldColorWriteEnable != 0x12345678)
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_COLORWRITEENABLE,oldColorWriteEnable);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,oldColorWriteEnable);
 #endif
 
 }  // end renderStencilShadows
@@ -1439,18 +1435,15 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 			lastPlayerObject[index]++;	//increment to next object
 		}
 
-#ifdef TODO_VULKAN
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILENABLE, TRUE );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ZENABLE, TRUE );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILMASK, 0xffffffff);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILWRITEMASK, 0xffffffff);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILENABLE, TRUE );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILMASK, 0xffffffff);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILWRITEMASK, 0xffffffff);
 		//Always store player index into stencil unless it is occluded by another
 		//player's potentially occluded objects.
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFUNC,  D3DCMP_ALWAYS );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFAIL,  D3DSTENCILOP_KEEP );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILPASS,  D3DSTENCILOP_REPLACE );
-#endif
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFUNC,  VK_COMPARE_OP_ALWAYS );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILZFAIL, VK_STENCIL_OP_KEEP );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFAIL,  VK_STENCIL_OP_KEEP );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILPASS,  VK_STENCIL_OP_REPLACE );
 
 		//Find out which player indices are actually used and remap them to
 		//a color index.  Render all objects using the same color index at once.
@@ -1478,10 +1471,8 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 
 
 				//Store this object's color index into bits 3-6 of stencil buffer
-#ifdef TODO_VULKAN
 				Int thisPlayerColorIndex=playerColorIndex[i];
-				DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILREF, thisPlayerColorIndex<<3);
-#endif
+				DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILREF, thisPlayerColorIndex<<3);
 
 				//Render all of this player's objects for which we care when they are occluded.
 				RenderObjClass **renderList=&playerObjects[i][0];
@@ -1493,17 +1484,13 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 						TheDX8MeshRenderer.Flush();	//render all the submitted meshes using current stencil function
 						SHD_FLUSH;
 						//Disable writing to color buffer since translucent objects are rendered at end of frame.
-#ifdef TODO_VULKAN
-						DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFUNC,  D3DCMP_NEVER );	//never allow frame buffer writes.
-						DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFAIL,  D3DSTENCILOP_REPLACE );	//always replace existing stencil value
-#endif
+						DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFUNC,  VK_COMPARE_OP_NEVER );	//never allow frame buffer writes.
+						DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFAIL,  VK_STENCIL_OP_REPLACE );	//always replace existing stencil value
 						renderOneObject(rinfo, (*renderList), localPlayerIndex);
 						TheDX8MeshRenderer.Flush();	//render all the submitted meshes using current stencil function
 						SHD_FLUSH;
-#ifdef TODO_VULKAN
-						DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFAIL,  D3DSTENCILOP_KEEP );
-						DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFUNC,  D3DCMP_ALWAYS );
-#endif
+						DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFAIL,  VK_STENCIL_OP_KEEP );
+						DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFUNC,  VK_COMPARE_OP_ALWAYS );
 					}
 					else
 						renderOneObject(rinfo, (*renderList), localPlayerIndex);
@@ -1516,9 +1503,7 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 		//Stencil buffer is now filled with color indices of potentially occluded objects.  We now draw
 		//non-occluder or occludee objects such as small rocks, shrubs, etc. which we don't care about
 		//but need to render here so that they don't interfere with building occlusion.
-#ifdef TODO_VULKAN
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILENABLE, FALSE );	//these objects are not stored in stencil
-#endif
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILENABLE, FALSE );	//these objects are not stored in stencil
 		RenderObjClass **nonOccluderOrOccludeeList=m_nonOccludersOrOccludees;
 		for (i=0; i<m_numNonOccluderOrOccludee; i++)
 		{
@@ -1529,17 +1514,14 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 
 		//Stencil buffer is now filled with color indices of potentially occluded objects.  We now draw
 		//occluder objects so they cover up and modify stencil MSB wherever they are in front of other objects.
-#ifdef TODO_VULKAN
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILENABLE, TRUE );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_ZENABLE, TRUE );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILREF, 0xffffffff);
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILMASK, 0xffffffff);	//isolate lowest player color
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILWRITEMASK, 0x80);	//only write to MSB
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFUNC,  D3DCMP_ALWAYS );	//check if player colors stored in pixel
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFAIL,  D3DSTENCILOP_KEEP );
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILPASS,  D3DSTENCILOP_REPLACE );
-#endif
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILENABLE, TRUE );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILREF, 0xffffffff);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILMASK, 0xffffffff);	//isolate lowest player color
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILWRITEMASK, 0x80);	//only write to MSB
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFUNC,  VK_COMPARE_OP_ALWAYS );	//check if player colors stored in pixel
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILZFAIL, VK_STENCIL_OP_KEEP );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFAIL,  VK_STENCIL_OP_KEEP );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILPASS,  VK_STENCIL_OP_REPLACE );
 
 		//Render all potential occluders on top of already rendered potential occludees.
 		RenderObjClass **occluderList=m_potentialOccluders;
@@ -1573,9 +1555,7 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 			TheW3DShadowManager->setStencilShadowMask(0x80808080);	//msb indicates occluded player pixels so ignore it when filling screen with shadow
 		}
 
-#ifdef TODO_VULKAN
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILENABLE, FALSE );
-#endif
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILENABLE, FALSE );
 	}
 	else
 	if (m_numNonOccluderOrOccludee || m_numPotentialOccluders || m_numPotentialOccludees)
@@ -1608,9 +1588,7 @@ void RTS3DScene::flushOccludedObjectsIntoStencil(RenderInfoClass & rinfo)
 	//Reset scene ambient because we sometimes mess around with it to make objects
 	//glow, etc. when processing drawables.  This is a good place to do it because this
 	//function gets called right after we flush regular render objects.
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_AMBIENT,DX8Wrapper::Convert_Color(this->Get_Ambient_Light(),0.0f));
-#endif
+	DX8Wrapper::Set_DX8_Render_State(VKRS_AMBIENT,DX8Wrapper::Convert_Color(this->Get_Ambient_Light(),0.0f));
 }
 
 /*Version which does not require stencil buffer*/
@@ -1623,23 +1601,20 @@ void RTS3DScene::flushOccludedObjects(RenderInfoClass & rinfo)
 
 	if (m_occludedObjectsCount)
 	{
-#ifdef TODO_VULKAN
 		Int localPlayerIndex = ThePlayerList ? ThePlayerList->getLocalPlayer()->getPlayerIndex() : 0;
 
 		if (DX8Wrapper::Has_Stencil())	//just in case we have shadows, disable them over occluded pixels.
 		{
 			//Set all stencil pixels of potentially occluded objects to 128.
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILENABLE, TRUE );
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_ZENABLE, TRUE );
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILREF,      128 );
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILMASK,     0xffffffff );
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILWRITEMASK,0xffffffff );
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP );
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFAIL,  D3DSTENCILOP_KEEP );
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILPASS,  D3DSTENCILOP_REPLACE );
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILFUNC,  D3DCMP_ALWAYS );
+			DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILENABLE, TRUE );
+			DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILREF,      128 );
+			DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILMASK,     0xffffffff );
+			DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILWRITEMASK,0xffffffff );
+			DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILZFAIL, VK_STENCIL_OP_KEEP );
+			DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFAIL,  VK_STENCIL_OP_KEEP );
+			DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILPASS,  VK_STENCIL_OP_REPLACE );
+			DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFUNC,  VK_COMPARE_OP_ALWAYS );
 		}
-#endif
 
 		//First draw all the solid colored models
 		///@todo: Optimize this so that the extra passes don't actually install the material since it's all the same.
@@ -1663,12 +1638,11 @@ void RTS3DScene::flushOccludedObjects(RenderInfoClass & rinfo)
 
 		//Now draw the normal models so they cover up the colored models on any pixels that
 
-#ifdef TODO_VULKAN
 		//Now draw the normal models so they cover up the colored models on any pixels that
 		//Normal models will clear stencil value from 128 back to 0 where the object pixels are
 		//not occluded but will leave  128 in stencil where still occluded.
 		if (DX8Wrapper::Has_Stencil())
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILREF,      0 );
+			DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILREF,      0 );
 
 		for (i=0; i<m_occludedObjectsCount; i++)
 		{
@@ -1679,17 +1653,14 @@ void RTS3DScene::flushOccludedObjects(RenderInfoClass & rinfo)
 		//Flush all the submitted translucent objects.
 		TheDX8MeshRenderer.Flush();
 		m_occludedObjectsCount = 0;
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_STENCILENABLE, FALSE );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILENABLE, FALSE );
 		TheW3DShadowManager->setStencilShadowMask(0x80808080);	//upper MSB always contains flag indicating occluded player color.
-#endif
 	}
 
 	//Reset scene ambient because we sometimes mess around with it to make objects
 	//glow, etc. when processing drawables.  This is a good place to do it because this
 	//function gets called right after we flush regular render objects.
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_AMBIENT,DX8Wrapper::Convert_Color(this->Get_Ambient_Light(),0.0f));
-#endif
+	DX8Wrapper::Set_DX8_Render_State(VKRS_AMBIENT,DX8Wrapper::Convert_Color(this->Get_Ambient_Light(),0.0f));
 }
 
 void RTS3DScene::flushTranslucentObjects(RenderInfoClass & rinfo)
@@ -1721,9 +1692,7 @@ void RTS3DScene::flushTranslucentObjects(RenderInfoClass & rinfo)
 	//Reset scene ambient because we sometimes mess around with it to make objects
 	//glow, etc. when processing drawables.  This is a good place to do it because this
 	//function gets called right after we flush regular render objects.
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_AMBIENT,DX8Wrapper::Convert_Color(this->Get_Ambient_Light(),0.0f));
-#endif
+	DX8Wrapper::Set_DX8_Render_State(VKRS_AMBIENT,DX8Wrapper::Convert_Color(this->Get_Ambient_Light(),0.0f));
 }
 
 //=============================================================================

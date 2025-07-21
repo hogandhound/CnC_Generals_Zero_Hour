@@ -146,7 +146,7 @@ void Shd8BumpDiffClass::Shutdown(void)
 void Shd8BumpDiffClass::Apply_Shared(int cur_pass, RenderInfoClass& rinfo)
 {
 	DX8Wrapper::Set_Pipeline(cur_pass == 0 ? PIPELINE_WWVK_BumpDiff : PIPELINE_WWVK_SSBumpDiff);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	// set vertex shader
 	if (cur_pass==0)
 	{
@@ -172,6 +172,8 @@ void Shd8BumpDiffClass::Apply_Shared(int cur_pass, RenderInfoClass& rinfo)
 
 	// set constants
 	DX8Wrapper::Set_Vertex_Shader_Constant(CV_CONST, D3DXVECTOR4(0.0f, 1.0f, 0.5f, 2.0f), 1);
+#else
+	DX8Wrapper::Set_Pipeline(cur_pass == 0 ? PIPELINE_WWVK_BumpDiff : PIPELINE_WWVK_SSBumpDiff);
 #endif
 
 	// calculate shader view projection matrix

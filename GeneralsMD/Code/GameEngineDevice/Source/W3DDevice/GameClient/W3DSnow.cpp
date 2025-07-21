@@ -434,14 +434,14 @@ void W3DSnowManager::render(RenderInfoClass &rinfo)
 	
 #ifdef VERIFY_VULKAN
     // Set the render states for using point sprites
-	DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSPRITEENABLE, TRUE );
-    DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSCALEENABLE,  TRUE );
-    DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSIZE,     FtoDW(m_pointSize) );
-    DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSIZE_MIN, FtoDW(m_minPointSize) );
-    DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSIZE_MAX, FtoDW(m_maxPointSize) );
-    DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSCALE_A,  FtoDW(0.00f) );
-    DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSCALE_B,  FtoDW(0.00f) );
-    DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSCALE_C,  FtoDW(1.00f) );
+	DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSPRITEENABLE, TRUE );
+    DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSCALEENABLE,  TRUE );
+    DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSIZE,     FtoDW(m_pointSize) );
+    DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSIZE_MIN, FtoDW(m_minPointSize) );
+    DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSIZE_MAX, FtoDW(m_maxPointSize) );
+    DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSCALE_A,  FtoDW(0.00f) );
+    DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSCALE_B,  FtoDW(0.00f) );
+    DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSCALE_C,  FtoDW(1.00f) );
 
 	DX8Wrapper::_Get_D3D_Device8()->SetStreamSource( 0, m_VertexBufferD3D, 0, sizeof(POINTVERTEX) );
     DX8Wrapper::_Get_D3D_Device8()->SetFVF( VKFVF_POINTVERTEX );
@@ -456,8 +456,8 @@ void W3DSnowManager::render(RenderInfoClass &rinfo)
 	renderSubBox(rinfo,cubeOriginX,cubeOriginY,cubeDimX,cubeDimY);
 
 	// Reset render states
-    DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSPRITEENABLE, FALSE );
-    DX8Wrapper::Set_DX8_Render_State( D3DRS_POINTSCALEENABLE,  FALSE );
+    DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSPRITEENABLE, FALSE );
+    DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSCALEENABLE,  FALSE );
 #else
 	m_dwBase = SNOW_BUFFER_SIZE;	//start with a new vertex buffer each frame.
 

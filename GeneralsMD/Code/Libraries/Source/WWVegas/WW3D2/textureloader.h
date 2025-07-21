@@ -48,6 +48,7 @@
 #include "always.h"
 #include "texture.h"
 #include "WWVKStructs.h"
+#include "formconv.h"
 
 class StringClass;
 struct IDirect3DTexture9;
@@ -221,9 +222,9 @@ class TextureLoadTaskClass : public TextureLoadTaskListNodeClass
 		PriorityType			Get_Priority				(void) const		{ return Priority;		}
 		StateType				Get_State					(void) const		{ return State;			}
 
-		WW3DFormat				Get_Format					(void) const		{ return Format;			}
-		unsigned int			Get_Width					(void) const		{ return Width;			}
-		unsigned int			Get_Height					(void) const		{ return Height;			}
+		WW3DFormat				Get_Format					(void) const		{ return D3DFormat_To_WW3DFormat( Surface.format); }
+		unsigned int			Get_Width					(void) const		{ return Surface.width;			}
+		unsigned int			Get_Height					(void) const		{ return Surface.height;			}
 		unsigned int			Get_Mip_Level_Count		(void) const		{ return MipLevelCount; }
 		unsigned int			Get_Reduction				(void) const		{ return Reduction;		}
 
@@ -276,65 +277,6 @@ class TextureLoadTaskClass : public TextureLoadTaskListNodeClass
 		TaskType					Type;
 		PriorityType			Priority;
 		StateType				State;
-};
-
-class CubeTextureLoadTaskClass : public TextureLoadTaskClass
-{
-public:
-	CubeTextureLoadTaskClass();
-
-	virtual void			Destroy						(void);
-	virtual void			Init							(TextureBaseClass *tc, TaskType type, PriorityType priority);
-	virtual void			Deinit						(void);
-
-protected:
-	virtual bool			Begin_Compressed_Load	(void);
-	virtual bool			Begin_Uncompressed_Load	(void);
-
-	virtual bool			Load_Compressed_Mipmap	(void);
-//	virtual bool			Load_Uncompressed_Mipmap(void);
-
-	virtual void			Lock_Surfaces				(void);
-	virtual void			Unlock_Surfaces			(void);
-
-private:
-	unsigned char*			Get_Locked_CubeMap_Surface_Pointer(unsigned int face, unsigned int level);
-	unsigned int			Get_Locked_CubeMap_Surface_Pitch(unsigned int face, unsigned int level) const;
-
-	VK::Texture	Peek_D3D_Cube_Texture(void)				{ return (VK::Texture)D3DTexture;		}
-
-	unsigned char*			LockedCubeSurfacePtr[6][MIP_LEVELS_MAX];
-	unsigned int			LockedCubeSurfacePitch[6][MIP_LEVELS_MAX];
-};
-
-class VolumeTextureLoadTaskClass : public TextureLoadTaskClass
-{
-public:
-	VolumeTextureLoadTaskClass();
-
-	virtual void			Destroy						(void);
-	virtual void			Init							(TextureBaseClass *tc, TaskType type, PriorityType priority);
-
-protected:
-	virtual bool			Begin_Compressed_Load	(void);
-	virtual bool			Begin_Uncompressed_Load	(void);
-
-	virtual bool			Load_Compressed_Mipmap	(void);
-//	virtual bool			Load_Uncompressed_Mipmap(void);
-
-	virtual void			Lock_Surfaces				(void);
-	virtual void			Unlock_Surfaces			(void);
-
-private:
-	unsigned char*			Get_Locked_Volume_Pointer(unsigned int level);
-	unsigned int			Get_Locked_Volume_Row_Pitch(unsigned int level);
-	unsigned int			Get_Locked_Volume_Slice_Pitch(unsigned int level);
-
-	VK::Texture	Peek_D3D_Volume_Texture(void)				{ return (VK::Texture)D3DTexture;		}
-
-	unsigned	int			LockedSurfaceSlicePitch[MIP_LEVELS_MAX];
-
-	unsigned int		Depth;
 };
 
 #endif

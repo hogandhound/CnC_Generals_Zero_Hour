@@ -113,6 +113,146 @@ typedef enum class VkTransformState {
 	WORLD2 = 14,
 	FORCE_DWORD = 0x7fffffff, /* force 32-bit size enum */
 } VkTS;
+enum VKTEXTURESTAGESTATETYPE
+{
+	VKTSS_COLOROP, /* D3DTEXTUREOP - per-stage blending controls for color channels */
+	VKTSS_COLORARG1, /* VKTA_* (texture arg) */
+	VKTSS_COLORARG2, /* VKTA_* (texture arg) */
+	VKTSS_ALPHAOP, /* D3DTEXTUREOP - per-stage blending controls for alpha channel */
+	VKTSS_ALPHAARG1, /* VKTA_* (texture arg) */
+	VKTSS_ALPHAARG2, /* VKTA_* (texture arg) */
+	VKTSS_TEXCOORDINDEX, /* identifies which set of texture coordinates index this texture */
+	VKTSS_TEXTURETRANSFORMFLAGS, /* D3DTEXTURETRANSFORMFLAGS controls texture transform */
+	VKTSS_BUMPENVMAT00, /* float (bump mapping matrix) */
+	VKTSS_BUMPENVMAT01, /* float (bump mapping matrix) */
+	VKTSS_BUMPENVMAT10, /* float (bump mapping matrix) */
+	VKTSS_BUMPENVMAT11, /* float (bump mapping matrix) */
+	VKTSS_MAX,
+	VKTSS_SHADER_COMPARE_MAX = VKTSS_BUMPENVMAT00,
+
+	VKTSS_FORCE_DWORD = 0x7fffffff, /* force 32-bit size enum */
+};
+
+/*
+ * State enumerants for per-sampler texture processing.
+ */
+enum VKSAMPLERSTATETYPE
+{
+	VKSAMP_ADDRESSU,  /* D3DTEXTUREADDRESS for U coordinate */
+	VKSAMP_ADDRESSV,  /* D3DTEXTUREADDRESS for V coordinate */
+	VKSAMP_MAGFILTER,  /* D3DTEXTUREFILTER filter to use for magnification */
+	VKSAMP_MINFILTER,  /* D3DTEXTUREFILTER filter to use for minification */
+	VKSAMP_MIPFILTER,  /* D3DTEXTUREFILTER filter to use between mipmaps during minification */
+	VKSAMP_MAXANISOTROPY, /* DWORD maximum anisotropy */
+	VKSAMP_MAX,
+	VKSAMP_FORCE_DWORD = 0x7fffffff, /* force 32-bit size enum */
+};
+enum VKRENDERSTATETYPE {
+	VKRS_FILLMODE,    /* D3DFILLMODE */
+	VKRS_ZWRITEENABLE,   /* TRUE to enable z writes */
+	VKRS_ALPHATESTENABLE,   /* TRUE to enable alpha tests */\
+	VKRS_SRCBLEND,   /* D3DBLEND */
+	VKRS_DESTBLEND,   /* D3DBLEND */
+	VKRS_CULLMODE,   /* D3DCULL */
+	VKRS_ZFUNC,   /* D3DCMPFUNC */
+	VKRS_ALPHAREF,   /* D3DFIXED */
+	VKRS_ALPHAFUNC,   /* D3DCMPFUNC */
+	VKRS_ALPHABLENDENABLE,   /* TRUE to enable alpha blending */
+	VKRS_FOGENABLE,   /* TRUE to enable fog blending */
+	VKRS_SPECULARENABLE,   /* TRUE to enable specular */
+	VKRS_STENCILENABLE,   /* BOOL enable/disable stenciling */
+	VKRS_STENCILFAIL,   /* D3DSTENCILOP to do if stencil test fails */
+	VKRS_STENCILZFAIL,   /* D3DSTENCILOP to do if stencil test passes and Z test fails */
+	VKRS_STENCILPASS,   /* D3DSTENCILOP to do if both stencil and Z tests pass */
+	VKRS_STENCILFUNC,   /* D3DCMPFUNC fn.  Stencil Test passes if ((ref & mask) stencilfn (stencil & mask)) is true */
+	VKRS_STENCILREF,   /* Reference value used in stencil test */
+	VKRS_STENCILMASK,   /* Mask value used in stencil test */
+	VKRS_STENCILWRITEMASK,   /* Write mask applied to values written to stencil buffer */
+	VKRS_LIGHTING,
+	VKRS_DIFFUSEMATERIALSOURCE,
+	VKRS_SPECULARMATERIALSOURCE,
+	VKRS_AMBIENTMATERIALSOURCE,
+	VKRS_EMISSIVEMATERIALSOURCE,
+	VKRS_COLORWRITEENABLE,  // per-channel write enable
+	VKRS_BLENDOP,   // D3DBLENDOP setting
+	VKRS_DEPTHBIAS,
+	VKRS_POINTSIZE,   /* float point size */
+	VKRS_POINTSIZE_MIN,   /* float point size min threshold */
+	VKRS_POINTSPRITEENABLE,   /* BOOL point texture coord control */
+	VKRS_POINTSCALEENABLE,   /* BOOL point size scale enable */
+	VKRS_POINTSIZE_MAX,   /* float point size max threshold */
+	VKRS_AMBIENT,
+	VKRS_FOGCOLOR,   /* D3DCOLOR */
+	VKRS_FOGSTART,   /* Fog start (for both vertex and pixel fog) */
+	VKRS_FOGEND,   /* Fog end      */
+	VKRS_TEXTUREFACTOR,   /* D3DCOLOR used for multi-texture blend */
+	//VKRS_WRAP0,  /* wrap for 1st texture coord. set */
+	VKRS_NORMALIZENORMALS,
+	VKRS_MAX,
+	VKRS_SHADER_COMPARE_MAX = VKRS_POINTSIZE,
+
+	VKRS_FORCE_DWORD = 0x7fffffff, /* force 32-bit size enum */
+};
+enum VKTEXTUREOP
+{
+	// Control
+	VKTOP_DISABLE,      // disables stage
+	VKTOP_SELECTARG1,      // the default
+	VKTOP_SELECTARG2,
+
+	// Modulate
+	VKTOP_MODULATE,      // multiply args together
+	VKTOP_MODULATE2X,      // multiply and  1 bit
+
+	// Add
+	VKTOP_ADD,   // add arguments together
+	VKTOP_ADDSIGNED,   // add with -0.5 bias
+	VKTOP_ADDSIGNED2X,   // as above but left  1 bit
+	VKTOP_SUBTRACT,   // Arg1 - Arg2, with no saturation
+	VKTOP_ADDSMOOTH,   // add 2 args, subtract product
+	// Arg1 + Arg2 - Arg1*Arg2
+	//Arg1 + (1-Arg1)*Arg2
+
+	// Linear alpha blend: Arg1*(Alpha) + Arg2*(1-Alpha)
+	VKTOP_BLENDTEXTUREALPHA, // texture alpha
+
+	// Linear alpha blend with pre-multiplied arg1 input: Arg1 + Arg2*(1-Alpha)
+	VKTOP_BLENDCURRENTALPHA, // by alpha of current color
+
+	// Specular mapping
+	VKTOP_MODULATEALPHA_ADDCOLOR,     // Arg1.RGB + Arg1.A*Arg2.RGB
+	// COLOROP only
+
+	// Bump mapping
+	VKTOP_BUMPENVMAP, // per pixel env map perturbation
+	VKTOP_BUMPENVMAPLUMINANCE, // with luminance channel
+
+	// This can do either diffuse or specular bump mapping with correct input.
+	// Performs the function (Arg1.R*Arg2.R + Arg1.G*Arg2.G + Arg1.B*Arg2.B)
+	// where each component has been scaled and offset to make it signed.
+	// The result is replicated into all four (including alpha) channels.
+	// This is a valid COLOROP only.
+	VKTOP_DOTPRODUCT3,
+
+	// Triadic ops
+	VKTOP_MULTIPLYADD, // Arg0 + Arg1*Arg2
+
+	VKTOP_FORCE_DWORD = 0x7fffffff,
+};
+enum VKTEXTURETRANSFORMFLAGS {
+	VKTTFF_DISABLE = 0,    // texture coordinates are passed directly
+	VKTTFF_COUNT2 = 2,    // rasterizer should expect 2-D texture coords
+	VKTTFF_FORCE_DWORD = 0x7fffffff,
+};
+#define VKTA_DIFFUSE           0x00000000  // select diffuse color (read only)
+#define VKTA_CURRENT           0x00000001  // select stage destination register (read/write)
+#define VKTA_TEXTURE           0x00000002  // select texture color (read only)
+#define VKTA_TFACTOR           0x00000003  // select D3DRS_TEXTUREFACTOR (read only)
+#define VKTA_COMPLEMENT        0x00000010  // take 1.0 - x (read modifier)
+#define VKTA_ALPHAREPLICATE    0x00000020  // replicate alpha to color components (read modifier)
+
+#define VKTSS_TCI_PASSTHRU                             0x00000000
+#define VKTSS_TCI_CAMERASPACEPOSITION                  0x00020000
 
 
 class VertexMaterialClass;
@@ -147,7 +287,7 @@ void Log_DX8_ErrorCode(unsigned res);
 
 WWINLINE void DX8_ErrorCode(unsigned res)
 {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	if (res==D3D_OK) return;
 	Log_DX8_ErrorCode(res);
 #endif
@@ -207,7 +347,7 @@ struct RenderStateStruct
 	ShaderClass shader;
 	VertexMaterialClass* material;
 	TextureBaseClass * Textures[MAX_TEXTURE_STAGES];
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	D3DLIGHT9 Lights[4];
 #endif
 	LightCollection Lights;
@@ -289,6 +429,8 @@ public:
 	static DX8_Stats stats;
 #endif
 
+	static std::vector<WWVK_Pipeline_Entry> FindClosestPipelines(unsigned FVF, VkPrimitiveTopology topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+
 	static bool Init(void * hwnd, bool lite = false);
 	static void Shutdown(void);
 
@@ -353,13 +495,14 @@ public:
 
 	static void _Set_DX8_Transform(VkTransformState transform,const Matrix4x4& m);
 	static void _Set_DX8_Transform(VkTransformState transform,const Matrix3D& m);
-	static void _Get_DX8_Transform(VkTransformState transform, Matrix4x4& m);
-#ifdef TODO_VULKAN
+	static void _Get_DX8_Transform(VkTransformState transform, Matrix4x4& m);/*
+ * State enumerants for per-stage processing of fixed function pixel processing
+ * Two of these affect fixed function vertex processing as well: TEXTURETRANSFORMFLAGS and TEXCOORDINDEX.
+ */
+	static void Set_DX8_Render_State(VKRENDERSTATETYPE state, unsigned value);
+	static void Set_DX8_Texture_Stage_State(unsigned stage, VKTEXTURESTAGESTATETYPE state, unsigned value);
+	static void Set_DX8_Sampler_Stage_State(unsigned stage, VKSAMPLERSTATETYPE state, unsigned value);
 
-	static void Set_DX8_Render_State(D3DRENDERSTATETYPE state, unsigned value);
-	static void Set_DX8_Texture_Stage_State(unsigned stage, D3DTEXTURESTAGESTATETYPE state, unsigned value);
-	static void Set_DX8_Sampler_Stage_State(unsigned stage, D3DSAMPLERSTATETYPE state, unsigned value);
-#endif
 	static void Set_DX8_Texture(unsigned int stage, VK::Texture texture);
 	static VK::Texture Get_DX8_Texture(unsigned int stage);
 	static void Set_Light_Environment(LightEnvironmentClass* light_env);
@@ -385,7 +528,7 @@ public:
 
 	static void Apply_Render_State_Changes();	// Apply deferred render state changes (will be called automatically by Draw...)
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	static void Draw_Triangles(
 		unsigned buffer_type,
 		unsigned short start_index,
@@ -415,9 +558,6 @@ public:
 		unsigned int depth,
 		WW3DFormat format,
 		MipCountType mip_level_count
-#ifdef TODO_VULKAN
-		, D3DPOOL pool=D3DPOOL_MANAGED
-#endif
 	);
 
 	static IDirect3DCubeTexture9* _Create_DX8_Cube_Texture
@@ -426,9 +566,6 @@ public:
 		unsigned int height,
 		WW3DFormat format,
 		MipCountType mip_level_count,
-#ifdef TODO_VULKAN
-		D3DPOOL pool=D3DPOOL_MANAGED,
-#endif
 		bool rendertarget=false
 	);
 
@@ -439,9 +576,6 @@ public:
 		unsigned int height,
 		WW3DZFormat zformat,
 		MipCountType mip_level_count
-#ifdef TODO_VULKAN
-		, D3DPOOL pool=D3DPOOL_MANAGED
-#endif
 	);
 
 
@@ -452,7 +586,7 @@ public:
 		WW3DFormat format,
 		MipCountType mip_level_count
 	);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	static IDirect3DTexture9 * _Create_DX8_Texture(const char *filename, MipCountType mip_level_count);
 	static IDirect3DTexture9 * _Create_DX8_Texture(IDirect3DSurface9 *surface, MipCountType mip_level_count);
 
@@ -477,7 +611,7 @@ public:
 	static unsigned int Get_Free_Texture_RAM();
 
 	static unsigned _Get_Main_Thread_ID() { return _MainThreadID; }
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	static const D3DADAPTER_IDENTIFIER9& Get_Current_Adapter_Identifier() { return CurrentAdapterIdentifier; }
 #endif
 
@@ -544,7 +678,7 @@ public:
 	// shader system udpates KJM v
 	static void Apply_Default_State();
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	static void Set_Vertex_Shader(DWORD vertex_shader);
 	static void Set_Vertex_Shader(IDirect3DVertexShader9* vertex_shader);
 	static void Set_Pixel_Shader(IDirect3DPixelShader9* pixel_shader);
@@ -565,7 +699,7 @@ public:
 
 
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	static IDirect3DDevice9* _Get_D3D_Device8() { return D3DDevice; }
 	static IDirect3D9* _Get_D3D8() { return D3DInterface; }
 #endif
@@ -616,6 +750,15 @@ public:
 
 	static void Set_Draw_Polygon_Low_Bound_Limit(unsigned n) { DrawPolygonLowBoundLimit=n; }
 
+	struct WWVK_Pipeline_State
+	{
+		unsigned FVF;
+		uint64_t isDynamic;
+		VkPrimitiveTopology topo;
+		unsigned RenderStates[VKRS_SHADER_COMPARE_MAX];
+		unsigned TextureStageStates[4][VKTSS_MAX];
+		//unsigned SamplerStates[MAX_TEXTURE_STAGES][VKSAMP_MAX];//I don't think I need to track this for shaders
+	};
 protected:
 
 	static bool	Create_Device(void);
@@ -659,7 +802,7 @@ protected:
 	/*
 	** Internal functions
 	*/
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	static bool Find_Color_And_Z_Mode(int resx,int resy,int bitdepth,D3DFORMAT * set_colorbuffer,D3DFORMAT * set_backbuffer, D3DFORMAT * set_zmode);
 	static bool Find_Color_Mode(D3DFORMAT colorbuffer, int resx, int resy, UINT *mode);
 	static bool Find_Z_Mode(D3DFORMAT colorbuffer,D3DFORMAT backbuffer, D3DFORMAT *zmode);
@@ -697,7 +840,7 @@ protected:
 	static DirectX::XMMATRIX						old_world;
 	static DirectX::XMMATRIX						old_view;
 	static DirectX::XMMATRIX						old_prj;
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	static D3DFORMAT					DisplayFormat;
 
 	// shader system updates KJM v
@@ -706,6 +849,7 @@ protected:
 	static IDirect3DPixelShader9* Pixel_Shader;
 #endif
 	static WWVK_Pipeline_Entry pipeline_;
+	static WWVK_Pipeline_State pipelineStates_[PIPELINE_WWVK_MAX];
 
 	static Vector4							Vertex_Shader_Constants[MAX_VERTEX_SHADER_CONSTANTS];
 	static Vector4							Pixel_Shader_Constants[MAX_PIXEL_SHADER_CONSTANTS];
@@ -721,9 +865,9 @@ protected:
 	// shader system updates KJM ^
 
 	static bool world_identity;
-	static unsigned RenderStates[256];
-	static unsigned TextureStageStates[MAX_TEXTURE_STAGES][32];
-	static unsigned SamplerStates[MAX_TEXTURE_STAGES][32];
+	static unsigned RenderStates[VKRS_MAX];
+	static unsigned TextureStageStates[MAX_TEXTURE_STAGES][VKTSS_MAX];
+	static unsigned SamplerStates[MAX_TEXTURE_STAGES][VKSAMP_MAX];
 	static VK::Texture Textures[MAX_TEXTURE_STAGES];
 
 	// These fog settings are constant for all objects in a given scene,
@@ -746,7 +890,7 @@ protected:
 
 	static DX8Caps*						CurrentCaps;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	static D3DADAPTER_IDENTIFIER9		CurrentAdapterIdentifier;
 
 	static IDirect3D9 *					D3DInterface;			//d3d8;
@@ -755,7 +899,7 @@ protected:
 	static VkRenderTarget target;
 	static WWVK_Pipeline_Collection pipelineCol_;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	static IDirect3DSurface9 *			CurrentRenderTarget;
 	static IDirect3DSurface9 *			CurrentDepthBuffer;
 	static IDirect3DSurface9 *			DefaultRenderTarget;
@@ -778,7 +922,7 @@ protected:
 };
 
 // shader system updates KJM v
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 WWINLINE void DX8Wrapper::Set_Vertex_Shader(DWORD vertex_shader)
 {
 #if 0 //(gth) some code is bypassing this acessor function so we can't count on this variable...
@@ -849,7 +993,7 @@ WWINLINE void DX8Wrapper::_Set_DX8_Transform(VkTransformState transform,const Ma
 		DX8Transforms[(uintptr_t)transform]=m;
 		SNAPSHOT_SAY(("DX8 - SetTransform %d [%f,%f,%f,%f][%f,%f,%f,%f][%f,%f,%f,%f][%f,%f,%f,%f]\n",transform,m[0][0],m[0][1],m[0][2],m[0][3],m[1][0],m[1][1],m[1][2],m[1][3],m[2][0],m[2][1],m[2][2],m[2][3],m[3][0],m[3][1],m[3][2],m[3][3]));
 		DX8_RECORD_MATRIX_CHANGE();
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		DX8CALL(SetTransform(transform,(DirectX::XMMATRIX*)&m));
 #endif
 	}
@@ -864,7 +1008,7 @@ WWINLINE void DX8Wrapper::_Set_DX8_Transform(VkTransformState transform,const Ma
 		DX8Transforms[(uintptr_t)transform]=mtx;
 		SNAPSHOT_SAY(("DX8 - SetTransform %d [%f,%f,%f,%f][%f,%f,%f,%f][%f,%f,%f,%f]\n",transform,m[0][0],m[0][1],m[0][2],m[0][3],m[1][0],m[1][1],m[1][2],m[1][3],m[2][0],m[2][1],m[2][2],m[2][3]));
 		DX8_RECORD_MATRIX_CHANGE();
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		DX8CALL(SetTransform(transform,(DirectX::XMMATRIX*)&m));
 #endif
 	}
@@ -873,7 +1017,7 @@ WWINLINE void DX8Wrapper::_Set_DX8_Transform(VkTransformState transform,const Ma
 WWINLINE void DX8Wrapper::_Get_DX8_Transform(VkTransformState transform, Matrix4x4& m)
 {
 	m = DX8Transforms[(uint32_t)transform];
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	DX8CALL(GetTransform(transform,(DirectX::XMMATRIX*)&m));
 #endif
 }
@@ -903,7 +1047,6 @@ WWINLINE void DX8Wrapper::Set_Fog(bool enable, const Vector3 &color, float start
 {
 	// Set global states
 	FogEnable = enable;
-#ifdef TODO_VULKAN
 	FogColor = Convert_Color(color,0.0f);
 
 	// Invalidate the current shader (since the renderstates set by the shader
@@ -911,18 +1054,15 @@ WWINLINE void DX8Wrapper::Set_Fog(bool enable, const Vector3 &color, float start
 	ShaderClass::Invalidate();
 
 	// Set renderstates which are not affected by the shader
-	Set_DX8_Render_State(D3DRS_FOGSTART, *(DWORD *)(&start));
-	Set_DX8_Render_State(D3DRS_FOGEND,   *(DWORD *)(&end));
-#endif
+	Set_DX8_Render_State(VKRS_FOGSTART, *(DWORD *)(&start));
+	Set_DX8_Render_State(VKRS_FOGEND,   *(DWORD *)(&end));
 }
 
 
 WWINLINE void DX8Wrapper::Set_Ambient(const Vector3& color)
 {
 	Ambient_Color=color;
-#ifdef TODO_VULKAN
-	Set_DX8_Render_State(D3DRS_AMBIENT, DX8Wrapper::Convert_Color(color,0.0f));
-#endif
+	Set_DX8_Render_State(VKRS_AMBIENT, DX8Wrapper::Convert_Color(color,0.0f));
 }
 
 // ----------------------------------------------------------------------------
@@ -941,9 +1081,11 @@ WWINLINE void DX8Wrapper::Set_DX8_Material(const D3DMATERIAL9* mat)
 	SNAPSHOT_SAY(("DX8 - SetMaterial\n"));
 	DX8CALL(SetMaterial(mat));
 }
+#endif
 
-WWINLINE void DX8Wrapper::Set_DX8_Render_State(D3DRENDERSTATETYPE state, unsigned value)
+WWINLINE void DX8Wrapper::Set_DX8_Render_State(VKRENDERSTATETYPE state, unsigned value)
 {
+#ifdef INFO_VULKAN
 	// Can't monitor state changes because setShader call to GERD may change the states!
 	if (RenderStates[state]==value) return;
 
@@ -960,12 +1102,13 @@ WWINLINE void DX8Wrapper::Set_DX8_Render_State(D3DRENDERSTATETYPE state, unsigne
 	RenderStates[state]=value;
 	DX8CALL(SetRenderState( state, value ));
 	DX8_RECORD_RENDER_STATE_CHANGE();
-}
 #endif
+	RenderStates[state] = value;
+}
 
-#ifdef TODO_VULKAN
-WWINLINE void DX8Wrapper::Set_DX8_Texture_Stage_State(unsigned stage, D3DTEXTURESTAGESTATETYPE state, unsigned value)
+WWINLINE void DX8Wrapper::Set_DX8_Texture_Stage_State(unsigned stage, VKTEXTURESTAGESTATETYPE state, unsigned value)
 {
+#ifdef INFO_VULKAN
   	if (stage >= MAX_TEXTURE_STAGES)
   	{	DX8CALL(SetTextureStageState( stage, state, value ));
   		return;
@@ -987,17 +1130,26 @@ WWINLINE void DX8Wrapper::Set_DX8_Texture_Stage_State(unsigned stage, D3DTEXTURE
 	TextureStageStates[stage][(unsigned int)state]=value;
 	DX8CALL(SetTextureStageState( stage, state, value ));
 	DX8_RECORD_TEXTURE_STAGE_STATE_CHANGE();
+#endif
+	if (stage >= MAX_TEXTURE_STAGES)
+	{
+		return;
+	}
+	TextureStageStates[stage][(unsigned int)state] = value;
 }
 
-WWINLINE void DX8Wrapper::Set_DX8_Sampler_Stage_State(unsigned stage, D3DSAMPLERSTATETYPE state, unsigned value)
+WWINLINE void DX8Wrapper::Set_DX8_Sampler_Stage_State(unsigned stage, VKSAMPLERSTATETYPE state, unsigned value)
 {
 	if (stage >= MAX_TEXTURE_STAGES)
 	{
+#ifdef INFO_VULKAN
 		DX8CALL(SetSamplerState(stage, state, value));
+#endif
 		return;
 	}
 
 	// Can't monitor state changes because setShader call to GERD may change the states!
+#ifdef INFO_VULKAN
 	if (SamplerStates[stage][(unsigned int)state] == value) return;
 #ifdef MESH_RENDER_SNAPSHOT_ENABLED
 	if (WW3D::Is_Snapshot_Activated()) {
@@ -1013,8 +1165,12 @@ WWINLINE void DX8Wrapper::Set_DX8_Sampler_Stage_State(unsigned stage, D3DSAMPLER
 	SamplerStates[stage][(unsigned int)state] = value;
 	DX8CALL(SetSamplerState(stage, state, value));
 	DX8_RECORD_TEXTURE_STAGE_STATE_CHANGE();
+#else
+	SamplerStates[stage][(unsigned int)state] = value;
+#endif
 }
 
+#ifdef INFO_VULKAN
 WWINLINE void DX8Wrapper::_Copy_DX8_Rects(
   IDirect3DSurface9* pSourceSurface,
   CONST RECT* pSourceRectsArray,
@@ -1353,19 +1509,21 @@ WWINLINE void DX8Wrapper::Set_Projection_Transform_With_Z_Bias(const Matrix4x4& 
 	ZNear=znear;
 	ProjectionMatrix=matrix.Transpose();
 
-#ifdef TODO_VULKAN
 	if (!Get_Current_Caps()->Support_ZBias() && ZNear!=ZFar) {
 		Matrix4x4 tmp=ProjectionMatrix;
 		float tmp_zbias=ZBias;
 		tmp_zbias*=(1.0f/16.0f);
 		tmp_zbias*=1.0f / (ZFar - ZNear);
 		tmp[2][2]-=tmp_zbias*tmp[3][2];
-		DX8CALL(SetTransform(VkTS::PROJECTION,(DirectX::XMMATRIX*)&tmp));
+		WWVKRENDER.PushSingleFrameBuffer(ProjUbo);
+		VkBufferTools::CreateUniformBuffer(&WWVKRENDER, sizeof(Matrix4x4), (uint8_t*)&tmp, ProjUbo);
+		//DX8CALL(SetTransform(VkTS::PROJECTION,(DirectX::XMMATRIX*)&tmp));
 	}
 	else {
-		DX8CALL(SetTransform(VkTS::PROJECTION,(DirectX::XMMATRIX*)&ProjectionMatrix));
+		WWVKRENDER.PushSingleFrameBuffer(ProjUbo);
+		VkBufferTools::CreateUniformBuffer(&WWVKRENDER, sizeof(Matrix4x4), (uint8_t*) & matrix, ProjUbo);
+		//DX8CALL(SetTransform(VkTS::PROJECTION,(DirectX::XMMATRIX*)&ProjectionMatrix));
 	}
-#endif
 }
 
 WWINLINE void DX8Wrapper::Set_DX8_ZBias(int zbias)
@@ -1375,7 +1533,7 @@ WWINLINE void DX8Wrapper::Set_DX8_ZBias(int zbias)
 	if (zbias<0) zbias=0;
 	ZBias=zbias;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	if (!Get_Current_Caps()->Support_ZBias() && ZNear!=ZFar) {
 		Matrix4x4 tmp=ProjectionMatrix;
 		float tmp_zbias=ZBias;
@@ -1385,7 +1543,7 @@ WWINLINE void DX8Wrapper::Set_DX8_ZBias(int zbias)
 		DX8CALL(SetTransform(VkTS::PROJECTION,(DirectX::XMMATRIX*)&tmp));
 	}
 	else {
-		Set_DX8_Render_State (D3DRS_DEPTHBIAS,ZBias * -0.000005f);
+		Set_DX8_Render_State (VKRS_DEPTHBIAS,ZBias * -0.000005f);
 	}
 #else
 	//No idea if this is correct
@@ -1635,15 +1793,14 @@ WWINLINE RenderStateStruct& RenderStateStruct::operator= (const RenderStateStruc
 	LightEnable[1]=src.LightEnable[1];
 	LightEnable[2]=src.LightEnable[2];
 	LightEnable[3]=src.LightEnable[3];
-#ifdef TODO_VULKAN
 	if (LightEnable[0]) {
-		Lights[0]=src.Lights[0];
+		Lights.lights[0]=src.Lights.lights[0];
 		if (LightEnable[1]) {
-			Lights[1]=src.Lights[1];
+			Lights.lights[1]=src.Lights.lights[1];
 			if (LightEnable[2]) {
-				Lights[2]=src.Lights[2];
+				Lights.lights[2]=src.Lights.lights[2];
 				if (LightEnable[3]) {
-					Lights[3]=src.Lights[3];
+					Lights.lights[3]=src.Lights.lights[3];
 				}
 			}
 		}
@@ -1652,7 +1809,6 @@ WWINLINE RenderStateStruct& RenderStateStruct::operator= (const RenderStateStruc
     //lightsHash = flimby((char*)(&Lights[0]), sizeof(D3DLIGHT9)-1 );
 
 	}
-#endif
 
 	shader=src.shader;
 	world=src.world;

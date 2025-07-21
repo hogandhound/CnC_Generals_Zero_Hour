@@ -525,7 +525,13 @@ void SphereRenderObjClass::render_sphere()
 	if (sort) {
 		SortingRendererClass::Insert_Triangles(Get_Bounding_Sphere(), 0, mesh.face_ct, 0, mesh.Vertex_ct);
 	} else {
-#ifdef TODO_VULKAN
+		auto pipelines = DX8Wrapper::FindClosestPipelines(vb.FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(0,mesh.face_ct,0,mesh.Vertex_ct);
 #endif
 	}

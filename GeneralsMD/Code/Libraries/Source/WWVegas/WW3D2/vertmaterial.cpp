@@ -147,9 +147,7 @@ VertexMaterialClass::VertexMaterialClass(const VertexMaterialClass & src) :
 #else
 	MaterialOld=W3DNEW D3DMATERIAL9;
 #endif
-#ifdef TODO_VULKAN
-	memcpy(Material, SRCMATPTR(&src), sizeof(D3DMATERIAL9));
-#endif
+	memcpy(Material, SRCMATPTR(&src), sizeof(DX8Material));
 }
 
 void VertexMaterialClass::Make_Unique()
@@ -485,7 +483,7 @@ void	VertexMaterialClass::Set_Diffuse_Color_Source(ColorSourceType src)
 VertexMaterialClass::ColorSourceType 
 VertexMaterialClass::Get_Ambient_Color_Source(void)
 {
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	switch(AmbientColorSource) 
 	{
 	case D3DMCS_COLOR1:	return COLOR1;
@@ -493,7 +491,7 @@ VertexMaterialClass::Get_Ambient_Color_Source(void)
 	default:					return MATERIAL;
 	}
 #else
-	return COLOR1;
+	return AmbientColorSource;
 #endif
 }	
 
@@ -1069,20 +1067,20 @@ void VertexMaterialClass::Apply(void) const
 	DX8Wrapper::Set_DX8_Material(Material);
 
 	if (WW3D::Is_Coloring_Enabled())
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_LIGHTING,FALSE);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_LIGHTING,FALSE);
 	else
-		DX8Wrapper::Set_DX8_Render_State(D3DRS_LIGHTING,UseLighting);
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_AMBIENTMATERIALSOURCE,AmbientColorSource);
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_DIFFUSEMATERIALSOURCE,DiffuseColorSource);
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_EMISSIVEMATERIALSOURCE,EmissiveColorSource);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_LIGHTING,UseLighting);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_AMBIENTMATERIALSOURCE,AmbientColorSource);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_DIFFUSEMATERIALSOURCE,DiffuseColorSource);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_EMISSIVEMATERIALSOURCE,EmissiveColorSource);
 
 	// set to default values if no mappers
 	for (i=0; i<MeshBuilderClass::MAX_STAGES; i++) {
 		if (Mapper[i]) {
 			Mapper[i]->Apply(UVSource[i]);
 		} else {
-			DX8Wrapper::Set_DX8_Texture_Stage_State(i,D3DTSS_TEXCOORDINDEX,D3DTSS_TCI_PASSTHRU | UVSource[i]);	
-			DX8Wrapper::Set_DX8_Texture_Stage_State(i,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_DISABLE);		
+			DX8Wrapper::Set_DX8_Texture_Stage_State(i,VKTSS_TEXCOORDINDEX,VKTSS_TCI_PASSTHRU | UVSource[i]);	
+			DX8Wrapper::Set_DX8_Texture_Stage_State(i,VKTSS_TEXTURETRANSFORMFLAGS,VKTTFF_DISABLE);		
 		}
 	}
 #endif
@@ -1101,17 +1099,17 @@ void VertexMaterialClass::Apply_Null(void)
 		1.0f									// power
 	};
 
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_LIGHTING,FALSE);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_LIGHTING,FALSE);
 	DX8Wrapper::Set_DX8_Material(&default_settings);
 
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_AMBIENTMATERIALSOURCE,D3DMCS_MATERIAL);
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_DIFFUSEMATERIALSOURCE,D3DMCS_MATERIAL);
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_EMISSIVEMATERIALSOURCE,D3DMCS_MATERIAL);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_AMBIENTMATERIALSOURCE,D3DMCS_MATERIAL);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_DIFFUSEMATERIALSOURCE,D3DMCS_MATERIAL);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_EMISSIVEMATERIALSOURCE,D3DMCS_MATERIAL);
 
 	// set to default values if no mappers
 	for (i=0; i<MeshBuilderClass::MAX_STAGES; i++) {
-		DX8Wrapper::Set_DX8_Texture_Stage_State(i,D3DTSS_TEXCOORDINDEX,D3DTSS_TCI_PASSTHRU | i);	
-		DX8Wrapper::Set_DX8_Texture_Stage_State(i,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_DISABLE);		
+		DX8Wrapper::Set_DX8_Texture_Stage_State(i,VKTSS_TEXCOORDINDEX,VKTSS_TCI_PASSTHRU | i);	
+		DX8Wrapper::Set_DX8_Texture_Stage_State(i,VKTSS_TEXTURETRANSFORMFLAGS,VKTTFF_DISABLE);		
 	}
 #endif
 }

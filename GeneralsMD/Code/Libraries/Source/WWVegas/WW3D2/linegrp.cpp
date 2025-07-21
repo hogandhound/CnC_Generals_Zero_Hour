@@ -476,7 +476,13 @@ void	LineGroupClass::Render(RenderInfoClass &rinfo)
 	if (sort) {
 		SortingRendererClass::Insert_Triangles(0, num_tris, 0, num_vertices);
 	} else {
-#ifdef TODO_VULKAN
+		auto pipelines = DX8Wrapper::FindClosestPipelines(vba.FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(0, num_tris, 0, num_vertices);
 #endif
 	}		

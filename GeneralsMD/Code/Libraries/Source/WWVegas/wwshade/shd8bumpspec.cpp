@@ -164,13 +164,16 @@ void Shd8BumpSpecClass::Apply_Shared(int cur_pass, RenderInfoClass& rinfo)
 	{
 		DX8Wrapper::Set_Vertex_Shader(Self_Shadow_Vertex_Shader.Peek_Shader());
 	}
+	DX8Wrapper::Set_Vertex_Shader_Constant(CV_CONST, D3DXVECTOR4(0.0f, 1.0f, 0.5f, 2.0f), 1);
+#else
+	DX8Wrapper::Set_Pipeline(cur_pass == 0 ? WWVK_Pipeline_Entry::PIPELINE_WWVK_BumpSpec :
+		WWVK_Pipeline_Entry::PIPELINE_WWVK_SSBumpSpec);
 #endif
 	// set vertex shader constants
-#ifdef TODO_VULKAN
-	DX8Wrapper::Set_Vertex_Shader_Constant(CV_CONST, D3DXVECTOR4(0.0f, 1.0f, 0.5f, 2.0f), 1);
 
 	const Matrix3D& cam=rinfo.Camera.Get_Transform();
 
+#ifdef TODO_VULKAN
 	// set constants
 	DX8Wrapper::Set_Vertex_Shader_Constant
 	(
@@ -197,6 +200,8 @@ void Shd8BumpSpecClass::Apply_Shared(int cur_pass, RenderInfoClass& rinfo)
 
 	// set constants
 	DX8Wrapper::Set_Vertex_Shader_Constant(CV_CONST, D3DXVECTOR4(0.0f, 1.0f, 0.5f, 2.0f), 1);
+#else
+	DX8Wrapper::Set_Pipeline(cur_pass == 0 ? PIPELINE_WWVK_BumpSpec : PIPELINE_WWVK_SSBumpSpec);
 #endif
 
 	// calculate shader view projection matrix

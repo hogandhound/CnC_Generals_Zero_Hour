@@ -86,7 +86,7 @@ public:
 		set_hardware_name(src.Get_Hardware_Name());
 		set_hardware_vendor(src.Get_Hardware_Vendor());
 		set_hardware_chipset(src.Get_Hardware_Chipset());
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 		Caps=src.Caps;
 		AdapterIdentifier=src.AdapterIdentifier;
 #endif
@@ -110,7 +110,7 @@ public:
 	const char *		Get_Hardware_Chipset() const	{ return HardwareChipset; }
 
 	const DynamicVectorClass<ResolutionDescClass> & Enumerate_Resolutions(void) const	{ return ResArray; }
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	const D3DCAPS9& 	Get_Caps() const { return Caps; }
 	const D3DADAPTER_IDENTIFIER9& Get_Adapter_Identifier() const { return AdapterIdentifier; }
 #endif
@@ -142,7 +142,7 @@ private:
 	StringClass			HardwareVendor;
 	StringClass			HardwareChipset;
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	D3DCAPS9				Caps;
 	D3DADAPTER_IDENTIFIER9 AdapterIdentifier;
 #endif

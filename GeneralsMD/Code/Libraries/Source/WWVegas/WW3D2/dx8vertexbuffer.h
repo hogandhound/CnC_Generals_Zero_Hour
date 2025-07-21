@@ -226,13 +226,13 @@ public:
 	DX8VertexBufferClass(const Vector3* vertices, const Vector3* normals, const Vector2* tex_coords, unsigned short VertexCount,UsageType usage=USAGE_DEFAULT);
 	DX8VertexBufferClass(const Vector3* vertices, const Vector3* normals, const Vector4* diffuse, const Vector2* tex_coords, unsigned short VertexCount,UsageType usage=USAGE_DEFAULT);
 	DX8VertexBufferClass(const Vector3* vertices, const Vector4* diffuse, const Vector2* tex_coords, unsigned short VertexCount,UsageType usage=USAGE_DEFAULT);
-	DX8VertexBufferClass(const Vector3* vertices, const Vector2* tex_coords, unsigned short VertexCount,UsageType usage=USAGE_DEFAULT);
+	//DX8VertexBufferClass(const Vector3* vertices, const Vector2* tex_coords, unsigned short VertexCount,UsageType usage=USAGE_DEFAULT);
 
 	const VK::Buffer& Get_DX8_Vertex_Buffer() { return VertexBuffer; }
 	void Upload();
 
 	void Copy(const Vector3* loc, unsigned first_vertex, unsigned count);
-	void Copy(const Vector3* loc, const Vector2* uv, unsigned first_vertex, unsigned count);
+	//void Copy(const Vector3* loc, const Vector2* uv, unsigned first_vertex, unsigned count);
 	//void Copy(const Vector3* loc, const Vector3* norm, unsigned first_vertex, unsigned count);
 	void Copy(const Vector3* loc, const Vector3* norm, const Vector2* uv, unsigned first_vertex, unsigned count);
 	void Copy(const Vector3* loc, const Vector3* norm, const Vector2* uv, const Vector4* diffuse, unsigned first_vertex, unsigned count);

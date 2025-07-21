@@ -312,7 +312,13 @@ void W3DDebugIcons::Render(RenderInfoClass & rinfo)
 		DX8Wrapper::Set_Vertex_Buffer(vb_access);
 		WWVKDSV;
 		//WWVK_UpdateFVF_NDUV2DescriptorSets(&WWVKRENDER, WWVKPIPES, sets, )
-#ifdef TODO_VULKAN //I don't know what textures should be assigned here
+		auto pipelines = DX8Wrapper::FindClosestPipelines(vb_access.FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN //I don't know what textures should be assigned here
 		DX8Wrapper::Draw_Triangles(	0,curIndex/3, 0,	numVertex);	//draw a quad, 2 triangles, 4 verts
 #endif
 	}

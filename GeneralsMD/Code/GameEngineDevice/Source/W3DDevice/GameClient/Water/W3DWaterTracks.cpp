@@ -941,7 +941,6 @@ Try improving the fit to vertical surfaces like cliffs.
 
 	Matrix3D tm(1);	///set to identity
 	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);	//position the water surface
-#ifdef INFO_VULKAN
 
 	DX8Wrapper::Set_Material(m_vertexMaterialClass);
 	DX8Wrapper::Set_Shader(m_shaderClass);
@@ -966,7 +965,6 @@ Try improving the fit to vertical surfaces like cliffs.
 		//write to the zbuffer.  Change to LESSEQUAL.
 		DX8Wrapper::Set_DX8_Render_State(VKRS_ZFUNC, VK_COMPARE_OP_LESS_OR_EQUAL);
 	}
-#endif
 
 	Int LastTextureType=-1;
 
@@ -984,7 +982,6 @@ Try improving the fit to vertical surfaces like cliffs.
 		mod = mod->m_nextSystem;
 	}	//while (mod)
 
-#ifdef INFO_VULKAN
 	DX8Wrapper::Set_DX8_Render_State(VKRS_DEPTHBIAS,0);
 
 	if (TheTerrainRenderObject->getShroud())
@@ -992,7 +989,6 @@ Try improving the fit to vertical surfaces like cliffs.
 		DX8Wrapper::Set_DX8_Render_State(VKRS_ZFUNC, VK_COMPARE_OP_EQUAL);
 		W3DShaderManager::resetShader(W3DShaderManager::ST_SHROUD_TEXTURE);
 	}
-#endif
 }
 
 WaterTracksObj *WaterTracksRenderSystem::findTrack(Vector2 &start, Vector2 &end, waveType type)

@@ -1726,9 +1726,7 @@ void DX8TextureCategoryClass::Render(void)
 		//DX8Wrapper::Set_Material(material);
 		//REF_PTR_RELEASE(material);
 		DX8Wrapper::Apply_Render_State_Changes();
-#ifdef INFO_VULKAN
 		DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND,VK_BLEND_FACTOR_DST_COLOR);
-#endif
 	}
 
 
@@ -1870,10 +1868,8 @@ void DX8TextureCategoryClass::Render(void)
 
 		
 //--------------------------------------------------------------------
-#ifdef INFO_VULKAN
 		if (mesh->Get_ObjectScale() != 1.0f)
 			DX8Wrapper::Set_DX8_Render_State(VKRS_NORMALIZENORMALS, TRUE);
-#endif
 //--------------------------------------------------------------------
 		/*
 		** Render mesh using either sorting or immediate pipeline
@@ -1936,10 +1932,8 @@ void DX8TextureCategoryClass::Render(void)
 				renderer->Render(mesh->Get_Base_Vertex_Offset());
 		}
 //--------------------------------------------------------------------
-#ifdef INFO_VULKAN
 		if (mesh->Get_ObjectScale() != 1.0f)
 			DX8Wrapper::Set_DX8_Render_State(VKRS_NORMALIZENORMALS, FALSE);
-#endif
 //--------------------------------------------------------------------
 
 
@@ -2223,18 +2217,14 @@ void DX8MeshRendererClass::Render_Decal_Meshes(void)
 	DecalMeshClass * decal_mesh = visible_decal_meshes;
 	if (!decal_mesh) return;
 
-#ifdef INFO_VULKAN
 	DX8Wrapper::Set_DX8_Render_State(VKRS_DEPTHBIAS,8 * -0.000005f);
-#endif
 	
 	while (decal_mesh != NULL) {
 		decal_mesh->Render();
 		decal_mesh = decal_mesh->Peek_Next_Visible();
 	}
 	visible_decal_meshes = NULL;
-#ifdef INFO_VULKAN
 	DX8Wrapper::Set_DX8_Render_State(VKRS_DEPTHBIAS,0);
-#endif
 }
 
 // ----------------------------------------------------------------------------

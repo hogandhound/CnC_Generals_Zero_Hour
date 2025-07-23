@@ -719,13 +719,13 @@ public:
 	static const char* Get_DX8_Render_State_Name(D3DRENDERSTATETYPE state);
 	static const char* Get_DX8_Texture_Stage_State_Name(D3DTEXTURESTAGESTATETYPE state);
 	static const char* Get_DX8_Sampler_Stage_State_Name(D3DSAMPLERSTATETYPE state);
-	static unsigned Get_DX8_Render_State(D3DRENDERSTATETYPE state) { return RenderStates[state]; }
 
 	// Names of the specific values of render states and texture stage states
 	static void Get_DX8_Texture_Stage_State_Value_Name(StringClass& name, D3DTEXTURESTAGESTATETYPE state, unsigned value);
 	static void Get_DX8_Sampler_Stage_State_Value_Name(StringClass& name, D3DSAMPLERSTATETYPE state, unsigned value);
 	static void Get_DX8_Render_State_Value_Name(StringClass& name, D3DRENDERSTATETYPE state, unsigned value);
 #endif
+	static unsigned Get_DX8_Render_State(VKRENDERSTATETYPE state) { return RenderStates[state]; }
 
 	static const char* Get_DX8_Texture_Address_Name(unsigned value);
 	static const char* Get_DX8_Texture_Filter_Name(unsigned value);

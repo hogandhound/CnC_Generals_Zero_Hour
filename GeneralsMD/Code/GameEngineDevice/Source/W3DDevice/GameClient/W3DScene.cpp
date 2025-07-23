@@ -979,10 +979,8 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 			//a projected alpha texture which will later be used to determine where
 			//wireframe should be visible.
 			///@todo: Clearing to black may not be needed if the scene already did the clear.
-#ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<3));
 			DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 0);
-#endif
 			//Since all objects will be rendered with same material, disable resetting until all are done.
 			m_maskMaterialPass->setAllowUninstall(FALSE);
 
@@ -991,9 +989,8 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 			m_maskMaterialPass->setAllowUninstall(TRUE);
 			m_maskMaterialPass->UnInstall_Materials();
 
-#ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
-#endif
+			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<2)|(1<<1)|(1<<0));
+
 
 			ShaderClass::Invalidate();
 		}
@@ -1007,10 +1004,8 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 			//wireframe should be visible.
 			///@todo: Clearing to black may not be needed if the scene already did the clear.
 			DX8Wrapper::Clear(true, false, Vector3(0.0f,0.0f,0.0f),1.0f);	// Clear color but not z
-#ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_ALPHA);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<3));
 			DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 0);
-#endif
 			
 			//We're only filling the z-buffer so ignore normal textures and state changes to speed things up.
 			m_customPassMode = SCENE_PASS_ALPHA_MASK;
@@ -1022,14 +1017,10 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 			m_maskMaterialPass->setAllowUninstall(TRUE);
 			m_maskMaterialPass->UnInstall_Materials();
 
-#ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
-#endif
+			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<2)|(1<<1)|(1<<0));
 			WW3D::Enable_Coloring(0xff008000);
 			WW3D::Enable_Texturing(false);
-#ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,D3DFILL_WIREFRAME);
-#endif
+			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,VK_POLYGON_MODE_LINE);
 
 			//Move maximum z-buffer value in a little to shift all z-values closer
 			//and thus forcing line to appear on top of previous pass.
@@ -1041,9 +1032,7 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 //			DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 4);
 			Customized_Render(rinfo);	//render wireframe where z-test passes
 			Flush(rinfo);
-#ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,D3DFILL_SOLID);
-#endif
+			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,VK_POLYGON_MODE_FILL);
 
 			rinfo.Camera.Set_Zbuffer_Range(nearZ, farZ);
 			rinfo.Camera.Apply();
@@ -1058,34 +1047,26 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 		{	//old W3D custom rendering code.
 
 			//Disable writes to color buffer to save memory bandwidth - we only need Z.
-#ifdef INFO_VULKAN
 			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,0);
 			DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 0);
-#endif
 			Customized_Render(rinfo);
 			Flush(rinfo);
 			//Re-enable writes to color buffer.
-#ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
-#endif
+			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<2)|(1<<1)|(1<<0));
 
 			switch (Get_Extra_Pass_Polygon_Mode()) {
 			case EXTRA_PASS_CLEAR_LINE:
 				DX8Wrapper::Clear(true, false, Vector3(0.0f,0.0f,0.0f), 0.0f);	// Clear color but not z
 				WW3D::Enable_Texturing(false);
 				WW3D::Enable_Coloring(0xff008000);
-#ifdef INFO_VULKAN
-				DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,D3DFILL_WIREFRAME);
+				DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,VK_POLYGON_MODE_LINE);
 				DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 7 * -0.000005f);
-#endif
 				Customized_Render(rinfo);
 				break;
 			}
 			Flush(rinfo);
-#ifdef INFO_VULKAN
-			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,D3DFILL_SOLID);
+			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,VK_POLYGON_MODE_FILL);
 			DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 0);
-#endif
 			WW3D::Enable_Texturing(old_enable);
 			WW3D::Enable_Coloring(0);
 			ShaderClass::Invalidate();
@@ -1285,10 +1266,10 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 	//draw polygons like this is very inefficient but for only 2 triangles, it's
 	//not worth bothering with index/vertex buffers.
 	m_pDev->SetFVF(VKFVF_XYZRHW | VKFVF_DIFFUSE);
+#endif
 
 	// Set stencil states
-	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILENABLE, TRUE );
-	DX8Wrapper::Set_DX8_Render_State(VKRS_ZENABLE, TRUE );
+	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILENABLE, TRUE);
 	DWORD	oldColorWriteEnable=0x12345678;
 	if (clear)
 	{	//we want to clear the stencil buffer to some known value whereever a player index is stored
@@ -1303,16 +1284,23 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 		DX8Wrapper::Set_DX8_Render_State(VKRS_ZFUNC, VK_COMPARE_OP_NEVER  );	//fail all access to the frame buffer to improve memory bandwidth
 
 		//disable writes to color buffer
-		if (DX8Wrapper::Get_Current_Caps()->Get_DX8_Caps().PrimitiveMiscCaps & D3DPMISCCAPS_COLORWRITEENABLE)
-		{	DX8Wrapper::_Get_D3D_Device8()->GetRenderState(VKRS_COLORWRITEENABLE, &oldColorWriteEnable);
+		//if (DX8Wrapper::Get_Current_Caps()->Get_DX8_Caps().PrimitiveMiscCaps & D3DPMISCCAPS_COLORWRITEENABLE)
+		{	
+#ifdef INFO_VULKAN
+			DX8Wrapper::_Get_D3D_Device8()->GetRenderState(VKRS_COLORWRITEENABLE, &oldColorWriteEnable);
+#else
+			oldColorWriteEnable = 0xF;
+#endif
 			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,0);
 		}
+#ifdef INFO_VULKAN
 		else
 		{	//device does not support disabling writes to color buffer so fake it through alpha blending
 			DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE, TRUE);
 			DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND, VK_BLEND_FACTOR_ZERO );
 			DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_ONE );
 		}
+#endif
 	}
 	else
 	{	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILREF,      stencilRef );
@@ -1325,10 +1313,9 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 
 		//Make occluded pixels transparent
 		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE, TRUE);
-		DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND, VK_BLEND_FACTOR_SRCALPHA );
-		DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_INVSRCALPHA );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND, VK_BLEND_FACTOR_SRC_ALPHA );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA );
 	}
-#endif
 	if (clear)
 	{
 		Int occludedMask = TheW3DShadowManager->getStencilShadowMask();
@@ -1369,7 +1356,6 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 #endif
 	}
 
-#ifdef INFO_VULKAN
 	// turn off the stencil buffer
 	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILENABLE, FALSE );
 	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE, FALSE);	//restore shader state
@@ -1379,7 +1365,6 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 
 	if (oldColorWriteEnable != 0x12345678)
 		DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,oldColorWriteEnable);
-#endif
 
 }  // end renderStencilShadows
 

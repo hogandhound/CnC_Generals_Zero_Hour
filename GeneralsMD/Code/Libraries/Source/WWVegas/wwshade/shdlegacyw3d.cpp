@@ -483,9 +483,7 @@ void Shd6LegacyW3DClass::Apply_Shared(int pass, RenderInfoClass& rinfo)
 {
 	SNAPSHOT_SAY(("Shd6LegacyW3DClass::Apply_Shared(pass: %d)\n",pass));
 	// fixed function uses pass through by default
-#ifdef INFO_VULKAN
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0, VKTSS_TEXCOORDINDEX, VKTSS_TCI_PASSTHRU);
-#endif
 }
 
 //**********************************************************************************************

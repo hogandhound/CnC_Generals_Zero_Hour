@@ -1996,15 +1996,11 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 				DX8Wrapper::Set_Shader(ShaderClass::_PresetOpaqueSolidShader);
 				devicePasses=1;	//one pass solid, next in wireframe.
 				DX8Wrapper::Apply_Render_State_Changes();
-#ifdef INFO_VULKAN
 				DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG2, VKTA_TFACTOR );
 				DX8Wrapper::Set_DX8_Render_State(VKRS_TEXTUREFACTOR,0xff808080);
-#endif
 				doMultiPassWireFrame=TRUE;
 				renderTerrainPass(&rinfo.Camera);
-#ifdef INFO_VULKAN
 				DX8Wrapper::Set_DX8_Render_State(VKRS_TEXTUREFACTOR,0xff008000);
-#endif
 				return;
 			}
 	}
@@ -2050,10 +2046,9 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
  		W3DShaderManager::setTexture(2,m_stageTwoTexture);	//cloud
  		W3DShaderManager::setTexture(3,m_stageThreeTexture);//noise
 		//Disable writes to destination alpha channel (if there is one)
-#ifdef INFO_VULKAN
 		if (DX8Wrapper::getBackBufferFormat() == WW3D_FORMAT_A8R8G8B8)
-			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
-#endif
+			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,0x7);//(1<<2)|(1<<1)|(1<<0)
+
 	}
 
 	Int pass;

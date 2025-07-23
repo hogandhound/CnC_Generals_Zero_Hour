@@ -525,7 +525,22 @@ Int W3DProjectedShadowManager::renderProjectedTerrainShadow(W3DProjectedShadow *
 		DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(shadowIndexBufferD3D);
 		VkBufferTools::CreateIndexBuffer(&DX8Wrapper::_GetRenderTarget(),
 			numIndex * sizeof(uint16_t), pvVertices.data(), shadowIndexBufferD3D);
-		
+
+
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHATESTENABLE, TRUE);	//should reject background pixels
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILENABLE, TRUE);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFUNC, VK_COMPARE_OP_ALWAYS);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILREF, 0x1);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILMASK, 0xffffffff);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILWRITEMASK, 0xffffffff);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILZFAIL, VK_STENCIL_OP_KEEP);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFAIL, VK_STENCIL_OP_KEEP);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILPASS, VK_STENCIL_OP_INCREMENT_AND_CLAMP);
+
+		//    DX8Wrapper::Set_DX8_Render_State( VKRS_ALPHABLENDENABLE, FALSE );	//useful to see bounds
+		DX8Wrapper::Set_DX8_Render_State(VKRS_LIGHTING, FALSE);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND, VK_BLEND_FACTOR_DST_COLOR);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_ZERO);
 #ifdef INFO_VULKAN
 		shadowIndexBufferD3D->Unlock();
 
@@ -538,21 +553,6 @@ Int W3DProjectedShadowManager::renderProjectedTerrainShadow(W3DProjectedShadow *
 
 		Int numPolys = (endX - startX)*(endY - startY)*2;	//2 triangles per cell
 
-		m_pDev->SetRenderState(VKRS_ALPHATESTENABLE, TRUE);	//should reject background pixels
-		m_pDev->SetRenderState( VKRS_STENCILENABLE, TRUE );
-		m_pDev->SetRenderState( VKRS_STENCILFUNC,     VK_COMPARE_OP_ALWAYS );
-		m_pDev->SetRenderState( VKRS_STENCILREF,      0x1 );
-		m_pDev->SetRenderState( VKRS_STENCILMASK,     0xffffffff );
-		m_pDev->SetRenderState( VKRS_STENCILWRITEMASK,0xffffffff );
-		m_pDev->SetRenderState( VKRS_STENCILZFAIL, VK_STENCIL_OP_KEEP );
-		m_pDev->SetRenderState( VKRS_STENCILFAIL,  VK_STENCIL_OP_KEEP );
-		m_pDev->SetRenderState( VKRS_STENCILPASS,  VK_STENCIL_OP_INCR );
-
-//    m_pDev->SetRenderState( VKRS_ALPHABLENDENABLE, FALSE );	//useful to see bounds
-		m_pDev->SetRenderState( VKRS_LIGHTING, FALSE);
-		m_pDev->SetRenderState( VKRS_SRCBLEND,  VK_BLEND_FACTOR_DST_COLOR);
-		m_pDev->SetRenderState( VKRS_DESTBLEND, VK_BLEND_FACTOR_ZERO );
-
 		
 		if (DX8Wrapper::_Is_Triangle_Draw_Enabled())
 		{
@@ -560,10 +560,6 @@ Int W3DProjectedShadowManager::renderProjectedTerrainShadow(W3DProjectedShadow *
 			m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, nShadowStartBatchVertex,0,numVerts,nShadowStartBatchIndex,numPolys);
 		}
 
-		m_pDev->SetRenderState(VKRS_ALPHATESTENABLE, FALSE);	//should reject background pixels
-		m_pDev->SetRenderState( VKRS_STENCILENABLE, FALSE );
-//    m_pDev->SetRenderState( VKRS_ALPHABLENDENABLE, TRUE );
-		m_pDev->SetRenderState( VKRS_LIGHTING, TRUE);
 #else
 		if (DX8Wrapper::_Is_Triangle_Draw_Enabled())
 		{
@@ -578,6 +574,10 @@ Int W3DProjectedShadowManager::renderProjectedTerrainShadow(W3DProjectedShadow *
 #endif
 		}
 #endif
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHATESTENABLE, FALSE);	//should reject background pixels
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILENABLE, FALSE);
+		//    DX8Wrapper::Set_DX8_Render_State( VKRS_ALPHABLENDENABLE, TRUE );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_LIGHTING, TRUE);
 		
 
 		nShadowVertsInBuf += numVerts;
@@ -688,8 +688,8 @@ static void RenderVBTile(TextureClass *text, Real ox, Real oy, Real ou, Real ov,
 	DX8Wrapper::Set_Index_Buffer(ib_access,0);
 	DX8Wrapper::Set_Vertex_Buffer(vb_access);
 	DX8Wrapper::Set_Texture(0, text);
-	DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND,  VK_BLEND_FACTOR_SRCALPHA );
-	DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_INVSRCALPHA  );
+	DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND,  VK_BLEND_FACTOR_SRC_ALPHA );
+	DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA  );
 	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE, TRUE );
 	ShaderClass::Invalidate();	//invalidate to force shader to reset since we directly changed states
 	DX8Wrapper::Draw_Triangles(	0,2, 0,	4);	//draw a quad, 2 triangles, 4 verts
@@ -773,10 +773,10 @@ void W3DProjectedShadowManager::flushDecals(W3DShadowTexture *texture, ShadowTyp
 	DX8Wrapper::Apply_Render_State_Changes();	//force update of view and projection matrices
 
 //Alpha Blended Shadows
-//	m_pDev->SetRenderState( VKRS_SRCBLEND,  VK_BLEND_FACTOR_SRCALPHA );
-//	m_pDev->SetRenderState( VKRS_DESTBLEND, VK_BLEND_FACTOR_INVSRCALPHA  );
+//	DX8Wrapper::Set_DX8_Render_State( VKRS_SRCBLEND,  VK_BLEND_FACTOR_SRC_ALPHA );
+//	DX8Wrapper::Set_DX8_Render_State( VKRS_DESTBLEND, VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA  );
 /*	UnsignedInt color=TheW3DShadowManager->getShadowColor();
-	m_pDev->SetRenderState( VKRS_TEXTUREFACTOR, 0xff000000 | color);
+	DX8Wrapper::Set_DX8_Render_State( VKRS_TEXTUREFACTOR, 0xff000000 | color);
 	m_pDev->SetTextureStageState(0, VKTSS_COLOROP, VKTOP_MODULATE);
 	m_pDev->SetTextureStageState(0, VKTSS_COLORARG1, VKTA_TEXTURE);
 	m_pDev->SetTextureStageState(0, VKTSS_COLORARG2, VKTA_TFACTOR);

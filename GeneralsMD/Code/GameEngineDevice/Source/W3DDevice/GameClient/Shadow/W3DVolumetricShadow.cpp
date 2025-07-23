@@ -3452,29 +3452,28 @@ void W3DVolumetricShadowManager::renderStencilShadows( void )
 	//not worth bothering with index/vertex buffers.
 #ifdef INFO_VULKAN
 	m_pDev->SetFVF(VKFVF_XYZRHW | VKFVF_DIFFUSE);
+#endif
 
 	// Use alpha blending to draw the transparent shadow
-    m_pDev->SetRenderState( VKRS_ALPHABLENDENABLE, TRUE );
-//  m_pDev->SetRenderState( VKRS_SRCBLEND,  VK_BLEND_FACTOR_SRCALPHA );
-//  m_pDev->SetRenderState( VKRS_DESTBLEND, VK_BLEND_FACTOR_INVSRCALPHA );
-		m_pDev->SetRenderState( VKRS_SRCBLEND,  VK_BLEND_FACTOR_DST_COLOR);
-		m_pDev->SetRenderState( VKRS_DESTBLEND, VK_BLEND_FACTOR_ZERO );
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE, TRUE);
+	//  DX8Wrapper::Set_DX8_Render_State( VKRS_SRCBLEND,  VK_BLEND_FACTOR_SRC_ALPHA );
+	//  DX8Wrapper::Set_DX8_Render_State( VKRS_DESTBLEND, VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA );
+	DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND, VK_BLEND_FACTOR_DST_COLOR);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_ZERO);
 
 
 	// Set stencil states
-    m_pDev->SetRenderState( VKRS_ZENABLE,          TRUE );
-		m_pDev->SetRenderState(VKRS_ZFUNC, VK_COMPARE_OP_ALWAYS);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ZFUNC, VK_COMPARE_OP_ALWAYS);
 
 	// Only write where stencil val >= 1 (count indicates # of shadows that
 	// overlap that pixel)
-    m_pDev->SetRenderState( VKRS_STENCILENABLE, TRUE );
-    m_pDev->SetRenderState( VKRS_STENCILFUNC, VK_COMPARE_OP_LESS_OR_EQUAL );	//reference value is less or equal to stencil
-    m_pDev->SetRenderState( VKRS_STENCILPASS, VK_STENCIL_OP_KEEP );
+	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILENABLE, TRUE);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFUNC, VK_COMPARE_OP_LESS_OR_EQUAL);	//reference value is less or equal to stencil
+	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILPASS, VK_STENCIL_OP_KEEP);
 	//Upper bits of stencil could be used for storing occluded models which are player colored.  So we mask out those
 	//pixels and only use the lower bits for shadow calculations.
-	m_pDev->SetRenderState( VKRS_STENCILMASK,     ~TheW3DShadowManager->getStencilShadowMask());
-    m_pDev->SetRenderState( VKRS_STENCILREF,      0x1 );
-#endif
+	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILMASK, ~TheW3DShadowManager->getStencilShadowMask());
+	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILREF, 0x1);
 	vkCmdSetStencilCompareMask(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, ~TheW3DShadowManager->getStencilShadowMask());
 	std::vector<VkDescriptorSet> sets;
 	WWVK_UpdateVolumeStencilShadowDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
@@ -3484,16 +3483,16 @@ void W3DVolumetricShadowManager::renderStencilShadows( void )
 	WWVK_DrawVolumeStencilShadow_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
 	WWVKRENDER.PushSingleFrameBuffer(vbo);
 #ifdef INFO_VULKAN
-	m_pDev->SetRenderState(VKRS_SHADEMODE, D3DSHADE_FLAT);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_SHADEMODE, D3DSHADE_FLAT);
 
 	if (DX8Wrapper::_Is_Triangle_Draw_Enabled())
 		m_pDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(_TRANSLITVERTEX));
 
-	m_pDev->SetRenderState(VKRS_SHADEMODE, D3DSHADE_GOURAUD);
-	m_pDev->SetRenderState( VKRS_ALPHABLENDENABLE, FALSE );
-	// turn off the stencil buffer
-	m_pDev->SetRenderState( VKRS_STENCILENABLE, FALSE );
+	DX8Wrapper::Set_DX8_Render_State(VKRS_SHADEMODE, D3DSHADE_GOURAUD);
 #endif
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE, FALSE);
+	// turn off the stencil buffer
+	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILENABLE, FALSE);
 }  // end renderStencilShadows
 
 void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
@@ -3543,52 +3542,52 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 		DX8Wrapper::Apply_Render_State_Changes();	//force update of view and projection matrices
 
 		// turn off z writing
-#if INFO_VULKANs
-		m_pDev->SetRenderState(VKRS_ZFUNC, VK_COMPARE_OP_LESS_OR_EQUAL);
-	  m_pDev->SetRenderState( VKRS_ZENABLE,          TRUE );
-		m_pDev->SetRenderState(VKRS_ZWRITEENABLE , FALSE);
-		m_pDev->SetRenderState(VKRS_ALPHATESTENABLE, FALSE);
-		m_pDev->SetRenderState(VKRS_FOGENABLE, FALSE);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ZFUNC, VK_COMPARE_OP_LESS_OR_EQUAL);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ZWRITEENABLE , FALSE);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHATESTENABLE, FALSE);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_FOGENABLE, FALSE);
 
 
 		// setup the TMU to default
-		m_pDev->SetRenderState(VKRS_SHADEMODE, D3DSHADE_FLAT);
-		m_pDev->SetRenderState(VKRS_LIGHTING, FALSE);
-		m_pDev->SetTextureStageState( 0, VKTSS_COLORARG1, VKTA_TEXTURE );
-		m_pDev->SetTextureStageState( 0, VKTSS_COLORARG2, VKTA_DIFFUSE );
-		m_pDev->SetTextureStageState( 0, VKTSS_COLOROP,   VKTOP_SELECTARG2);
-		m_pDev->SetTextureStageState( 0, VKTSS_ALPHAOP,   VKTOP_DISABLE );
-		m_pDev->SetTextureStageState( 0, VKTSS_TEXCOORDINDEX, 0 );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_LIGHTING, FALSE);
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG1, VKTA_TEXTURE );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG2, VKTA_DIFFUSE );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLOROP,   VKTOP_SELECTARG2);
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_ALPHAOP,   VKTOP_DISABLE );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_TEXCOORDINDEX, 0 );
 
-		m_pDev->SetTextureStageState( 1, VKTSS_COLOROP,   VKTOP_DISABLE);
-		m_pDev->SetTextureStageState( 1, VKTSS_ALPHAOP,   VKTOP_DISABLE );
-		m_pDev->SetTextureStageState( 1, VKTSS_TEXCOORDINDEX, 1 );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLOROP,   VKTOP_DISABLE);
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_ALPHAOP,   VKTOP_DISABLE );
+		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_TEXCOORDINDEX, 1 );
+#ifdef INFO_VULKAN
 		m_pDev->SetTexture(0,NULL);
 		m_pDev->SetTexture(1,NULL);
-		DWORD oldColorWriteEnable=0x12345678;
 #endif
+		DWORD oldColorWriteEnable=0x12345678;
 
 
-#ifdef INFO_VULKAN
 	#ifdef SV_DEBUG
-		m_pDev->SetRenderState(VKRS_ALPHABLENDENABLE , TRUE);
-		m_pDev->SetRenderState( VKRS_STENCILENABLE, FALSE );
-		m_pDev->SetRenderState( VKRS_SRCBLEND, /*VK_BLEND_FACTOR_DST_COLOR*/VK_BLEND_FACTOR_ONE );
-		m_pDev->SetRenderState( VKRS_DESTBLEND, VK_BLEND_FACTOR_ZERO );
-		m_pDev->SetRenderState(VKRS_ZFUNC, VK_COMPARE_OP_LESS_OR_EQUAL);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE , TRUE);
+		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILENABLE, FALSE );
+		DX8Wrapper::Set_DX8_Render_State( VKRS_SRCBLEND, /*VK_BLEND_FACTOR_DST_COLOR*/VK_BLEND_FACTOR_ONE );
+		DX8Wrapper::Set_DX8_Render_State( VKRS_DESTBLEND, VK_BLEND_FACTOR_ZERO );
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ZFUNC, VK_COMPARE_OP_LESS_OR_EQUAL);
 	#else
 		//disable writes to color buffer
-		if (DX8Wrapper::Get_Current_Caps()->Get_DX8_Caps().PrimitiveMiscCaps & D3DPMISCCAPS_COLORWRITEENABLE)
-		{	DX8Wrapper::_Get_D3D_Device8()->GetRenderState(VKRS_COLORWRITEENABLE, &oldColorWriteEnable);
+		//if (DX8Wrapper::Get_Current_Caps()->Get_DX8_Caps().PrimitiveMiscCaps & D3DPMISCCAPS_COLORWRITEENABLE)
+		{
+			oldColorWriteEnable = DX8Wrapper::Get_DX8_Render_State(VKRS_COLORWRITEENABLE);
 			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,0);
 		}
+#ifdef INFO_VULKAN
 		else
 		{	//device does not support disabling writes to color buffer so fake it through alpha blending
-			m_pDev->SetRenderState( VKRS_SRCBLEND, VK_BLEND_FACTOR_ZERO );
-			m_pDev->SetRenderState( VKRS_DESTBLEND, VK_BLEND_FACTOR_ONE );
-			m_pDev->SetRenderState(VKRS_ALPHABLENDENABLE , TRUE);
+			DX8Wrapper::Set_DX8_Render_State( VKRS_SRCBLEND, VK_BLEND_FACTOR_ZERO );
+			DX8Wrapper::Set_DX8_Render_State( VKRS_DESTBLEND, VK_BLEND_FACTOR_ONE );
+			DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE , TRUE);
 		}
-		m_pDev->SetRenderState( VKRS_STENCILENABLE, TRUE );
+#endif
+		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILENABLE, TRUE );
 	#endif
 		//Any pixels with stencil already set to 128 contains a potential occluder.  If this pixels also has any of the player
 		//color stencil bits also set, it means that it's an occluded player color and we need to NOT render shadows here.  We
@@ -3596,16 +3595,15 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 		//If the value of just the potential occluder bit is >= than the combined bits, then we know none of the player color
 		//bits were set and it's okay to render shadow.
 		if (TheW3DShadowManager->getStencilShadowMask() == 0x80808080)
-			m_pDev->SetRenderState( VKRS_STENCILFUNC,     VK_COMPARE_OP_NOTEQUAL );	//in this mode, MSB indicates occluded player pixels.
+			DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILFUNC,     VK_COMPARE_OP_NOT_EQUAL );	//in this mode, MSB indicates occluded player pixels.
 		else
-			m_pDev->SetRenderState( VKRS_STENCILFUNC,     VK_COMPARE_OP_GREATER_OR_EQUAL );	//in this mode, multiple bits indicate occluded player pixels.
-		m_pDev->SetRenderState( VKRS_STENCILREF,      0x80808080 );			//isolate MSB, it's used to indicate pixels containing potential occluders.
-		m_pDev->SetRenderState( VKRS_STENCILMASK,     TheW3DShadowManager->getStencilShadowMask());	//isolate upper bits containing PotentialOccluderBit|PlayerColorBits
-		m_pDev->SetRenderState( VKRS_STENCILWRITEMASK,0xffffffff );
-		m_pDev->SetRenderState( VKRS_STENCILZFAIL, VK_STENCIL_OP_KEEP );
-		m_pDev->SetRenderState( VKRS_STENCILFAIL,  VK_STENCIL_OP_KEEP );
-		m_pDev->SetRenderState( VKRS_STENCILPASS,  VK_STENCIL_OP_INCR );
-#endif
+			DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILFUNC,     VK_COMPARE_OP_GREATER_OR_EQUAL );	//in this mode, multiple bits indicate occluded player pixels.
+		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILREF,      0x80808080 );			//isolate MSB, it's used to indicate pixels containing potential occluders.
+		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILMASK,     TheW3DShadowManager->getStencilShadowMask());	//isolate upper bits containing PotentialOccluderBit|PlayerColorBits
+		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILWRITEMASK,0xffffffff );
+		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILZFAIL, VK_STENCIL_OP_KEEP );
+		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILFAIL,  VK_STENCIL_OP_KEEP );
+		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILPASS,  VK_STENCIL_OP_INCREMENT_AND_CLAMP );
 		vkCmdSetStencilOp(WWVKRENDER.currentCmd, VK_STENCIL_FRONT_AND_BACK, VK_STENCIL_OP_KEEP,
 			VK_STENCIL_OP_INCREMENT_AND_CLAMP, VK_STENCIL_OP_KEEP,
 			TheW3DShadowManager->getStencilShadowMask() == 0x80808080 ? VK_COMPARE_OP_NOT_EQUAL : VK_COMPARE_OP_GREATER_OR_EQUAL);
@@ -3613,11 +3611,11 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 		vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_CLOCKWISE);
 #ifdef INFO_VULKAN
 		m1_pDev->SetFVF(SHADOW_DYNAMIC_VOLUME_FVF);
-
-		m_pDev->SetRenderState(VKRS_CULLMODE,D3DCULL_CW);
-//		m_pDev->SetRenderState(VKRS_DEPTHBIAS,1);	///@todo: See if this helps or makes things worse.
-		//m_pDev->SetRenderState(VKRS_FILLMODE,D3DFILL_WIREFRAME);
 #endif
+
+		DX8Wrapper::Set_DX8_Render_State(VKRS_CULLMODE, VK_FRONT_FACE_CLOCKWISE);
+//		DX8Wrapper::Set_DX8_Render_State(VKRS_DEPTHBIAS,1);	///@todo: See if this helps or makes things worse.
+		//DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,VK_POLYGON_MODE_LINE);
 
 		lastActiveVertexBuffer = {};	//reset
 
@@ -3670,16 +3668,14 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 			TheW3DShadowManager->getStencilShadowMask() == 0x80808080 ? VK_COMPARE_OP_NOT_EQUAL : VK_COMPARE_OP_GREATER_OR_EQUAL);
 		vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_COUNTER_CLOCKWISE);
 
-#ifdef INFO_VULKAN
-		m_pDev->SetRenderState( VKRS_STENCILPASS,  VK_STENCIL_OP_DECRSAT);
+		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILPASS, VK_STENCIL_OP_DECREMENT_AND_CLAMP);
 
 		//
 		// invert normals of shadow volumes so we can decrement in the
 		// stencil buffer and render
 		//
 
-		m_pDev->SetRenderState(VKRS_CULLMODE,D3DCULL_CCW);
-#endif
+		DX8Wrapper::Set_DX8_Render_State(VKRS_CULLMODE, VK_FRONT_FACE_COUNTER_CLOCKWISE);
 
 		for (nextVb=TheW3DBufferManager->getNextVertexBuffer(NULL,W3DBufferManager::VBM_FVF_XYZ);nextVb != NULL; nextVb=TheW3DBufferManager->getNextVertexBuffer(nextVb,W3DBufferManager::VBM_FVF_XYZ))
 		{
@@ -3709,15 +3705,13 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 		}
 
 		vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_COUNTER_CLOCKWISE);
-#ifdef INFO_VULKAN
-		m_pDev->SetRenderState(VKRS_CULLMODE,D3DCULL_CW);
-//		m_pDev->SetRenderState(VKRS_DEPTHBIAS,0);	///@todo: See if this helps or makes things worse.
-		//m_pDev->SetRenderState(VKRS_FILLMODE,D3DFILL_SOLID);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_CULLMODE,VK_FRONT_FACE_CLOCKWISE);
+//		DX8Wrapper::Set_DX8_Render_State(VKRS_DEPTHBIAS,0);	///@todo: See if this helps or makes things worse.
+		//DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,VK_POLYGON_MODE_FILL);
 
 
 		if (oldColorWriteEnable != 0x12345678)
 			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,oldColorWriteEnable);
-#endif
 
 		//
 		// render the big transparent square of shadows in the stencil buffer
@@ -3728,10 +3722,10 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 			renderStencilShadows();
 
 #ifdef INFO_VULKAN
-		m_pDev->SetRenderState(VKRS_SHADEMODE, D3DSHADE_GOURAUD);
-		m_pDev->SetRenderState(VKRS_ALPHABLENDENABLE , FALSE);
-		m_pDev->SetRenderState(VKRS_LIGHTING, FALSE);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_SHADEMODE, D3DSHADE_GOURAUD);
 #endif
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE , FALSE);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_LIGHTING, FALSE);
 
 		DX8Wrapper::Invalidate_Cached_Render_States();
 	}

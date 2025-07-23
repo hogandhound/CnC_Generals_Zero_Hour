@@ -372,9 +372,7 @@ void W3DSmudgeManager::render(RenderInfoClass &rinfo)
 
 	//Disable reading texture alpha since it's undefined.
 	//DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_COLOROP,VKTOP_SELECTARG1);		
-#ifdef INFO_VULKAN	
-	DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_ALPHAOP,VKTOP_SELECTARG2);			
-#endif
+	DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_ALPHAOP,VKTOP_SELECTARG2);
 
 	Int smudgesRemaining=count;
 	set=m_usedSmudgeSetList.Head();	//first smudge set that needs rendering.
@@ -449,18 +447,16 @@ flushSmudges:
 			((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*) & identity);
 
 //Debug Code which draws outline around smudge
-/*		DX8Wrapper::_Get_D3D_Device8()->SetRenderState(VKRS_FILLMODE,D3DFILL_WIREFRAME);
+/*		DX8Wrapper::_Get_D3D_Device8()->SetRenderState(VKRS_FILLMODE,VK_POLYGON_MODE_LINE);
 		DX8Wrapper::_Get_D3D_Device8()->SetRenderState(VKRS_ALPHABLENDENABLE,FALSE);
 		DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_COLOROP,VKTOP_SELECTARG2);			
 		DX8Wrapper::Draw_Triangles(	0,smudgesInRenderBatch*4, 0, smudgesInRenderBatch*5);	
-		DX8Wrapper::_Get_D3D_Device8()->SetRenderState(VKRS_FILLMODE,D3DFILL_SOLID);
+		DX8Wrapper::_Get_D3D_Device8()->SetRenderState(VKRS_FILLMODE,VK_POLYGON_MODE_FILL);
 		DX8Wrapper::_Get_D3D_Device8()->SetRenderState(VKRS_ALPHABLENDENABLE,TRUE);
 		DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_COLOROP,VKTOP_SELECTARG1);			
 */
 		smudgesRemaining -= smudgesInRenderBatch;
 	}
-#ifdef INFO_VULKAN
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_COLOROP,VKTOP_MODULATE);			
-	DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_ALPHAOP,VKTOP_MODULATE);			
-#endif
+	DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_ALPHAOP,VKTOP_MODULATE);
 }

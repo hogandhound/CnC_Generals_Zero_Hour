@@ -49,7 +49,7 @@
 
 bool ShaderClass::ShaderDirty=true;
 unsigned long ShaderClass::CurrentShader=0;
-unsigned long _PolygonCullMode = VK_FRONT_FACE_CLOCKWISE;// D3DCULL_CW;
+unsigned long _PolygonCullMode = VK_FRONT_FACE_CLOCKWISE;// VK_FRONT_FACE_CLOCKWISE;
 
 
 /*
@@ -1027,7 +1027,7 @@ void ShaderClass::Apply()
 //	DX8Wrapper::Set_DX8_Render_State(VKRS_DITHERENABLE,BOOL(Get_Dither_Mask()));
 
 	// CULLMODE
-	DX8Wrapper::Set_DX8_Render_State(VKRS_CULLMODE,Get_Cull_Mode() ? _PolygonCullMode : D3DCULL_NONE);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_CULLMODE,Get_Cull_Mode() ? _PolygonCullMode : VK_FRONT_FACE_MAX_ENUM);
 
 	// NPATCHES
 #if 0 //doesn't exist in dx9. doesn't appear to be used

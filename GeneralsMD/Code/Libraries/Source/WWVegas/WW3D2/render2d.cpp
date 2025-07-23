@@ -677,9 +677,12 @@ void Render2DClass::Render(void)
 		DX8Wrapper::Apply_Render_State_Changes();	//force update of all regular W3D states.
 #ifdef INFO_VULKAN
 		if (DX8Wrapper::Get_Current_Caps()->Support_Dot3())
+#endif
 		{	//Override W3D states with customizations for grayscale
 			DX8Wrapper::Set_DX8_Render_State(VKRS_TEXTUREFACTOR, 0x80A5CA8E);
+#ifdef INFO_VULKAN
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG0, VKTA_TFACTOR | VKTA_ALPHAREPLICATE);
+#endif
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG1, VKTA_TEXTURE);
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLORARG2, VKTA_TFACTOR | VKTA_ALPHAREPLICATE);
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLOROP, VKTOP_MULTIPLYADD);
@@ -688,6 +691,7 @@ void Render2DClass::Render(void)
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLORARG2, VKTA_TFACTOR);
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_COLOROP, VKTOP_DOTPRODUCT3);
 		}
+#ifdef INFO_VULKAN
 		else
 		{	//doesn't have DOT3 blend mode so fake it another way.
 			DX8Wrapper::Set_DX8_Render_State(VKRS_TEXTUREFACTOR, 0x60606060);

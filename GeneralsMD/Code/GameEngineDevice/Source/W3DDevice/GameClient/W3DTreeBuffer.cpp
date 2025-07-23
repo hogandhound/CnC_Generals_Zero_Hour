@@ -86,6 +86,7 @@ enum
 #include "WW3D2/Matinfo.h"
 #include "WW3D2/Mesh.h"
 #include "WW3D2/MeshMdl.h"
+#include <VkTexture.h>
 
 #ifdef _INTERNAL
 // for occasional debugging...
@@ -128,79 +129,88 @@ W3DTreeBuffer::W3DTreeTextureClass::W3DTreeTextureClass(unsigned width, unsigned
 	pixel borders around them, so that when the tiles are scaled and bilinearly
 	interpolated, you don't get seams between the tiles.  */
 //=============================================================================
-int W3DTreeBuffer::W3DTreeTextureClass::update(W3DTreeBuffer *buffer)
+int W3DTreeBuffer::W3DTreeTextureClass::update(W3DTreeBuffer* buffer)
 {
 
 	//Set to clamp.
 	Get_Filter().Set_U_Addr_Mode(TextureFilterClass::TEXTURE_ADDRESS_CLAMP);
 	Get_Filter().Set_V_Addr_Mode(TextureFilterClass::TEXTURE_ADDRESS_CLAMP);
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 
-	IDirect3DSurface9 *surface_level;
+	IDirect3DSurface9* surface_level;
 	D3DSURFACE_DESC surface_desc;
 	D3DLOCKED_RECT locked_rect;
 	DX8_ErrorCode(Peek_D3D_Texture()->GetSurfaceLevel(0, &surface_level));
 	DX8_ErrorCode(surface_level->GetDesc(&surface_desc));
 
 	DX8_ErrorCode(surface_level->LockRect(&locked_rect, NULL, 0));
+#endif
+	VK::Surface surface = {};
+	surface.width = Peek_D3D_Texture().width;
+	surface.height = Peek_D3D_Texture().height;
+	surface.format = Peek_D3D_Texture().format;
+	surface.buffer.resize(surface.width * surface.height * VK::SizeOfFormat(surface.format));
 
-	Int tilePixelExtent = TILE_PIXEL_EXTENT;		 
-//	Int numRows = surface_desc.Height/(tilePixelExtent+TILE_OFFSET);
+	Int tilePixelExtent = TILE_PIXEL_EXTENT;
+	//	Int numRows = surface_desc.Height/(tilePixelExtent+TILE_OFFSET);
 #ifdef _DEBUG
 	//DASSERT_MSG(tilesPerRow*numRows >= htMap->m_numBitmapTiles,Debug::Format ("Too many tiles.")); 
 	//DEBUG_ASSERTCRASH((Int)surface_desc.Width >= tilePixelExtent*tilesPerRow, ("Bitmap too small."));
 #endif
-	if (surface_desc.Format == D3DFMT_A8R8G8B8) {
+	if (surface.format == VK_FORMAT_R8G8B8A8_SRGB) {
 		Int tileNdx;
 		Int pixelBytes = 4;
 #if 0 // Fill unused texture for debug display.
 		UnsignedInt cellX, cellY;
 		for (cellX = 0; cellX < surface_desc.Width; cellX++) {
 			for (cellY = 0; cellY < surface_desc.Height; cellY++) {
-				UnsignedByte *pBGR = ((UnsignedByte *)locked_rect.pBits)+(cellY*surface_desc.Width+cellX)*pixelBytes;
+				UnsignedByte* pBGR = ((UnsignedByte*)locked_rect.pBits) + (cellY * surface_desc.Width + cellX) * pixelBytes;
 				//*((Short*)pBGR) =  0x8000 + (((255-2*cellY)>>3)<<10) + ((4*cellX)>>4);
-				*((Int*)pBGR) =  0xFF000000 | ( (((255-cellY))<<16) + ((cellX)) );
-				
+				*((Int*)pBGR) = 0xFF000000 | ((((255 - cellY)) << 16) + ((cellX)));
+
 			}
 		}
 #endif
-		for (tileNdx=0; tileNdx < buffer->getNumTiles(); tileNdx++) {
-			TileData *pTile = buffer->getSourceTile(tileNdx);
+		for (tileNdx = 0; tileNdx < buffer->getNumTiles(); tileNdx++) {
+			TileData* pTile = buffer->getSourceTile(tileNdx);
 			if (!pTile) continue;
 			ICoord2D position = pTile->m_tileLocationInTexture;
-			if (position.x<0) {
+			if (position.x < 0) {
 				continue;
 			}
-			Int i,j;
-			for (j=0; j<tilePixelExtent; j++) {
-				UnsignedByte *pBGR = pTile->getRGBDataForWidth(tilePixelExtent);
-				pBGR += (tilePixelExtent-(1+j))*TILE_BYTES_PER_PIXEL*tilePixelExtent; // invert to match.
-				Int row = position.y+j;
-				UnsignedByte *pBGRA = ((UnsignedByte*)locked_rect.pBits) +
-							(row)*surface_desc.Width*pixelBytes;
+			Int i, j;
+			for (j = 0; j < tilePixelExtent; j++) {
+				UnsignedByte* pBGR = pTile->getRGBDataForWidth(tilePixelExtent);
+				pBGR += (tilePixelExtent - (1 + j)) * TILE_BYTES_PER_PIXEL * tilePixelExtent; // invert to match.
+				Int row = position.y + j;
+				UnsignedByte* pBGRA = ((UnsignedByte*)surface.buffer.data()) +
+					(row)*surface.width * pixelBytes;
 
 				Int column = position.x;
-				pBGRA += column*pixelBytes;
-				for (i=0; i<tilePixelExtent; i++) {
+				pBGRA += column * pixelBytes;
+				for (i = 0; i < tilePixelExtent; i++) {
 					// 15 bit color *((Short*)pBGRA) = 0x8000 + ((pBGR[2]>>3)<<10) + ((pBGR[1]>>3)<<5) + (pBGR[0]>>3);
-					*((Int *)pBGRA) = (pBGR[3]<<24) + (pBGR[2]<<16) + (pBGR[1]<<8) + (pBGR[0]); 
-					pBGRA +=pixelBytes;
-					pBGR +=TILE_BYTES_PER_PIXEL;
+					*((Int*)pBGRA) = (pBGR[3] << 24) + (pBGR[2] << 16) + (pBGR[1] << 8) + (pBGR[0]);
+					pBGRA += pixelBytes;
+					pBGR += TILE_BYTES_PER_PIXEL;
 				}
 			}
 		}
 
 	}
+#ifdef INFO_VULKAN
 	DX8_ErrorCode(surface_level->UnlockRect());
 	surface_level->Release();
-	DX8_ErrorCode(D3DXFilterTexture(Peek_D3D_Texture(), NULL, (UINT)0, D3DX_FILTER_BOX));	
+	DX8_ErrorCode(D3DXFilterTexture(Peek_D3D_Texture(), NULL, (UINT)0, D3DX_FILTER_BOX));
 	if (TheWritableGlobalData->m_textureReductionFactor) {
 		DX8_ErrorCode(Peek_D3D_Texture()->SetLOD((DWORD)TheWritableGlobalData->m_textureReductionFactor));
 	}
-	return(surface_desc.Height);
-#else
-	return 0;
 #endif
+	VK::Texture tex = Peek_D3D_Texture();
+	WWVKRENDER.PushSingleTexture(tex);
+	VK::CreateTexture(&WWVKRENDER, tex, surface.width, surface.height, surface.buffer.data(), 17, surface.format);
+	Poke_Texture(tex);
+	return(surface.height);
 }
 
 
@@ -1777,7 +1787,7 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 			m_vertexTree[bNdx]->Get_DX8_Vertex_Buffer().buffer, (VkDeviceSize)0, (WorldMatrix*)& matWorld);
 	}
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	DX8Wrapper::Set_DX8_Texture_Stage_State(0,  VKTSS_TEXCOORDINDEX, 0);
 	DX8Wrapper::Set_DX8_Texture_Stage_State(1,  VKTSS_TEXCOORDINDEX, 1);
 	// Draw all the trees.

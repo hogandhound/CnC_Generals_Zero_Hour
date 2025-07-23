@@ -1240,14 +1240,8 @@ void W3DRoadBuffer::loadRoadsInVertexAndIndexBuffers()
 	VertexFormatXYZDUV1 *vb;
 	UnsignedShort *ib;
 	DX8IndexBufferClass::WriteLockClass lockIdxBuffer(m_roadTypes[m_curRoadType].getIB(), 
-#ifdef INFO_VULKAN
-		s_dynamic?D3DLOCK_DISCARD:
-#endif
 		0);
 	DX8VertexBufferClass::WriteLockClass lockVtxBuffer(m_roadTypes[m_curRoadType].getVB(),
-#ifdef INFO_VULKAN
-		s_dynamic ? D3DLOCK_DISCARD :
-#endif
 		0);
 	vb=(VertexFormatXYZDUV1*)lockVtxBuffer.Get_Vertex_Array();
 	ib = lockIdxBuffer.Get_Index_Array();

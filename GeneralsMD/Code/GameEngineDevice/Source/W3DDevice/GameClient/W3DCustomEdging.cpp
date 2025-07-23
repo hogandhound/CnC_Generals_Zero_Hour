@@ -416,7 +416,7 @@ void W3DCustomEdging::drawEdging(WorldHeightMap *pMap, Int minX, Int maxX, Int m
 		DX8Wrapper::Set_DX8_Texture_Stage_State( 1, VKTSS_TEXCOORDINDEX, 1 );
 #endif
 		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAREF,0x80);
-		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAFUNC,VK_COMPARE_OP_NOTEQUAL);	//pass pixels who's alpha is not zero
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAFUNC,VK_COMPARE_OP_NOT_EQUAL);	//pass pixels who's alpha is not zero
 		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHATESTENABLE, true);	//test pixels if transparent(clipped) before rendering.
 		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE,true);
 		DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND,VK_BLEND_FACTOR_DST_COLOR);
@@ -432,7 +432,7 @@ void W3DCustomEdging::drawEdging(WorldHeightMap *pMap, Int minX, Int maxX, Int m
 		DX8Wrapper::Apply_Render_State_Changes();
 #ifdef INFO_VULKAN //This is disabled test code
 		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAREF,0x80);
-		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAFUNC,VK_COMPARE_OP_NOTEQUAL);	//pass pixels who's alpha is not zero
+		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHAFUNC,VK_COMPARE_OP_NOT_EQUAL);	//pass pixels who's alpha is not zero
 		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHATESTENABLE, true);	//test pixels if transparent(clipped) before rendering.
 		DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE,true);
 		DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND,VK_BLEND_FACTOR_DST_COLOR);

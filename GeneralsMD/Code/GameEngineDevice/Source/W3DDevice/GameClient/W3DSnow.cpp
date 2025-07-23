@@ -432,13 +432,13 @@ void W3DSnowManager::render(RenderInfoClass &rinfo)
 
 	DX8Wrapper::Apply_Render_State_Changes();
 	
-#ifdef VERIFY_VULKAN
     // Set the render states for using point sprites
 	DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSPRITEENABLE, TRUE );
     DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSCALEENABLE,  TRUE );
     DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSIZE,     FtoDW(m_pointSize) );
     DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSIZE_MIN, FtoDW(m_minPointSize) );
     DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSIZE_MAX, FtoDW(m_maxPointSize) );
+#ifdef VERIFY_VULKAN
     DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSCALE_A,  FtoDW(0.00f) );
     DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSCALE_B,  FtoDW(0.00f) );
     DX8Wrapper::Set_DX8_Render_State( VKRS_POINTSCALE_C,  FtoDW(1.00f) );
@@ -468,6 +468,8 @@ void W3DSnowManager::render(RenderInfoClass &rinfo)
 	//Enlarge culling bounds to compensate.
 	m_cullOverscan = m_amplitude + m_quadSize;
 	renderSubBox(rinfo, cubeOriginX, cubeOriginY, cubeDimX, cubeDimY);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_POINTSPRITEENABLE, FALSE);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_POINTSCALEENABLE, FALSE);
 #endif
 
 }

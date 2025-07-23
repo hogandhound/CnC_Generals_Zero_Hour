@@ -803,22 +803,22 @@ void DX8Wrapper::Set_Default_Global_Render_States(void)
 	DX8_THREAD_ASSERT();
 #ifdef INFO_VULKAN
 	const D3DCAPS9 &caps = Get_Current_Caps()->Get_DX8_Caps();
-
+	
 	Set_DX8_Render_State(VKRS_RANGEFOGENABLE, (caps.RasterCaps & D3DPRASTERCAPS_FOGRANGE) ? TRUE : FALSE);
 	Set_DX8_Render_State(VKRS_FOGTABLEMODE, D3DFOG_NONE);
 	Set_DX8_Render_State(VKRS_FOGVERTEXMODE, D3DFOG_LINEAR);
-	Set_DX8_Render_State(VKRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
 	Set_DX8_Render_State(VKRS_COLORVERTEX, TRUE);
-	Set_DX8_Render_State(VKRS_DEPTHBIAS,0);
 	Set_DX8_Texture_Stage_State(1, VKTSS_BUMPENVLSCALE, F2DW(1.0f));
 	Set_DX8_Texture_Stage_State(1, VKTSS_BUMPENVLOFFSET, F2DW(0.0f));
+#endif
+	Set_DX8_Render_State(VKRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
+	Set_DX8_Render_State(VKRS_DEPTHBIAS,0);
 	Set_DX8_Texture_Stage_State(0, VKTSS_BUMPENVMAT00,F2DW(1.0f));
 	Set_DX8_Texture_Stage_State(0, VKTSS_BUMPENVMAT01,F2DW(0.0f));
 	Set_DX8_Texture_Stage_State(0, VKTSS_BUMPENVMAT10,F2DW(0.0f));
 	Set_DX8_Texture_Stage_State(0, VKTSS_BUMPENVMAT11,F2DW(1.0f));
-#endif
 
-//	Set_DX8_Render_State(VKRS_CULLMODE, D3DCULL_CW);
+//	Set_DX8_Render_State(VKRS_CULLMODE, VK_FRONT_FACE_CLOCKWISE);
 	// Set dither mode here?
 }
 
@@ -4006,7 +4006,7 @@ void DX8Wrapper::Apply_Default_State()
 	//Set_DX8_Render_State(VKRS_LASTPIXEL, FALSE);
 	Set_DX8_Render_State(VKRS_SRCBLEND, VK_BLEND_FACTOR_ONE);
 	Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_ZERO);
-	Set_DX8_Render_State(VKRS_CULLMODE, D3DCULL_CW);
+	Set_DX8_Render_State(VKRS_CULLMODE, VK_FRONT_FACE_CLOCKWISE);
 	Set_DX8_Render_State(VKRS_ZFUNC, VK_COMPARE_OP_LESS_OR_EQUAL);
 	Set_DX8_Render_State(VKRS_ALPHAREF, 0);
 	Set_DX8_Render_State(VKRS_ALPHAFUNC, VK_COMPARE_OP_LESS_OR_EQUAL);
@@ -4333,10 +4333,10 @@ void DX8Wrapper::Get_DX8_Render_State_Value_Name(StringClass& name, D3DRENDERSTA
 
 	case VKRS_COLORWRITEENABLE:
 		name="0";
-		if (value&D3DCOLORWRITEENABLE_RED) name+="|D3DCOLORWRITEENABLE_RED";
-		if (value&D3DCOLORWRITEENABLE_GREEN) name+="|D3DCOLORWRITEENABLE_GREEN";
-		if (value&D3DCOLORWRITEENABLE_BLUE) name+="|D3DCOLORWRITEENABLE_BLUE";
-		if (value&D3DCOLORWRITEENABLE_ALPHA) name+="|D3DCOLORWRITEENABLE_ALPHA";
+		if (value&(1<<0)) name+="|(1<<0)";
+		if (value&(1<<1)) name+="|(1<<1)";
+		if (value&(1<<2)) name+="|(1<<2)";
+		if (value&(1<<3)) name+="|(1<<3)";
 		break;
 	case VKRS_BLENDOP:
 		name=Get_DX8_Blend_Op_Name(value);
@@ -4488,8 +4488,8 @@ const char* DX8Wrapper::Get_DX8_Texture_Filter_Name(unsigned value)
 {
 	switch (value) {
 	case D3DTEXF_NONE				: return "D3DTEXF_NONE";
-	case D3DTEXF_POINT			: return "D3DTEXF_POINT";
-	case D3DTEXF_LINEAR			: return "D3DTEXF_LINEAR";
+	case VK_FILTER_NEAREST			: return "VK_FILTER_NEAREST";
+	case VK_FILTER_LINEAR			: return "VK_FILTER_LINEAR";
 	case D3DTEXF_ANISOTROPIC	: return "D3DTEXF_ANISOTROPIC";
 	//case D3DTEXF_FLATCUBIC		: return "D3DTEXF_FLATCUBIC";
 	//case D3DTEXF_GAUSSIANCUBIC	: return "D3DTEXF_GAUSSIANCUBIC";
@@ -4536,8 +4536,8 @@ const char* DX8Wrapper::Get_DX8_Fill_Mode_Name(unsigned value)
 {
 	switch (value) {
 	case D3DFILL_POINT			: return "D3DFILL_POINT";
-	case D3DFILL_WIREFRAME		: return "D3DFILL_WIREFRAME";
-	case D3DFILL_SOLID			: return "D3DFILL_SOLID";
+	case VK_POLYGON_MODE_LINE		: return "VK_POLYGON_MODE_LINE";
+	case VK_POLYGON_MODE_FILL			: return "VK_POLYGON_MODE_FILL";
 	default					      : return "UNKNOWN";
 	}
 }
@@ -4562,7 +4562,7 @@ const char* DX8Wrapper::Get_DX8_Blend_Name(unsigned value)
 	case VK_BLEND_FACTOR_SRC_ALPHA            : return "VK_BLEND_FACTOR_SRC_ALPHA";
 	case VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA         : return "VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA";
 	case VK_BLEND_FACTOR_DST_ALPHA           : return "VK_BLEND_FACTOR_DST_ALPHA";
-	case VK_BLEND_FACTOR_INVDESTALPHA        : return "VK_BLEND_FACTOR_INVDESTALPHA";
+	case VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA        : return "VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA";
 	case VK_BLEND_FACTOR_DST_COLOR           : return "VK_BLEND_FACTOR_DST_COLOR";
 	case VK_BLEND_FACTOR_INVDESTCOLOR        : return "VK_BLEND_FACTOR_INVDESTCOLOR";
 	case VK_BLEND_FACTOR_SRC_ALPHASAT         : return "VK_BLEND_FACTOR_SRC_ALPHASAT";
@@ -4575,9 +4575,9 @@ const char* DX8Wrapper::Get_DX8_Blend_Name(unsigned value)
 const char* DX8Wrapper::Get_DX8_Cull_Mode_Name(unsigned value)
 {
 	switch (value) {
-	case D3DCULL_NONE				: return "D3DCULL_NONE";
-	case D3DCULL_CW				: return "D3DCULL_CW";
-	case D3DCULL_CCW				: return "D3DCULL_CCW";
+	case VK_FRONT_FACE_MAX_ENUM				: return "VK_FRONT_FACE_MAX_ENUM";
+	case VK_FRONT_FACE_CLOCKWISE				: return "VK_FRONT_FACE_CLOCKWISE";
+	case VK_FRONT_FACE_COUNTER_CLOCKWISE				: return "VK_FRONT_FACE_COUNTER_CLOCKWISE";
 	default							: return "UNKNOWN";
 	}
 }
@@ -4590,7 +4590,7 @@ const char* DX8Wrapper::Get_DX8_Cmp_Func_Name(unsigned value)
 	case VK_COMPARE_OP_EQUAL          : return "VK_COMPARE_OP_EQUAL";
 	case VK_COMPARE_OP_LESS_OR_EQUAL      : return "VK_COMPARE_OP_LESS_OR_EQUAL";
 	case VK_COMPARE_OP_GREATER        : return "VK_COMPARE_OP_GREATER";
-	case VK_COMPARE_OP_NOTEQUAL       : return "VK_COMPARE_OP_NOTEQUAL";
+	case VK_COMPARE_OP_NOT_EQUAL       : return "VK_COMPARE_OP_NOT_EQUAL";
 	case VK_COMPARE_OP_GREATER_OR_EQUAL   : return "VK_COMPARE_OP_GREATER_OR_EQUAL";
 	case VK_COMPARE_OP_ALWAYS         : return "VK_COMPARE_OP_ALWAYS";
 	default							: return "UNKNOWN";

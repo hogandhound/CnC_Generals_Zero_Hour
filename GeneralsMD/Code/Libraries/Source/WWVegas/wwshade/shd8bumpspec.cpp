@@ -173,7 +173,7 @@ void Shd8BumpSpecClass::Apply_Shared(int cur_pass, RenderInfoClass& rinfo)
 
 	const Matrix3D& cam=rinfo.Camera.Get_Transform();
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	// set constants
 	DX8Wrapper::Set_Vertex_Shader_Constant
 	(

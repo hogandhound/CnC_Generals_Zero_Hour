@@ -2812,17 +2812,22 @@ VideoBuffer*	W3DDisplay::createVideoBuffer( void )
 
 	WW3DFormat displayFormat = DX8Wrapper::getBackBufferFormat();
 
+#ifdef INFO_VULKAN
 	if ( DX8Wrapper::Get_Current_Caps()->Support_Texture_Format( displayFormat ))
+#endif
 	{
 		format = W3DVideoBuffer::W3DFormatToType( displayFormat );
 	}
 
 	if ( format == VideoBuffer::TYPE_UNKNOWN )
 	{
+#ifdef INFO_VULKAN
 		if ( DX8Wrapper::Get_Current_Caps()->Support_Texture_Format( WW3D_FORMAT_X8R8G8B8 ))
+#endif
 		{
 			format = VideoBuffer::TYPE_X8R8G8B8;
 		}
+#ifdef INFO_VULKAN
 		else if ( DX8Wrapper::Get_Current_Caps()->Support_Texture_Format( WW3D_FORMAT_R8G8B8 ))
 		{
 			format = VideoBuffer::TYPE_R8G8B8;
@@ -2840,6 +2845,7 @@ VideoBuffer*	W3DDisplay::createVideoBuffer( void )
 			// card does not support any of the formats we need
 			return NULL;
 		}
+#endif
 	}
 	// on low mem machines, render every video in 16bit except for the EA Logo movie
 	if(!TheGlobalData->m_playIntro )//&& TheGameLODManager && (!TheGameLODManager->didMemPass() || W3DShaderManager::getChipset() == DC_GEFORCE2))

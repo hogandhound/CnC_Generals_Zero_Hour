@@ -653,7 +653,9 @@ void GapFillerClass::Shrink_Buffers()
 
 void MeshModelClass::Init_For_NPatch_Rendering()
 {
+#ifdef INFO_VULKAN
 	if (!DX8Wrapper::Get_Current_Caps()->Support_NPatches()) return;
+#endif
 	if (!Get_Flag(MeshGeometryClass::ALLOW_NPATCHES)) return;
 	if (GapFiller) return;
 

@@ -293,7 +293,11 @@ void Debug_Statistics::Record_DX8_Skin_Polys_And_Vertices(int pcount,int vcount)
 
 void Debug_Statistics::Record_DX8_Polys_And_Vertices(int pcount,int vcount,const ShaderClass& shader)
 {
-	if (shader.Get_NPatch_Enable()==ShaderClass::NPATCH_ENABLE && DX8Wrapper::Get_Current_Caps()->Support_NPatches()) {
+	if (shader.Get_NPatch_Enable()==ShaderClass::NPATCH_ENABLE
+#ifdef INFO_VULKAN
+		&& DX8Wrapper::Get_Current_Caps()->Support_NPatches()
+#endif
+		) {
 		unsigned level=WW3D::Get_NPatches_Level();
 		level*=level;
 		pcount*=level;

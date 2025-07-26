@@ -77,6 +77,7 @@ IndexBufferClass::IndexBufferClass(unsigned type_, unsigned short index_count_)
 	WWASSERT(type==BUFFER_TYPE_DX8 || type==BUFFER_TYPE_SORTING);
 	WWASSERT(index_count);
 
+	buffer.resize(index_count);
 	_IndexBufferCount++;
 	_IndexBufferTotalIndices+=index_count;
 	_IndexBufferTotalSize+=index_count*sizeof(unsigned short);

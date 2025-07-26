@@ -332,7 +332,11 @@ static bool Is_Format_Compressed(WW3DFormat texture_format,bool allow_compressio
 
 	bool compressed=false;
 	if (texture_format!=WW3D_FORMAT_UNKNOWN) {
-		if (!DX8Wrapper::Get_Current_Caps()->Support_DXTC() || !allow_compression) {
+		if (
+#ifdef INFO_VULKAN
+			!DX8Wrapper::Get_Current_Caps()->Support_DXTC() || 
+#endif
+			!allow_compression) {
 			WWASSERT(texture_format!=WW3D_FORMAT_DXT1);
 			WWASSERT(texture_format!=WW3D_FORMAT_DXT2);
 			WWASSERT(texture_format!=WW3D_FORMAT_DXT3);
@@ -352,7 +356,9 @@ static bool Is_Format_Compressed(WW3DFormat texture_format,bool allow_compressio
 	// defined as non-compressed.
 	compressed|=(
 		texture_format==WW3D_FORMAT_UNKNOWN &&
+#ifdef INFO_VULKAN
 		DX8Wrapper::Get_Current_Caps()->Support_DXTC() &&
+#endif
 		allow_compression);
 
 	return compressed;
@@ -487,12 +493,14 @@ VK::Texture TextureLoader::Load_Thumbnail(const StringClass& filename, const Vec
 		WWASSERT(dest_format==texture_format);
 	}
 
+#ifdef INFO_VULKAN
 	VK::Texture sysmem_texture = DX8Wrapper::_Create_DX8_Texture(
 		thumb->Get_Width(),
 		thumb->Get_Height(),
 		dest_format,
 		MIP_LEVELS_ALL
 		);
+#endif
 
 	unsigned level=0;
 #ifdef INFO_VULKAN
@@ -1270,7 +1278,7 @@ bool TextureLoadTaskClass::Begin_Load(void)
 bool TextureLoadTaskClass::Load(void)
 {
 	WWMEMLOG(MEM_TEXTURE);
-	WWASSERT(Peek_D3D_Texture().image);
+	//WWASSERT(Peek_D3D_Texture().image);
 
 	bool loaded = false;
 
@@ -1513,6 +1521,7 @@ bool TextureLoadTaskClass::Begin_Compressed_Load(void)
 	Surface.width = width;
 	Surface.height = height;
 	Surface.format = WW3DFormat_To_D3DFormat( Get_Valid_Texture_Format(orig_format, Texture->Is_Compression_Allowed()) );
+	Surface.buffer.resize(width * height * VK::SizeOfFormat(Surface.format));
 	Reduction = reduction;
 
 
@@ -1739,8 +1748,8 @@ void TextureLoadTaskClass::Unlock_Surfaces(void)
 	WWDEBUG_SAY(("Created non-managed texture (%s)\n",Texture->Get_Full_Path()));
 #endif
 #else
-	WWVKRENDER.PushSingleTexture(Texture->Peek_D3D_Texture());
-	VK::CreateTextureMips(&WWVKRENDER, Texture->Peek_D3D_Texture(), MipLevelCount, Surface.width, Surface.height, 
+	WWVKRENDER.PushSingleTexture(D3DTexture);
+	VK::CreateTextureMips(&WWVKRENDER, D3DTexture, MipLevelCount, Surface.width, Surface.height,
 		Surface.buffer.data(), (uint32_t)(VK::TexNearest | VK::TexClamp), Surface.format);
 	LockedSurfacePtr[0] = 0;
 #endif
@@ -1768,7 +1777,8 @@ bool TextureLoadTaskClass::Load_Compressed_Mipmap(void)
 		}
 	}
 
-	for (unsigned int level = 0; level < Get_Mip_Level_Count(); ++level) 
+	for (unsigned int level = 0; level < 1//Get_Mip_Level_Count()
+		; ++level) 
 	{
 		WWASSERT(width && height);
 		dds_file.Copy_Level_To_Surface

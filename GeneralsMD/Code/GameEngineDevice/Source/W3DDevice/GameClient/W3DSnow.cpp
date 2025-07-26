@@ -79,7 +79,11 @@ Bool W3DSnowManager::ReAcquireResources(void)
 	if (!TheWeatherSetting->m_snowEnabled)
 		return TRUE;	//no need for resources if snow is disabled.
 
-	if (TheWeatherSetting->m_usePointSprites && DX8Wrapper::Get_Current_Caps()->Support_PointSprites())
+	if (TheWeatherSetting->m_usePointSprites
+#ifdef INFO_VULKAN
+		&& DX8Wrapper::Get_Current_Caps()->Support_PointSprites()
+#endif
+		)
 	{
 #ifdef INFO_VULKAN
 		LPDIRECT3DDEVICE9 m_pDev=DX8Wrapper::_Get_D3D_Device8();

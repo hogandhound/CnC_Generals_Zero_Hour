@@ -492,7 +492,11 @@ void ShaderClass::Apply()
 	{
 		// Whenever fog is enabled or disabled, the entire shader is invalidated. This is why we
 		// can defer the "fog enabled" check inside the "fog settings changed" check.
-		if (DX8Wrapper::Get_Current_Caps()->Is_Fog_Allowed() && DX8Wrapper::Get_Fog_Enable()) {
+		if (
+#ifdef INFO_VULKAN
+			DX8Wrapper::Get_Current_Caps()->Is_Fog_Allowed() && 
+#endif
+			DX8Wrapper::Get_Fog_Enable()) {
 
 			BOOL fm = FALSE;
 			uint32_t fogColor = DX8Wrapper::Get_Fog_Color();
@@ -532,34 +536,24 @@ void ShaderClass::Apply()
 
 	// Defaults
 
-#ifdef TODO_VULKAN
-	D3DTEXTUREOP	PricOp	= VKTOP_SELECTARG1;
+	VKTEXTUREOP	PricOp	= VKTOP_SELECTARG1;
 	DWORD				PricArg1 = VKTA_DIFFUSE;
 	DWORD				PricArg2 = VKTA_DIFFUSE;
 
-	D3DTEXTUREOP	PriaOp	 = VKTOP_SELECTARG1;	
+	VKTEXTUREOP	PriaOp	 = VKTOP_SELECTARG1;
 	DWORD			PriaArg1 = VKTA_DIFFUSE;
 	DWORD			PriaArg2 = VKTA_DIFFUSE;
 
-	D3DTEXTUREOP	SeccOp	 = VKTOP_DISABLE;
+	VKTEXTUREOP	SeccOp	 = VKTOP_DISABLE;
 	DWORD			SeccArg1 = VKTA_TEXTURE;
 	DWORD			SeccArg2 = VKTA_CURRENT;
 
-	D3DTEXTUREOP	SecaOp	 = VKTOP_DISABLE;
+	VKTEXTUREOP	SecaOp	 = VKTOP_DISABLE;
 	DWORD			SecaArg1 = VKTA_TEXTURE;
 	DWORD			SecaArg2 = VKTA_CURRENT;
 
-	bool voodoo3=(DX8Wrapper::Get_Current_Caps()->Get_Vendor()==DX8Caps::VENDOR_3DFX) &&
-					 (DX8Wrapper::Get_Current_Caps()->Get_Device()==DX8Caps::DEVICE_3DFX_VOODOO_3);
 	int pri_mask=ShaderClass::MASK_PRIGRADIENT|ShaderClass::MASK_TEXTURING;
 	int sec_mask=ShaderClass::MASK_POSTDETAILALPHAFUNC|ShaderClass::MASK_POSTDETAILCOLORFUNC|ShaderClass::MASK_TEXTURING;	
-
-	// Voodoo3s need to keep track of any changes in any of the above
-	// because it shuffles the stages around
-	if (voodoo3) {
-		pri_mask|=sec_mask;
-		sec_mask=pri_mask;
-	}
 
 	if(diff & pri_mask)
 	{
@@ -587,9 +581,6 @@ void ShaderClass::Apply()
 				break;
 			case ShaderClass::GRADIENT_ADD:
 				//Modulate Alpha
-				if(!(TextureOpCaps & D3DTEXOPCAPS_ADD))	
-					PricOp = VKTOP_MODULATE;
-				else
 					PricOp = VKTOP_ADD;
 				PricArg1 = VKTA_TEXTURE;
 				PricArg2 = VKTA_DIFFUSE;
@@ -600,27 +591,18 @@ void ShaderClass::Apply()
 
 			// Bump map is a hack currently as we only have two stages in use!
 			case ShaderClass::GRADIENT_BUMPENVMAP:
-				if(TextureOpCaps & D3DTEXOPCAPS_BUMPENVMAP)
-				{
-					PricOp=VKTOP_BUMPENVMAP;
-					PricArg1=VKTA_TEXTURE;
-					PricArg2=VKTA_DIFFUSE;
-					PriaOp = VKTOP_DISABLE;
-					PriaArg1 = VKTA_TEXTURE;
-					PriaArg2 = VKTA_CURRENT;
-				} else {
-					PricOp = VKTOP_SELECTARG1;
-					PricArg1 = VKTA_DIFFUSE;
-					PricArg2 = VKTA_DIFFUSE;
-					PriaOp = VKTOP_SELECTARG1;
-					PriaArg1 = VKTA_DIFFUSE;
-					PriaArg2 = VKTA_DIFFUSE;
-				}
+			{
+				PricOp = VKTOP_BUMPENVMAP;
+				PricArg1 = VKTA_TEXTURE;
+				PricArg2 = VKTA_DIFFUSE;
+				PriaOp = VKTOP_DISABLE;
+				PriaArg1 = VKTA_TEXTURE;
+				PriaArg2 = VKTA_CURRENT;
+			}
 				break;
 
 			// Bump map is a hack currently as we only have two stages in use!
 			case ShaderClass::GRADIENT_BUMPENVMAPLUMINANCE:
-				if(TextureOpCaps & D3DTEXOPCAPS_BUMPENVMAPLUMINANCE)
 				{
 					PricOp=VKTOP_BUMPENVMAPLUMINANCE;
 					PricArg1=VKTA_TEXTURE;
@@ -628,22 +610,12 @@ void ShaderClass::Apply()
 					PriaOp = VKTOP_DISABLE;
 					PriaArg1 = VKTA_TEXTURE;
 					PriaArg2 = VKTA_CURRENT;
-				} else {
-					PricOp = VKTOP_SELECTARG1;
-					PricArg1 = VKTA_DIFFUSE;
-					PricArg2 = VKTA_DIFFUSE;
-					PriaOp = VKTOP_SELECTARG1;
-					PriaArg1 = VKTA_DIFFUSE;
-					PriaArg2 = VKTA_DIFFUSE;
-				}
+				} 
 				break;
 
 			case ShaderClass::GRADIENT_MODULATE2X:
 				//Modulate Alpha
-				if(!(TextureOpCaps & VKTOP_MODULATE2X))	
-					PricOp = VKTOP_MODULATE;
-				else
-					PricOp = VKTOP_MODULATE2X;
+				PricOp = VKTOP_MODULATE2X;
 				PricArg1 = VKTA_TEXTURE;
 				PricArg2 = VKTA_DIFFUSE;
 				PriaOp = VKTOP_MODULATE;
@@ -697,163 +669,95 @@ void ShaderClass::Apply()
 				break;
 
 			case ShaderClass::DETAILCOLOR_DETAIL:
-				if(TextureOpCaps & D3DTEXOPCAPS_SELECTARG1)
 				{
 					SeccOp = VKTOP_SELECTARG1;
 					SeccArg1 = VKTA_TEXTURE;
 					SeccArg2 = VKTA_CURRENT;
 				}
-				else {
-					SNAPSHOT_SAY(("Warning: Using unsupported texture op: SELECTARG1\n"));
-				}
 				break;
 
 			case ShaderClass::DETAILCOLOR_SCALE:
-				if(TextureOpCaps & D3DTEXOPCAPS_MODULATE)
 				{
 					SeccOp = VKTOP_MODULATE;
 					SeccArg1 = VKTA_TEXTURE;
 					SeccArg2 = VKTA_CURRENT;
 				}
-				else {
-					SNAPSHOT_SAY(("Warning: Using unsupported texture op: MODULATE\n"));
-				}
 				break;
 
 			case ShaderClass::DETAILCOLOR_INVSCALE:
-				if(TextureOpCaps & D3DTEXOPCAPS_ADDSMOOTH)
 				{
 					SeccOp = VKTOP_ADDSMOOTH;
 					SeccArg1 = VKTA_TEXTURE;
 					SeccArg2 = VKTA_CURRENT;
-				} else if(TextureOpCaps & D3DTEXOPCAPS_ADD) {
-					SeccOp = VKTOP_ADD;
-					SeccArg1 = VKTA_TEXTURE;
-					SeccArg2 = VKTA_CURRENT;
-				}
-				else {
-					SNAPSHOT_SAY(("Warning: Using unsupported texture op: ADDSMOOTH\n"));
-				}
+				} 
 				break;
 
 			case ShaderClass::DETAILCOLOR_ADD:
-				if(TextureOpCaps & D3DTEXOPCAPS_ADD)
 				{
 					SeccOp = VKTOP_ADD;
 					SeccArg1 = VKTA_TEXTURE;
 					SeccArg2 = VKTA_CURRENT;
 				}
-				else {
-					SNAPSHOT_SAY(("Warning: Using unsupported texture op: ADD\n"));
-				}
 				break;
 
 			case ShaderClass::DETAILCOLOR_SUB:
-				if(TextureOpCaps & D3DTEXOPCAPS_SUBTRACT)
 				{
 					SeccOp = VKTOP_SUBTRACT;
 					SeccArg1 = VKTA_TEXTURE;
 					SeccArg2 = VKTA_CURRENT;
 				}
-				else {
-					SNAPSHOT_SAY(("Warning: Using unsupported texture op: SUBTRACT\n"));
-				}
 				break;
 
 			case ShaderClass::DETAILCOLOR_SUBR:
-				if(TextureOpCaps & D3DTEXOPCAPS_SUBTRACT)
 				{
 					SeccOp = VKTOP_SUBTRACT;
 					SeccArg1 = VKTA_CURRENT;
 					SeccArg2 = VKTA_TEXTURE;
 				}
-				else {
-					SNAPSHOT_SAY(("Warning: Using unsupported texture op: SUBTRACT\n"));
-				}
 				break;
 
 			case ShaderClass::DETAILCOLOR_BLEND:
-				if(TextureOpCaps & D3DTEXOPCAPS_BLENDTEXTUREALPHA)
 				{
 					SeccOp = VKTOP_BLENDTEXTUREALPHA;
 					SeccArg1 = VKTA_TEXTURE;
 					SeccArg2 = VKTA_CURRENT;
 				}
-				else {
-					SNAPSHOT_SAY(("Warning: Using unsupported texture op: BLENDTEXTUREALPHA\n"));
-				}
 				break;
 
 			case ShaderClass::DETAILCOLOR_DETAILBLEND:
-				if(TextureOpCaps & D3DTEXOPCAPS_BLENDCURRENTALPHA)
 				{
 					SeccOp = VKTOP_BLENDCURRENTALPHA;
 					SeccArg1 = VKTA_TEXTURE;
 					SeccArg2 = VKTA_CURRENT;
 				}
-				else {
-					SNAPSHOT_SAY(("Warning: Using unsupported texture op: BLENDCURRENTALPHA\n"));
-				}
 				break;
 
 			case ShaderClass::DETAILCOLOR_ADDSIGNED:
-				if (TextureOpCaps & D3DTEXOPCAPS_ADDSIGNED) {
 					SeccOp = VKTOP_ADDSIGNED;
 					SeccArg1 = VKTA_TEXTURE;
 					SeccArg2 = VKTA_CURRENT;
-				}  else if (TextureOpCaps & D3DTEXOPCAPS_ADD) {
-					SeccOp = VKTOP_ADD;
-					SeccArg1 = VKTA_TEXTURE;
-					SeccArg2 = VKTA_CURRENT;
-				} else {
-					SNAPSHOT_SAY(("Warning: Using unsupported texture op: ADDSIGNED\n"));
-				}					
 				break;
 
 			case ShaderClass::DETAILCOLOR_ADDSIGNED2X:
-				if (TextureOpCaps & D3DTEXOPCAPS_ADDSIGNED2X) {
 					SeccOp = VKTOP_ADDSIGNED2X;
 					SeccArg1 = VKTA_TEXTURE;
 					SeccArg2 = VKTA_CURRENT;
-				} else if (TextureOpCaps & D3DTEXOPCAPS_ADDSIGNED) {
-					SeccOp = VKTOP_ADDSIGNED;
-					SeccArg1 = VKTA_TEXTURE;
-					SeccArg2 = VKTA_CURRENT;
-				}  else if (TextureOpCaps & D3DTEXOPCAPS_ADD) {
-					SeccOp = VKTOP_ADD;
-					SeccArg1 = VKTA_TEXTURE;
-					SeccArg2 = VKTA_CURRENT;
-				} else {
-					SNAPSHOT_SAY(("Warning: Using unsupported texture op: ADDSIGNED2X\n"));
-				}					
 				break;
 
 			case ShaderClass::DETAILCOLOR_SCALE2X:
-				if(TextureOpCaps & D3DTEXOPCAPS_MODULATE2X) {
 					SeccOp = VKTOP_MODULATE2X;
 					SeccArg1 = VKTA_TEXTURE;
 					SeccArg2 = VKTA_CURRENT;
-				} else if(TextureOpCaps & D3DTEXOPCAPS_MODULATE) {
-					SeccOp = VKTOP_MODULATE;
-					SeccArg1 = VKTA_TEXTURE;
-					SeccArg2 = VKTA_CURRENT;
-				}
-				else {
-					SNAPSHOT_SAY(("Warning: Using unsupported texture op: MODULATE2X\n"));
-				}				
 				break;
 
 			case ShaderClass::DETAILCOLOR_MODALPHAADDCOLOR:
-				if (DX8Wrapper::Get_Current_Caps()->Support_ModAlphaAddClr()) {
+#ifdef INFO_VULKAN
+				if (DX8Wrapper::Get_Current_Caps()->Support_ModAlphaAddClr()) 
+#endif
+				{
 					SeccOp = VKTOP_MODULATEALPHA_ADDCOLOR;
 					SeccArg1 = VKTA_CURRENT;
 					SeccArg2 = VKTA_TEXTURE;
-				} else if (TextureOpCaps & D3DTEXOPCAPS_ADD) {
-					SeccOp = VKTOP_ADD;
-					SeccArg1 = VKTA_TEXTURE;
-					SeccArg2 = VKTA_CURRENT;
-				} else {
-					SNAPSHOT_SAY(("Warning: Using unsupported texture op: MODULATEALPHA_ADDCOLOR\n"));
 				}
 				break;
 			} // color operations
@@ -865,38 +769,26 @@ void ShaderClass::Apply()
 				break;
 
 			case ShaderClass::DETAILALPHA_DETAIL:
-				if(TextureOpCaps & D3DTEXOPCAPS_SELECTARG1)
 				{
 					SecaOp = VKTOP_SELECTARG1;
 					SecaArg1 = VKTA_TEXTURE;
 					SecaArg2 = VKTA_CURRENT;
 				}
-				else {
-					SNAPSHOT_SAY(("Warning: Using unsupported texture op: SELECTARG1\n"));
-				}
 				break;
 
 			case ShaderClass::DETAILALPHA_SCALE:
-				if(TextureOpCaps & D3DTEXOPCAPS_MODULATE)
 				{
 					SecaOp = VKTOP_MODULATE;
 					SecaArg1 = VKTA_TEXTURE;
 					SecaArg2 = VKTA_CURRENT;
 				}
-				else {
-					SNAPSHOT_SAY(("Warning: Using unsupported texture op: MODULATE\n"));
-				}
 				break;
 
 			case ShaderClass::DETAILALPHA_INVSCALE:
-				if(TextureOpCaps & D3DTEXOPCAPS_ADDSMOOTH)
 				{
 					SecaOp = VKTOP_ADDSMOOTH;
 					SecaArg1 = VKTA_TEXTURE;
 					SecaArg2 = VKTA_CURRENT;
-				}
-				else {
-					SNAPSHOT_SAY(("Warning: Using unsupported texture op: ADDSMOOTH\n"));
 				}
 				break;
 			} // alpha operations
@@ -918,51 +810,7 @@ void ShaderClass::Apply()
 	if (diff & pri_mask) {
 		// for voodoo3 supported blend modes, the stage 0 color and alpha are both diffuse
 		// or both not, so we can check for color diffuse only
-		if ( voodoo3 && (PricArg2==VKTA_DIFFUSE) && 
-			  ( (SecaOp!=VKTOP_DISABLE) || (SeccOp!=VKTOP_DISABLE) )
-			) {
-			// Special Voodoo3 code
-			// If stage 0 has a diffuse input
-			// and stage 1 has an input put the diffuse in stage 2			
-			
-			DWORD tex_arg=VKTA_CURRENT;
-			if(Get_Texturing() == ShaderClass::TEXTURING_ENABLE) {
-				tex_arg=VKTA_TEXTURE;
-			}
-			
-			// this is for the bad case of using
-			// stage 0 for diffuse only
-			if ((PricOp==VKTOP_SELECTARG1)&&(PricArg1==VKTA_DIFFUSE)) {
-				WWDEBUG_SAY(("Wasted Stage 0 in shader-vertex diffuse only"));
-				// set stage 0 to disable
-				DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_COLOROP,VKTOP_DISABLE);				
-				DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_ALPHAOP,VKTOP_DISABLE);
-				// set stage 1 to accept diffuse
-				if (SeccArg2==VKTA_CURRENT) SeccArg2=VKTA_DIFFUSE;
-				if (SecaArg2==VKTA_CURRENT) SecaArg2=VKTA_DIFFUSE;
-				// and nuke stage 2
-				kill_stage_2=true;
-			} else {
-				// set stage 0 to pass through what it needs
-				DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_COLOROP,VKTOP_SELECTARG1);
-				DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_COLORARG1,tex_arg);
-				DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_ALPHAOP,VKTOP_SELECTARG1);			
-				DX8Wrapper::Set_DX8_Texture_Stage_State(0,VKTSS_ALPHAARG1,tex_arg);
-
-				// set stage 2 to do the diffuse op
-				// bypass the wrapper since it only supports 2 texture stages
-				DX8CALL(SetTextureStageState(2,VKTSS_COLOROP,PricOp));
-				DX8CALL(SetTextureStageState(2,VKTSS_COLORARG1,VKTA_CURRENT));
-				DX8CALL(SetTextureStageState(2,VKTSS_COLORARG2,VKTA_DIFFUSE));
-				DX8CALL(SetTextureStageState(2,VKTSS_ALPHAOP,PriaOp));
-				DX8CALL(SetTextureStageState(2,VKTSS_ALPHAARG1,VKTA_CURRENT));
-				DX8CALL(SetTextureStageState(2,VKTSS_ALPHAARG2,VKTA_DIFFUSE));
-				DX8CALL(SetTextureStageState(2,VKTSS_TEXCOORDINDEX,VKTSS_TCI_PASSTHRU));
-				DX8CALL(SetTexture(2,0));
-				kill_stage_2=false;
-				ShaderDirty=true;
-			}			
-		} else {
+		{
 			
 #pragma message("(gth) Generals added a feature here WW3D::Is_Coloring_Enabled() which needs to be merged properly")
 #if 0
@@ -995,30 +843,13 @@ void ShaderClass::Apply()
 		diff &= ~(ShaderClass::MASK_TEXTURING);
 	}
 	
-	// Make sure to disable stage 2 for voodoos since we don't have state tracking for
-	// stage 2
-	// bypass the wrapper since it only supports 2 texture stages
-	if (voodoo3 && kill_stage_2) {
-		if ((SeccOp!=VKTOP_DISABLE)&&(SecaOp!=VKTOP_DISABLE)) {
-			DX8CALL(SetTextureStageState(2,VKTSS_COLOROP,VKTOP_SELECTARG1));
-			DX8CALL(SetTextureStageState(2,VKTSS_COLORARG1,VKTA_CURRENT));
-			DX8CALL(SetTextureStageState(2,VKTSS_ALPHAOP,VKTOP_SELECTARG1));
-			DX8CALL(SetTextureStageState(2,VKTSS_ALPHAARG1,VKTA_CURRENT));
-		} else {
-			DX8CALL(SetTextureStageState(2,VKTSS_COLOROP,VKTOP_DISABLE));
-			DX8CALL(SetTextureStageState(2,VKTSS_ALPHAOP,VKTOP_DISABLE));
-		}
-		DX8CALL(SetTextureStageState(2,VKTSS_TEXCOORDINDEX,VKTSS_TCI_PASSTHRU));
-		DX8CALL(SetTexture(2,0));
-	}
-
 	if(!diff)
 		return;
 
 	DX8Wrapper::Set_DX8_Render_State(VKRS_SPECULARENABLE,BOOL(Get_Secondary_Gradient()));
 
 	// DEPTH COMPARE FUNCTION
-	DX8Wrapper::Set_DX8_Render_State(VKRS_ZFUNC,D3DCMPFUNC(int(Get_Depth_Compare())+1));
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ZFUNC,VkCompareOp(int(Get_Depth_Compare())+1));
 
 	// DEPTH MASK
 	DX8Wrapper::Set_DX8_Render_State(VKRS_ZWRITEENABLE,BOOL(Get_Depth_Mask()));
@@ -1040,7 +871,6 @@ void ShaderClass::Apply()
 
 	// Enable/disable alpha test
 	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHATESTENABLE,BOOL(Get_Alpha_Test()));	
-#endif
 	// Enable/disable stencil test
 	// Not supported yet
 }

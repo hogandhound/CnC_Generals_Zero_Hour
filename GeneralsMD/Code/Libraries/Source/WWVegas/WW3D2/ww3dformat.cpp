@@ -312,7 +312,10 @@ WW3DFormat Get_Valid_Texture_Format(WW3DFormat format, bool is_compression_allow
 	int w,h,bits;
 	bool windowed;
 
-	if (!DX8Wrapper::Get_Current_Caps()->Support_DXTC() || 
+	if (
+#ifdef INFO_VULKAN
+		!DX8Wrapper::Get_Current_Caps()->Support_DXTC() || 
+#endif
 		!is_compression_allowed) {
 		switch (format) {
 		case WW3D_FORMAT_DXT1: format=WW3D_FORMAT_R8G8B8; break;
@@ -326,17 +329,21 @@ WW3DFormat Get_Valid_Texture_Format(WW3DFormat format, bool is_compression_allow
 	else {
 		switch (format) {
 		case WW3D_FORMAT_DXT1:
+#ifdef INFO_VULKAN
 			// NVidia hack - switch to DXT2 is there is no DXT1 support (which is disabled on NVidia cards)
 			if (!DX8Wrapper::Get_Current_Caps()->Support_Texture_Format(WW3D_FORMAT_DXT1) && 
 				DX8Wrapper::Get_Current_Caps()->Support_Texture_Format(WW3D_FORMAT_DXT2)) {
 				format=WW3D_FORMAT_DXT2;
 			}
+#endif
 			break;
 		case WW3D_FORMAT_DXT2:
 		case WW3D_FORMAT_DXT3:
 		case WW3D_FORMAT_DXT4:
 		case WW3D_FORMAT_DXT5:
+#ifdef INFO_VULKAN
 			if (!DX8Wrapper::Get_Current_Caps()->Support_Texture_Format(format)) format=WW3D_FORMAT_A8R8G8B8;
+#endif
 			break;
 		}
 	}
@@ -368,6 +375,7 @@ WW3DFormat Get_Valid_Texture_Format(WW3DFormat format, bool is_compression_allow
 	}
 
 	// Fallback if the hardware doesn't support the texture format
+#ifdef INFO_VULKAN
 	if (!DX8Wrapper::Get_Current_Caps()->Support_Texture_Format(format)) {
 		format=WW3D_FORMAT_A8R8G8B8;
 		if (!DX8Wrapper::Get_Current_Caps()->Support_Texture_Format(format)) {
@@ -385,6 +393,7 @@ WW3DFormat Get_Valid_Texture_Format(WW3DFormat format, bool is_compression_allow
 			}
 		}
 	}
+#endif
 
 	return format;
 }

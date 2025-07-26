@@ -649,80 +649,6 @@ void WW3D::Get_Device_Resolution(int & set_w,int & set_h,int & set_bits,bool & s
 	DX8Wrapper::Get_Device_Resolution(set_w,set_h,set_bits,set_windowed);
 }
 
-
-/***********************************************************************************************
- * WW3D::Registry_Save_Render_Device -- Saves settings to Registry
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   12/3/98    BMG : Created.                                                                 *
- *   1/25/2001  gth : converted to dx8                                                         *
- *=============================================================================================*/
-WW3DErrorType WW3D::Registry_Save_Render_Device( const char * sub_key )
-{
-	bool success = DX8Wrapper::Registry_Save_Render_Device(sub_key);
-	if (success) {
-		return WW3D_ERROR_OK;
-	} else {
-		return WW3D_ERROR_INITIALIZATION_FAILED;
-	}
-}
-
-/***********************************************************************************************
- * WW3D::Registry_Save_Render_Device -- Saves settings to Registry
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   12/3/98    BMG : Created.                                                                 *
- *=============================================================================================*/
-WW3DErrorType WW3D::Registry_Save_Render_Device( const char *sub_key, int device, int width, int height, int depth, bool windowed, int texture_depth )
-{
-	bool success = DX8Wrapper::Registry_Save_Render_Device(sub_key,device,width,height,depth,windowed,texture_depth);
-	if (success) {
-		return WW3D_ERROR_OK;
-	} else {
-		return WW3D_ERROR_INITIALIZATION_FAILED;
-	}
-}
-
-
-/***********************************************************************************************
- * WW3D::Registry_Load_Render_Device -- Loads settings from Registry
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   12/3/98    BMG : Created.                                                                 *
- *=============================================================================================*/
-WW3DErrorType WW3D::Registry_Load_Render_Device( const char * sub_key, bool resize_window )
-{
-	bool success = DX8Wrapper::Registry_Load_Render_Device(sub_key,resize_window);
-	if (success) {
-		return WW3D_ERROR_OK;
-	} else {
-		return WW3D_ERROR_INITIALIZATION_FAILED;
-	}
-}
-
-bool WW3D::Registry_Load_Render_Device( const char * sub_key, char *device, int device_len, int &width, int &height, int &depth, int &windowed, int &texture_depth)
-{
-	return DX8Wrapper::Registry_Load_Render_Device(sub_key,device,device_len,width,height,depth,windowed,texture_depth);
-}
-
 void WW3D::_Invalidate_Mesh_Cache()
 {
 	TheDX8MeshRenderer.Invalidate();
@@ -1311,7 +1237,7 @@ void WW3D::Make_Screen_Shot( const char * filename_base , const float gamma, con
 	for (i = 0; i < 256; i++) {
 		gamma_lut[i] = (unsigned char) (256.0f * powf(i / 256.0f, recip));
 	}
-#ifdef TODO_VULKAN
+#ifdef LOWP_VULKAN
 
 	// Lock front buffer and copy
 
@@ -1650,7 +1576,7 @@ void WW3D::Update_Movie_Capture( void )
 	WWDEBUG_SAY(( "Updating\n"));
 
 		// Lock front buffer and copy
-#ifdef TODO_VULKAN
+#ifdef LOWP_VULKAN
 
 	IDirect3DSurface9 *fb;
 	fb=DX8Wrapper::_Get_DX8_Front_Buffer();

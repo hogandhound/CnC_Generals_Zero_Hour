@@ -96,6 +96,8 @@ public:
 
 	void						Compute_Texture_Coordinate(const Vector3 & point,Vector3 * set_stq);
 
+	void Apply(int uv_array_index);
+
 	TextureMapperClass*	Clone(void) const { 	WWASSERT(0);	return NULL; }
 
 	virtual void			Calculate_Texture_Matrix(Matrix4x4 &tex_matrix);
@@ -130,6 +132,7 @@ public:
 	virtual ~CompositeMatrixMapperClass(void);
 
 	virtual TextureMapperClass *Clone(void) const { return NEW_REF( CompositeMatrixMapperClass, (*this)); }
+	void Apply(int uv_array_index);
 
 	virtual void Calculate_Texture_Matrix(Matrix4x4 &tex_matrix);
 

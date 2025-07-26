@@ -211,7 +211,7 @@ void Shd8BumpDiffClass::Apply_Instance(int cur_pass, RenderInfoClass& rinfo)
 
 	Matrix4x4::Multiply(View_Projection_Matrix,world,&world_view_proj_matrix);
 
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	DX8Wrapper::Set_Vertex_Shader_Constant(CV_WORLD_VIEW_PROJECTION, &world_view_proj_matrix, 4);
 	DX8Wrapper::Set_Vertex_Shader_Constant(CV_WORLD, &world, 4);
 

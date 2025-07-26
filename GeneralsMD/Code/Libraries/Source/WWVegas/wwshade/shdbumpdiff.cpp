@@ -177,8 +177,10 @@ bool ShdBumpDiffDefClass::Load(ChunkLoadClass &cload)
 void ShdBumpDiffDefClass::Init()
 {
 	// select shader version
+#ifdef INFO_VULKAN
 	if ((DX8Wrapper::Get_Current_Caps()->Get_Pixel_Shader_Major_Version())==1 &&
 		 (DX8Wrapper::Get_Current_Caps()->Get_Pixel_Shader_Minor_Version())>=1)
+#endif
 	{
 		Version.Set(SHDVER_8);
 	}

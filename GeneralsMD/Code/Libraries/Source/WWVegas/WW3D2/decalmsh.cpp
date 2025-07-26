@@ -431,8 +431,11 @@ bool RigidDecalMeshClass::Create_Decal
 	// the decal polygons along the normal of the decal generator.  If we could instead rely
 	// on hardware "polygon offset" we could remove this code and we could make decals non-sorting
 	Vector3 zbias_offset(0.0f,0.0f,0.0f);
-	
-	if (!DX8Wrapper::Get_Current_Caps()->Support_ZBias()) {
+
+#ifdef INFO_VULKAN
+	if (!DX8Wrapper::Get_Current_Caps()->Support_ZBias())
+#endif
+	{
 		const float ZBIAS_DISTANCE = 0.01f;
 		generator->Get_Transform().Get_Z_Vector(&zbias_offset);
 		Matrix3D invtm;

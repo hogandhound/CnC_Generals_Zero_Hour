@@ -810,7 +810,10 @@ void DynamicVBAccessClass::Allocate_DX8_Dynamic_Buffer()
 	// Create a new vb if one doesn't exist currently
 	if (!_DynamicDX8VertexBuffer) {
 		unsigned usage=DX8VertexBufferClass::USAGE_DYNAMIC;
-		if (DX8Wrapper::Get_Current_Caps()->Support_NPatches()) {
+#ifdef INFO_VULKAN
+		if (DX8Wrapper::Get_Current_Caps()->Support_NPatches()) 
+#endif
+		{
 			usage|=DX8VertexBufferClass::USAGE_NPATCHES;
 		}
 

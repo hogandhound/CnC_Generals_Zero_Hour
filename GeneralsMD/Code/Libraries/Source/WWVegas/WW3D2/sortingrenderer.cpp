@@ -329,7 +329,13 @@ void Release_Refs(SortingNodeStruct* state)
 	}
 	REF_PTR_RELEASE(state->sorting_state.index_buffer);
 	REF_PTR_RELEASE(state->sorting_state.material);
-	for (i=0;i<DX8Wrapper::Get_Current_Caps()->Get_Max_Textures_Per_Pass();++i) 
+	for (i=0;i<
+#ifdef INFO_VULKAN
+		DX8Wrapper::Get_Current_Caps()->Get_Max_Textures_Per_Pass()
+#else
+		8
+#endif
+		;++i) 
 	{
 		REF_PTR_RELEASE(state->sorting_state.Textures[i]);
 	}
@@ -369,7 +375,13 @@ static void Apply_Render_State(RenderStateStruct& render_state)
 
 	DX8Wrapper::Set_Material(render_state.material);
 
-	for (int i=0;i<DX8Wrapper::Get_Current_Caps()->Get_Max_Textures_Per_Pass();++i) 
+	for (int i=0;i<
+#ifdef INFO_VULKAN
+		DX8Wrapper::Get_Current_Caps()->Get_Max_Textures_Per_Pass()
+#else
+		8
+#endif
+		;++i) 
 	{
 		DX8Wrapper::Set_Texture(i,render_state.Textures[i]);
 	}
@@ -569,7 +581,13 @@ void SortingRendererClass::Flush_Sorting_Pool()
 			SortingNodeStruct* state=overlapping_nodes[node_id];
 			Apply_Render_State(state->sorting_state);
 
-#ifdef TODO_VULKAN
+			auto pipelines = DX8Wrapper::FindClosestPipelines(dyn_vb_access.FVF_Info().FVF);
+			assert(pipelines.size() == 1);
+			switch (pipelines[0]) {
+			case 0:
+			default: assert(false);
+			}
+#ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles(
 				start_index*3,
 				count_to_render,
@@ -589,7 +607,14 @@ void SortingRendererClass::Flush_Sorting_Pool()
 		SortingNodeStruct* state=overlapping_nodes[node_id];
 		Apply_Render_State(state->sorting_state);
 
-#ifdef TODO_VULKAN
+
+		auto pipelines = DX8Wrapper::FindClosestPipelines(dyn_vb_access.FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(
 			start_index*3,
 			count_to_render,
@@ -631,7 +656,16 @@ void SortingRendererClass::Flush()
 		}
 		else {
 			DX8Wrapper::Set_Render_State(state->sorting_state);
-#ifdef TODO_VULKAN
+
+			VertexBufferClass* vb = DX8Wrapper::Get_Vertex_Buffer();
+
+			auto pipelines = DX8Wrapper::FindClosestPipelines(vb->FVF_Info().FVF);
+			assert(pipelines.size() == 1);
+			switch (pipelines[0]) {
+			case 0:
+			default: assert(false);
+			}
+#ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles(state->start_index,state->polygon_count,state->min_vertex_index,state->vertex_count);
 #endif
 			DX8Wrapper::Release_Render_State();
@@ -700,7 +734,16 @@ void SortingRendererClass::Insert_VolumeParticle(
 	unsigned short layerCount)
 {
 	if (!WW3D::Is_Sorting_Enabled()) {
-#ifdef TODO_VULKAN
+
+		VertexBufferClass* vb = DX8Wrapper::Get_Vertex_Buffer();
+
+		auto pipelines = DX8Wrapper::FindClosestPipelines(vb->FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0]) {
+		case 0:
+		default: assert(false);
+		}
+#ifdef INFO_VULKAN
 		DX8Wrapper::Draw_Triangles(start_index,polygon_count,min_vertex_index,vertex_count);
 #endif
 		return;

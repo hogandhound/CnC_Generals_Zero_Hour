@@ -212,6 +212,72 @@ void MatrixMapperClass::Compute_Texture_Coordinate(const Vector3 & point,Vector3
 }
 
 /***********************************************************************************************
+ * MatrixMapperClass::Apply -- Apply texture mapper to render states and texture stage states  *
+ *                                                                                             *
+ * INPUT:                                                                                      *
+ *                                                                                             *
+ * OUTPUT:                                                                                     *
+ *                                                                                             *
+ * WARNINGS:                                                                                   *
+ *                                                                                             *
+ * HISTORY:                                                                                    *
+ *   11/05/01     NH : Created comment block.                                                  *
+ *=============================================================================================*/
+void MatrixMapperClass::Apply(int uv_array_index)
+{
+	Matrix4x4 m;
+
+	switch (Type)
+	{
+	case ORTHO_PROJECTION:
+		/*
+		** Orthographic projection
+		*/
+		DX8Wrapper::Set_Transform((VkTransformState)((int)VkTS::TEXTURE0 + Stage), ViewToPixel);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXCOORDINDEX, VKTSS_TCI_CAMERASPACEPOSITION);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_COUNT2);
+		break;
+	case PERSPECTIVE_PROJECTION:
+		/*
+		** Perspective projection
+		*/
+		m[0] = ViewToPixel[0];
+		m[1] = ViewToPixel[1];
+		m[2] = ViewToPixel[3];
+		DX8Wrapper::Set_Transform((VkTransformState)((int)VkTS::TEXTURE0 + Stage), m);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXCOORDINDEX, VKTSS_TCI_CAMERASPACEPOSITION);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_PROJECTED | VKTTFF_COUNT3);
+		break;
+	case DEPTH_GRADIENT:
+		/*
+		** Depth gradient, Set up second stage texture coordinates to
+		** apply a depth gradient to the projection.  Note that the
+		** depth values have been set up to vary from 0 to 1 in the
+		** Update_View_To_Pixel_Transform function.
+		*/
+		m[0].Set(0, 0, 0, GradientUCoord);
+		m[1] = ViewToPixel[2];
+		DX8Wrapper::Set_Transform((VkTransformState)((int)VkTS::TEXTURE0 + Stage), m);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXCOORDINDEX, VKTSS_TCI_CAMERASPACEPOSITION);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_COUNT2);
+		break;
+	case NORMAL_GRADIENT:
+		/*
+		** Normal Gradient, Set up the second stage texture coordinates to
+		** apply a gradient based on the dot product of the vertex normal
+		** and the projection direction.  (NOTE: this is basically texture-
+		** based diffuse lighting!)
+		*/
+		m[0].Set(0, 0, 0, GradientUCoord);
+		m[1].Set(ViewSpaceProjectionNormal.X, ViewSpaceProjectionNormal.Y, ViewSpaceProjectionNormal.Z, 0);
+		DX8Wrapper::Set_Transform((VkTransformState)((int)VkTS::TEXTURE0 + Stage), m);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXCOORDINDEX, VKTSS_TCI_CAMERASPACENORMAL);
+		DX8Wrapper::Set_DX8_Texture_Stage_State(Stage, VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_COUNT2);
+		break;
+	}
+}
+
+/***********************************************************************************************
  * MatrixMapperClass::Calculate_Texture_Matrix -- Calculate texture matrix                     *
  *                                                                                             *
  * INPUT:                                                                                      *
@@ -290,6 +356,54 @@ CompositeMatrixMapperClass::~CompositeMatrixMapperClass(void)
 	if (InternalMapper) {
 		InternalMapper->Release_Ref();
 		InternalMapper = NULL;
+	}
+}
+
+/***********************************************************************************************
+ * CompositeMatrixMapperClass::Apply -- Apply texture mapper to render states and ts states    *
+ *                                                                                             *
+ * INPUT:                                                                                      *
+ *                                                                                             *
+ * OUTPUT:                                                                                     *
+ *                                                                                             *
+ * WARNINGS:                                                                                   *
+ *                                                                                             *
+ * HISTORY:                                                                                    *
+ *   11/05/01     NH : Created.                                                                *
+ *=============================================================================================*/
+void CompositeMatrixMapperClass::Apply(int uv_array_index)
+{
+	if (InternalMapper) {
+		// Get the texture matrix from the internal mapper, composite it into ViewToPixel (save off
+		// the previous value of ViewToPixel first), call the base class Apply() function (which will
+		// use the modifiedViewToPixel) and then restore ViewToPixel to its previous state.
+		Matrix4x4 int_mat;
+		InternalMapper->Calculate_Texture_Matrix(int_mat);
+		Matrix4x4 view_to_pixel_copy(ViewToPixel);
+
+		// We need to modify the view-to-pixel matrix to produce q (third texture coordinate values)
+		// equal to one. This is the input which the internal mappers' matrix was designed for (it
+		// is what you get when you use 2D vertex coordinates from the vertex buffer).
+		// For this we need to multiply the matrix by the following matrix:
+		// [1 0 0 0]
+		// [0 1 0 0]  This is equivalent to overwriting the third row with the fourth one.
+		// [0 0 0 1]
+		// [0 0 0 1]
+		Matrix4x4 tmp;
+		tmp[0] = ViewToPixel[0];
+		tmp[1] = ViewToPixel[1];
+		tmp[2] = ViewToPixel[3];
+		tmp[3] = ViewToPixel[3];
+
+		// We multiply the matrices in this order so the camera position, transformed by ViewToPixel
+		// is used as the 'input texture coordinates' to be affected by the internal mapper matrix.
+		Matrix4x4::Multiply(int_mat, tmp, &ViewToPixel);
+
+		MatrixMapperClass::Apply(uv_array_index);
+		ViewToPixel = view_to_pixel_copy;
+	}
+	else {
+		MatrixMapperClass::Apply(uv_array_index);
 	}
 }
 

@@ -242,6 +242,8 @@ enum VKTEXTUREOP
 enum VKTEXTURETRANSFORMFLAGS {
 	VKTTFF_DISABLE = 0,    // texture coordinates are passed directly
 	VKTTFF_COUNT2 = 2,    // rasterizer should expect 2-D texture coords
+	VKTTFF_COUNT3 = 3,
+	VKTTFF_PROJECTED = 4,
 	VKTTFF_FORCE_DWORD = 0x7fffffff,
 };
 #define VKTA_DIFFUSE           0x00000000  // select diffuse color (read only)
@@ -252,7 +254,9 @@ enum VKTEXTURETRANSFORMFLAGS {
 #define VKTA_ALPHAREPLICATE    0x00000020  // replicate alpha to color components (read modifier)
 
 #define VKTSS_TCI_PASSTHRU                             0x00000000
+#define VKTSS_TCI_CAMERASPACENORMAL                    0x00010000
 #define VKTSS_TCI_CAMERASPACEPOSITION                  0x00020000
+#define VKTSS_TCI_CAMERASPACEREFLECTIONVECTOR          0x00040000
 
 
 class VertexMaterialClass;
@@ -417,13 +421,6 @@ class DX8Wrapper
 
 	static void Convert_Sorting_IB_VB(SortingVertexBufferClass* sortingV, SortingIndexBufferClass* sortingI, VK::Buffer& vbo, VK::Buffer& ibo);
 
-	static void Draw(
-		unsigned primitive_type,
-		unsigned short start_index,
-		unsigned short polygon_count,
-		unsigned short min_vertex_index=0,
-		unsigned short vertex_count=0);
-
 public:
 #ifdef EXTENDED_STATS
 	static DX8_Stats stats;
@@ -460,17 +457,17 @@ public:
 
 	static void Set_Vertex_Buffer(const VertexBufferClass* vb, unsigned stream=0);
 	static void Set_Vertex_Buffer(const DynamicVBAccessClass& vba);
+	static VertexBufferClass* Get_Vertex_Buffer();
 	static void Set_Index_Buffer(const IndexBufferClass* ib,unsigned short index_base_offset);
 	static void Set_Index_Buffer(const DynamicIBAccessClass& iba,unsigned short index_base_offset);
+	static IndexBufferClass* Set_Index_Buffer();
 	static void Set_Index_Buffer_Index_Offset(unsigned offset);
 
 	static void Get_Render_State(RenderStateStruct& state);
 	static void Set_Render_State(const RenderStateStruct& state);
 	static void Release_Render_State();
 
-#ifdef TODO_VULKAN
-	static void Set_DX8_Material(const D3DMATERIAL9* mat);
-#endif
+	static void Set_DX8_Material(const DX8Material* mat);
 
 	static void Set_Gamma(float gamma,float bright,float contrast,bool calibrate=true,bool uselimit=true);
 
@@ -551,6 +548,7 @@ public:
 	** Resources
 	*/
 
+#ifdef INFO_VULKAN
 	static IDirect3DVolumeTexture9* _Create_DX8_Volume_Texture
 	(
 		unsigned int width,
@@ -586,7 +584,6 @@ public:
 		WW3DFormat format,
 		MipCountType mip_level_count
 	);
-#ifdef INFO_VULKAN
 	static IDirect3DTexture9 * _Create_DX8_Texture(const char *filename, MipCountType mip_level_count);
 	static IDirect3DTexture9 * _Create_DX8_Texture(IDirect3DSurface9 *surface, MipCountType mip_level_count);
 
@@ -710,12 +707,13 @@ public:
 	static WW3DFormat	getBackBufferFormat( void );
 	static bool Reset_Device(bool reload_assets=true);
 
-	static const DX8Caps*	Get_Current_Caps() { WWASSERT(CurrentCaps); return CurrentCaps; }
+#ifdef INFO_VULKAN
+	static const DX8Caps*	Get_Current_Caps() { 
+		WWASSERT(CurrentCaps); return CurrentCaps; 
+	}
+#endif
 
-	static bool Registry_Save_Render_Device( const char * sub_key );
-	static bool Registry_Load_Render_Device( const char * sub_key, bool resize_window );
-
-#ifdef TODO_VULKAN
+#ifdef INFO_VULKAN
 	static const char* Get_DX8_Render_State_Name(D3DRENDERSTATETYPE state);
 	static const char* Get_DX8_Texture_Stage_State_Name(D3DTEXTURESTAGESTATETYPE state);
 	static const char* Get_DX8_Sampler_Stage_State_Name(D3DSAMPLERSTATETYPE state);
@@ -788,8 +786,10 @@ protected:
 	static int	Get_Device_Resolution_Width(void) { return ResolutionWidth; }
 	static int	Get_Device_Resolution_Height(void) { return ResolutionHeight; }
 
+#ifdef INFO_VULKAN
 	static bool Registry_Save_Render_Device( const char *sub_key, int device, int width, int height, int depth, bool windowed, int texture_depth);
 	static bool Registry_Load_Render_Device( const char * sub_key, char *device, int device_len, int &width, int &height, int &depth, int &windowed, int &texture_depth);
+#endif
 	static bool Is_Windowed(void) { return IsWindowed; }
 
 	static void	Set_Texture_Bitdepth(int depth)	{ WWASSERT(depth==16 || depth==32); TextureBitDepth = depth; }
@@ -856,6 +856,7 @@ protected:
 
 	static LightEnvironmentClass*		Light_Environment;
 	static RenderInfoClass*				Render_Info;
+	static DX8Material Material;
 
 	static DWORD							Vertex_Processing_Behavior;
 
@@ -1073,15 +1074,16 @@ WWINLINE void DX8Wrapper::Set_Ambient(const Vector3& color)
 //
 // ----------------------------------------------------------------------------
 
-#ifdef TODO_VULKAN
-WWINLINE void DX8Wrapper::Set_DX8_Material(const D3DMATERIAL9* mat)
+WWINLINE void DX8Wrapper::Set_DX8_Material(const DX8Material* mat)
 {
 	DX8_RECORD_MATERIAL_CHANGE();
 	WWASSERT(mat);
 	SNAPSHOT_SAY(("DX8 - SetMaterial\n"));
+#ifdef INFO_VULKAN
 	DX8CALL(SetMaterial(mat));
-}
 #endif
+	Material = *mat;
+}
 
 WWINLINE void DX8Wrapper::Set_DX8_Render_State(VKRENDERSTATETYPE state, unsigned value)
 {
@@ -1509,7 +1511,11 @@ WWINLINE void DX8Wrapper::Set_Projection_Transform_With_Z_Bias(const Matrix4x4& 
 	ZNear=znear;
 	ProjectionMatrix=matrix.Transpose();
 
-	if (!Get_Current_Caps()->Support_ZBias() && ZNear!=ZFar) {
+	if (
+#ifdef INFO_VULKAN
+		!Get_Current_Caps()->Support_ZBias() && 
+#endif
+		ZNear!=ZFar) {
 		Matrix4x4 tmp=ProjectionMatrix;
 		float tmp_zbias=ZBias;
 		tmp_zbias*=(1.0f/16.0f);

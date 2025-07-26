@@ -82,8 +82,9 @@ static WW3DFormat findFormat(const WW3DFormat formats[])
 {
 	for( Int i = 0; formats[ i ] != WW3D_FORMAT_UNKNOWN; i++ )
 	{
-
+#ifdef INFO_VULKAN
 		if( DX8Wrapper::Get_Current_Caps()->Support_Texture_Format( formats[ i ] ) )
+#endif
 		{
 
 			return formats[ i ];

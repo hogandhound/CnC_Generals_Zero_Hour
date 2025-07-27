@@ -169,7 +169,7 @@ public:
 	unsigned Get_Reduction() const;
 
 	// Background texture loader will call this when texture has been loaded
-	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, bool disable_auto_invalidation = false)=0;	// If the parameter is true, the texture will be flagged as initialised
+	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, VK::Surface* surface, bool disable_auto_invalidation = false)=0;	// If the parameter is true, the texture will be flagged as initialised
 
 	MipCountType MipLevelCount;
 
@@ -307,7 +307,7 @@ public:
 	virtual void Init();
 
 	// Background texture loader will call this when texture has been loaded
-	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
+	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, VK::Surface* surface, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
 
 	// Get the surface of one of the mipmap levels (defaults to highest-resolution one)
 	SurfaceClass *Get_Surface_Level(unsigned int level = 0);
@@ -353,7 +353,7 @@ public:
 	virtual void Init() {}
 
 	// Background texture loader will call this when texture has been loaded
-	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
+	virtual void Apply_New_Surface(VK::Texture tex, bool initialized, VK::Surface* surface, bool disable_auto_invalidation = false);	// If the parameter is true, the texture will be flagged as initialised
 
 	virtual void Apply(unsigned int stage);
 

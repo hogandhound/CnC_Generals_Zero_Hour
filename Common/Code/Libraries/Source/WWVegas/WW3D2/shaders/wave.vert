@@ -45,9 +45,9 @@ layout(location = 0) in vec3 vert;
 layout(location = 1) in vec2 uv;
 layout(location = 2) in uint diffuse;
 
-layout(location = 0) out vec2 fragUv0;
-layout(location = 1) out vec2 fragUv1;
-layout(location = 2) out vec4 fragDiffuse;
+layout(location = 1) out vec2 fragUv0;
+layout(location = 2) out vec2 fragUv1;
+layout(location = 0) out vec4 fragDiffuse;
 
 void main() {
     // Pass the tex coord straight through to the fragment shader

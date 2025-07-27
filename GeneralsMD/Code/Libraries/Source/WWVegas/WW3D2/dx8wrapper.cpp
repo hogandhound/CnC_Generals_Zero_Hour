@@ -183,12 +183,12 @@ VK::Buffer DX8Wrapper::DX8TransformsUbos[((int)VkTS::WORLD) + 1];
 VK::Buffer DX8Wrapper::ProjUbo, DX8Wrapper::IdentityUbo;
 VK::Buffer DX8Wrapper::LightUbo;
 
-DX8Caps*							DX8Wrapper::CurrentCaps = 0;
 
 // Hack test... this disables rendering of batches of too few polygons.
 unsigned							DX8Wrapper::DrawPolygonLowBoundLimit=0;
 
 #ifdef INFO_VULKAN
+DX8Caps*							DX8Wrapper::CurrentCaps = 0;
 D3DADAPTER_IDENTIFIER9		DX8Wrapper::CurrentAdapterIdentifier;
 #endif
 
@@ -742,10 +742,10 @@ void DX8Wrapper::Shutdown(void)
 	}
 #endif
 
-	if (CurrentCaps)
+	//if (CurrentCaps)
 	{
-		int max=CurrentCaps->Get_Max_Textures_Per_Pass();
-		for (int i = 0; i < max; i++) 
+		//int max=CurrentCaps->Get_Max_Textures_Per_Pass();
+		for (int i = 0; i < MAX_TEXTURE_STAGES; i++)
 		{
 			if (Textures[i].image) 
 			{
@@ -846,7 +846,7 @@ void DX8Wrapper::Invalidate_Cached_Render_States(void)
 	}
 	for (a=0;a<MAX_TEXTURE_STAGES;++a) 
 	{
-		for (int b=0; b<32;b++) 
+		for (int b=0; b< VKTSS_MAX;b++)
 		{
 			TextureStageStates[a][b]=0x12345678;
 		}
@@ -890,7 +890,7 @@ void DX8Wrapper::Do_Onetime_Device_Dependent_Shutdowns(void)
 	if (render_state.index_buffer) render_state.index_buffer->Release_Engine_Ref();
 	REF_PTR_RELEASE(render_state.index_buffer);
 	REF_PTR_RELEASE(render_state.material);
-	for (i=0;i<CurrentCaps->Get_Max_Textures_Per_Pass();++i) REF_PTR_RELEASE(render_state.Textures[i]);
+	for (i=0;i< MAX_TEXTURE_STAGES;++i) REF_PTR_RELEASE(render_state.Textures[i]);
 
 
 	TextureLoader::Deinit();
@@ -905,10 +905,12 @@ void DX8Wrapper::Do_Onetime_Device_Dependent_Shutdowns(void)
 	TheDX8MeshRenderer.Shutdown();
 	MissingTexture::_Deinit();
 
+#ifdef INFO_VULKAN
 	if (CurrentCaps) {
 		delete CurrentCaps;
 		CurrentCaps=NULL;
 	}
+#endif
 
 }
 
@@ -1706,6 +1708,11 @@ void DX8Wrapper::Get_Render_Target_Resolution(int & set_w,int & set_h,int & set_
 	} else {
 		Get_Device_Resolution (set_w, set_h, set_bits, set_windowed);
 	}
+#else
+	set_w = target.swapChainExtent.width;
+	set_h = target.swapChainExtent.height;
+	set_bits = BitDepth;
+	set_windowed = IsWindowed;
 #endif
 	return ;
 }
@@ -1982,7 +1989,6 @@ void DX8Wrapper::Begin_Scene(void)
 	DX8WebBrowser::Update();
 #endif
 
-	target.StartRender();
 
 	DX8WebBrowser::Update();
 }
@@ -2483,7 +2489,7 @@ void DX8Wrapper::Apply_Render_State_Changes()
 
 	unsigned mask=TEXTURE0_CHANGED;
 	int i = 0;
-	for (;i<CurrentCaps->Get_Max_Textures_Per_Pass();++i,mask<<=1) 
+	for (;i< MAX_TEXTURE_STAGES;++i,mask<<=1)
 	{
 		if (render_state_changed&mask) 
 		{
@@ -3171,8 +3177,8 @@ void DX8Wrapper::Compute_Caps(WW3DFormat display_format)
 {
 	DX8_THREAD_ASSERT();
 	DX8_Assert();
-	delete CurrentCaps;
 #ifdef INFO_VULKAN
+	delete CurrentCaps;
 	CurrentCaps=new DX8Caps(_Get_D3D8(),D3DDevice,display_format,Get_Current_Adapter_Identifier());
 #endif
 }
@@ -3805,7 +3811,7 @@ void DX8Wrapper::Apply_Default_State()
 
 	// disable TSS stages
 	int i;
-	for (i=0; i<CurrentCaps->Get_Max_Textures_Per_Pass(); i++)
+	for (i=0; i< MAX_TEXTURE_STAGES; i++)
 	{
 		Set_DX8_Texture_Stage_State(i, VKTSS_COLOROP, VKTOP_DISABLE);
 		Set_DX8_Texture_Stage_State(i, VKTSS_COLORARG1, VKTA_TEXTURE);

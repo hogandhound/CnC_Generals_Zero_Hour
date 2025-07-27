@@ -1460,7 +1460,7 @@ void BaseHeightMapRenderObjClass::loadRoadsAndBridges(W3DTerrainLogic *pTerrainL
 	if (DX8Wrapper::_Get_D3D_Device8() && (DX8Wrapper::_Get_D3D_Device8()->TestCooperativeLevel()) != D3D_OK)
 		return;	//device not ready to render anything
 #endif
-	if (!DX8Wrapper::_GetRenderTarget().currentCmd)
+	if (!DX8Wrapper::_GetRenderTarget().device)
 		return;//device not ready to render anything
 
 #ifdef DO_ROADS

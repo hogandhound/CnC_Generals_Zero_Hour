@@ -9,11 +9,27 @@ void VK::CreateTexture(VkRenderTarget* target, VK::Texture& texture, uint32_t wi
     texture.height = height;
     texture.mips = 1;
 
-    VkDeviceSize imageSize = width * height * 4;
+    VkDeviceSize imageSize = width * height * VK::SizeOfFormat(format);
     switch (format)
     {
     case VK_FORMAT_R8G8B8A8_UNORM: imageSize = width * height * 4; break;
     case VK_FORMAT_R8G8B8_UNORM:imageSize = width * height * 4; break;
+    }
+    VkFormatProperties formatProperties;
+    vkGetPhysicalDeviceFormatProperties(target->physicalDevice, format, &formatProperties);
+    if ((formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) != 0) {
+        // VK_FORMAT_R8G8B8A8_UNORM supports being sampled from an optimal-tiled image.
+    }
+    else {
+        switch (format)
+        {
+        case VK_FORMAT_R8G8B8_UNORM:
+            break;
+        default:
+            printf("Bad Texture Format\n");
+            break;
+        }
+        // Not supported.
     }
 
     VkBufferCreateInfo stagingBufInfo = { VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO };
@@ -31,6 +47,7 @@ void VK::CreateTexture(VkRenderTarget* target, VK::Texture& texture, uint32_t wi
     unsigned char* const pImageData = (unsigned char*)stagingBufAllocInfo.pMappedData;
     switch (format)
     {
+    default:
     case VK_FORMAT_R8G8B8A8_UNORM: memcpy(pImageData, rgba, imageSize); break;
     case VK_FORMAT_R8G8B8_UNORM:
     {
@@ -241,14 +258,15 @@ void VK::DestroyTexture(VkRenderTarget* target, VK::Texture& texture)
 void generateMipmaps(VkRenderTarget* target, VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels) {
 
     // Check if image format supports linear blitting
-#if 0
+        // Check if image format supports linear blitting
     VkFormatProperties formatProperties;
-    vkGetPhysicalDeviceFormatProperties(physicalDevice, imageFormat, &formatProperties);
+    vkGetPhysicalDeviceFormatProperties(target->physicalDevice, imageFormat, &formatProperties);
 
     if (!(formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT)) {
-        throw std::runtime_error("texture image format does not support linear blitting!");
+        //throw std::runtime_error("texture image format does not support linear blitting!");
     }
-#endif
+
+    VkCommandBuffer commandBuffer = target->GetUploadCmd();
 
     VkImageMemoryBarrier barrier{};
     barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -270,7 +288,7 @@ void generateMipmaps(VkRenderTarget* target, VkImage image, VkFormat imageFormat
         barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
         barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
 
-        vkCmdPipelineBarrier(target->GetUploadCmd(),
+        vkCmdPipelineBarrier(commandBuffer,
             VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0,
             0, nullptr,
             0, nullptr,
@@ -290,7 +308,7 @@ void generateMipmaps(VkRenderTarget* target, VkImage image, VkFormat imageFormat
         blit.dstSubresource.baseArrayLayer = 0;
         blit.dstSubresource.layerCount = 1;
 
-        vkCmdBlitImage(target->GetUploadCmd(),
+        vkCmdBlitImage(commandBuffer,
             image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
             image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
             1, &blit,
@@ -301,7 +319,7 @@ void generateMipmaps(VkRenderTarget* target, VkImage image, VkFormat imageFormat
         barrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
         barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 
-        vkCmdPipelineBarrier(target->GetUploadCmd(),
+        vkCmdPipelineBarrier(commandBuffer,
             VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0,
             0, nullptr,
             0, nullptr,
@@ -317,7 +335,7 @@ void generateMipmaps(VkRenderTarget* target, VkImage image, VkFormat imageFormat
     barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
     barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 
-    vkCmdPipelineBarrier(target->GetUploadCmd(),
+    vkCmdPipelineBarrier(commandBuffer,
         VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0,
         0, nullptr,
         0, nullptr,
@@ -327,6 +345,16 @@ void generateMipmaps(VkRenderTarget* target, VkImage image, VkFormat imageFormat
 void VK::CreateTextureMips(VkRenderTarget* target, VK::Texture& texture, uint32_t mips, uint32_t width, uint32_t height, 
     uint8_t* rgba, uint32_t flags, VkFormat format)
 {
+    VkFormatProperties formatProperties;
+    vkGetPhysicalDeviceFormatProperties(target->physicalDevice, format, &formatProperties);
+
+    if (!(formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_2_BLIT_DST_BIT)
+        || mips <= 1
+        ) {
+        VK::CreateTexture(target, texture, width, height, rgba, flags, format);
+        return;
+        //throw std::runtime_error("texture image format does not support linear blitting!");
+    }
     texture.width = width;
     texture.height = height;
     texture.mips = mips;
@@ -379,7 +407,7 @@ void VK::CreateTextureMips(VkRenderTarget* target, VK::Texture& texture, uint32_
     imageInfo.format = format;
     imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
     imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+    imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
     imageInfo.flags = 0;
@@ -393,6 +421,9 @@ void VK::CreateTextureMips(VkRenderTarget* target, VK::Texture& texture, uint32_
 
     target->BeginUploadCommands();
 
+    //createImage(texWidth, texHeight, mipLevels, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, 
+    // VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, 
+    // VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
     VkImageMemoryBarrier imgMemBarrier = { VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
     imgMemBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
     imgMemBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -406,15 +437,18 @@ void VK::CreateTextureMips(VkRenderTarget* target, VK::Texture& texture, uint32_
     imgMemBarrier.image = texture.image;
     imgMemBarrier.srcAccessMask = 0;
     imgMemBarrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+    if (false)
+    {
 
-    vkCmdPipelineBarrier(
-        target->GetUploadCmd(),
-        VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-        VK_PIPELINE_STAGE_TRANSFER_BIT,
-        0,
-        0, nullptr,
-        0, nullptr,
-        1, &imgMemBarrier);
+        vkCmdPipelineBarrier(
+            target->GetUploadCmd(),
+            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            0,
+            0, nullptr,
+            0, nullptr,
+            1, &imgMemBarrier);
+    }
 
     VkBufferImageCopy region = {};
     region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -425,37 +459,24 @@ void VK::CreateTextureMips(VkRenderTarget* target, VK::Texture& texture, uint32_
 
     vkCmdCopyBufferToImage(target->GetUploadCmd(), staging.buffer, texture.image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
-    imgMemBarrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-    imgMemBarrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    imgMemBarrier.image = texture.image;
-    imgMemBarrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-    imgMemBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-
-    vkCmdPipelineBarrier(
-        target->GetUploadCmd(),
-        VK_PIPELINE_STAGE_TRANSFER_BIT,
-        VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-        0,
-        0, nullptr,
-        0, nullptr,
-        1, &imgMemBarrier);
-
-    imgMemBarrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-    imgMemBarrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    imgMemBarrier.image = texture.image;
-    imgMemBarrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-    imgMemBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-
-    vkCmdPipelineBarrier(
-        target->GetUploadCmd(),
-        VK_PIPELINE_STAGE_TRANSFER_BIT,
-        VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-        0,
-        0, nullptr,
-        0, nullptr,
-        1, &imgMemBarrier);
-
     generateMipmaps(target, texture.image, format, width, height, mips);
+    
+#if 0
+    imgMemBarrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+    imgMemBarrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imgMemBarrier.image = texture.image;
+    imgMemBarrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+    imgMemBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+    vkCmdPipelineBarrier(
+        target->GetUploadCmd(),
+        VK_PIPELINE_STAGE_TRANSFER_BIT,
+        VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+        0,
+        0, nullptr,
+        0, nullptr,
+        1, &imgMemBarrier);
+#endif
 
     target->PushSingleFrameBuffer(staging);
     // Create ImageView

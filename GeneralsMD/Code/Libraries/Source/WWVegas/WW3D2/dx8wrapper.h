@@ -889,9 +889,9 @@ protected:
 
 	static unsigned long FrameCount;
 
-	static DX8Caps*						CurrentCaps;
 
 #ifdef INFO_VULKAN
+	static DX8Caps*						CurrentCaps;
 	static D3DADAPTER_IDENTIFIER9		CurrentAdapterIdentifier;
 
 	static IDirect3D9 *					D3DInterface;			//d3d8;
@@ -991,6 +991,8 @@ WWINLINE void DX8Wrapper::_Set_DX8_Transform(VkTransformState transform,const Ma
 	if (m!=DX8Transforms[transform]) 
 #endif
 	{
+		target.PushSingleFrameBuffer(DX8TransformsUbos[(uintptr_t)transform]);
+		VkBufferTools::CreateUniformBuffer(&target, sizeof(float) * 16, (uint8_t*) & m, DX8TransformsUbos[(uintptr_t)transform]);
 		DX8Transforms[(uintptr_t)transform]=m;
 		SNAPSHOT_SAY(("DX8 - SetTransform %d [%f,%f,%f,%f][%f,%f,%f,%f][%f,%f,%f,%f][%f,%f,%f,%f]\n",transform,m[0][0],m[0][1],m[0][2],m[0][3],m[1][0],m[1][1],m[1][2],m[1][3],m[2][0],m[2][1],m[2][2],m[2][3],m[3][0],m[3][1],m[3][2],m[3][3]));
 		DX8_RECORD_MATRIX_CHANGE();
@@ -1285,7 +1287,7 @@ WWINLINE unsigned int DX8Wrapper::Convert_Color(const Vector4& color)
 
 WWINLINE unsigned int DX8Wrapper::Convert_Color(const Vector3& color,float alpha)
 {
-	const float scale = 255.0;
+	//const float scale = 255.0;
 	unsigned int col;
 
 	// Multiply r, g, b and a components (0.0,...,1.0) by 255 and convert to integer. Or the integer values togerher
@@ -1464,7 +1466,7 @@ WWINLINE void DX8Wrapper::Get_Shader(ShaderClass& shader)
 
 WWINLINE void DX8Wrapper::Set_Texture(unsigned stage,TextureBaseClass* texture)
 {
-	WWASSERT(stage<(unsigned int)CurrentCaps->Get_Max_Textures_Per_Pass());
+	//WWASSERT(stage<(unsigned int)CurrentCaps->Get_Max_Textures_Per_Pass());
 	if (texture==render_state.Textures[stage]) return;
 	REF_PTR_SET(render_state.Textures[stage],texture);
 	render_state_changed|=(TEXTURE0_CHANGED<<stage);
@@ -1472,7 +1474,7 @@ WWINLINE void DX8Wrapper::Set_Texture(unsigned stage,TextureBaseClass* texture)
 
 WWINLINE TextureBaseClass* DX8Wrapper::Get_Texture(unsigned stage)
 {
-	WWASSERT(stage < (unsigned int)CurrentCaps->Get_Max_Textures_Per_Pass());
+	//WWASSERT(stage < (unsigned int)CurrentCaps->Get_Max_Textures_Per_Pass());
 	return render_state.Textures[stage];
 }
 
@@ -1648,6 +1650,11 @@ WWINLINE VK::Buffer DX8Wrapper::UboView()
 
 WWINLINE VK::Buffer DX8Wrapper::UboIdent()
 {
+	if (!IdentityUbo.buffer)
+	{
+		Matrix4x4 ident(true);
+		VkBufferTools::CreateUniformBuffer(&target, sizeof(Matrix4x4), &ident, IdentityUbo);
+	}
 	return IdentityUbo;
 }
 

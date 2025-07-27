@@ -750,8 +750,12 @@ DynamicVBAccessClass::DynamicVBAccessClass(unsigned t,unsigned fvf,unsigned shor
 	VertexCount(vertex_count_),
 	VertexBuffer(0)
 {
-	WWASSERT(fvf==dynamic_fvf_type);
+	//WWASSERT(fvf==dynamic_fvf_type);
 	WWASSERT(Type==BUFFER_TYPE_DYNAMIC_DX8 || Type==BUFFER_TYPE_DYNAMIC_SORTING);
+	if (fvf != dynamic_fvf_type)
+	{
+		FVFInfo = FVFInfoClass(fvf);
+	}
 
 	if (Type==BUFFER_TYPE_DYNAMIC_DX8) {
 		Allocate_DX8_Dynamic_Buffer();

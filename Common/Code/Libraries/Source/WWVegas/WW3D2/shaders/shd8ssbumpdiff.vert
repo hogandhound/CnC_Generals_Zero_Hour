@@ -30,7 +30,7 @@ layout(set = 0, binding = 0) uniform Projection{
 layout(set = 0, binding = 1) uniform ViewMatrix{
 	mat4 m;
 } view;
-layout(set = 0, binding = 1) uniform SSBumpDiff{
+layout(set = 0, binding = 2) uniform SSBumpDiff{
 	mat4 m;
 	vec4 lightDir[4];
 	vec4 lightColor[4];

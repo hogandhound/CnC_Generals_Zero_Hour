@@ -905,6 +905,7 @@ void TextureClass::Apply_New_Surface
 (
 	VK::Texture d3d_texture,
 	bool initialized,
+	VK::Surface* surface,
 	bool disable_auto_invalidation
 )
 {
@@ -936,6 +937,14 @@ void TextureClass::Apply_New_Surface
 	VK::Texture d3d_tex = Peek_D3D_Base_Texture();
 	DX8Wrapper::_GetRenderTarget().PushSingleTexture(d3d_tex);
 
+	if (surface)
+	{
+		if (this->surface)
+			REF_PTR_RELEASE(this->surface);
+		this->surface = new SurfaceClass(surface->width, surface->height, D3DFormat_To_WW3DFormat( surface->format));
+		this->surface->Copy(surface->buffer.data(), 0);
+	}
+
 	Poke_Texture(d3d_texture);//TextureLoadTask->Peek_D3D_Texture();
 
 	if (initialized) Initialized = true;
@@ -948,6 +957,8 @@ void TextureClass::Apply_New_Surface
 		Width = d3d_texture.width;
 		Height = d3d_texture.height;
 	}
+#endif
+#ifdef INFO_VULKAN
 	REF_PTR_RELEASE(surface);
 #endif
 }
@@ -1013,13 +1024,13 @@ void TextureClass::Apply(unsigned int stage)
 */
 SurfaceClass *TextureClass::Get_Surface_Level(unsigned int level)
 {
+#ifdef INFO_VULKAN
 	if (!Peek_D3D_Texture().image) 
 	{
 		WWASSERT_PRINT(0, "Get_Surface_Level: D3DTexture is NULL!\n");
 		return 0;
 	}
 
-#ifdef INFO_VULKAN
 	IDirect3DSurface9 *d3d_surface = NULL;
 	DX8_ErrorCode(Peek_D3D_Texture()->GetSurfaceLevel(level, &d3d_surface));
 	SurfaceClass *surface = new SurfaceClass(d3d_surface);
@@ -1028,6 +1039,7 @@ SurfaceClass *TextureClass::Get_Surface_Level(unsigned int level)
 	return surface;
 #else
 	assert(surface);
+	surface->Add_Ref();
 	return surface;
 #endif
 }
@@ -1038,6 +1050,14 @@ SurfaceClass *TextureClass::Get_Surface_Level(unsigned int level)
 */
 void TextureClass::Get_Level_Description( SurfaceClass::SurfaceDescription & desc, unsigned int level )
 {
+	auto& tex = Peek_D3D_Texture();
+	if (tex.width && tex.height && tex.format)
+	{
+		desc.Width = tex.width;
+		desc.Height = tex.height;
+		desc.Format = D3DFormat_To_WW3DFormat(tex.format);
+		return;
+	}
 	SurfaceClass * surf = Get_Surface_Level(level);
 	if (surf != NULL) {
 		surf->Get_Description(desc);
@@ -1296,6 +1316,7 @@ void ZTextureClass::Apply_New_Surface
 (
 	VK::Texture d3d_texture,
 	bool initialized,
+	VK::Surface* surface,
 	bool disable_auto_invalidation
 )
 {

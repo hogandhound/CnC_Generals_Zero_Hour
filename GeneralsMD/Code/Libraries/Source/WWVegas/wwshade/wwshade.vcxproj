@@ -55,6 +55,7 @@
     <SccLocalPath>.</SccLocalPath>
     <Keyword>MFCProj</Keyword>
     <ProjectGuid>{19A2B671-9039-4EA9-8059-80F1A9261B2D}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">
@@ -97,9 +98,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -375,7 +377,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\wwsaveload;..\ww3d2;..\wwlib;..\wwmath;..\wwdebug;$(SolutionDir)\Libraries\Source\DX90SDK\include;%(AdditionalIncludeDirectories);$(ProjectDir);$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWLib;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWdebug;$(VULKAN_SDK)/Include;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWSaveLoad/;$(SolutionDir)/Libraries/Source/DX90SDK/Include/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WW3D2/;$(SolutionDir)..\../Common/Code/Libraries/Source/WWVegas/WWmath</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_LIB;WWDEBUG;_DEBUG;WIN32;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_LIB;WWDEBUG;_DEBUG;WIN32;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_DISABLE_VECTOR_ANNOTATION;_DISABLE_STRING_ANNOTATION</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
       <PrecompiledHeaderOutputFile>.\Debug\wwshade.pch</PrecompiledHeaderOutputFile>

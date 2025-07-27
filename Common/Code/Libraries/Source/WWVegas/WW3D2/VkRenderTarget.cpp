@@ -200,6 +200,7 @@ void VkRenderTarget::EndFramebuffer()
 
 void VkRenderTarget::StartRender(VkExtent2D extent)
 {
+	currentFrame = (currentFrame + 1) % COMMAND_BUFFER_COUNT;
 	vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
 	uint32_t lastImage = imageIndex;
@@ -327,8 +328,6 @@ void VkRenderTarget::EndRender()
 {
 	PushUploads();
 
-	auto start = std::chrono::high_resolution_clock::now();
-
 	vkCmdEndRenderPass(mainCommandBuffers[currentFrame]);
 
 	if (vkEndCommandBuffer(mainCommandBuffers[currentFrame]) != VK_SUCCESS) {
@@ -380,7 +379,6 @@ void VkRenderTarget::EndRender()
 		throw std::runtime_error("failed to present swap chain image!");
 	}
 
-	currentFrame = (currentFrame + 1) % COMMAND_BUFFER_COUNT;
 	currentCmd = 0;
 }
 
@@ -1378,14 +1376,14 @@ VK::Buffer VK::MemoryPool::alloc(void* memory, size_t size)
 		}
 	}
 
-
+	size_t memoryPoolSize = size;
 	if (index < MemPoolSizeCount)
 	{
-		size = MemPoolSizes[index];
+		memoryPoolSize = MemPoolSizes[index];
 	}
 
 	VkBufferCreateInfo vbInfo = { VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO };
-	vbInfo.size = size;
+	vbInfo.size = memoryPoolSize;
 	vbInfo.usage = usage;
 	vbInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 

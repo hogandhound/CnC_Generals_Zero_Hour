@@ -99,11 +99,11 @@ DDSFileClass::DDSFileClass(const char* name,unsigned reduction_factor)
 	{
 		switch (fourcc[3])
 		{
-		case '1': Format = WW3D_FORMAT_DXT1;
-		case '2': Format = WW3D_FORMAT_DXT2;
-		case '3': Format = WW3D_FORMAT_DXT3;
-		case '4': Format = WW3D_FORMAT_DXT4;
-		case '5': Format = WW3D_FORMAT_DXT5;
+		case '1': Format = WW3D_FORMAT_DXT1; break;
+		case '2': Format = WW3D_FORMAT_DXT2; break;
+		case '3': Format = WW3D_FORMAT_DXT3; break;
+		case '4': Format = WW3D_FORMAT_DXT4; break;
+		case '5': Format = WW3D_FORMAT_DXT5; break;
 		}
 	}
 #ifdef INFO_VULKAN

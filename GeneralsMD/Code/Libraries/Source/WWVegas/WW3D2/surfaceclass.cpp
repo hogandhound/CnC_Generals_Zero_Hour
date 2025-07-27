@@ -284,6 +284,7 @@ void * SurfaceClass::Lock(int * pitch)
 	*pitch = lock_rect.Pitch;
 	return (void *)lock_rect.pBits;
 #else
+	*pitch = surface.width * VK::SizeOfFormat(surface.format);
 	return surface.buffer.data();
 #endif
 }
@@ -918,7 +919,8 @@ void SurfaceClass::DrawPixel(const unsigned int x,const unsigned int y, unsigned
 
 	DX8_ErrorCode(D3DSurface->UnlockRect());
 #else
-	uint32_t pitch = VK::SizeOfFormat(surface.format) * surface.width;
+	uint32_t pitch = //VK::SizeOfFormat(surface.format) * 
+		surface.width;
 	unsigned char* cptr = (unsigned char*)surface.buffer.data() + y * pitch + x;
 	unsigned short* sptr = (unsigned short*)surface.buffer.data() + y * pitch + x;
 	unsigned int* lptr = (unsigned int*)surface.buffer.data() + y * pitch + x;
@@ -996,7 +998,8 @@ void SurfaceClass::DrawHLine(const unsigned int y,const unsigned int x1, const u
 
 	DX8_ErrorCode(D3DSurface->UnlockRect());
 #else
-	uint32_t pitch = VK::SizeOfFormat(surface.format) * surface.width;
+	uint32_t pitch = //VK::SizeOfFormat(surface.format) * 
+		surface.width;
 	unsigned char* cptr = (unsigned char*)surface.buffer.data() + y * pitch + x1;
 	unsigned short* sptr = (unsigned short*)surface.buffer.data() + y * pitch + x1;
 	unsigned int* lptr = (unsigned int*)surface.buffer.data() + y * pitch + x1;

@@ -32,9 +32,9 @@ layout(binding = 5) uniform sampler2D tex1;
 layout(binding = 6) uniform sampler2D tex2;
 layout(binding = 7) uniform sampler2D tex3;
 
-layout(location = 0) in vec2 fragUv0;
-layout(location = 1) in vec2 fragUv1;
-layout(location = 2) in vec4 fragDiffuse;
+layout(location = 1) in vec2 fragUv0;
+layout(location = 2) in vec2 fragUv1;
+layout(location = 0) in vec4 fragDiffuse;
 
 layout(location = 0) out vec4 finalColor;
 

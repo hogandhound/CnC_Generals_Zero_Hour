@@ -169,7 +169,7 @@ void W3DShroud::init(WorldHeightMap *pMap, Real worldCellSizeX, Real worldCellSi
 #endif
 		m_pSrcTexture = DX8Wrapper::_Create_DX8_Surface(srcWidth,srcHeight, WW3D_FORMAT_R5G6B5);
 
-	DEBUG_ASSERTCRASH( m_pSrcTexture.buffer.empty() != false, ("Failed to Allocate Shroud Src Surface"));
+	DEBUG_ASSERTCRASH( m_pSrcTexture.buffer.empty() == false, ("Failed to Allocate Shroud Src Surface"));
 
 #ifdef INFO_VULKAN
 	D3DLOCKED_RECT rect;
@@ -219,6 +219,7 @@ void W3DShroud::reset()
 		m_pSrcTexture->Release();
 	m_pSrcTexture=NULL;
 #endif
+	m_pSrcTexture.buffer.clear();
 	if (m_finalFogData)
 		delete [] m_finalFogData;
 	m_finalFogData=NULL;
@@ -293,7 +294,7 @@ W3DShroudLevel W3DShroud::getShroudLevel(Int x, Int y)
 //-----------------------------------------------------------------------------
 void W3DShroud::setShroudLevel(Int x, Int y, W3DShroudLevel level, Bool textureOnly)
 {
-	DEBUG_ASSERTCRASH(m_pSrcTexture.buffer.empty() != false, ("Writing empty shroud.  Usually means that map failed to load."));
+	DEBUG_ASSERTCRASH(m_pSrcTexture.buffer.empty() == false, ("Writing empty shroud.  Usually means that map failed to load."));
 
 	if (m_pSrcTexture.buffer.empty())
 		return;
@@ -581,7 +582,7 @@ void W3DShroud::render(CameraClass *cam)
 	}
 #endif
 
-	DEBUG_ASSERTCRASH(m_pSrcTexture.buffer.empty() != false, ("Updating unallocated shroud texture"));
+	DEBUG_ASSERTCRASH(m_pSrcTexture.buffer.empty() == false, ("Updating unallocated shroud texture"));
 
 #ifdef LOAD_DUMMY_SHROUD
 	

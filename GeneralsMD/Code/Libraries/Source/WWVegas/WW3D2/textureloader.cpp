@@ -1032,7 +1032,7 @@ void TextureLoader::Load_Thumbnail(TextureBaseClass *tc)
 	// apply thumbnail to texture
 	if (tc->Get_Asset_Type()==TextureBaseClass::TEX_REGULAR)
 	{
-		tc->Apply_New_Surface(d3d_texture, false);
+		tc->Apply_New_Surface(d3d_texture, false, 0);
 	}
 }
 
@@ -1351,7 +1351,7 @@ void TextureLoadTaskClass::Apply(bool initialize)
 		WWASSERT(LockedSurfacePtr[i]==NULL);
 	}
 
-	Texture->Apply_New_Surface(D3DTexture, initialize);
+	Texture->Apply_New_Surface(D3DTexture, initialize, Surface.format != 0 ? &Surface : 0);
 
 	D3DTexture = {};
 #ifdef INFO_VULKAN
@@ -1665,6 +1665,7 @@ bool TextureLoadTaskClass::Begin_Uncompressed_Load(void)
 	{
 		Surface.format = WW3DFormat_To_D3DFormat(Get_Valid_Texture_Format(D3DFormat_To_WW3DFormat( Surface.format), false));
 	}
+	Surface.buffer.resize(width* height* VK::SizeOfFormat(Surface.format));
 
 	int reducedWidth=width;
 	int reducedHeight=height;

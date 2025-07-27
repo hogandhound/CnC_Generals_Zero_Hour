@@ -30,7 +30,7 @@ layout(set = 0, binding = 0) uniform Projection{
 layout(set = 0, binding = 1) uniform ViewMatrix{
 	mat4 m;
 } view;
-layout(set = 0, binding = 1) uniform SSBumpDiff{
+layout(set = 0, binding = 2) uniform SSBumpDiff{
 	mat4 m;
 	vec4 lightDir[4];
 	vec4 lightColor[4];
@@ -49,7 +49,7 @@ layout(location = 4) in vec3 norm;
 layout(location = 5) in vec4 diffuse;
 layout(location = 6) in vec2 uv;
 
-layout(location = 0) out vec4 fragUv;
+layout(location = 0) out vec2 fragUv;
 layout(location = 1) out vec4 fragSpec;
 layout(location = 2) out vec4 fragDiff;
 
@@ -90,7 +90,7 @@ void main() {
 	light.y = (constVal.y - light.y) * bump.lightColor[0].y;
 	fragDiff.w = light.x + light.y;
 	
-	fragUv = vec4(uv,0,0);
+	fragUv = uv;
 }
 
 

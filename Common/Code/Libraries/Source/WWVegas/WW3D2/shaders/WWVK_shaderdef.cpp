@@ -134,7 +134,7 @@ void WWVK_CreateFVF_DPipeline(VkRenderTarget* target, VKPipelineData& pipeline) 
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -342,7 +342,7 @@ void WWVK_CreateFVF_DUVPipeline(VkRenderTarget* target, VKPipelineData& pipeline
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -1029,7 +1029,7 @@ void WWVK_CreateFVF_NDUV_NOLPipeline(VkRenderTarget* target, VKPipelineData& pip
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -1256,7 +1256,7 @@ void WWVK_CreateFVF_DUV_MultBlendPipeline(VkRenderTarget* target, VKPipelineData
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -1483,7 +1483,7 @@ void WWVK_CreateFVF_DUV_AddBlendPipeline(VkRenderTarget* target, VKPipelineData&
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -1710,7 +1710,7 @@ void WWVK_CreateFVF_DUV_StripPipeline(VkRenderTarget* target, VKPipelineData& pi
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -1937,7 +1937,7 @@ void WWVK_CreateFVF_DUV_CAMUVT_StripPipeline(VkRenderTarget* target, VKPipelineD
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -2183,7 +2183,7 @@ void WWVK_CreateFVF_DUV_DepthBias_StripPipeline(VkRenderTarget* target, VKPipeli
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -2410,7 +2410,7 @@ void WWVK_CreateFVF_DUV_CAMUVT_DepthBias_StripPipeline(VkRenderTarget* target, V
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -2662,7 +2662,7 @@ void WWVK_CreateFVF_DUV2_StripPipeline(VkRenderTarget* target, VKPipelineData& p
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -2914,7 +2914,7 @@ void WWVK_CreateFVF_NDUVPipeline(VkRenderTarget* target, VKPipelineData& pipelin
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -3185,7 +3185,7 @@ void WWVK_CreateFVF_NDUV_CAMUVT_NOLPipeline(VkRenderTarget* target, VKPipelineDa
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -3437,7 +3437,7 @@ void WWVK_CreateFVF_NDUV_UVT_NOLPipeline(VkRenderTarget* target, VKPipelineData&
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -3676,7 +3676,7 @@ void WWVK_CreateFVF_NDUV2Pipeline(VkRenderTarget* target, VKPipelineData& pipeli
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -3972,7 +3972,7 @@ void WWVK_CreateFVF_NDUV2_NOLPipeline(VkRenderTarget* target, VKPipelineData& pi
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f; // Optional
     depthStencil.maxDepthBounds = 1.0f; // Optional
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     pipelineInfo.pDepthStencilState = &depthStencil;
 
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -4847,7 +4847,7 @@ void WWVK_CreateSnowPipeline(VkRenderTarget* target, VKPipelineData& pipeline) {
     VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
     inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
     inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
-    inputAssembly.primitiveRestartEnable = VK_TRUE;
+    inputAssembly.primitiveRestartEnable = VK_FALSE;
 
 
     VkPipelineViewportStateCreateInfo viewportState = {};
@@ -7298,7 +7298,7 @@ void WWVK_CreateBumpDiffDescriptorSetLayout(VkRenderTarget * target, VKPipelineD
         bindings[3].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     }
     {
-        bindings[4].binding = 1;
+        bindings[4].binding = 2;
         bindings[4].descriptorCount = 1;
         bindings[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         bindings[4].pImmutableSamplers = nullptr;
@@ -7372,7 +7372,7 @@ void WWVK_UpdateBumpDiffDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Co
     
     descriptorWrites[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[4].dstSet = descriptorSet;
-    descriptorWrites[4].dstBinding = 1;
+    descriptorWrites[4].dstBinding = 2;
     descriptorWrites[4].dstArrayElement = 0;
     descriptorWrites[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     descriptorWrites[4].descriptorCount = 1;
@@ -7587,7 +7587,7 @@ void WWVK_CreateBumpSpecDescriptorSetLayout(VkRenderTarget * target, VKPipelineD
         bindings[3].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     }
     {
-        bindings[4].binding = 1;
+        bindings[4].binding = 2;
         bindings[4].descriptorCount = 1;
         bindings[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         bindings[4].pImmutableSamplers = nullptr;
@@ -7661,7 +7661,7 @@ void WWVK_UpdateBumpSpecDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Co
     
     descriptorWrites[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[4].dstSet = descriptorSet;
-    descriptorWrites[4].dstBinding = 1;
+    descriptorWrites[4].dstBinding = 2;
     descriptorWrites[4].dstArrayElement = 0;
     descriptorWrites[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     descriptorWrites[4].descriptorCount = 1;
@@ -7863,7 +7863,7 @@ void WWVK_CreateSSBumpDiffDescriptorSetLayout(VkRenderTarget * target, VKPipelin
         bindings[2].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     }
     {
-        bindings[3].binding = 1;
+        bindings[3].binding = 2;
         bindings[3].descriptorCount = 1;
         bindings[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         bindings[3].pImmutableSamplers = nullptr;
@@ -7925,7 +7925,7 @@ void WWVK_UpdateSSBumpDiffDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_
     
     descriptorWrites[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[3].dstSet = descriptorSet;
-    descriptorWrites[3].dstBinding = 1;
+    descriptorWrites[3].dstBinding = 2;
     descriptorWrites[3].dstArrayElement = 0;
     descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     descriptorWrites[3].descriptorCount = 1;
@@ -8140,7 +8140,7 @@ void WWVK_CreateSSBumpSpecDescriptorSetLayout(VkRenderTarget * target, VKPipelin
         bindings[3].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     }
     {
-        bindings[4].binding = 1;
+        bindings[4].binding = 2;
         bindings[4].descriptorCount = 1;
         bindings[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         bindings[4].pImmutableSamplers = nullptr;
@@ -8214,7 +8214,7 @@ void WWVK_UpdateSSBumpSpecDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_
     
     descriptorWrites[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[4].dstSet = descriptorSet;
-    descriptorWrites[4].dstBinding = 1;
+    descriptorWrites[4].dstBinding = 2;
     descriptorWrites[4].dstArrayElement = 0;
     descriptorWrites[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     descriptorWrites[4].descriptorCount = 1;
@@ -9468,7 +9468,7 @@ void WWVK_CreateWaveDescriptorSetLayout(VkRenderTarget * target, VKPipelineData&
         bindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
     }
     {
-        bindings[1].binding = 4;
+        bindings[1].binding = 5;
         bindings[1].descriptorCount = 1;
         bindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
         bindings[1].pImmutableSamplers = nullptr;
@@ -9520,7 +9520,7 @@ void WWVK_UpdateWaveDescriptorSets(VkRenderTarget * target, WWVK_Pipeline_Collec
     
     descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[1].dstSet = descriptorSet;
-    descriptorWrites[1].dstBinding = 4;
+    descriptorWrites[1].dstBinding = 5;
     descriptorWrites[1].dstArrayElement = 0;
     descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     descriptorWrites[1].descriptorCount = 1;

@@ -2,21 +2,27 @@
 #define VK_TEXTURE_H
 
 #include "VkRenderTarget.h"
+#include <assert.h>
 namespace VK
 {
     static uint32_t SizeOfFormat(VkFormat f)
     {
         switch (f)
         {
+        default:
+            assert(false);
+            return 4 * sizeof(uint8_t);
         case VK_FORMAT_R32G32B32A32_SFLOAT:
             return 4 * sizeof(float);
         case VK_FORMAT_D32_SFLOAT_S8_UINT:
             return 5 * sizeof(uint8_t);
         case VK_FORMAT_R8G8B8A8_UINT:
+        case VK_FORMAT_R8G8B8A8_UNORM:
         case VK_FORMAT_D32_SFLOAT:
         case VK_FORMAT_D24_UNORM_S8_UINT:
-        default: 
+        case VK_FORMAT_B8G8R8A8_UNORM:
             return 4 * sizeof(uint8_t);
+        case VK_FORMAT_R8G8B8_UNORM:
         case VK_FORMAT_R8G8B8_UINT:
             return 3 * sizeof(uint8_t);
         case VK_FORMAT_D16_UNORM:

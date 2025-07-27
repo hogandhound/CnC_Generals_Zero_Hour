@@ -531,7 +531,6 @@ void GameEngine::init( int argc, char *argv[] )
 
 
 		initSubsystem(TheActionManager,"TheActionManager", new ActionManager(), NULL);
-		//initSubsystem((CComObject<WebBrowser> *)TheWebBrowser,"(CComObject<WebBrowser> *)TheWebBrowser", (CComObject<WebBrowser> *)createWebBrowser(), NULL);
 		initSubsystem(TheGameStateMap,"TheGameStateMap", new GameStateMap, NULL, NULL, NULL );
 		initSubsystem(TheGameState,"TheGameState", new GameState, NULL, NULL, NULL );
 

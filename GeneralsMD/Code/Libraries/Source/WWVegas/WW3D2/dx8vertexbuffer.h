@@ -145,7 +145,7 @@ class DynamicVBAccessClass
 	friend DX8Wrapper;
 	friend SortingRendererClass;
 
-	const FVFInfoClass& FVFInfo;
+	FVFInfoClass FVFInfo;
 	unsigned Type;
 	unsigned short VertexCount;
 	unsigned short VertexBufferOffset;
@@ -199,7 +199,7 @@ public:
 inline VertexFormatXYZNDUV2 * DynamicVBAccessClass::WriteLockClass::Get_Formatted_Vertex_Array()
 {
 	// assert that the format of the dynamic vertex buffer is still what we think it is.
-	WWASSERT(DynamicVBAccess->VertexBuffer->FVF_Info().Get_FVF() == (VKFVF_XYZ|VKFVF_NORMAL|VKFVF_TEX2|VKFVF_DIFFUSE));
+	//WWASSERT(DynamicVBAccess->VertexBuffer->FVF_Info().Get_FVF() == (VKFVF_XYZ|VKFVF_NORMAL|VKFVF_TEX2|VKFVF_DIFFUSE));
 	return Vertices;
 }
 

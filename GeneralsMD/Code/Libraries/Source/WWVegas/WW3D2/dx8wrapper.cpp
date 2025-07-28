@@ -46,7 +46,6 @@
 #define WW3D_DEVTYPE D3DDEVTYPE_HAL
 
 #include "dx8wrapper.h"
-#include "dx8webbrowser.h"
 #include "dx8fvf.h"
 #include "dx8vertexbuffer.h"
 #include "dx8indexbuffer.h"
@@ -78,7 +77,6 @@
 #include "formconv.h"
 #include "dx8texman.h"
 #include "bound.h"
-#include "dx8webbrowser.h"
 #include <DxErr.h>
 
 #include "VkTexture.h"
@@ -208,17 +206,10 @@ static unsigned				last_frame_texture_stage_state_changes				= 0;
 static unsigned				last_frame_number_of_DX8_calls						= 0;
 static unsigned				last_frame_draw_calls									= 0;
 
-static D3DDISPLAYMODE DesktopMode;
-
-static D3DPRESENT_PARAMETERS								_PresentParameters;
 static DynamicVectorClass<StringClass>					_RenderDeviceNameTable;
 static DynamicVectorClass<StringClass>					_RenderDeviceShortNameTable;
 static DynamicVectorClass<RenderDeviceDescClass>	_RenderDeviceDescriptionTable;
 
-
-typedef IDirect3D9* (WINAPI *Direct3DCreate8Type) (UINT SDKVersion);
-Direct3DCreate8Type	Direct3DCreate8Ptr = NULL;
-HINSTANCE D3D8Lib = NULL;
 
 DX8_CleanupHook	 *DX8Wrapper::m_pCleanupHook=NULL;
 #ifdef EXTENDED_STATS
@@ -268,7 +259,7 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 	def.RenderStates[VKRS_ZFUNC] = VK_COMPARE_OP_LESS_OR_EQUAL;
 	def.RenderStates[VKRS_ALPHAREF] = 0;
 	def.RenderStates[VKRS_ALPHAFUNC] = 0;
-	def.RenderStates[VKRS_ALPHABLENDENABLE] = 0;
+	def.RenderStates[VKRS_ALPHABLENDENABLE] = 1;
 	def.RenderStates[VKRS_FOGENABLE] = 0;
 	def.RenderStates[VKRS_SPECULARENABLE] = 0;
 	def.RenderStates[VKRS_STENCILENABLE] = 0;
@@ -357,13 +348,13 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 				break;
 			case PIPELINE_WWVK_FVF_DUV_Strip:
 				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1;
-				def.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+				p.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
 				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
 				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
 				break;
 			case PIPELINE_WWVK_FVF_DUV_CAMUVT_Strip:
 				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1;
-				def.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+				p.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
 				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
 				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
 				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
@@ -373,13 +364,13 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 				break;
 			case PIPELINE_WWVK_FVF_DUV_DepthBias_Strip:
 				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1;
-				def.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+				p.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
 				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
 				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
 				break;
 			case PIPELINE_WWVK_FVF_DUV_CAMUVT_DepthBias_Strip:
 				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1;
-				def.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+				p.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
 				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
 				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
 				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
@@ -388,12 +379,36 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 				p.TextureStageStates[1][VKTSS_TEXTURETRANSFORMFLAGS] = VKTTFF_COUNT2;
 				p.isDynamic = 1 << VKRS_DEPTHBIAS;
 				break;
-			case PIPELINE_WWVK_FVF_DUV2_Strip:
+			case PIPELINE_WWVK_FVF_DUV2:
 				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2;
 				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
 				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
 				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
 				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				break;
+			case PIPELINE_WWVK_FVF_DUV2_Strip:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2;
+				p.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				break;
+			case PIPELINE_WWVK_FVF_DUV2_TerrainPass:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2;
+				p.RenderStates[VKRS_ZWRITEENABLE] = VK_FALSE;
+				p.RenderStates[VKRS_ZFUNC] = VK_COMPARE_OP_EQUAL;
+				p.RenderStates[VKRS_SRCBLEND] = VK_BLEND_FACTOR_ZERO;
+				p.RenderStates[VKRS_DESTBLEND] = VK_BLEND_FACTOR_SRC_COLOR;
+				p.RenderStates[VKRS_DIFFUSEMATERIALSOURCE] = VertexMaterialClass::ColorSourceType::COLOR1;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_SELECTARG1;
+				p.TextureStageStates[0][VKTSS_COLORARG1] = VKTA_TEXTURE;
+				p.TextureStageStates[0][VKTSS_COLORARG2] = VKTA_CURRENT;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_SELECTARG1;
+				p.TextureStageStates[0][VKTSS_ALPHAARG1] = VKTA_TEXTURE;
+				p.TextureStageStates[0][VKTSS_ALPHAARG2] = VKTA_CURRENT;
+				p.TextureStageStates[0][VKTSS_TEXCOORDINDEX] = VKTSS_TCI_CAMERASPACEPOSITION;
+				p.TextureStageStates[0][VKTSS_TEXTURETRANSFORMFLAGS] = VKTTFF_COUNT2;
 				break;
 			case PIPELINE_WWVK_FVF_NDUV:
 				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1 | VKFVF_NORMAL;
@@ -410,14 +425,14 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 				p.RenderStates[VKRS_LIGHTING] = true;
 				break;
 			case PIPELINE_WWVK_FVF_NDUV2_NOL:
-				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1 | VKFVF_NORMAL;
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2 | VKFVF_NORMAL;
 				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
 				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
 				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
 				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
 				break;
 			case PIPELINE_WWVK_FVF_NDUV2_DepthLE:
-				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1 | VKFVF_NORMAL;
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2 | VKFVF_NORMAL;
 				
 				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
 				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
@@ -597,6 +612,56 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 
 std::vector<WWVK_Pipeline_Entry> DX8Wrapper::FindClosestPipelines(unsigned FVF, VkPrimitiveTopology topo)
 {
+	static bool compInit = false;
+	if (!compInit)
+	{
+		PopulateShaderCompare(pipelineStates_);
+		compInit = 1;
+	}
+	DX8Wrapper::WWVK_Pipeline_State def = {};
+	def.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2;
+	def.isDynamic = 0;
+	def.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	def.RenderStates[VKRS_FILLMODE] = VK_POLYGON_MODE_FILL;
+	def.RenderStates[VKRS_ZWRITEENABLE] = VK_TRUE;
+	def.RenderStates[VKRS_ALPHATESTENABLE] = 0;
+	def.RenderStates[VKRS_SRCBLEND] = VK_BLEND_FACTOR_SRC_ALPHA;
+	def.RenderStates[VKRS_DESTBLEND] = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+	def.RenderStates[VKRS_CULLMODE] = VK_FRONT_FACE_CLOCKWISE;
+	def.RenderStates[VKRS_ZFUNC] = VK_COMPARE_OP_LESS_OR_EQUAL;
+	def.RenderStates[VKRS_ALPHAREF] = 0;
+	def.RenderStates[VKRS_ALPHAFUNC] = 0;
+	def.RenderStates[VKRS_ALPHABLENDENABLE] = TRUE;
+	def.RenderStates[VKRS_FOGENABLE] = 0;
+	def.RenderStates[VKRS_SPECULARENABLE] = 0;
+	def.RenderStates[VKRS_STENCILENABLE] = 0;
+	def.RenderStates[VKRS_STENCILFAIL] = 0;
+	def.RenderStates[VKRS_STENCILZFAIL] = 0;
+	def.RenderStates[VKRS_STENCILPASS] = 0;
+	def.RenderStates[VKRS_STENCILFUNC] = 0;
+	def.RenderStates[VKRS_STENCILREF] = 0;
+	def.RenderStates[VKRS_STENCILMASK] = 0;
+	def.RenderStates[VKRS_STENCILWRITEMASK] = 0;
+	def.RenderStates[VKRS_LIGHTING] = 0;
+	def.RenderStates[VKRS_DIFFUSEMATERIALSOURCE] = VertexMaterialClass::ColorSourceType::COLOR1;
+	def.RenderStates[VKRS_SPECULARMATERIALSOURCE] = 0;
+	def.RenderStates[VKRS_AMBIENTMATERIALSOURCE] = 0;
+	def.RenderStates[VKRS_EMISSIVEMATERIALSOURCE] = 0;
+	def.RenderStates[VKRS_COLORWRITEENABLE] = 0xF;
+	def.RenderStates[VKRS_BLENDOP] = VK_BLEND_OP_ADD;
+	def.RenderStates[VKRS_DEPTHBIAS] = 0;
+	for (int i = 0; i < 4; ++i)
+	{
+		def.TextureStageStates[i][VKTSS_COLOROP] = VKTOP_DISABLE;
+		def.TextureStageStates[i][VKTSS_COLORARG1] = VKTA_TEXTURE;
+		def.TextureStageStates[i][VKTSS_COLORARG2] = VKTA_DIFFUSE;
+		def.TextureStageStates[i][VKTSS_ALPHAOP] = VKTOP_DISABLE;
+		def.TextureStageStates[i][VKTSS_ALPHAARG1] = VKTA_TEXTURE;
+		def.TextureStageStates[i][VKTSS_ALPHAARG2] = VKTA_DIFFUSE;
+		def.TextureStageStates[i][VKTSS_TEXCOORDINDEX] = i;
+		def.TextureStageStates[i][VKTSS_TEXTURETRANSFORMFLAGS] = VKTTFF_DISABLE;
+	}
+
 	std::vector<WWVK_Pipeline_Entry> ret;
 	int pi = 0;
 	for (auto p : pipelineStates_)
@@ -609,7 +674,19 @@ std::vector<WWVK_Pipeline_Entry> DX8Wrapper::FindClosestPipelines(unsigned FVF, 
 		}
 		for (int rs = 0; rs < VKRS_SHADER_COMPARE_MAX; ++rs)
 		{
-			if (p.RenderStates[rs] != RenderStates[rs] && (p.isDynamic & (1ULL << rs)) != 0)
+			if ((p.isDynamic & (1ULL << rs)) != 0)
+			{
+				//Still valid
+			}
+			else if (RenderStates[rs] == 0x12345678 && p.RenderStates[rs] == def.RenderStates[rs])
+			{
+				//If state is invalid, check against default
+			}
+			else if (p.RenderStates[rs] == RenderStates[rs])
+			{
+				//Valid
+			}
+			else
 			{
 				valid = false;
 				break;
@@ -622,11 +699,20 @@ std::vector<WWVK_Pipeline_Entry> DX8Wrapper::FindClosestPipelines(unsigned FVF, 
 		}
 		for (int ti = 0; valid && ti < 4; ++ti)
 		{
-			if (p.TextureStageStates[ti][VKTSS_COLOROP] == VKTOP_DISABLE && TextureStageStates[ti][VKTSS_COLOROP] == VKTOP_DISABLE)
+			if (p.TextureStageStates[ti][VKTSS_COLOROP] == VKTOP_DISABLE && 
+				(TextureStageStates[ti][VKTSS_COLOROP] == VKTOP_DISABLE || TextureStageStates[ti][VKTSS_COLOROP] == 0x12345678))
 				break;
 			for (int ts = 0; ts < VKTSS_SHADER_COMPARE_MAX; ++ts)
 			{
-				if (p.TextureStageStates[ti][ts] != TextureStageStates[ti][ts])
+				if (p.TextureStageStates[ti][ts] == TextureStageStates[ti][ts])
+				{
+
+				}
+				else if (TextureStageStates[ti][ts] == 0x12345678 && p.TextureStageStates[ti][ts] == def.TextureStageStates[ti][ts])
+				{
+					//If state is invalid, check against default
+				}
+				else
 				{
 					valid = false;
 					break;
@@ -639,7 +725,141 @@ std::vector<WWVK_Pipeline_Entry> DX8Wrapper::FindClosestPipelines(unsigned FVF, 
 		}
 		pi++;
 	}
+	if (ret.empty())
+	{
+		pi = 0;
+		std::vector<std::pair<int, int>> matches;
+		for (auto p : pipelineStates_)
+		{
+			if (p.FVF == 0xFFFFFFFF)
+			{
+				pi++;
+				continue;
+			}
+			std::pair<int, int> valid = {pi,0};
+			if (p.FVF == FVF)
+				valid.second++;
+			if (p.topo == topo)
+				valid.second++;
+			for (int rs = 0; rs < VKRS_SHADER_COMPARE_MAX; ++rs)
+			{
+				if ((p.isDynamic & (1ULL << rs)) != 0)
+				{
+					//Still valid
+					valid.second++;
+				}
+				else if (RenderStates[rs] == 0x12345678 && p.RenderStates[rs] == def.RenderStates[rs])
+				{
+					//If state is invalid, check against default
+					valid.second++;
+				}
+				else if (p.RenderStates[rs] == RenderStates[rs])
+				{
+					valid.second++;
+				}
+			}
+			for (int ti = 0; ti < 4; ++ti)
+			{
+				if (p.TextureStageStates[ti][VKTSS_COLOROP] == VKTOP_DISABLE &&
+					(TextureStageStates[ti][VKTSS_COLOROP] == VKTOP_DISABLE || TextureStageStates[ti][VKTSS_COLOROP] == 0x12345678))
+				{
+					valid.second += VKTSS_SHADER_COMPARE_MAX;
+					break;
+				}
+				for (int ts = 0; ts < VKTSS_SHADER_COMPARE_MAX; ++ts)
+				{
+					if (p.TextureStageStates[ti][ts] == TextureStageStates[ti][ts])
+					{
+						valid.second++;
+					}
+					else if (TextureStageStates[ti][ts] == 0x12345678 && p.TextureStageStates[ti][ts] == def.TextureStageStates[ti][ts])
+					{
+						//If state is invalid, check against default
+						valid.second++;
+					}
+				}
+			}
+			matches.push_back(valid);
+			pi++;
+		}
+		qsort(matches.data(), matches.size(), sizeof(std::pair<int, int>),
+			[](const void* A, const void* B) {
+				const std::pair<int, int>* a = (std::pair<int, int>*)A, * b = (std::pair<int, int>*)B;
+				if (a->second < b->second)
+					return 1;
+				if (a->second > b->second)
+					return -1;
+				return 0;
+			});
+		WWDEBUG_SAY(("Closest Matches\n"));
+		for (auto& m : matches)
+		{
+			if (m.second <= 2)
+				break;
+			WWDEBUG_SAY(("%d: %d\n", m.first, m.second));
+		}
+
+		auto& bps = pipelineStates_[matches[0].first];
+		std::pair<uint32_t, uint32_t> rsCompare[VKRS_SHADER_COMPARE_MAX];
+		for (int i = 0; i < VKRS_SHADER_COMPARE_MAX; ++i)
+		{
+			rsCompare[i].first = bps.RenderStates[i];
+			rsCompare[i].second = RenderStates[i];
+		}
+		std::pair<uint32_t, uint32_t> tsCompare[4][VKTSS_MAX];
+		for (int t = 0; t < 4; ++t)
+		{
+			for (int i = 0; i < VKTSS_MAX; ++i)
+			{
+				tsCompare[t][i].first = bps.TextureStageStates[t][i];
+				tsCompare[t][i].second = TextureStageStates[t][i];
+			}
+		}
+		printf("");
+	}
+
 	return ret;
+}
+
+void DX8Wrapper::DumpCurrentRenderStates()
+{
+	WWDEBUG_SAY(("Dump Current Render States\n"));
+	for (int rs = 0; rs < VKRS_SHADER_COMPARE_MAX; ++rs)
+	{
+		const char* stateName;
+		switch (rs)
+		{
+			case VKRS_FILLMODE: stateName = "VKRS_FILLMODE"; break;
+			case VKRS_ZWRITEENABLE: stateName = "VKRS_ZWRITEENABLE"; break;
+			case VKRS_ALPHATESTENABLE: stateName = "VKRS_ALPHATESTENABLE"; break;
+			case VKRS_SRCBLEND: stateName = "VKRS_SRCBLEND"; break;
+			case VKRS_DESTBLEND: stateName = "VKRS_DESTBLEND"; break;
+			case VKRS_CULLMODE: stateName = "VKRS_CULLMODE"; break;
+			case VKRS_ZFUNC: stateName = "VKRS_ZFUNC"; break;
+			case VKRS_ALPHAREF: stateName = "VKRS_ALPHAREF"; break;
+			case VKRS_ALPHAFUNC: stateName = "VKRS_ALPHAFUNC"; break;
+			case VKRS_ALPHABLENDENABLE: stateName = "VKRS_ALPHABLENDENABLE"; break;
+			case VKRS_FOGENABLE: stateName = "VKRS_FOGENABLE"; break;
+			case VKRS_SPECULARENABLE: stateName = "VKRS_SPECULARENABLE"; break;
+			case VKRS_STENCILENABLE: stateName = "VKRS_STENCILENABLE"; break;
+			case VKRS_STENCILFAIL: stateName = "VKRS_STENCILFAIL"; break;
+			case VKRS_STENCILZFAIL: stateName = "VKRS_STENCILZFAIL"; break;
+			case VKRS_STENCILPASS: stateName = "VKRS_STENCILPASS"; break;
+			case VKRS_STENCILFUNC: stateName = "VKRS_STENCILFUNC"; break;
+			case VKRS_STENCILREF: stateName = "VKRS_STENCILREF"; break;
+			case VKRS_STENCILMASK: stateName = "VKRS_STENCILMASK"; break;
+			case VKRS_STENCILWRITEMASK: stateName = "VKRS_STENCILWRITEMASK"; break;
+			case VKRS_LIGHTING: stateName = "VKRS_LIGHTING"; break;
+			case VKRS_DIFFUSEMATERIALSOURCE: stateName = "VKRS_DIFFUSEMATERIALSOURCE"; break;
+			case VKRS_SPECULARMATERIALSOURCE: stateName = "VKRS_SPECULARMATERIALSOURCE"; break;
+			case VKRS_AMBIENTMATERIALSOURCE: stateName = "VKRS_AMBIENTMATERIALSOURCE"; break;
+			case VKRS_EMISSIVEMATERIALSOURCE: stateName = "VKRS_EMISSIVEMATERIALSOURCE"; break;
+			case VKRS_COLORWRITEENABLE: stateName = "VKRS_COLORWRITEENABLE"; break;
+			case VKRS_BLENDOP: stateName = "VKRS_BLENDOP"; break;
+			case VKRS_DEPTHBIAS: stateName = "VKRS_DEPTHBIAS"; break;
+		}
+		WWDEBUG_SAY(("%s: %x\n", stateName, RenderStates[rs]));
+	}
 }
 
 bool DX8Wrapper::Init(void * hwnd, bool lite)
@@ -813,7 +1033,7 @@ void DX8Wrapper::Set_Default_Global_Render_States(void)
 	Set_DX8_Texture_Stage_State(1, VKTSS_BUMPENVLSCALE, F2DW(1.0f));
 	Set_DX8_Texture_Stage_State(1, VKTSS_BUMPENVLOFFSET, F2DW(0.0f));
 #endif
-	Set_DX8_Render_State(VKRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
+	Set_DX8_Render_State(VKRS_SPECULARMATERIALSOURCE, VertexMaterialClass::ColorSourceType::MATERIAL);
 	Set_DX8_Render_State(VKRS_DEPTHBIAS,0);
 	Set_DX8_Texture_Stage_State(0, VKTSS_BUMPENVMAT00,F2DW(1.0f));
 	Set_DX8_Texture_Stage_State(0, VKTSS_BUMPENVMAT01,F2DW(0.0f));
@@ -827,13 +1047,13 @@ void DX8Wrapper::Set_Default_Global_Render_States(void)
 //MW: I added this for 'Generals'.
 bool DX8Wrapper::Validate_Device(void)
 {	DWORD numPasses=0;
-	HRESULT hRes = D3D_OK;
+	HRESULT hRes = 1;
 
 #ifdef INFO_VULKAN
 	hRes=_Get_D3D_Device8()->ValidateDevice(&numPasses);
 #endif
 
-	return (hRes == D3D_OK);
+	return (hRes == 1);
 }
 
 void DX8Wrapper::Invalidate_Cached_Render_States(void)
@@ -1273,6 +1493,7 @@ bool DX8Wrapper::Set_Render_Device
 void DX8Wrapper::Get_Format_Name(unsigned int format, StringClass *tex_format)
 {
 		*tex_format="Unknown";
+#ifdef INFO_VULKAN
 		switch (format) {
 		case D3DFMT_A8R8G8B8: *tex_format="D3DFMT_A8R8G8B8"; break;
 		case D3DFMT_R8G8B8: *tex_format="D3DFMT_R8G8B8"; break;
@@ -1312,6 +1533,7 @@ void DX8Wrapper::Get_Format_Name(unsigned int format, StringClass *tex_format)
 		case D3DFMT_D24X4S4: *tex_format="D3DFMT_D24X4S4"; break;
 		default:	break;
 		}
+#endif
 }
 
 bool DX8Wrapper::Set_Render_Device(int dev, int width, int height, int bits, int windowed,
@@ -1576,7 +1798,7 @@ void DX8Wrapper::Set_Swap_Interval(int swap)
 
 int DX8Wrapper::Get_Swap_Interval(void)
 {
-	return _PresentParameters.PresentationInterval;
+	return 1;// _PresentParameters.PresentationInterval;
 }
 
 bool DX8Wrapper::Has_Stencil(void)
@@ -1984,13 +2206,6 @@ void DX8_Assert()
 void DX8Wrapper::Begin_Scene(void)
 {
 	DX8_THREAD_ASSERT();
-
-#if ENABLE_EMBEDDED_BROWSER
-	DX8WebBrowser::Update();
-#endif
-
-
-	DX8WebBrowser::Update();
 }
 
 void DX8Wrapper::End_Scene(bool flip_frames)
@@ -1998,8 +2213,6 @@ void DX8Wrapper::End_Scene(bool flip_frames)
 	DX8_THREAD_ASSERT();
 #ifdef INFO_VULKAN
 	DX8CALL(EndScene());
-
-	DX8WebBrowser::Render(0);
 
 	if (flip_frames) {
 		DX8_Assert();
@@ -3290,7 +3503,7 @@ void DX8Wrapper::Set_Light_Environment(LightEnvironmentClass* light_env)
 		int l = 0;
 		for (;l<light_count;++l) {
 			
-			::ZeroMemory(&light, sizeof(D3DLIGHT9));
+			::ZeroMemory(&light, sizeof(LightGeneric));
 			
 			light.Type[0]  = (uint32_t)LightClass::DIRECTIONAL;
 			(Vector3&)light.Diffuse=light_env->Get_Light_Diffuse(l);
@@ -3728,9 +3941,14 @@ void DX8Wrapper::Set_Gamma(float gamma,float bright,float contrast,bool calibrat
 	DX8_Assert();
 	number_of_DX8_calls++;
 
+#ifdef INFO_VULKAN
 	DWORD flag=(calibrate?D3DSGR_CALIBRATE:D3DSGR_NO_CALIBRATION);
-
-	D3DGAMMARAMP ramp;
+#endif
+	struct GammaRamp
+	{
+		uint16_t red[256], green[256], blue[256];
+	};
+	GammaRamp ramp;
 	float			 limit;	
 
 	// IML: I'm not really sure what the intent of the 'limit' variable is. It does not produce useful results for my purposes.

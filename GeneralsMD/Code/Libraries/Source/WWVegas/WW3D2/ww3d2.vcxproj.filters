@@ -99,9 +99,6 @@
     <ClCompile Include="dx8vertexbuffer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="dx8webbrowser.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="dx8wrapper.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -450,9 +447,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="dx8vertexbuffer.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="dx8webbrowser.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="dx8wrapper.h">

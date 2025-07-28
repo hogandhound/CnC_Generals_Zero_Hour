@@ -813,10 +813,6 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="dx8webbrowser.cpp">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="dx8wrapper.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
@@ -1175,7 +1171,6 @@
     <ClInclude Include="dx8rendererdebugger.h" />
     <ClInclude Include="dx8texman.h" />
     <ClInclude Include="dx8vertexbuffer.h" />
-    <ClInclude Include="dx8webbrowser.h" />
     <ClInclude Include="dx8wrapper.h" />
     <ClInclude Include="dynamesh.h" />
     <ClInclude Include="font3d.h" />

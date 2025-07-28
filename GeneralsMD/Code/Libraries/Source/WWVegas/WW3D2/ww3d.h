@@ -187,10 +187,8 @@ public:
 
    /*
 	** Set_Ext_Swap_Interval - how many vertical retraces to wait before flipping frames
-	** Get_Ext_Swap_Interval - what is our current setting for the swap interval?
 	*/
 	static void             Set_Ext_Swap_Interval(long swap);
-   static long             Get_Ext_Swap_Interval(void);
 
 	/*
 	** Texture Reduction - all currently loaded textures can be de-resed on the fly

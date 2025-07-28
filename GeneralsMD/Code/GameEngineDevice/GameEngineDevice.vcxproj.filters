@@ -372,9 +372,6 @@
     <ClCompile Include="Source\W3DDevice\GameClient\W3dWaypointBuffer.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
-    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngineDevice\Source\W3DDevice\GameClient\W3DWebBrowser.cpp">
-      <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
-    </ClCompile>
     <ClCompile Include="Source\W3DDevice\GameClient\WorldHeightMap.cpp">
       <Filter>Source\W3DDevice\GameClient %28W3DDevice%29</Filter>
     </ClCompile>
@@ -651,9 +648,6 @@
       <Filter>Include\W3DDevice H\GameClient H %28W3DDevice%29</Filter>
     </ClInclude>
     <ClInclude Include="Include\W3DDevice\GameClient\W3DWaypointBuffer.h">
-      <Filter>Include\W3DDevice H\GameClient H %28W3DDevice%29</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\W3DDevice\GameClient\W3DWebBrowser.h">
       <Filter>Include\W3DDevice H\GameClient H %28W3DDevice%29</Filter>
     </ClInclude>
     <ClInclude Include="Include\W3DDevice\GameClient\WorldHeightMap.h">

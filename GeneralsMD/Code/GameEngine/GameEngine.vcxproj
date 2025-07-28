@@ -640,10 +640,6 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\INI\INIWebpageURL.cpp">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Common\Language.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
@@ -2820,10 +2816,6 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\GameNetwork\WOLBrowser\WebBrowser.cpp">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'"> /Gh   /Gh </AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Profile|x64'"> /Gh   /Gh </AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="$(SolutionDir)\..\..\Common\Code\GameEngine\Source\Precompiled\PreRTS.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -3420,7 +3412,6 @@
     <ClInclude Include="Include\GameNetwork\udp.h" />
     <ClInclude Include="Include\GameNetwork\User.h" />
     <ClInclude Include="Include\GameNetwork\WOLBrowser\FEBDispatch.h" />
-    <ClInclude Include="Include\GameNetwork\WOLBrowser\WebBrowser.h" />
     <ClInclude Include="Include\Precompiled\PreRTS.h" />
   </ItemGroup>
   <ItemGroup>

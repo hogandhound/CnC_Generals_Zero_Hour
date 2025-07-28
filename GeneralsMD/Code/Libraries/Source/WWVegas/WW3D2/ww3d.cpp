@@ -1098,24 +1098,6 @@ void WW3D::Set_Ext_Swap_Interval(long swap)
 
 
 /***********************************************************************************************
- * WW3D::Get_Ext_Swap_Interval -- Queries the swap interval the device is aiming sync for.     *
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:   Not supported by all rendering devices.                                         *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   5/07/98    NH : Created.                                                                  *
- *=============================================================================================*/
-long WW3D::Get_Ext_Swap_Interval(void)
-{
-	return DX8Wrapper::Get_Swap_Interval();
-}
-
-
-/***********************************************************************************************
  * WW3D::Set_Collision_Box_Display_Mask -- control rendering of collision boxes                *
  *                                                                                             *
  * INPUT:                                                                                      *

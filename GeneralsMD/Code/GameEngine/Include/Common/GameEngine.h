@@ -52,7 +52,6 @@ class ModuleFactory;
 class ThingFactory;
 class FunctionLexicon;
 class Radar;
-class WebBrowser;
 class ParticleSystemManager;
 
 /**

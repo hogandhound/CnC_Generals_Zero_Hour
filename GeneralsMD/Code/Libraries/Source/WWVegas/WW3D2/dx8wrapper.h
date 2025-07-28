@@ -427,6 +427,7 @@ public:
 #endif
 
 	static std::vector<WWVK_Pipeline_Entry> FindClosestPipelines(unsigned FVF, VkPrimitiveTopology topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	static void DumpCurrentRenderStates();
 
 	static bool Init(void * hwnd, bool lite = false);
 	static void Shutdown(void);

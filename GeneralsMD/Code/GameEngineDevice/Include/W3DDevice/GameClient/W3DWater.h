@@ -173,8 +173,8 @@ protected:
 	LPDIRECT3DTEXTURE9 m_pBumpTexture[NUM_BUMP_FRAMES]; ///<animation frames
 	LPDIRECT3DTEXTURE9 m_pBumpTexture2[NUM_BUMP_FRAMES]; ///<animation frames
 #endif
-	VK::Buffer m_vertexBufferD3D, m_indexBufferD3D;
-	VK::Texture m_pBumpTexture[NUM_BUMP_FRAMES], m_pBumpTexture2[NUM_BUMP_FRAMES];
+	VK::Buffer m_vertexBufferD3D = {}, m_indexBufferD3D = {};
+	VK::Texture m_pBumpTexture[NUM_BUMP_FRAMES] = {}, m_pBumpTexture2[NUM_BUMP_FRAMES] = {};
 	Int					m_iBumpFrame;	///<current animation frame
 	Real				m_fBumpScale;	///<scales bump map uv perturbation
 	TextureClass * m_pReflectionTexture;	///<render target for reflection

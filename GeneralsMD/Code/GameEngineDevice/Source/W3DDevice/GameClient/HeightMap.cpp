@@ -2229,6 +2229,7 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 	
 	DX8Wrapper::Set_Index_Buffer(m_indexBuffer,0);
 
+	DX8Wrapper::Apply_Render_State_Changes();
 	for (Int j=0; j<m_numVBTilesY; j++)
 		for (Int i=0; i<m_numVBTilesX; i++)
 		{
@@ -2261,10 +2262,27 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 			if (Is_Hidden() == 0) {
 				WWVKDSV;
 				//Figure out the install materials
-				auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
+				auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBufferTiles[j * m_numVBTilesX + i]->FVF_Info().FVF);
 				assert(pipelines.size() == 1);
+				WorldMatrixUVT push;
+				DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+				DX8Wrapper::Get_Transform(VkTS::TEXTURE0, *(Matrix4x4*)&push.uvt);
 				switch (pipelines[0]) {
-				case 0:
+				case PIPELINE_WWVK_FVF_DUV2_TerrainPass:
+					WWVK_UpdateFVF_DUV2_TerrainPassDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+						&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+					WWVK_DrawFVF_DUV2_TerrainPass(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+						m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, 0, VK_INDEX_TYPE_UINT16,
+						m_vertexBufferTiles[j * m_numVBTilesX + i]->Get_DX8_Vertex_Buffer().buffer, 0, &push);
+					break;
+				case PIPELINE_WWVK_FVF_DUV2_DropUV:
+					WWVK_UpdateFVF_DUV2_DropUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+						&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+					WWVK_DrawFVF_DUV2_DropUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+						m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, 0, VK_INDEX_TYPE_UINT16,
+						m_vertexBufferTiles[j * m_numVBTilesX + i]->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
+					break;
+
 				default: assert(false);
 				}
 #ifdef INFO_VULKAN

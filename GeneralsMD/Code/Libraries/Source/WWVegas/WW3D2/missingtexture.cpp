@@ -40,7 +40,7 @@ VK::Texture MissingTexture::_Get_Missing_Texture()
 	return _MissingTexture;
 #else
 	//I don't want to create a ref-count system for textures right now, so each missing texture is going to be unique
-	VK::Texture ret;
+	VK::Texture ret = {};
 	uint32_t buffer[128*128]; //missing_image_width * missing_image_height 
 	for (int i = 0; i < 128 * 128; ++i)
 	{

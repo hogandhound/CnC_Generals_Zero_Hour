@@ -66,6 +66,7 @@
 #include <VkRenderTarget.h>
 #include <shaders/WWVK_shaderdef.h>
 #include <VkBufferTools.h>
+#include <VkTexture.h>
 
 /*
 ** Registry value names
@@ -427,7 +428,6 @@ public:
 #endif
 
 	static std::vector<WWVK_Pipeline_Entry> FindClosestPipelines(unsigned FVF, VkPrimitiveTopology topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
-	static void DumpCurrentRenderStates();
 
 	static bool Init(void * hwnd, bool lite = false);
 	static void Shutdown(void);
@@ -487,6 +487,7 @@ public:
 
 	static VK::Buffer UboProj();
 	static VK::Buffer UboView();
+	static VK::Buffer UboIdentProj();
 	static VK::Buffer UboIdent();
 
 	// Note that *_DX8_Transform() functions take the matrix in DX8 format - transposed from Westwood convention.
@@ -523,6 +524,7 @@ public:
 	static void Set_Light(unsigned index,const LightClass &light);
 
 	static VK::Buffer UboLight();
+	static VK::Buffer UboMaterial();
 
 	static void Apply_Render_State_Changes();	// Apply deferred render state changes (will be called automatically by Draw...)
 
@@ -821,8 +823,9 @@ protected:
 	static unsigned						render_state_changed;
 	static Matrix4x4						DX8Transforms[((int)VkTS::WORLD) + 1];
 	static VK::Buffer DX8TransformsUbos[((int)VkTS::WORLD) + 1];
-	static VK::Buffer ProjUbo, IdentityUbo;
+	static VK::Buffer ProjUbo, ProjIdentityUbo, IdentityUbo;
 	static VK::Buffer LightUbo;
+	static VK::Texture WhiteTexture;
 
 	static bool								IsInitted;
 	static bool								IsDeviceLost;
@@ -858,6 +861,7 @@ protected:
 	static LightEnvironmentClass*		Light_Environment;
 	static RenderInfoClass*				Render_Info;
 	static DX8Material Material;
+	static VK::Buffer MaterialUbo;
 
 	static DWORD							Vertex_Processing_Behavior;
 
@@ -1086,6 +1090,8 @@ WWINLINE void DX8Wrapper::Set_DX8_Material(const DX8Material* mat)
 	DX8CALL(SetMaterial(mat));
 #endif
 	Material = *mat;
+	target.PushSingleFrameBuffer(MaterialUbo);
+	VkBufferTools::CreateUniformBuffer(&target, sizeof(Material), &Material, MaterialUbo);
 }
 
 WWINLINE void DX8Wrapper::Set_DX8_Render_State(VKRENDERSTATETYPE state, unsigned value)
@@ -1228,7 +1234,6 @@ WWINLINE void DX8Wrapper::Set_DX8_Texture(unsigned int stage, VK::Texture textur
 
 	SNAPSHOT_SAY(("DX8 - SetTexture(%x) \n", texture));
 
-	if (Textures[stage].image) target.PushSingleTexture(Textures[stage]);
 	Textures[stage] = texture;
 	//if (Textures[stage]) Textures[stage]->AddRef();
 	//DX8CALL(SetTexture(stage, texture));
@@ -1236,7 +1241,14 @@ WWINLINE void DX8Wrapper::Set_DX8_Texture(unsigned int stage, VK::Texture textur
 }
 WWINLINE VK::Texture DX8Wrapper::Get_DX8_Texture(unsigned int stage)
 {
-	return Textures[stage];
+	if (Textures[stage].image)
+		return Textures[stage];
+	if (!WhiteTexture.image)
+	{
+		uint32_t white = 0xffffffff;
+		VK::CreateTexture(&target, WhiteTexture, 1, 1, (uint8_t*) & white);
+	}
+	return WhiteTexture;
 }
 
 WWINLINE Vector4 DX8Wrapper::Convert_Color(unsigned color)
@@ -1514,25 +1526,21 @@ WWINLINE void DX8Wrapper::Set_Projection_Transform_With_Z_Bias(const Matrix4x4& 
 	ZNear=znear;
 	ProjectionMatrix=matrix.Transpose();
 
+	auto flip = DirectX::XMMatrixScaling(1, -1, 1);
+	DirectX::XMMATRIX set, base = DirectX::XMMATRIX((float*)&ProjectionMatrix);
 	if (
 #ifdef INFO_VULKAN
 		!Get_Current_Caps()->Support_ZBias() && 
 #endif
 		ZNear!=ZFar) {
-		Matrix4x4 tmp=ProjectionMatrix;
 		float tmp_zbias=ZBias;
 		tmp_zbias*=(1.0f/16.0f);
 		tmp_zbias*=1.0f / (ZFar - ZNear);
-		tmp[2][2]-=tmp_zbias*tmp[3][2];
-		WWVKRENDER.PushSingleFrameBuffer(ProjUbo);
-		VkBufferTools::CreateUniformBuffer(&WWVKRENDER, sizeof(Matrix4x4), (uint8_t*)&tmp, ProjUbo);
-		//DX8CALL(SetTransform(VkTS::PROJECTION,(DirectX::XMMATRIX*)&tmp));
+		base.r[2].m128_f32[2]-=tmp_zbias* base.r[3].m128_f32[2];
 	}
-	else {
-		WWVKRENDER.PushSingleFrameBuffer(ProjUbo);
-		VkBufferTools::CreateUniformBuffer(&WWVKRENDER, sizeof(Matrix4x4), (uint8_t*) & matrix, ProjUbo);
-		//DX8CALL(SetTransform(VkTS::PROJECTION,(DirectX::XMMATRIX*)&ProjectionMatrix));
-	}
+	set = DirectX::XMMatrixMultiply(flip, base);
+	WWVKRENDER.PushSingleFrameBuffer(ProjUbo);
+	VkBufferTools::CreateUniformBuffer(&WWVKRENDER, sizeof(Matrix4x4), (uint8_t*)&set, ProjUbo);
 }
 
 WWINLINE void DX8Wrapper::Set_DX8_ZBias(int zbias)
@@ -1638,6 +1646,16 @@ WWINLINE bool DX8Wrapper::Is_View_Identity()
 WWINLINE VK::Buffer DX8Wrapper::UboProj()
 {
 	return ProjUbo;
+}
+WWINLINE VK::Buffer DX8Wrapper::UboIdentProj()
+{
+	if (!ProjIdentityUbo.buffer)
+	{
+		Matrix4x4 ident(true);
+		ident[1][1] = -1;
+		VkBufferTools::CreateUniformBuffer(&target, 16 * sizeof(float), &ident, ProjIdentityUbo);
+	}
+	return ProjIdentityUbo;
 }
 WWINLINE VK::Buffer DX8Wrapper::UboView()
 {

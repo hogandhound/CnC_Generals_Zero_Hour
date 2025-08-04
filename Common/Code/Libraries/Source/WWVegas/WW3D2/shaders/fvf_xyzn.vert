@@ -13,15 +13,12 @@ layout(set = 0, binding = 1) uniform ViewMatrix{
 
 layout(location = 0) in vec3 vert;
 layout(location = 1) in vec3 norm;
-layout(location = 2) in vec2 uv;
 
 layout(location = 0) out vec3 fragNorm;
 layout(location = 1) out vec3 viewDir;
-layout(location = 2) out vec2 fragUv;
 
 void main() {
     // Pass the tex coord straight through to the fragment shader
-    fragUv = uv;
 	fragNorm = norm;
     
 	viewDir = (view.m * vec4(0,0,1,1)).xyz;

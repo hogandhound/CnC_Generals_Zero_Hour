@@ -310,6 +310,7 @@ void W3DDebugIcons::Render(RenderInfoClass & rinfo)
 		DX8Wrapper::Set_Shader(ShaderClass(SC_ALPHA));
 		DX8Wrapper::Set_Index_Buffer(ib_access,0);
 		DX8Wrapper::Set_Vertex_Buffer(vb_access);
+		DX8Wrapper::Apply_Render_State_Changes();
 		WWVKDSV;
 		//WWVK_UpdateFVF_NDUV2DescriptorSets(&WWVKRENDER, WWVKPIPES, sets, )
 		auto pipelines = DX8Wrapper::FindClosestPipelines(vb_access.FVF_Info().FVF);

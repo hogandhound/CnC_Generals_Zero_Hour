@@ -953,6 +953,7 @@ void MeshClass::Render_Material_Pass(MaterialPassClass * pass,IndexBufferClass *
 			DX8Wrapper::Set_Transform(VkTS::WORLD,Get_Transform());
 
 			DX8Wrapper::Set_Index_Buffer(dynamic_ib,vertex_offset);
+			DX8Wrapper::Apply_Render_State_Changes();
 
 			auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
 			assert(pipelines.size() == 1);

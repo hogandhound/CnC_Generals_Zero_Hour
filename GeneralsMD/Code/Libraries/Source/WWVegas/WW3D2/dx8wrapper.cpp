@@ -178,9 +178,9 @@ WWVK_Pipeline_Collection						DX8Wrapper::pipelineCol_;
 Matrix4x4						DX8Wrapper::ProjectionMatrix;
 Matrix4x4						DX8Wrapper::DX8Transforms[((int)VkTS::WORLD) + 1];//VkTS::WORLD+1
 VK::Buffer DX8Wrapper::DX8TransformsUbos[((int)VkTS::WORLD) + 1];
-VK::Buffer DX8Wrapper::ProjUbo, DX8Wrapper::IdentityUbo;
-VK::Buffer DX8Wrapper::LightUbo;
-
+VK::Buffer DX8Wrapper::ProjUbo, DX8Wrapper::ProjIdentityUbo, DX8Wrapper::IdentityUbo;
+VK::Buffer DX8Wrapper::LightUbo, DX8Wrapper::MaterialUbo;
+VK::Texture DX8Wrapper::WhiteTexture;
 
 // Hack test... this disables rendering of batches of too few polygons.
 unsigned							DX8Wrapper::DrawPolygonLowBoundLimit=0;
@@ -282,10 +282,10 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 	{
 		def.TextureStageStates[i][VKTSS_COLOROP] = VKTOP_DISABLE;
 		def.TextureStageStates[i][VKTSS_COLORARG1] = VKTA_TEXTURE;
-		def.TextureStageStates[i][VKTSS_COLORARG2] = VKTA_DIFFUSE;
+		def.TextureStageStates[i][VKTSS_COLORARG2] = i == 0 ? VKTA_DIFFUSE : VKTA_CURRENT;
 		def.TextureStageStates[i][VKTSS_ALPHAOP] = VKTOP_DISABLE;
 		def.TextureStageStates[i][VKTSS_ALPHAARG1] = VKTA_TEXTURE;
-		def.TextureStageStates[i][VKTSS_ALPHAARG2] = VKTA_DIFFUSE;
+		def.TextureStageStates[i][VKTSS_ALPHAARG2] = i == 0 ? VKTA_DIFFUSE : VKTA_CURRENT;
 		def.TextureStageStates[i][VKTSS_TEXCOORDINDEX] = i;
 		def.TextureStageStates[i][VKTSS_TEXTURETRANSFORMFLAGS] = VKTTFF_DISABLE;
 	}
@@ -298,6 +298,75 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 			case PIPELINE_WWVK_FVF_D:
 				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE;
 				break;
+			case PIPELINE_WWVK_FVF_NUV_ARef_Strip:
+				p.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP; //Fall Through
+			case PIPELINE_WWVK_FVF_NUV_ARef:
+				p.FVF = VKFVF_XYZ | VKFVF_NORMAL | VKFVF_TEX1;
+				p.RenderStates[VKRS_ALPHATESTENABLE] = true;
+				p.RenderStates[VKRS_LIGHTING] = 1;
+				p.isDynamic |= (1 << VKRS_ALPHAREF);
+				p.RenderStates[VKRS_ALPHAFUNC] = VK_COMPARE_OP_GREATER_OR_EQUAL;
+				p.RenderStates[VKRS_ALPHABLENDENABLE] = 0;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				break;
+			case PIPELINE_WWVK_FVF_NUV_ARefNoCull_Strip:
+				p.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP; //Fall Through
+			case PIPELINE_WWVK_FVF_NUV_ARefNoCull:
+				p.FVF = VKFVF_XYZ | VKFVF_NORMAL | VKFVF_TEX1;
+				p.RenderStates[VKRS_ALPHATESTENABLE] = true;
+				p.RenderStates[VKRS_LIGHTING] = 1;
+				p.RenderStates[VKRS_CULLMODE] = VK_FRONT_FACE_MAX_ENUM;
+;				p.isDynamic |= (1 << VKRS_ALPHAREF);
+				p.RenderStates[VKRS_ALPHAFUNC] = VK_COMPARE_OP_GREATER_OR_EQUAL;
+				p.RenderStates[VKRS_ALPHABLENDENABLE] = 0;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				break;
+			case PIPELINE_WWVK_FVF_NUV_DROPUV_REFLUVT_NoAlphaBlend:
+				p.RenderStates[VKRS_ALPHABLENDENABLE] = VK_FALSE;
+				//Fall Through
+			case PIPELINE_WWVK_FVF_NUV_DROPUV_REFLUVT:
+				p.FVF = VKFVF_XYZ | VKFVF_NORMAL | VKFVF_TEX1;
+				p.RenderStates[VKRS_ALPHAFUNC] = VK_COMPARE_OP_GREATER_OR_EQUAL;
+				p.RenderStates[VKRS_LIGHTING] = 1;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_TEXCOORDINDEX] = VKTSS_TCI_CAMERASPACEREFLECTIONVECTOR;
+				p.TextureStageStates[0][VKTSS_TEXTURETRANSFORMFLAGS] = VKTTFF_COUNT2;
+				break;
+			case PIPELINE_WWVK_FVF_NUV_NoAlphaBlend:
+				p.FVF = VKFVF_XYZ | VKFVF_NORMAL | VKFVF_TEX1;
+				p.RenderStates[VKRS_LIGHTING] = 1;
+				p.RenderStates[VKRS_ALPHABLENDENABLE] = VK_FALSE;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				break;
+			case PIPELINE_WWVK_FVF_NUV_NoDepth:
+				p.FVF = VKFVF_XYZ | VKFVF_NORMAL | VKFVF_TEX1;
+				p.RenderStates[VKRS_ZWRITEENABLE] = VK_FALSE;
+				p.RenderStates[VKRS_LIGHTING] = 1;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				break;
+			case PIPELINE_WWVK_FVF_NUV_Strip:
+				p.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP; //Fall Through
+			case PIPELINE_WWVK_FVF_NUV:
+				p.FVF = VKFVF_XYZ | VKFVF_NORMAL | VKFVF_TEX1;
+				p.RenderStates[VKRS_LIGHTING] = 1;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				break;
+			case PIPELINE_WWVK_FVF_N_Strip:
+				p.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP; //Fall Through
+			case PIPELINE_WWVK_FVF_N:
+				p.FVF = VKFVF_XYZ | VKFVF_NORMAL;
+				p.RenderStates[VKRS_ALPHAFUNC] = VK_COMPARE_OP_GREATER_OR_EQUAL;
+				p.RenderStates[VKRS_LIGHTING] = 1;
+				p.RenderStates[VKRS_ALPHABLENDENABLE] = 0;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_SELECTARG2;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_SELECTARG2;
+				break;
 			case PIPELINE_WWVK_FVF_DUV:
 				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1;
 				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
@@ -308,28 +377,6 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 				p.RenderStates[VKRS_ZWRITEENABLE] = false;
 				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
 				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
-				break;
-			case PIPELINE_WWVK_FVF_NDUV_CAMUVT_NOL:
-				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1 | VKFVF_NORMAL;
-				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
-				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
-				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
-				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
-				p.TextureStageStates[1][VKTSS_TEXCOORDINDEX] = VKTSS_TCI_CAMERASPACEPOSITION;
-				p.TextureStageStates[1][VKTSS_TEXTURETRANSFORMFLAGS] = VKTTFF_COUNT2;
-				break;
-			case PIPELINE_WWVK_FVF_NDUV_NOL:
-				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1 | VKFVF_NORMAL;
-				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
-				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
-				break;
-			case PIPELINE_WWVK_FVF_NDUV_UVT_NOL:
-				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1 | VKFVF_NORMAL;
-				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
-				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
-				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
-				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
-				p.TextureStageStates[1][VKTSS_TEXTURETRANSFORMFLAGS] = VKTTFF_COUNT2;
 				break;
 			case PIPELINE_WWVK_FVF_DUV_MultBlend: 
 				//SRCBLEND_ZERO, DSTBLEND_SRC_COLOR,
@@ -394,6 +441,22 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
 				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
 				break;
+			case PIPELINE_WWVK_FVF_DUV2_DropUV_Strip:
+				p.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+			case PIPELINE_WWVK_FVF_DUV2_DropUV:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				break;
+			case PIPELINE_WWVK_FVF_DUV2_DropUV_ARef:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.RenderStates[VKRS_ALPHABLENDENABLE] = false;
+				p.RenderStates[VKRS_ALPHAFUNC] = VK_COMPARE_OP_GREATER_OR_EQUAL;
+				p.isDynamic |= (1 << VKRS_ALPHAREF) | (1 << VKRS_DIFFUSEMATERIALSOURCE) | (1 << VKRS_EMISSIVEMATERIALSOURCE)
+					| (1 << VKRS_AMBIENTMATERIALSOURCE);
+				break;
 			case PIPELINE_WWVK_FVF_DUV2_TerrainPass:
 				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2;
 				p.RenderStates[VKRS_ZWRITEENABLE] = VK_FALSE;
@@ -410,11 +473,67 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 				p.TextureStageStates[0][VKTSS_TEXCOORDINDEX] = VKTSS_TCI_CAMERASPACEPOSITION;
 				p.TextureStageStates[0][VKTSS_TEXTURETRANSFORMFLAGS] = VKTTFF_COUNT2;
 				break;
+			case PIPELINE_WWVK_FVF_DUV2_NOCULL_NODEPTH:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2;
+				p.RenderStates[VKRS_ZWRITEENABLE] = VK_FALSE;
+				p.RenderStates[VKRS_CULLMODE] = VK_FRONT_FACE_MAX_ENUM;
+				p.isDynamic |= (1 << VKRS_DIFFUSEMATERIALSOURCE);
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				break;
+			case PIPELINE_WWVK_FVF_DUV2_NOCULL_NODEPTH_NOBLEND:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2;
+				p.RenderStates[VKRS_ZWRITEENABLE] = VK_FALSE;
+				p.RenderStates[VKRS_SRCBLEND] = VK_BLEND_FACTOR_ONE;
+				p.RenderStates[VKRS_DESTBLEND] = VK_BLEND_FACTOR_ONE;
+				p.RenderStates[VKRS_CULLMODE] = VK_FRONT_FACE_MAX_ENUM;
+				p.isDynamic |= (1 << VKRS_DIFFUSEMATERIALSOURCE);
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				break;
 			case PIPELINE_WWVK_FVF_NDUV:
 				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1 | VKFVF_NORMAL;
 				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
 				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
 				p.RenderStates[VKRS_LIGHTING] = true;
+				break;
+			case PIPELINE_WWVK_FVF_NDUV_AREF_Strip:
+				p.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+			case PIPELINE_WWVK_FVF_NDUV_AREF:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1 | VKFVF_NORMAL;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.RenderStates[VKRS_LIGHTING] = true;
+				p.RenderStates[VKRS_ALPHABLENDENABLE] = false;
+				p.RenderStates[VKRS_ALPHAFUNC] = VK_COMPARE_OP_GREATER_OR_EQUAL;
+				p.isDynamic |= (1 << VKRS_ALPHAREF) | ( 1 << VKRS_DIFFUSEMATERIALSOURCE) | ( 1 << VKRS_EMISSIVEMATERIALSOURCE) 
+					| (1 << VKRS_AMBIENTMATERIALSOURCE);
+				break;
+			case PIPELINE_WWVK_FVF_NDUV_CAMUVT_NOL:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1 | VKFVF_NORMAL;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_TEXCOORDINDEX] = VKTSS_TCI_CAMERASPACEPOSITION;
+				p.TextureStageStates[1][VKTSS_TEXTURETRANSFORMFLAGS] = VKTTFF_COUNT2;
+				break;
+			case PIPELINE_WWVK_FVF_NDUV_NOL:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1 | VKFVF_NORMAL;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				break;
+			case PIPELINE_WWVK_FVF_NDUV_UVT_NOL:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1 | VKFVF_NORMAL;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_TEXTURETRANSFORMFLAGS] = VKTTFF_COUNT2;
 				break;
 			case PIPELINE_WWVK_FVF_NDUV2:
 				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2 | VKFVF_NORMAL;
@@ -607,7 +726,224 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 				break;
 #endif
 		}
+		if (p.RenderStates[VKRS_ALPHATESTENABLE] == 0)
+		{
+			p.isDynamic |= (1 << VKRS_ALPHAREF) | (1 << VKRS_ALPHAFUNC);
+		}
+		if (!(p.FVF & VKFVF_NORMAL))
+		{
+			p.isDynamic |= (1 << VKRS_LIGHTING)| (1 << VKRS_DIFFUSEMATERIALSOURCE) | (1 << VKRS_SPECULARMATERIALSOURCE)
+				| (1 << VKRS_AMBIENTMATERIALSOURCE) | (1 << VKRS_EMISSIVEMATERIALSOURCE);
+		}
 	}
+}
+
+#include <string>
+std::string TextureArgToString(uint32_t fvf, uint32_t arg, uint32_t texI, uint32_t uvI)
+{
+	if (arg == VKTA_CURRENT)
+		return "finalColor";
+	if (arg == VKTA_DIFFUSE)
+		return (fvf & VKFVF_DIFFUSE) ? "fragDiff" : "vec4(1,1,1,1)";
+	if (arg == VKTA_TEXTURE)
+	{
+		std::string uvStr;
+		if (uvI == VKTSS_TCI_CAMERASPACENORMAL)
+			uvStr = "viewNorm";
+		else if (uvI == VKTSS_TCI_CAMERASPACEPOSITION)
+			uvStr = "viewDir";
+		else if (uvI == VKTSS_TCI_CAMERASPACEREFLECTIONVECTOR)
+			uvStr = "viewRefl";
+		else
+			uvStr = "uv" + std::to_string(uvI + 1);
+		return "texture(tex" + std::to_string(texI+1) + ", " + uvStr + ")";
+	}
+	assert(false);
+	return "";
+}
+std::string TextureStageToString(uint32_t fvf, int i, uint32_t TextureStageStates[8][VKTSS_MAX])
+{
+	if (TextureStageStates[i][0] == TextureStageStates[i][3] &&
+		TextureStageStates[i][1] == TextureStageStates[i][4] &&
+		TextureStageStates[i][2] == TextureStageStates[i][5])
+	{
+		uint32_t texI = TextureStageStates[i][VKTSS_TEXCOORDINDEX];
+		if (TextureStageStates[i][0] == VKTOP_SELECTARG1)
+		{
+			return "finalColor = " + TextureArgToString(fvf, TextureStageStates[i][1], i, texI) + ";";
+		}
+		if (TextureStageStates[i][0] == VKTOP_SELECTARG2)
+		{
+			return "finalColor = " + TextureArgToString(fvf, TextureStageStates[i][2], i, texI) + ";";
+		}
+		if (TextureStageStates[i][0] == VKTOP_MODULATE)
+		{
+			return "finalColor = " + TextureArgToString(fvf, TextureStageStates[i][1], i, texI) + " * "
+				+ TextureArgToString(fvf, TextureStageStates[i][2], i, texI)
+				+ ";";
+		}
+		if (TextureStageStates[i][0] == VKTOP_ADD)
+		{
+			return "finalColor = " + TextureArgToString(fvf, TextureStageStates[i][1], i, texI) + " + "
+				+ TextureArgToString(fvf, TextureStageStates[i][2], i, texI)
+				+ ";";
+		}
+		assert(false);
+		return "";
+	}
+	else
+	{
+		std::string out = "finalColor = vec4(";
+		uint32_t texI = TextureStageStates[i][VKTSS_TEXCOORDINDEX];
+		if (TextureStageStates[i][VKTSS_COLOROP] == VKTOP_SELECTARG1)
+		{
+			out += TextureArgToString(fvf, TextureStageStates[i][VKTSS_COLORARG1], i, texI) + ".rgb, ";
+		}
+		else if (TextureStageStates[i][VKTSS_COLOROP] == VKTOP_SELECTARG2)
+		{
+			out += TextureArgToString(fvf, TextureStageStates[i][VKTSS_COLORARG2], i, texI) + ".rgb, ";
+		}
+		else if (TextureStageStates[i][VKTSS_COLOROP] == VKTOP_MODULATE)
+		{
+			out += TextureArgToString(fvf, TextureStageStates[i][VKTSS_COLORARG1], i, texI) + ".rgb * "
+				+ TextureArgToString(fvf, TextureStageStates[i][VKTSS_COLORARG2], i, texI)
+				+ ".rgb, ";
+		}
+		else if (TextureStageStates[i][VKTSS_COLOROP] == VKTOP_ADD)
+		{
+			out += TextureArgToString(fvf, TextureStageStates[i][VKTSS_COLORARG1], i, texI) + ".rgb + "
+				+ TextureArgToString(fvf, TextureStageStates[i][VKTSS_COLORARG2], i, texI)
+				+ ".rgb, ";
+		}
+		else
+		{
+			assert(false);
+		}
+		if (TextureStageStates[i][VKTSS_ALPHAOP] == VKTOP_SELECTARG1)
+		{
+			out += TextureArgToString(fvf, TextureStageStates[i][VKTSS_ALPHAARG1], i, texI) + ".a);";
+		}
+		else if (TextureStageStates[i][VKTSS_ALPHAOP] == VKTOP_SELECTARG2)
+		{
+			out += TextureArgToString(fvf, TextureStageStates[i][VKTSS_ALPHAARG2], i, texI) + ".a);";
+		}
+		else if (TextureStageStates[i][VKTSS_ALPHAOP] == VKTOP_MODULATE)
+		{
+			out += TextureArgToString(fvf, TextureStageStates[i][VKTSS_ALPHAARG1], i, texI) + ".a * "
+				+ TextureArgToString(fvf, TextureStageStates[i][VKTSS_ALPHAARG2], i, texI)
+				+ ".a);";
+		}
+		else if (TextureStageStates[i][VKTSS_ALPHAOP] == VKTOP_ADD)
+		{
+			out += TextureArgToString(fvf, TextureStageStates[i][VKTSS_ALPHAARG1], i, texI) + ".a + "
+				+ TextureArgToString(fvf, TextureStageStates[i][VKTSS_ALPHAARG2], i, texI)
+				+ ".a);";
+		}
+		else
+		{
+			assert(false);
+		}
+		return out;
+	}
+}
+void EstimateFragShader(uint32_t fvf, uint32_t RenderStates[VKRS_MAX], uint32_t TextureStageStates[8][VKTSS_MAX])
+{
+	bool lighting = RenderStates[VKRS_LIGHTING];
+	uint32_t textureCount = 0;
+	uint32_t uvCount = (fvf & (VKFVF_TEX7)) >> 8, uvUsed = 0;
+	bool haveCamPos = false, haveCamNorm = false, haveCamReflect = false;
+	for (int i = 0; i < 4; ++i)
+	{
+		if (TextureStageStates[i][0] == VKTOP_DISABLE)
+			break;
+		textureCount++;
+		if (TextureStageStates[i][VKTSS_TEXCOORDINDEX] & VKTSS_TCI_CAMERASPACENORMAL)
+			haveCamNorm = true;
+		else if (TextureStageStates[i][VKTSS_TEXCOORDINDEX] & VKTSS_TCI_CAMERASPACEPOSITION)
+			haveCamPos = true;
+		else if (TextureStageStates[i][VKTSS_TEXCOORDINDEX] & VKTSS_TCI_CAMERASPACEREFLECTIONVECTOR)
+			haveCamReflect = true;
+		else
+			uvUsed++;
+	}
+
+	std::string output = R"(#version 450
+#extension GL_ARB_separate_shader_objects : enable
+)";
+	if ((fvf & VKFVF_NORMAL) && lighting)
+	{
+		output += R"(#include "lightCommon.frag.inc"
+
+layout(set = 0, binding = 2) uniform LightCollectionBlock {LightCollection lights;};
+layout(set = 0, binding = 3) uniform MaterialBlock { DX8Material material;};
+)";
+	}
+	for (uint32_t i = 0; i < textureCount; ++i)
+	{
+		output += "layout(binding = " + std::to_string(4 + i) + ") uniform sampler2D tex" + std::to_string(i + 1) + ";\n";
+	}
+	int inputI = 0;
+	if (fvf & VKFVF_NORMAL)
+	{
+		output += "layout(location = " + std::to_string(inputI++) + ") in vec3 fragNorm;\n";
+	}
+	if (fvf & VKFVF_DIFFUSE)
+	{
+		output += "layout(location = " + std::to_string(inputI++) + ") in vec4 fragDiff;\n";
+	}
+	//bool haveCamPos = false, haveCamNorm = false, haveCameReflect = false;
+	if (haveCamPos)
+	{
+		output += "layout(location = " + std::to_string(inputI++) + ") in vec3 viewDir;\n";
+	}
+	if (haveCamNorm)
+	{
+		output += "layout(location = " + std::to_string(inputI++) + ") in vec3 viewNorm;\n";
+	}
+	if (haveCamReflect)
+	{
+		output += "layout(location = " + std::to_string(inputI++) + ") in vec3 viewRefl;\n";
+	}
+	for (uint32_t i = 0; i < uvCount; ++i)
+	{
+		output += "layout(binding = " + std::to_string(inputI++) + ") uniform vec2 uv" + std::to_string(i + 1) + ";\n";
+	}
+	output += R"(layout(location = 0) out vec4 finalColor;
+
+void main() {
+)";
+	for (uint32_t i = 0; i < 4; ++i)
+	{
+		if (TextureStageStates[i][0] == VKTOP_DISABLE)
+			break;
+		//Don't know if this is valid. Curious if it occurs
+		if (i > 0 && (TextureStageStates[i][0] == VKTOP_SELECTARG1 || TextureStageStates[i][0] == VKTOP_SELECTARG2))
+			assert(false);
+		output += "    " + TextureStageToString(fvf, i, TextureStageStates) + "\n";
+	}
+	if ((fvf & VKFVF_NORMAL) && lighting)
+	{
+		output += R"(    finalColor = CalculateLights(lights, material, fragNorm, gl_FragCoord.xyz, viewDir,
+			finalColor.rgb, finalColor.rgb, finalColor.rgb);
+)";
+	}
+	output += "}\n";
+
+	std::string fragName = "fvf_";
+	if (fvf & VKFVF_NORMAL)
+		fragName += "n";
+	if (fvf & VKFVF_DIFFUSE)
+		fragName += "d";
+	if (uvCount > 0)
+		fragName += "uv" + std::to_string(uvCount);
+	if ((fvf & VKFVF_NORMAL) && !lighting)
+	{
+		fragName += "_NOL";
+	}
+	fragName = "Frag Name:\n" + fragName + ".frag\n#####################################\n";
+
+	OutputDebugStringA(fragName.c_str());
+	OutputDebugStringA(output.c_str());
 }
 
 std::vector<WWVK_Pipeline_Entry> DX8Wrapper::FindClosestPipelines(unsigned FVF, VkPrimitiveTopology topo)
@@ -702,7 +1038,70 @@ std::vector<WWVK_Pipeline_Entry> DX8Wrapper::FindClosestPipelines(unsigned FVF, 
 			if (p.TextureStageStates[ti][VKTSS_COLOROP] == VKTOP_DISABLE && 
 				(TextureStageStates[ti][VKTSS_COLOROP] == VKTOP_DISABLE || TextureStageStates[ti][VKTSS_COLOROP] == 0x12345678))
 				break;
-			for (int ts = 0; ts < VKTSS_SHADER_COMPARE_MAX; ++ts)
+			int ts = 0;
+			for (int cs = 0; cs < 2; ++cs, ts += 3)
+			{
+				if (p.TextureStageStates[ti][ts] != TextureStageStates[ti][ts])
+				{
+					valid = false;
+					break;
+				}
+				switch (p.TextureStageStates[ti][ts])
+				{
+				case VKTOP_ADD: //Order independent operations
+				case VKTOP_MODULATE:
+				case VKTOP_MODULATE2X:
+				{
+					if (p.TextureStageStates[ti][ts + 1] == TextureStageStates[ti][ts + 1] &&
+						p.TextureStageStates[ti][ts + 2] == TextureStageStates[ti][ts + 2])
+					{
+						//valid
+					}
+					else if (p.TextureStageStates[ti][ts + 1] == TextureStageStates[ti][ts + 2] &&
+						p.TextureStageStates[ti][ts + 1] == TextureStageStates[ti][ts + 2])
+					{
+						//valid
+					}
+					else
+					{
+						valid = false;
+					}
+					break;
+				}
+				case VKTOP_SELECTARG1:
+					if (p.TextureStageStates[ti][ts + 1] == TextureStageStates[ti][ts + 1])
+					{
+						//valid
+					}
+					else
+					{
+						valid = false;
+					}
+					break;
+				case VKTOP_SELECTARG2:
+					if (p.TextureStageStates[ti][ts + 2] == TextureStageStates[ti][ts + 2])
+					{
+						//valid
+					}
+					else
+					{
+						valid = false;
+					}
+					break;
+				default:
+					if (p.TextureStageStates[ti][ts + 1] == TextureStageStates[ti][ts + 1] &&
+						p.TextureStageStates[ti][ts + 2] == TextureStageStates[ti][ts + 2])
+					{
+						//valid
+					}
+					else
+					{
+						valid = false;
+					}
+					break;
+				}
+			}
+			for (; valid && ts < VKTSS_SHADER_COMPARE_MAX; ++ts)
 			{
 				if (p.TextureStageStates[ti][ts] == TextureStageStates[ti][ts])
 				{
@@ -738,7 +1137,7 @@ std::vector<WWVK_Pipeline_Entry> DX8Wrapper::FindClosestPipelines(unsigned FVF, 
 			}
 			std::pair<int, int> valid = {pi,0};
 			if (p.FVF == FVF)
-				valid.second++;
+				valid.second+=100;
 			if (p.topo == topo)
 				valid.second++;
 			for (int rs = 0; rs < VKRS_SHADER_COMPARE_MAX; ++rs)
@@ -766,7 +1165,66 @@ std::vector<WWVK_Pipeline_Entry> DX8Wrapper::FindClosestPipelines(unsigned FVF, 
 					valid.second += VKTSS_SHADER_COMPARE_MAX;
 					break;
 				}
-				for (int ts = 0; ts < VKTSS_SHADER_COMPARE_MAX; ++ts)
+				int ts = 0;
+				for (int cs = 0; cs < 2; ++cs, ts += 3)
+				{
+					if (p.TextureStageStates[ti][ts] != TextureStageStates[ti][ts])
+					{
+						continue;
+					}
+					valid.second++;
+					switch (p.TextureStageStates[ti][ts])
+					{
+					case VKTOP_ADD: //Order independent operations
+					case VKTOP_MODULATE:
+					case VKTOP_MODULATE2X:
+					{
+						if (p.TextureStageStates[ti][ts + 1] == TextureStageStates[ti][ts + 1] &&
+							p.TextureStageStates[ti][ts + 2] == TextureStageStates[ti][ts + 2])
+						{
+							valid.second+=2;
+						}
+						else if (p.TextureStageStates[ti][ts + 1] == TextureStageStates[ti][ts + 2] &&
+							p.TextureStageStates[ti][ts + 1] == TextureStageStates[ti][ts + 2])
+						{
+							valid.second += 2;
+						}
+						else if (p.TextureStageStates[ti][ts + 1] == TextureStageStates[ti][ts + 1])
+						{
+							valid.second++;
+						}
+						else if (p.TextureStageStates[ti][ts + 2] == TextureStageStates[ti][ts + 2])
+						{
+							valid.second++;
+						}
+
+						break;
+					}
+					case VKTOP_SELECTARG1:
+						if (p.TextureStageStates[ti][ts + 1] == TextureStageStates[ti][ts + 1])
+						{
+							valid.second += 2;
+						}
+						break;
+					case VKTOP_SELECTARG2:
+						if (p.TextureStageStates[ti][ts + 2] == TextureStageStates[ti][ts + 2])
+						{
+							valid.second += 2;
+						}
+						break;
+					default:
+						if (p.TextureStageStates[ti][ts + 1] == TextureStageStates[ti][ts + 1])
+						{
+							valid.second += 1;
+						}
+						if (p.TextureStageStates[ti][ts + 2] == TextureStageStates[ti][ts + 2])
+						{
+							valid.second += 1;
+						}
+						break;
+					}
+				}
+				for (; ts < VKTSS_SHADER_COMPARE_MAX; ++ts)
 				{
 					if (p.TextureStageStates[ti][ts] == TextureStageStates[ti][ts])
 					{
@@ -805,6 +1263,8 @@ std::vector<WWVK_Pipeline_Entry> DX8Wrapper::FindClosestPipelines(unsigned FVF, 
 		{
 			rsCompare[i].first = bps.RenderStates[i];
 			rsCompare[i].second = RenderStates[i];
+			if (rsCompare[i].second == 0x12345678)
+				rsCompare[i].second = def.RenderStates[i];
 		}
 		std::pair<uint32_t, uint32_t> tsCompare[4][VKTSS_MAX];
 		for (int t = 0; t < 4; ++t)
@@ -813,53 +1273,15 @@ std::vector<WWVK_Pipeline_Entry> DX8Wrapper::FindClosestPipelines(unsigned FVF, 
 			{
 				tsCompare[t][i].first = bps.TextureStageStates[t][i];
 				tsCompare[t][i].second = TextureStageStates[t][i];
+				if (tsCompare[t][i].second == 0x12345678)
+					tsCompare[t][i].second = def.TextureStageStates[t][i];
 			}
 		}
 		printf("");
+		EstimateFragShader(FVF, RenderStates, TextureStageStates);
 	}
 
 	return ret;
-}
-
-void DX8Wrapper::DumpCurrentRenderStates()
-{
-	WWDEBUG_SAY(("Dump Current Render States\n"));
-	for (int rs = 0; rs < VKRS_SHADER_COMPARE_MAX; ++rs)
-	{
-		const char* stateName;
-		switch (rs)
-		{
-			case VKRS_FILLMODE: stateName = "VKRS_FILLMODE"; break;
-			case VKRS_ZWRITEENABLE: stateName = "VKRS_ZWRITEENABLE"; break;
-			case VKRS_ALPHATESTENABLE: stateName = "VKRS_ALPHATESTENABLE"; break;
-			case VKRS_SRCBLEND: stateName = "VKRS_SRCBLEND"; break;
-			case VKRS_DESTBLEND: stateName = "VKRS_DESTBLEND"; break;
-			case VKRS_CULLMODE: stateName = "VKRS_CULLMODE"; break;
-			case VKRS_ZFUNC: stateName = "VKRS_ZFUNC"; break;
-			case VKRS_ALPHAREF: stateName = "VKRS_ALPHAREF"; break;
-			case VKRS_ALPHAFUNC: stateName = "VKRS_ALPHAFUNC"; break;
-			case VKRS_ALPHABLENDENABLE: stateName = "VKRS_ALPHABLENDENABLE"; break;
-			case VKRS_FOGENABLE: stateName = "VKRS_FOGENABLE"; break;
-			case VKRS_SPECULARENABLE: stateName = "VKRS_SPECULARENABLE"; break;
-			case VKRS_STENCILENABLE: stateName = "VKRS_STENCILENABLE"; break;
-			case VKRS_STENCILFAIL: stateName = "VKRS_STENCILFAIL"; break;
-			case VKRS_STENCILZFAIL: stateName = "VKRS_STENCILZFAIL"; break;
-			case VKRS_STENCILPASS: stateName = "VKRS_STENCILPASS"; break;
-			case VKRS_STENCILFUNC: stateName = "VKRS_STENCILFUNC"; break;
-			case VKRS_STENCILREF: stateName = "VKRS_STENCILREF"; break;
-			case VKRS_STENCILMASK: stateName = "VKRS_STENCILMASK"; break;
-			case VKRS_STENCILWRITEMASK: stateName = "VKRS_STENCILWRITEMASK"; break;
-			case VKRS_LIGHTING: stateName = "VKRS_LIGHTING"; break;
-			case VKRS_DIFFUSEMATERIALSOURCE: stateName = "VKRS_DIFFUSEMATERIALSOURCE"; break;
-			case VKRS_SPECULARMATERIALSOURCE: stateName = "VKRS_SPECULARMATERIALSOURCE"; break;
-			case VKRS_AMBIENTMATERIALSOURCE: stateName = "VKRS_AMBIENTMATERIALSOURCE"; break;
-			case VKRS_EMISSIVEMATERIALSOURCE: stateName = "VKRS_EMISSIVEMATERIALSOURCE"; break;
-			case VKRS_COLORWRITEENABLE: stateName = "VKRS_COLORWRITEENABLE"; break;
-			case VKRS_BLENDOP: stateName = "VKRS_BLENDOP"; break;
-			case VKRS_DEPTHBIAS: stateName = "VKRS_DEPTHBIAS"; break;
-		}
-		WWDEBUG_SAY(("%s: %x\n", stateName, RenderStates[rs]));
-	}
 }
 
 bool DX8Wrapper::Init(void * hwnd, bool lite)
@@ -2545,6 +2967,7 @@ void DX8Wrapper::Draw_Sorting_IB_VB(
 
 	DX8_RECORD_RENDER(polygon_count,vertex_count,render_state.shader);
 #endif		
+	DX8Wrapper::Apply_Render_State_Changes();
 	auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
 	assert(pipelines.size() == 1);
 	switch (pipelines[0]) {
@@ -2623,6 +3046,7 @@ void DX8Wrapper::Convert_Sorting_IB_VB(
 
 	DX8_RECORD_RENDER(polygon_count, vertex_count, render_state.shader);
 #endif
+	DX8Wrapper::Apply_Render_State_Changes();
 	auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
 	assert(pipelines.size() == 1);
 	switch (pipelines[0]) {
@@ -2762,6 +3186,8 @@ void DX8Wrapper::Apply_Render_State_Changes()
 				}
 			}
 		}
+		target.PushSingleFrameBuffer(LightUbo);
+		VkBufferTools::CreateUniformBuffer(&target, sizeof(LightCollection), &render_state.Lights, LightUbo);
 	}
 
 	if (render_state_changed&WORLD_CHANGED) {
@@ -3466,12 +3892,12 @@ void DX8Wrapper::Set_Light(unsigned index,const LightClass &light)
 
 VK::Buffer DX8Wrapper::UboLight()
 {
-	if (render_state_changed & LIGHTS_CHANGED)
-	{
-		target.PushSingleFrameBuffer(LightUbo);
-		VkBufferTools::CreateUniformBuffer(&target, sizeof(LightCollection), &render_state.Lights, LightUbo);
-	}
 	return LightUbo;
+}
+
+VK::Buffer DX8Wrapper::UboMaterial()
+{
+	return MaterialUbo;
 }
 
 //**********************************************************************************************

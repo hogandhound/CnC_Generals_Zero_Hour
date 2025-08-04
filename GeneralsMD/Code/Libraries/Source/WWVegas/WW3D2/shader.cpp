@@ -849,7 +849,7 @@ void ShaderClass::Apply()
 	DX8Wrapper::Set_DX8_Render_State(VKRS_SPECULARENABLE,BOOL(Get_Secondary_Gradient()));
 
 	// DEPTH COMPARE FUNCTION
-	DX8Wrapper::Set_DX8_Render_State(VKRS_ZFUNC,VkCompareOp(int(Get_Depth_Compare())+1));
+	DX8Wrapper::Set_DX8_Render_State(VKRS_ZFUNC,VkCompareOp(int(Get_Depth_Compare())));
 
 	// DEPTH MASK
 	DX8Wrapper::Set_DX8_Render_State(VKRS_ZWRITEENABLE,BOOL(Get_Depth_Mask()));

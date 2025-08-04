@@ -415,8 +415,16 @@ void VkRenderTarget::PushSingleFrameBuffer(VK::Buffer staging)
 	singleFrame[currentFrame].bufferIndex++;
 }
 
+#if _DEBUG
+void VkRenderTarget::PushSingleTexture_(VK::Texture staging , const char* end, int line)
+#else
 void VkRenderTarget::PushSingleTexture(VK::Texture staging)
+#endif
 {
+#if _DEBUG
+	staging.end = end;
+	staging.line = line;
+#endif
 	if (singleFrame[currentFrame].textures.size() <= singleFrame[currentFrame].textureIndex)
 		singleFrame[currentFrame].textures.resize(singleFrame[currentFrame].textureIndex + 1);
 	singleFrame[currentFrame].textures[singleFrame[currentFrame].textureIndex] = staging;

@@ -496,7 +496,7 @@ void W3DShroud::fillBorderShroudData(W3DShroudLevel level, SurfaceClass* pDestSu
 			for (int sy = srcRect.top; sy < srcRect.bottom; ++sy)
 			{
 				UnsignedShort* ssy = ((uint16_t*)m_pSrcTexture.buffer.data()) + m_pSrcTexture.width * sy;
-				UnsignedShort* sdy = ((uint16_t*)pDestSurface->Peek_D3D_Surface().data()) + dstPoint.x + (sy + dstPoint.y) * dstDesc.Width;
+				UnsignedShort* sdy = ((uint16_t*)pDestSurface->Peek_D3D_Surface().data()) + dstPoint.x + (dstPoint.y) * dstDesc.Width;
 				for (int sx = srcRect.left; sx < srcRect.right; ++sx)
 				{
 					sdy[sx] = ssy[sx];
@@ -518,7 +518,7 @@ void W3DShroud::fillBorderShroudData(W3DShroudLevel level, SurfaceClass* pDestSu
 			for (int sy = srcRect.top; sy < srcRect.bottom; ++sy)
 			{
 				UnsignedShort* ssy = ((uint16_t*)m_pSrcTexture.buffer.data()) + m_pSrcTexture.width * sy;
-				UnsignedShort* sdy = ((uint16_t*)pDestSurface->Peek_D3D_Surface().data()) + dstPoint.x + (sy + dstPoint.y) * dstDesc.Width;
+				UnsignedShort* sdy = ((uint16_t*)pDestSurface->Peek_D3D_Surface().data()) + dstPoint.x + (dstPoint.y) * dstDesc.Width;
 				for (int sx = srcRect.left; sx < srcRect.right; ++sx)
 				{
 					sdy[sx] = ssy[sx];
@@ -565,7 +565,7 @@ void W3DShroud::render(CameraClass *cam)
 	if (DX8Wrapper::_Get_D3D_Device8() && (DX8Wrapper::_Get_D3D_Device8()->TestCooperativeLevel()) != D3D_OK)
 		return;	//device not ready to render anything
 #else
-	if (WWVKRENDER.currentCmd == 0)
+	if (WWVKRENDER.device == 0)
 		return;
 #endif
 
@@ -761,6 +761,7 @@ void W3DShroud::render(CameraClass *cam)
 				sdy[sx] = ssy[sx];
 			}
 		}
+		m_pDstTexture->Upload();
 #ifdef INFO_VULKAN
 		//USE_PERF_TIMER(shroudCopy)
 		DX8Wrapper::_Copy_DX8_Rects(

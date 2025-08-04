@@ -320,7 +320,7 @@ VK::Texture Load_Compressed_Texture(
 #else
 	VK::Surface surface = Load_Compressed_Surface(filename, dest_format);
 
-	VK::Texture d3d_texture;
+	VK::Texture d3d_texture = {};
 	VK::CreateTexture(&WWVKRENDER, d3d_texture, surface.width, surface.height, surface.buffer.data(), 0, surface.format);
 #endif
 	return d3d_texture;
@@ -549,7 +549,7 @@ VK::Texture TextureLoader::Load_Thumbnail(const StringClass& filename, const Vec
 		//src_pitch=locked_rects[level].Pitch;
 		//width>>=1;
 		//height>>=1;
-		VK::Texture ret;
+		VK::Texture ret = {};
 		VK::CreateTextureMips(&WWVKRENDER, ret, 1, width, height, buffer.data(), 0, WW3DFormat_To_D3DFormat(dest_format));
 		return ret;
 	}

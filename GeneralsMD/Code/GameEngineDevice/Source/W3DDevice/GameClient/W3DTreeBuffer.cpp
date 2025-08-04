@@ -87,6 +87,7 @@ enum
 #include "WW3D2/Mesh.h"
 #include "WW3D2/MeshMdl.h"
 #include <VkTexture.h>
+#include <formconv.h>
 
 #ifdef _INTERNAL
 // for occasional debugging...
@@ -145,11 +146,10 @@ int W3DTreeBuffer::W3DTreeTextureClass::update(W3DTreeBuffer* buffer)
 
 	DX8_ErrorCode(surface_level->LockRect(&locked_rect, NULL, 0));
 #endif
-	VK::Surface surface = {};
-	surface.width = Peek_D3D_Texture().width;
-	surface.height = Peek_D3D_Texture().height;
-	surface.format = Peek_D3D_Texture().format;
-	surface.buffer.resize(surface.width * surface.height * VK::SizeOfFormat(surface.format));
+	SurfaceClass::SurfaceDescription desc; 
+	this->surface->Get_Description(desc);
+	int pitch;
+	auto* buf = this->surface->Lock(&pitch);
 
 	Int tilePixelExtent = TILE_PIXEL_EXTENT;
 	//	Int numRows = surface_desc.Height/(tilePixelExtent+TILE_OFFSET);
@@ -157,7 +157,7 @@ int W3DTreeBuffer::W3DTreeTextureClass::update(W3DTreeBuffer* buffer)
 	//DASSERT_MSG(tilesPerRow*numRows >= htMap->m_numBitmapTiles,Debug::Format ("Too many tiles.")); 
 	//DEBUG_ASSERTCRASH((Int)surface_desc.Width >= tilePixelExtent*tilesPerRow, ("Bitmap too small."));
 #endif
-	if (surface.format == VK_FORMAT_R8G8B8A8_SRGB) {
+	if (desc.Format == WW3D_FORMAT_A8R8G8B8) {
 		Int tileNdx;
 		Int pixelBytes = 4;
 #if 0 // Fill unused texture for debug display.
@@ -183,8 +183,8 @@ int W3DTreeBuffer::W3DTreeTextureClass::update(W3DTreeBuffer* buffer)
 				UnsignedByte* pBGR = pTile->getRGBDataForWidth(tilePixelExtent);
 				pBGR += (tilePixelExtent - (1 + j)) * TILE_BYTES_PER_PIXEL * tilePixelExtent; // invert to match.
 				Int row = position.y + j;
-				UnsignedByte* pBGRA = ((UnsignedByte*)surface.buffer.data()) +
-					(row)*surface.width * pixelBytes;
+				UnsignedByte* pBGRA = ((UnsignedByte*)buf) +
+					(row)*desc.Width * pixelBytes;
 
 				Int column = position.x;
 				pBGRA += column * pixelBytes;
@@ -208,9 +208,9 @@ int W3DTreeBuffer::W3DTreeTextureClass::update(W3DTreeBuffer* buffer)
 #endif
 	VK::Texture tex = Peek_D3D_Texture();
 	WWVKRENDER.PushSingleTexture(tex);
-	VK::CreateTexture(&WWVKRENDER, tex, surface.width, surface.height, surface.buffer.data(), 17, surface.format);
+	VK::CreateTexture(&WWVKRENDER, tex, desc.Width, desc.Height, (uint8_t*)buf, 17, WW3DFormat_To_D3DFormat( desc.Format));
 	Poke_Texture(tex);
-	return(surface.height);
+	return(desc.Height);
 }
 
 
@@ -1703,14 +1703,14 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 	VK::Buffer uboTrees;
 	Trees treeConstants;
 	{
-		Matrix4x4 matProj, matView, matWorld;
+		DirectX::XMMATRIX matProj, matView, matWorld;
 		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&matWorld);
 		DX8Wrapper::_Get_DX8_Transform(VkTS::VIEW, *(Matrix4x4*)&matView);
 		DX8Wrapper::_Get_DX8_Transform(VkTS::PROJECTION, *(Matrix4x4*)&matProj);
-		Matrix4x4 mat;
-		Matrix4x4::Multiply(matView, matProj, &mat);
-		Matrix4x4::Multiply(mat, matWorld, &mat);
-		mat = mat.Transpose();
+		DirectX::XMMATRIX mat;
+		mat = DirectX::XMMatrixMultiply(matView, matProj);
+		mat = DirectX::XMMatrixMultiply(mat, matWorld);
+		mat = DirectX::XMMatrixTranspose(mat);
 
 		// c4  - Composite World-View-Projection Matrix
 		//DX8Wrapper::_Get_D3D_Device8()->SetVertexShaderConstantF(4, &mat.m[0][0], 4);

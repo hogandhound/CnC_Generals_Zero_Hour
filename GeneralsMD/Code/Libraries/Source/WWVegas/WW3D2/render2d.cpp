@@ -701,7 +701,7 @@ void Render2DClass::Render(void)
 		}
 #endif
 		WWVK_UpdateFVF_DUV_Grayscale_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &Texture->Peek_D3D_Texture(),
-			DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+			DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
 		WWVK_DrawFVF_DUV_Grayscale_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 			((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
 			((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
@@ -710,7 +710,7 @@ void Render2DClass::Render(void)
 	{
 		DX8Wrapper::Set_Shader(Shader);
 		WWVK_UpdateFVF_DUV_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &Texture->Peek_D3D_Texture(),
-			DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+			DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
 		WWVK_DrawFVF_DUV_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 			((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
 			((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);

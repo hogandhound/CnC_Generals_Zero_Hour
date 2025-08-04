@@ -472,6 +472,7 @@ void	LineGroupClass::Render(RenderInfoClass &rinfo)
 
 	DX8Wrapper::Set_Index_Buffer(iba, 0);
 	DX8Wrapper::Set_Vertex_Buffer(vba);
+	DX8Wrapper::Apply_Render_State_Changes();
 	
 	if (sort) {
 		SortingRendererClass::Insert_Triangles(0, num_tris, 0, num_vertices);

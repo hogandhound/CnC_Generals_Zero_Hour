@@ -260,8 +260,8 @@ class TextureLoadTaskClass : public TextureLoadTaskListNodeClass
 #ifdef INFO_VULKAN
 		IDirect3DBaseTexture9*	D3DTexture;
 #else
-		VK::Texture D3DTexture;
-		VK::Surface Surface;
+		VK::Texture D3DTexture = {};
+		VK::Surface Surface = {};
 #endif
 		//WW3DFormat				Format;
 

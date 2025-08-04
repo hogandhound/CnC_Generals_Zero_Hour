@@ -87,6 +87,10 @@ namespace VK
         VkFormat format;
         uint16_t width, height;
         uint8_t mips;
+#if _DEBUG
+        const char *end = 0;
+        int line = 0;
+#endif
     };
     enum TexFlags
     {
@@ -183,7 +187,14 @@ public:
     uint32_t getDescSetSubIndex(VkDescFormat fmt, VkDescriptorSetLayoutBinding* bindings, int bCount);
     VkDescriptorSet getDescSet(VkDescFormat fmt, uint32_t subIndex, VkDescriptorSetLayout* layout);
     void PushSingleFrameBuffer(VK::Buffer staging);
+#if _DEBUG
+#define PushSingleTexture(A) PushSingleTexture_(A, __FILE__, __LINE__)
+    void PushSingleTexture_(VK::Texture staging
+        , const char* end, int line
+    );
+#else
     void PushSingleTexture(VK::Texture staging);
+#endif 
 private:
     SwapChainSupportDetails swapChainSupport_;
     uint32_t imageIndex;

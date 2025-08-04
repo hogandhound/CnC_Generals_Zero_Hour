@@ -514,6 +514,7 @@ void BoxRenderObjClass::render_box(RenderInfoClass & rinfo,const Vector3 & cente
 		SphereClass sphere;
 		Get_Obj_Space_Bounding_Sphere(sphere); 
 
+		DX8Wrapper::Apply_Render_State_Changes();
 		auto pipelines = DX8Wrapper::FindClosestPipelines(vbaccess.FVF_Info().FVF);
 		assert(pipelines.size() == 1);
 		switch (pipelines[0]) {

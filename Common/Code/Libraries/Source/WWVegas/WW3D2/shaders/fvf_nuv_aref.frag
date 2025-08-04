@@ -6,6 +6,9 @@
 layout(set = 0, binding = 2) uniform LightCollectionBlock {LightCollection lights;};
 
 layout(set = 0, binding = 3) uniform MaterialBlock { DX8Material material;};
+layout( push_constant ) uniform AlphaRef {
+  layout(offset=64) float ref;
+};
 
 layout(binding = 4) uniform sampler2D tex1;
 
@@ -19,4 +22,6 @@ void main() {
 	vec4 baseColor = texture(tex1, fragUv);
 	finalColor = CalculateLights(lights, material, fragNorm, gl_FragCoord.xyz, viewDir,
  baseColor.rgb, baseColor.rgb, baseColor.rgb);
+	if (finalColor.a > ref)
+		discard;
 }

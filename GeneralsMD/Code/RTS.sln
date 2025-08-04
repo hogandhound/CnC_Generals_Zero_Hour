@@ -16,6 +16,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameEngineDevice", "GameEngineDevice\GameEngineDevice.vcxproj", "{0DC0E8C4-3BD6-4E05-AE4F-3DD2BB1A85BC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RTS", "RTS.vcxproj", "{69A6FD0C-0728-4AD0-8455-E427956A1BC5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9C986C6E-AEE8-470D-A148-B3D75286F3C5} = {9C986C6E-AEE8-470D-A148-B3D75286F3C5}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WWDownload", "Libraries\Source\WWVegas\WWDownload\WWDownload.vcxproj", "{9C986C6E-AEE8-470D-A148-B3D75286F3C5}"
 EndProject

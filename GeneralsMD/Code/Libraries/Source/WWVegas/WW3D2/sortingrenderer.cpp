@@ -221,6 +221,7 @@ void SortingRendererClass::Insert_Triangles(
 	unsigned short vertex_count)
 {
 	if (!WW3D::Is_Sorting_Enabled()) {
+		DX8Wrapper::Apply_Render_State_Changes();
 		auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
 		assert(pipelines.size() == 1);
 		switch (pipelines[0]) {
@@ -446,10 +447,10 @@ void SortingRendererClass::Flush_Sorting_Pool()
 		unsigned vertex_array_offset=0;
 		for (unsigned node_id=0;node_id<overlapping_node_count;++node_id) {
 			SortingNodeStruct* state=overlapping_nodes[node_id];
-			VertexFormatXYZNDUV2* src_verts=NULL;
+			VertexFormatXYZDUV2* src_verts=NULL;
 			SortingVertexBufferClass* vertex_buffer=static_cast<SortingVertexBufferClass*>(state->sorting_state.vertex_buffers[0]);
 			WWASSERT(vertex_buffer);
-			src_verts=vertex_buffer->Vertices.data();
+			src_verts=(VertexFormatXYZDUV2*)vertex_buffer->Vertices.data();
 			WWASSERT(src_verts);
 			src_verts+=state->sorting_state.vba_offset;
 			src_verts+=state->sorting_state.index_base_offset;
@@ -458,7 +459,7 @@ void SortingRendererClass::Flush_Sorting_Pool()
 			// If you have a crash in here and "dest_verts" points to illegal memory area,
 			// it is because D3D is in illegal state, and the only known cure is rebooting.
 			// This illegal state is usually caused by Quake3-engine powered games such as MOHAA.
-			memcpy(dest_verts, src_verts, sizeof(VertexFormatXYZNDUV2)*state->vertex_count);
+			memcpy(dest_verts, src_verts, sizeof(VertexFormatXYZDUV2)*state->vertex_count);
 			dest_verts += state->vertex_count;
 
 			DirectX::XMMATRIX d3d_mtx=(DirectX::XMMATRIX&)state->sorting_state.world*(DirectX::XMMATRIX&)state->sorting_state.view;
@@ -481,9 +482,9 @@ void SortingRendererClass::Flush_Sorting_Pool()
 					WWASSERT(idx1<state->vertex_count);
 					WWASSERT(idx2<state->vertex_count);
 					WWASSERT(idx3<state->vertex_count);
-					const VertexFormatXYZNDUV2 *v1 = src_verts + idx1;
-					const VertexFormatXYZNDUV2 *v2 = src_verts + idx2;
-					const VertexFormatXYZNDUV2 *v3 = src_verts + idx3;
+					const VertexFormatXYZDUV2*v1 = src_verts + idx1;
+					const VertexFormatXYZDUV2*v2 = src_verts + idx2;
+					const VertexFormatXYZDUV2*v3 = src_verts + idx3;
 					unsigned array_index=i+polygon_array_offset;
 					WWASSERT(array_index<overlapping_polygon_count);
 					TempIndexStruct *tis_ptr = tis + array_index;
@@ -502,9 +503,9 @@ void SortingRendererClass::Flush_Sorting_Pool()
 					WWASSERT(idx1<state->vertex_count);
 					WWASSERT(idx2<state->vertex_count);
 					WWASSERT(idx3<state->vertex_count);
-					const VertexFormatXYZNDUV2 *v1 = src_verts + idx1;
-					const VertexFormatXYZNDUV2 *v2 = src_verts + idx2;
-					const VertexFormatXYZNDUV2 *v3 = src_verts + idx3;
+					const VertexFormatXYZDUV2*v1 = src_verts + idx1;
+					const VertexFormatXYZDUV2*v2 = src_verts + idx2;
+					const VertexFormatXYZDUV2*v3 = src_verts + idx3;
 					unsigned array_index=i+polygon_array_offset;
 					WWASSERT(array_index<overlapping_polygon_count);
 					TempIndexStruct *tis_ptr = tis + array_index;
@@ -573,9 +574,13 @@ void SortingRendererClass::Flush_Sorting_Pool()
 
 	DX8Wrapper::Apply_Render_State_Changes();
 
+	Matrix4x4 push;
+	DX8Wrapper::Get_Transform(VkTS::WORLD, push);
+
 	unsigned count_to_render=1;
 	unsigned start_index=0;
 	unsigned node_id=tis[0].idx;
+	WWVKDSV;
 	for (unsigned i=1;i<overlapping_polygon_count;++i) {
 		if (node_id!=tis[i].idx) {
 			SortingNodeStruct* state=overlapping_nodes[node_id];
@@ -584,7 +589,30 @@ void SortingRendererClass::Flush_Sorting_Pool()
 			auto pipelines = DX8Wrapper::FindClosestPipelines(dyn_vb_access.FVF_Info().FVF);
 			assert(pipelines.size() == 1);
 			switch (pipelines[0]) {
-			case 0:
+			case PIPELINE_WWVK_FVF_DUV2_NOCULL_NODEPTH_NOBLEND:
+				WWVK_UpdateFVF_DUV2_NOCULL_NODEPTH_NOBLENDDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1), 
+					DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+				// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+				WWVK_DrawFVF_DUV2_NOCULL_NODEPTH_NOBLEND(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+					start_index * 3, VK_INDEX_TYPE_UINT16,
+					((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+					0, (WorldMatrix*)&push);
+				break;
+			case PIPELINE_WWVK_FVF_DUV2_NOCULL_NODEPTH:
+				WWVK_UpdateFVF_DUV2_NOCULL_NODEPTHDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),
+					DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+				// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+				WWVK_DrawFVF_DUV2_NOCULL_NODEPTH(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+					start_index * 3, VK_INDEX_TYPE_UINT16,
+					((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+					0, (WorldMatrix*)&push);
+				break;
 			default: assert(false);
 			}
 #ifdef INFO_VULKAN
@@ -611,7 +639,30 @@ void SortingRendererClass::Flush_Sorting_Pool()
 		auto pipelines = DX8Wrapper::FindClosestPipelines(dyn_vb_access.FVF_Info().FVF);
 		assert(pipelines.size() == 1);
 		switch (pipelines[0]) {
-		case 0:
+		case PIPELINE_WWVK_FVF_DUV2_NOCULL_NODEPTH_NOBLEND:
+			WWVK_UpdateFVF_DUV2_NOCULL_NODEPTH_NOBLENDDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+				&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),
+				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+			//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+			// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+			WWVK_DrawFVF_DUV2_NOCULL_NODEPTH_NOBLEND(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+				start_index * 3, VK_INDEX_TYPE_UINT16,
+				((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+				0, (WorldMatrix*)&push);
+			break;
+		case PIPELINE_WWVK_FVF_DUV2_NOCULL_NODEPTH:
+			WWVK_UpdateFVF_DUV2_NOCULL_NODEPTHDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+				&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),
+				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+			//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+			// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+			WWVK_DrawFVF_DUV2_NOCULL_NODEPTH(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+				start_index * 3, VK_INDEX_TYPE_UINT16,
+				((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+				0, (WorldMatrix*)&push);
+			break;
 		default: assert(false);
 		}
 #ifdef INFO_VULKAN
@@ -658,6 +709,7 @@ void SortingRendererClass::Flush()
 			DX8Wrapper::Set_Render_State(state->sorting_state);
 
 			VertexBufferClass* vb = DX8Wrapper::Get_Vertex_Buffer();
+			DX8Wrapper::Apply_Render_State_Changes();
 
 			auto pipelines = DX8Wrapper::FindClosestPipelines(vb->FVF_Info().FVF);
 			assert(pipelines.size() == 1);
@@ -737,6 +789,7 @@ void SortingRendererClass::Insert_VolumeParticle(
 
 		VertexBufferClass* vb = DX8Wrapper::Get_Vertex_Buffer();
 
+		DX8Wrapper::Apply_Render_State_Changes();
 		auto pipelines = DX8Wrapper::FindClosestPipelines(vb->FVF_Info().FVF);
 		assert(pipelines.size() == 1);
 		switch (pipelines[0]) {

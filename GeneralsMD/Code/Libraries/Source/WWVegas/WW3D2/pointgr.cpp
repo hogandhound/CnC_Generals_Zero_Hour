@@ -976,6 +976,7 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 
 		DX8Wrapper::Set_Index_Buffer (indexbuffer, 0);
 		DX8Wrapper::Set_Vertex_Buffer (PointVerts);
+		DX8Wrapper::Apply_Render_State_Changes();
 		
 		if ( sort ) 
 		{
@@ -1898,6 +1899,7 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 
 			DX8Wrapper::Set_Index_Buffer (indexbuffer, 0);
 			DX8Wrapper::Set_Vertex_Buffer (PointVerts);
+			DX8Wrapper::Apply_Render_State_Changes();
 			
 			/// @todo lorenzen sez: precompute these params, above
 

@@ -3099,7 +3099,7 @@ void WaterRenderObjClass::setupFlatWaterShader(void)
 			{	m_whiteTexture->Init();
 				SurfaceClass *surface=m_whiteTexture->Get_Surface_Level();
 				surface->DrawPixel(0,0,0xffffffff);
-				VK::Texture tex;
+				VK::Texture tex = {};
 				VK::CreateTexture(&WWVKRENDER, tex, 1, 1, surface->Peek_D3D_Surface().data());
 				m_whiteTexture->Set_D3D_Base_Texture(tex);
 				REF_PTR_RELEASE(surface);
@@ -3463,18 +3463,20 @@ void WaterRenderObjClass::drawTrapezoidWater(Vector3 points[4])
 				WWVK_UpdateWaterTrapezoid_DstAlphaDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &m_riverTexture->Peek_D3D_Texture(),
 					&m_waterSparklesTexture->Peek_D3D_Texture(), &m_waterNoiseTexture->Peek_D3D_Texture(),
 					&DX8Wrapper::Get_Texture(3)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uvtUbo);
-				WWVK_DrawWaterTrapezoid_DstAlpha(WWVKPIPES, WWVKRENDER.currentCmd, sets, m_indexBufferD3D.buffer, 
+				WWVK_DrawWaterTrapezoid_DstAlpha(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer,
 					rectangleCount * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
-					m_vertexBufferD3D.buffer, 0, (WorldMatrix*)&tm);
+					((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm);
 			}
 			else
 			{
 				WWVK_UpdateWaterTrapezoid_DstAlphaInvDestDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &m_riverTexture->Peek_D3D_Texture(),
 					&m_waterSparklesTexture->Peek_D3D_Texture(), &m_waterNoiseTexture->Peek_D3D_Texture(),
 					&DX8Wrapper::Get_Texture(3)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uvtUbo);
-				WWVK_DrawWaterTrapezoid_DstAlphaInvDest(WWVKPIPES, WWVKRENDER.currentCmd, sets, m_indexBufferD3D.buffer,
+				WWVK_DrawWaterTrapezoid_DstAlphaInvDest(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer,
 					rectangleCount * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
-					m_vertexBufferD3D.buffer, 0, (WorldMatrix*)&tm);
+					((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm);
 			}
 		}
 		else
@@ -3482,9 +3484,10 @@ void WaterRenderObjClass::drawTrapezoidWater(Vector3 points[4])
 			WWVK_UpdateWaterTrapezoidDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &m_riverTexture->Peek_D3D_Texture(),
 				&m_waterSparklesTexture->Peek_D3D_Texture(), &m_waterNoiseTexture->Peek_D3D_Texture(),
 				&DX8Wrapper::Get_Texture(3)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uvtUbo);
-			WWVK_DrawWaterTrapezoid(WWVKPIPES, WWVKRENDER.currentCmd, sets, m_indexBufferD3D.buffer,
+			WWVK_DrawWaterTrapezoid(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer,
 				rectangleCount * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
-				m_vertexBufferD3D.buffer, 0, (WorldMatrix*)&tm);
+				((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm);
 		}
 
 		WWVKRENDER.PushSingleFrameBuffer(uvtUbo);

@@ -625,7 +625,7 @@ Bool ScreenCrossFadeFilter::preRender(Bool &skipRender, CustomScenePassModes &sc
 
 Bool ScreenCrossFadeFilter::postRender(enum FilterModes mode, Coord2D &scrollDelta,Bool &doExtraRender)
 {
-	VK::Texture tex;
+	VK::Texture tex = {};
 
 	if (m_skipRender)
 	{

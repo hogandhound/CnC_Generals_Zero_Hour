@@ -327,6 +327,7 @@ void DynamicMeshModel::Render(RenderInfoClass & rinfo)
 		SphereClass sphere(Vector3(0.0f,0.0f,0.0f),0.0f);
 		Get_Bounding_Sphere(&sphere); 
 
+		DX8Wrapper::Apply_Render_State_Changes();
 		// If no texture, shader or material arrays for this pass just draw and go to next pass
 		if (!texture_array0 && !texture_array1 && !material_array && !shader_array) {
 			if (buffer_type==BUFFER_TYPE_DYNAMIC_SORTING) {

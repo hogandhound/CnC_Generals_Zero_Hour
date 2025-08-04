@@ -223,7 +223,7 @@ protected:
 private:
 
 	// Direct3D texture object
-	VK::Texture D3DTexture;
+	VK::Texture D3DTexture = {};
 
 	// Name
 	StringClass Name;
@@ -311,6 +311,7 @@ public:
 
 	// Get the surface of one of the mipmap levels (defaults to highest-resolution one)
 	SurfaceClass *Get_Surface_Level(unsigned int level = 0);
+	void Upload();
 #ifdef INFO_VULKAN
 	IDirect3DSurface9 *Get_D3D_Surface_Level(unsigned int level = 0);
 #endif

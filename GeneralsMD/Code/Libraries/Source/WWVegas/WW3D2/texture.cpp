@@ -1044,6 +1044,14 @@ SurfaceClass *TextureClass::Get_Surface_Level(unsigned int level)
 #endif
 }
 
+void TextureClass::Upload()
+{
+	VK::Texture tex = {};
+	surface->Unlock(&tex);
+	WWVKRENDER.PushSingleTexture(Peek_D3D_Texture());
+	Poke_Texture(tex);
+}
+
 //**********************************************************************************************
 //! Get surface description for a mip level
 /*!

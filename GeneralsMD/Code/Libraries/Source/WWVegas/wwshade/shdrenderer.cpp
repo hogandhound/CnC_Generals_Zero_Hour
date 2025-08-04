@@ -638,6 +638,7 @@ void ShdDX8RendererNodeClass::Flush(int cur_pass)
 			);
 		}
 		else {
+			DX8Wrapper::Apply_Render_State_Changes();
 			auto pipelines = DX8Wrapper::FindClosestPipelines(vb.FVF_Info().FVF);
 			assert(pipelines.size() == 1);
 			switch (pipelines[0]) {
@@ -682,6 +683,7 @@ void ShdDX8RendererNodeClass::Flush(int cur_pass)
 		);
 	}
 	else {
+		DX8Wrapper::Apply_Render_State_Changes();
 		auto pipelines = DX8Wrapper::FindClosestPipelines(VertexBuffers[0]->FVF_Info().FVF);
 		assert(pipelines.size() == 1);
 		switch (pipelines[0]) {

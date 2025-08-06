@@ -709,11 +709,34 @@ void Render2DClass::Render(void)
 	else
 	{
 		DX8Wrapper::Set_Shader(Shader);
-		WWVK_UpdateFVF_DUV_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &Texture->Peek_D3D_Texture(),
-			DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
-		WWVK_DrawFVF_DUV_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-			((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
-			((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
+		DX8Wrapper::Apply_Render_State_Changes();	//force update of all regular W3D states.
+		auto pipelines = DX8Wrapper::FindClosestPipelines(vb.FVF_Info().FVF);
+		assert(pipelines.size() == 1);
+		switch (pipelines[0])
+		{
+		case PIPELINE_WWVK_FVF_DUV_NoDepth:
+			WWVK_UpdateFVF_DUV_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &Texture->Peek_D3D_Texture(),
+				DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
+			WWVK_DrawFVF_DUV_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
+				((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
+			break;
+		case PIPELINE_WWVK_FVF_DUV_NoDepth_NoColor:
+			WWVK_UpdateFVF_DUV_NoDepth_NoColorDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &Texture->Peek_D3D_Texture(),
+				DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
+			WWVK_DrawFVF_DUV_NoDepth_NoColor(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
+				((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
+			break;
+		case PIPELINE_WWVK_FVF_DUV_NoDepth_DropUV:
+			WWVK_UpdateFVF_DUV_NoDepth_DropUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+				DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
+			WWVK_DrawFVF_DUV_NoDepth_DropUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
+				((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
+			break;
+		default: assert(false);
+		}
 	}
 #ifdef INFO_VULKAN
 	DX8Wrapper::Draw_Triangles(0,Indices.Count()/3,0,Vertices.Count());	

@@ -900,7 +900,7 @@ Try improving the fit to vertical surfaces like cliffs.
 
 		trackStartIndex=0;
 		mod=m_usedModules;
-		Matrix3D tm(mod->Transform);
+		Matrix4x4 tm(mod->Transform);
 		DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 		DX8Wrapper::Apply_Render_State_Changes();
 		auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBuffer->FVF_Info().FVF);
@@ -916,12 +916,24 @@ Try improving the fit to vertical surfaces like cliffs.
 				case PIPELINE_WWVK_FVF_DUV_NoDepth:
 				{
 					WWVKDSV;
-					WWVK_UpdateFVF_DUV_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, 
+					WWVK_UpdateFVF_DUV_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 						&mod->m_stageZeroTexture->Peek_D3D_Texture(),
 						DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-					WWVK_DrawFVF_DUV_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets, 
+					WWVK_DrawFVF_DUV_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 						m_indexBuffer->Get_DX8_Index_Buffer().buffer, (mod->m_activeEdgeCount - 1) * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
-						m_vertexBuffer->Get_DX8_Vertex_Buffer().buffer, 0, 
+						m_vertexBuffer->Get_DX8_Vertex_Buffer().buffer, 0,
+						(WorldMatrix*)&tm);
+					break;
+				}
+				case PIPELINE_WWVK_FVF_DUV_NoDepthWrite:
+				{
+					WWVKDSV;
+					WWVK_UpdateFVF_DUV_NoDepthWriteDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+						&mod->m_stageZeroTexture->Peek_D3D_Texture(),
+						DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+					WWVK_DrawFVF_DUV_NoDepthWrite(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+						m_indexBuffer->Get_DX8_Index_Buffer().buffer, (mod->m_activeEdgeCount - 1) * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
+						m_vertexBuffer->Get_DX8_Vertex_Buffer().buffer, 0,
 						(WorldMatrix*)&tm);
 					break;
 				}

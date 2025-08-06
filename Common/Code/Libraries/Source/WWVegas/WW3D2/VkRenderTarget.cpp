@@ -300,9 +300,12 @@ void VkRenderTarget::StartRender(VkExtent2D extent)
 	singleFrame[currentFrame].bufferIndex = 0;
 	for (uint32_t i = 0; i < sf.fboIndex; ++i)
 	{
-		vkDestroyImageView(device, sf.fbos[i].depth.imageView, 0);
-		vkDestroySampler(device, sf.fbos[i].depth.sampler, 0);
-		vmaDestroyImage(allocator, sf.fbos[i].depth.image, sf.fbos[i].depth.allocation);
+		if (sf.fbos[i].depth.image)
+		{
+			vkDestroyImageView(device, sf.fbos[i].depth.imageView, 0);
+			vkDestroySampler(device, sf.fbos[i].depth.sampler, 0);
+			vmaDestroyImage(allocator, sf.fbos[i].depth.image, sf.fbos[i].depth.allocation);
+		}
 		if (sf.fbos[i].image.image)
 		{
 			vkDestroyImageView(device, sf.fbos[i].image.imageView, 0);
@@ -1177,7 +1180,7 @@ void VkRenderTarget::createDescPools()
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		poolInfo.poolSizeCount = texs+ubos;
 		poolInfo.pPoolSizes = poolSizes;
-		poolInfo.maxSets = 2048;
+		poolInfo.maxSets = 4096;
 
 		if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descPools[fmt]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create descriptor pool!");
@@ -1401,7 +1404,7 @@ VK::Buffer VK::MemoryPool::alloc(void* memory, size_t size)
 	VK::Buffer ret = {};
 	ret.type = type;
 	VmaAllocationInfo stagingBufferAllocInfo = {};
-	vmaCreateBuffer(target->allocator, &vbInfo, &vbAllocCreateInfo, &ret.buffer, &ret.allocation, &stagingBufferAllocInfo);
+	VkResult cr = vmaCreateBuffer(target->allocator, &vbInfo, &vbAllocCreateInfo, &ret.buffer, &ret.allocation, &stagingBufferAllocInfo);
 	if (usage & VK_BUFFER_USAGE_TRANSFER_SRC_BIT)
 	{
 		if (stagingBufferAllocInfo.pMappedData)

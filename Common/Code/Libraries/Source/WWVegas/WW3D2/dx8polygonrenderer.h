@@ -139,7 +139,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_DUV2_DropUV_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrix*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZDUV2), (WorldMatrix*)&push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_NUV_ARef_Strip:
@@ -153,7 +153,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_NUV_ARef_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrix_AlphaRef*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZNUV1), (WorldMatrix_AlphaRef*)&push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_NUV_ARefNoCull_Strip:
@@ -167,7 +167,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_NUV_ARefNoCull_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrix_AlphaRef*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZNUV1), (WorldMatrix_AlphaRef*)&push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_NUV_Strip:
@@ -180,7 +180,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_NUV_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrix*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZNUV1), (WorldMatrix*)&push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_N_Strip:
@@ -193,7 +193,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_N_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrix*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZN), (WorldMatrix*)&push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_NDUV_AREF_Strip:
@@ -207,7 +207,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_NDUV_AREF_Strip(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrix_AlphaRef*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZNDUV1), (WorldMatrix_AlphaRef*)&push);
 			break;
 		}
 		default: assert(false);
@@ -225,6 +225,19 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 		auto pipelines = DX8Wrapper::FindClosestPipelines(DX8Wrapper::Get_Vertex_Buffer()->FVF_Info().FVF);
 		assert(pipelines.size() == 1);
 		switch (pipelines[0]) {
+		case PIPELINE_WWVK_FVF_NDUV2_DropUV_NoAlpha:
+		{
+			WorldMatrix push;
+			DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+			WWVK_UpdateFVF_NDUV2_DropUV_NoAlphaDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+				&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView(), 
+				DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
+			WWVK_DrawFVF_NDUV2_DropUV_NoAlpha(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
+				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+				min_vertex_index * sizeof(VertexFormatXYZDUV2), (WorldMatrix*)&push);
+			break;
+		}
 		case PIPELINE_WWVK_FVF_DUV2_DropUV:
 		{
 			WorldMatrix push;
@@ -234,7 +247,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_DUV2_DropUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrix*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZDUV2), (WorldMatrix*)&push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_DUV2_DropUV_ARef:
@@ -247,7 +260,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_DUV2_DropUV_ARef(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, &push);
+				min_vertex_index * sizeof(VertexFormatXYZDUV2), &push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_NUV_ARef:
@@ -261,7 +274,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_NUV_ARef(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrix_AlphaRef*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZNUV1), (WorldMatrix_AlphaRef*)&push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_NUV_ARefNoCull:
@@ -275,7 +288,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_NUV_ARefNoCull(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrix_AlphaRef*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZNUV1), (WorldMatrix_AlphaRef*)&push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_NUV:
@@ -288,7 +301,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_NUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrix*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZNUV1), (WorldMatrix*)&push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_NUV_NoDepth:
@@ -301,7 +314,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_NUV_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrix*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZNUV1), (WorldMatrix*)&push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_NUV_NoAlphaBlend:
@@ -314,7 +327,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_NUV_NoAlphaBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrix*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZNUV1), (WorldMatrix*)&push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_NUV_DROPUV_REFLUVT:
@@ -328,7 +341,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_NUV_DROPUV_REFLUVT(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrixUVT*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZNUV1), (WorldMatrixUVT*)&push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_NUV_DROPUV_REFLUVT_NoAlphaBlend:
@@ -342,7 +355,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_NUV_DROPUV_REFLUVT_NoAlphaBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrixUVT*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZNUV1), (WorldMatrixUVT*)&push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_N:
@@ -355,7 +368,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_N(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrix*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZN), (WorldMatrix*)&push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_NDUV_AREF:
@@ -369,7 +382,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 			WWVK_DrawFVF_NDUV_AREF(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrix_AlphaRef*)&push);
+				min_vertex_index * sizeof(VertexFormatXYZNDUV1), (WorldMatrix_AlphaRef*)&push);
 			break;
 		}
 		default: assert(false);

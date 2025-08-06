@@ -200,7 +200,7 @@ VertexBufferClass::WriteLockClass::~WriteLockClass()
 		WWDEBUG_SAY(("VertexBuffer->Unlock()\n"));
 #endif
 		DX8_Assert();
-		static_cast<DX8VertexBufferClass*>(VertexBuffer)->Upload();
+		static_cast<DX8VertexBufferClass*>(VertexBuffer)->Upload(0, 0);
 #ifdef INFO_VULKAN
 		DX8_ErrorCode(static_cast<DX8VertexBufferClass*>(VertexBuffer)->Get_DX8_Vertex_Buffer()->Unlock());
 #endif
@@ -272,7 +272,7 @@ VertexBufferClass::AppendLockClass::~AppendLockClass()
 #ifdef VERTEX_BUFFER_LOG
 		WWDEBUG_SAY(("VertexBuffer->Unlock()\n"));
 #endif
-		static_cast<DX8VertexBufferClass*>(VertexBuffer)->Upload();
+		static_cast<DX8VertexBufferClass*>(VertexBuffer)->Upload(0, 0);
 #ifdef INFO_VULKAN
 		DX8_ErrorCode(static_cast<DX8VertexBufferClass*>(VertexBuffer)->Get_DX8_Vertex_Buffer()->Unlock());
 #endif
@@ -429,10 +429,12 @@ DX8VertexBufferClass::~DX8VertexBufferClass()
 //
 // ----------------------------------------------------------------------------
 
-void DX8VertexBufferClass::Upload()
+void DX8VertexBufferClass::Upload(size_t count, size_t offset)
 {
 	WWVKRENDER.PushSingleFrameBuffer(this->VertexBuffer);
-	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, Vertices.size() * sizeof(VertexFormatXYZNDUV2), Vertices.data(), VertexBuffer);
+	if (count == 0)
+		count = Vertices.size();
+	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, count * sizeof(VertexFormatXYZNDUV2), ((char*)Vertices.data()) + offset, VertexBuffer);
 }
 
 void DX8VertexBufferClass::Create_Vertex_Buffer(UsageType usage)
@@ -936,7 +938,7 @@ DynamicVBAccessClass::WriteLockClass::~WriteLockClass()
 #else
 	switch (DynamicVBAccess->Get_Type()) {
 	case BUFFER_TYPE_DYNAMIC_DX8:
-		static_cast<DX8VertexBufferClass*>(DynamicVBAccess->VertexBuffer)->Upload();
+		static_cast<DX8VertexBufferClass*>(DynamicVBAccess->VertexBuffer)->Upload(DynamicVBAccess->VertexCount, DynamicVBAccess->VertexBufferOffset * sizeof(VertexFormatXYZNDUV2));
 		break;
 	case BUFFER_TYPE_DYNAMIC_SORTING:
 		break;

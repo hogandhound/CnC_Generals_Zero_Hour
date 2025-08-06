@@ -204,7 +204,7 @@ IndexBufferClass::WriteLockClass::~WriteLockClass()
 	switch (index_buffer->Type()) {
 	case BUFFER_TYPE_DX8:
 		DX8_Assert();
-		static_cast<DX8IndexBufferClass*>(index_buffer)->Upload();
+		static_cast<DX8IndexBufferClass*>(index_buffer)->Upload(0,0);
 		break;
 	case BUFFER_TYPE_SORTING:
 		break;
@@ -237,7 +237,7 @@ IndexBufferClass::AppendLockClass::~AppendLockClass()
 	switch (index_buffer->Type()) {
 	case BUFFER_TYPE_DX8:
 		DX8_Assert();
-		static_cast<DX8IndexBufferClass*>(index_buffer)->Upload();
+		static_cast<DX8IndexBufferClass*>(index_buffer)->Upload(0,0);
 		break;
 	case BUFFER_TYPE_SORTING:
 		break;
@@ -269,11 +269,13 @@ DX8IndexBufferClass::~DX8IndexBufferClass()
 	DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(index_buffer);
 }
 
-void DX8IndexBufferClass::Upload()
+void DX8IndexBufferClass::Upload(size_t size, size_t offset)
 {
 	if (index_buffer.buffer)
 		DX8Wrapper::target.PushSingleFrameBuffer(index_buffer);
-	VkBufferTools::CreateIndexBuffer(&DX8Wrapper::target, buffer.size() * sizeof(uint16_t), buffer.data(), index_buffer);
+	if (size == 0)
+		size = buffer.size();
+	VkBufferTools::CreateIndexBuffer(&DX8Wrapper::target, size * sizeof(uint16_t), buffer.data() + offset, index_buffer);
 }
 
 // ----------------------------------------------------------------------------
@@ -366,7 +368,7 @@ DynamicIBAccessClass::WriteLockClass::~WriteLockClass()
 	DX8_THREAD_ASSERT();
 	switch (DynamicIBAccess->Get_Type()) {
 	case BUFFER_TYPE_DYNAMIC_DX8:
-		static_cast<DX8IndexBufferClass*>(DynamicIBAccess->IndexBuffer)->Upload();
+		static_cast<DX8IndexBufferClass*>(DynamicIBAccess->IndexBuffer)->Upload(DynamicIBAccess->IndexCount, DynamicIBAccess->IndexBufferOffset);
 		break;
 	case BUFFER_TYPE_DYNAMIC_SORTING:
 		break;

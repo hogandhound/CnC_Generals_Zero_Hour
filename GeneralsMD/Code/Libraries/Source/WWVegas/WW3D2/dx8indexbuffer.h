@@ -173,7 +173,7 @@ public:
 	DX8IndexBufferClass(unsigned short index_count);
 	~DX8IndexBufferClass();
 
-	void Upload();
+	void Upload(size_t size, size_t offset);
 	inline VK::Buffer Get_DX8_Index_Buffer()	{ return index_buffer; }
 	
 private:

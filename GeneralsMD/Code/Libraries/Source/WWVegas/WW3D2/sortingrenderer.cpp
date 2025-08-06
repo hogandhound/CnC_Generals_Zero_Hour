@@ -441,16 +441,16 @@ void SortingRendererClass::Flush_Sorting_Pool()
 	DynamicVBAccessClass dyn_vb_access(BUFFER_TYPE_DYNAMIC_DX8,dynamic_fvf_type,vertexAllocCount/*overlapping_vertex_count*/);
 	{
 		DynamicVBAccessClass::WriteLockClass lock(&dyn_vb_access);
-		VertexFormatXYZNDUV2* dest_verts=(VertexFormatXYZNDUV2 *)lock.Get_Formatted_Vertex_Array();
+		VertexFormatXYZNDUV2* dest_verts=lock.Get_Formatted_Vertex_Array();
 
 		unsigned polygon_array_offset=0;
 		unsigned vertex_array_offset=0;
 		for (unsigned node_id=0;node_id<overlapping_node_count;++node_id) {
 			SortingNodeStruct* state=overlapping_nodes[node_id];
-			VertexFormatXYZDUV2* src_verts=NULL;
+			VertexFormatXYZNDUV2* src_verts=NULL;
 			SortingVertexBufferClass* vertex_buffer=static_cast<SortingVertexBufferClass*>(state->sorting_state.vertex_buffers[0]);
 			WWASSERT(vertex_buffer);
-			src_verts=(VertexFormatXYZDUV2*)vertex_buffer->Vertices.data();
+			src_verts=(VertexFormatXYZNDUV2*)vertex_buffer->Vertices.data();
 			WWASSERT(src_verts);
 			src_verts+=state->sorting_state.vba_offset;
 			src_verts+=state->sorting_state.index_base_offset;
@@ -482,9 +482,9 @@ void SortingRendererClass::Flush_Sorting_Pool()
 					WWASSERT(idx1<state->vertex_count);
 					WWASSERT(idx2<state->vertex_count);
 					WWASSERT(idx3<state->vertex_count);
-					const VertexFormatXYZDUV2*v1 = src_verts + idx1;
-					const VertexFormatXYZDUV2*v2 = src_verts + idx2;
-					const VertexFormatXYZDUV2*v3 = src_verts + idx3;
+					const VertexFormatXYZNDUV2*v1 = src_verts + idx1;
+					const VertexFormatXYZNDUV2*v2 = src_verts + idx2;
+					const VertexFormatXYZNDUV2*v3 = src_verts + idx3;
 					unsigned array_index=i+polygon_array_offset;
 					WWASSERT(array_index<overlapping_polygon_count);
 					TempIndexStruct *tis_ptr = tis + array_index;
@@ -503,9 +503,9 @@ void SortingRendererClass::Flush_Sorting_Pool()
 					WWASSERT(idx1<state->vertex_count);
 					WWASSERT(idx2<state->vertex_count);
 					WWASSERT(idx3<state->vertex_count);
-					const VertexFormatXYZDUV2*v1 = src_verts + idx1;
-					const VertexFormatXYZDUV2*v2 = src_verts + idx2;
-					const VertexFormatXYZDUV2*v3 = src_verts + idx3;
+					const VertexFormatXYZNDUV2*v1 = src_verts + idx1;
+					const VertexFormatXYZNDUV2*v2 = src_verts + idx2;
+					const VertexFormatXYZNDUV2*v3 = src_verts + idx3;
 					unsigned array_index=i+polygon_array_offset;
 					WWASSERT(array_index<overlapping_polygon_count);
 					TempIndexStruct *tis_ptr = tis + array_index;
@@ -589,25 +589,25 @@ void SortingRendererClass::Flush_Sorting_Pool()
 			auto pipelines = DX8Wrapper::FindClosestPipelines(dyn_vb_access.FVF_Info().FVF);
 			assert(pipelines.size() == 1);
 			switch (pipelines[0]) {
-			case PIPELINE_WWVK_FVF_DUV2_NOCULL_NODEPTH_NOBLEND:
-				WWVK_UpdateFVF_DUV2_NOCULL_NODEPTH_NOBLENDDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+			case PIPELINE_WWVK_FVF_NDUV2_NOCULL_NODEPTH_NOBLEND:
+				WWVK_UpdateFVF_NDUV2_NOCULL_NODEPTH_NOBLENDDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 					&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1), 
 					DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 				//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
 				// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
-				WWVK_DrawFVF_DUV2_NOCULL_NODEPTH_NOBLEND(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				WWVK_DrawFVF_NDUV2_NOCULL_NODEPTH_NOBLEND(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 					((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
 					start_index * 3, VK_INDEX_TYPE_UINT16,
 					((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
 					0, (WorldMatrix*)&push);
 				break;
-			case PIPELINE_WWVK_FVF_DUV2_NOCULL_NODEPTH:
-				WWVK_UpdateFVF_DUV2_NOCULL_NODEPTHDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+			case PIPELINE_WWVK_FVF_NDUV2_NOCULL_NODEPTH:
+				WWVK_UpdateFVF_NDUV2_NOCULL_NODEPTHDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 					&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),
 					DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 				//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
 				// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
-				WWVK_DrawFVF_DUV2_NOCULL_NODEPTH(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				WWVK_DrawFVF_NDUV2_NOCULL_NODEPTH(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 					((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
 					start_index * 3, VK_INDEX_TYPE_UINT16,
 					((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
@@ -639,25 +639,25 @@ void SortingRendererClass::Flush_Sorting_Pool()
 		auto pipelines = DX8Wrapper::FindClosestPipelines(dyn_vb_access.FVF_Info().FVF);
 		assert(pipelines.size() == 1);
 		switch (pipelines[0]) {
-		case PIPELINE_WWVK_FVF_DUV2_NOCULL_NODEPTH_NOBLEND:
-			WWVK_UpdateFVF_DUV2_NOCULL_NODEPTH_NOBLENDDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+		case PIPELINE_WWVK_FVF_NDUV2_NOCULL_NODEPTH_NOBLEND:
+			WWVK_UpdateFVF_NDUV2_NOCULL_NODEPTH_NOBLENDDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 				&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),
 				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 			//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
 			// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
-			WWVK_DrawFVF_DUV2_NOCULL_NODEPTH_NOBLEND(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			WWVK_DrawFVF_NDUV2_NOCULL_NODEPTH_NOBLEND(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
 				start_index * 3, VK_INDEX_TYPE_UINT16,
 				((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
 				0, (WorldMatrix*)&push);
 			break;
-		case PIPELINE_WWVK_FVF_DUV2_NOCULL_NODEPTH:
-			WWVK_UpdateFVF_DUV2_NOCULL_NODEPTHDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+		case PIPELINE_WWVK_FVF_NDUV2_NOCULL_NODEPTH:
+			WWVK_UpdateFVF_NDUV2_NOCULL_NODEPTHDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 				&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),
 				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 			//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
 			// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
-			WWVK_DrawFVF_DUV2_NOCULL_NODEPTH(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			WWVK_DrawFVF_NDUV2_NOCULL_NODEPTH(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
 				start_index * 3, VK_INDEX_TYPE_UINT16,
 				((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,

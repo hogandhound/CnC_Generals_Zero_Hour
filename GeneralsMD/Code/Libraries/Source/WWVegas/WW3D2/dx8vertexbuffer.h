@@ -52,7 +52,7 @@
 #include <VkRenderTarget.h>
 
 
-const unsigned dynamic_fvf_type = VKFVF_XYZ|VKFVF_TEX2|VKFVF_DIFFUSE;
+const unsigned dynamic_fvf_type = VKFVF_XYZ|VKFVF_NORMAL|VKFVF_TEX2|VKFVF_DIFFUSE;
 
 class DX8Wrapper;
 class SortingRendererClass;
@@ -229,7 +229,7 @@ public:
 	//DX8VertexBufferClass(const Vector3* vertices, const Vector2* tex_coords, unsigned short VertexCount,UsageType usage=USAGE_DEFAULT);
 
 	const VK::Buffer& Get_DX8_Vertex_Buffer() { return VertexBuffer; }
-	void Upload();
+	void Upload(size_t count, size_t offset);
 
 	void Copy(const Vector3* loc, unsigned first_vertex, unsigned count);
 	//void Copy(const Vector3* loc, const Vector2* uv, unsigned first_vertex, unsigned count);

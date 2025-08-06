@@ -461,6 +461,7 @@ Int ScreenBWFilter::set(enum FilterModes mode)
 		hr=DX8Wrapper::_Get_D3D_Device8()->SetPixelShader(m_dwBWPixelShader);
 		DX8Wrapper::_Get_D3D_Device8()->SetPixelShaderConstantF(0,   DirectX::XMVECTOR(0.3f, 0.59f, 0.11f, 1.0f), 1);
 #endif
+		DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_Monochrome);
 
 		DirectX::XMVECTOR	color = { 1.0f,1.0f,1.0f,1.0f };	//multiply color
 
@@ -510,6 +511,7 @@ void ScreenBWFilter::reset(void)
 #ifdef INFO_VULKAN
 	DX8Wrapper::_Get_D3D_Device8()->SetPixelShader(0);	//turn off pixel shader
 #endif
+	DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_MAX);
 	DX8Wrapper::Invalidate_Cached_Render_States();
 }
 
@@ -1619,6 +1621,7 @@ Int TerrainShaderPixelShader::set(Int pass)
 #ifdef INFO_VULKAN
 			DX8Wrapper::_Get_D3D_Device8()->SetPixelShader(m_dwBaseNoise2PixelShader);
 #endif
+			DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_TerrainNoise2);
 
 			DX8Wrapper::Set_DX8_Sampler_Stage_State( 2, VKSAMP_MINFILTER, VK_FILTER_LINEAR);
 			DX8Wrapper::Set_DX8_Sampler_Stage_State( 2, VKSAMP_MAGFILTER, VK_FILTER_LINEAR);
@@ -1641,6 +1644,7 @@ Int TerrainShaderPixelShader::set(Int pass)
 #ifdef INFO_VULKAN
 			DX8Wrapper::_Get_D3D_Device8()->SetPixelShader(m_dwBaseNoise1PixelShader);
 #endif
+			DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_TerrainNoise);
 
 			if (W3DShaderManager::getCurrentShader() == W3DShaderManager::ST_TERRAIN_BASE_NOISE1)
 			{	//cloud map
@@ -1661,6 +1665,7 @@ Int TerrainShaderPixelShader::set(Int pass)
 	}
 	else
 	{	//just base texturing
+		DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_Terrain);
 #ifdef INFO_VULKAN
 		DX8Wrapper::_Get_D3D_Device8()->SetPixelShader(m_dwBasePixelShader);
 #endif
@@ -1677,6 +1682,7 @@ void TerrainShaderPixelShader::reset(void)
 #ifdef INFO_VULKAN
 	DX8Wrapper::_Get_D3D_Device8()->SetPixelShader(0);	//turn off pixel shader
 #endif
+	DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_MAX);
 
 	DX8Wrapper::Set_Texture(0, NULL);
 	DX8Wrapper::Set_Texture(1, NULL);
@@ -1998,6 +2004,7 @@ Int RoadShaderPixelShader::set(Int pass)
 #ifdef INFO_VULKAN
 	DX8Wrapper::_Get_D3D_Device8()->SetPixelShader(m_dwBaseNoise2PixelShader);
 #endif
+	DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_Road);
 
 	DX8Wrapper::Set_DX8_Sampler_Stage_State( 1, VKSAMP_MINFILTER, VK_FILTER_LINEAR);
 	DX8Wrapper::Set_DX8_Sampler_Stage_State( 1, VKSAMP_MAGFILTER, VK_FILTER_LINEAR);
@@ -2024,6 +2031,7 @@ void RoadShaderPixelShader::reset(void)
 
 	DX8Wrapper::_Get_D3D_Device8()->SetPixelShader(0);	//turn off pixel shader
 #endif
+	DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_MAX);
 
 	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_DISABLE);
 	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_TEXCOORDINDEX, VKTSS_TCI_PASSTHRU|0);
@@ -3020,6 +3028,19 @@ Int FlatTerrainShaderPixelShader::set(Int pass)
 	}else if (curStage==4) {
 		DX8Wrapper::_Get_D3D_Device8()->SetPixelShader(m_dwBaseNoise2PixelShader);
 	}
+#else
+	if (curStage < 2) {
+		DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_FVF_DUV);
+	}
+	else if (curStage == 2) {
+		DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_FTerrain);
+	}
+	else if (curStage == 3) {
+		DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_FTerrainNoise);
+	}
+	else if (curStage == 4) {
+		DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_FTerrainNoise2);
+	}
 #endif
 	DX8Wrapper::Set_DX8_Render_State(VKRS_ALPHABLENDENABLE, false);
 	DX8Wrapper::Apply_Render_State_Changes();
@@ -3039,6 +3060,7 @@ void FlatTerrainShaderPixelShader::reset(void)
 #ifdef INFO_VULKAN
 	DX8Wrapper::_Get_D3D_Device8()->SetPixelShader(0);	//turn off pixel shader
 #endif
+	DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_MAX);
 	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_DISABLE);
 	DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_TEXCOORDINDEX, VKTSS_TCI_PASSTHRU|0);
 
@@ -3051,6 +3073,7 @@ void FlatTerrainShaderPixelShader::reset(void)
 	DX8Wrapper::Set_DX8_Texture_Stage_State( 3, VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_DISABLE);
 	DX8Wrapper::Set_DX8_Texture_Stage_State( 3, VKTSS_TEXCOORDINDEX, VKTSS_TCI_PASSTHRU|3);
 
+	DX8Wrapper::Set_Pipeline(PIPELINE_WWVK_MAX);
 
 	DX8Wrapper::Invalidate_Cached_Render_States();
 }

@@ -1920,7 +1920,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 	W3DShaderManager::ShaderTypes st;
 	Bool doCloud = TheGlobalData->m_useCloudMap;
 
-	Matrix3D tm(Transform);
+	Matrix4x4 tm(Transform[0], Transform[1], Transform[2], Vector4(0,0,0,1));
 #if 0 // There is some weirdness sometimes with the dx8 static buffers.
 			// This usually fixes terrain flashing.  jba.
 	static Int delay = 1;
@@ -2058,6 +2058,8 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 		if (!doMultiPassWireFrame)	//multi-pass wireframe doesn't use regular shaders.
 		{
 			W3DShaderManager::setShader(st, pass);
+			auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBufferTiles[0]->FVF_Info().FVF);
+			assert(pipelines.size() == 1);
 		}
 
 		for (j=0; j<m_numVBTilesY; j++)
@@ -2313,12 +2315,12 @@ void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 	if (maxBlendTiles > 10000)	//we can only fit about 10000 tiles into a single VB.
 		maxBlendTiles = 10000;
 
-	DynamicVBAccessClass vb_access(BUFFER_TYPE_DYNAMIC_DX8,DX8_FVF_XYZNDUV2,maxBlendTiles*4);
+	DynamicVBAccessClass vb_access(BUFFER_TYPE_DYNAMIC_DX8,DX8_FVF_XYZDUV1,maxBlendTiles*4);
 	DynamicIBAccessClass ib_access(BUFFER_TYPE_DYNAMIC_DX8,maxBlendTiles*6);
 	{
 
 		DynamicVBAccessClass::WriteLockClass lock(&vb_access);
-		VertexFormatXYZNDUV2* vb= lock.Get_Formatted_Vertex_Array();
+		VertexFormatXYZDUV1* vb= (VertexFormatXYZDUV1*)lock.Get_Formatted_Vertex_Array();
 		DynamicIBAccessClass::WriteLockClass lockib(&ib_access);
 		UnsignedShort *ib=lockib.Get_Index_Array();
 
@@ -2365,53 +2367,33 @@ void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 				vb->x=(x-border)*MAP_XY_FACTOR;	 
 				vb->y=(y-border)*MAP_XY_FACTOR;
 				vb->z=p0;
-				vb->nx=0;
-				vb->ny=0;
-				vb->nz=0;
 				vb->diffuse=(alpha[0]<<24)|(getStaticDiffuse(x,y) & 0x00ffffff);
 				vb->u1=U[0];
 				vb->v1=V[0];
-				vb->u2=0;
-				vb->v2=0;
 				vb++;
 
 				vb->x=(x+1-border)*MAP_XY_FACTOR;	 
 				vb->y=(y-border)*MAP_XY_FACTOR;
 				vb->z=p1;
-				vb->nx=0;
-				vb->ny=0;
-				vb->nz=0;
 				vb->diffuse=(alpha[1]<<24)|(getStaticDiffuse(x+1,y) & 0x00ffffff);
 				vb->u1=U[1];
 				vb->v1=V[1];
-				vb->u2=0;
-				vb->v2=0;
 				vb++;
 
 				vb->x=(x+1-border)*MAP_XY_FACTOR;	 
 				vb->y=(y+1-border)*MAP_XY_FACTOR;
 				vb->z=p2;
-				vb->nx=0;
-				vb->ny=0;
-				vb->nz=0;
 				vb->diffuse=(alpha[2]<<24)|(getStaticDiffuse(x+1,y+1) & 0x00ffffff);
 				vb->u1=U[2];
 				vb->v1=V[2];
-				vb->u2=0;
-				vb->v2=0;
 				vb++;
 
 				vb->x=(x-border)*MAP_XY_FACTOR;	 
 				vb->y=(y+1-border)*MAP_XY_FACTOR;
 				vb->z=p3;
-				vb->nx=0;
-				vb->ny=0;
-				vb->nz=0;
 				vb->diffuse=(alpha[3]<<24)|(getStaticDiffuse(x,y+1) & 0x00ffffff);
 				vb->u1=U[3];
 				vb->v1=V[3];
-				vb->u2=0;
-				vb->v2=0;
 				vb++;
 				
 				if (flipState)
@@ -2511,7 +2493,7 @@ void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 					case W3DShaderManager::ST_ROAD_BASE:
 					{
 						WorldMatrix push;
-						DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+						DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
 						WWVK_UpdateRoadDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 							&m_stageOneTexture->Peek_D3D_Texture(),
 							DX8Wrapper::UboProj(), DX8Wrapper::UboView());
@@ -2524,8 +2506,8 @@ void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 					case W3DShaderManager::ST_ROAD_BASE_NOISE2:
 					{
 						WorldMatrixUVT push;
-						DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
-						DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE1, *(Matrix4x4*)&push.uvt);
+						DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+						DX8Wrapper::Get_Transform(VkTS::TEXTURE1, *(Matrix4x4*)&push.uvt);
 						WWVK_UpdateRoadNoiseDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 							&m_stageOneTexture->Peek_D3D_Texture(),
 							&m_stageTwoTexture->Peek_D3D_Texture(),

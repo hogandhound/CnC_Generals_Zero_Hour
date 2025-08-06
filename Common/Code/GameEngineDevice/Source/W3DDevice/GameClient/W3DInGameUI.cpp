@@ -248,6 +248,8 @@ void DebugHintObject::Render(RenderInfoClass & rinfo)
 		Vector3 vec(m_myLoc.x, m_myLoc.y, m_myLoc.z);
 		tm.Set_Translation(vec);
 		DX8Wrapper::Set_Transform(VkTS::WORLD, tm);
+		Matrix4x4 tm2;
+		DX8Wrapper::Get_Transform(VkTS::WORLD, tm2);
 		//DX8Wrapper::Draw_Triangles(	0, 1, 0, 3);
 
 		std::vector<VkDescriptorSet> sets;
@@ -255,7 +257,7 @@ void DebugHintObject::Render(RenderInfoClass & rinfo)
 		//void WWVK_DrawFVF_D(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, 
 		// uint32_t vertexCount, VkBuffer diffuse, VkDeviceSize offset_diffuse, WorldMatrix* push);
 		WWVK_DrawFVF_D_NI(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets, 
-			(uint32_t)3U, m_vertexBufferTile->Get_DX8_Vertex_Buffer().buffer, (VkDeviceSize)0ULL, (WorldMatrix*) & tm);
+			(uint32_t)3U, m_vertexBufferTile->Get_DX8_Vertex_Buffer().buffer, (VkDeviceSize)0ULL, (WorldMatrix*) &tm2);
 	}
 }
 #endif // _DEBUG

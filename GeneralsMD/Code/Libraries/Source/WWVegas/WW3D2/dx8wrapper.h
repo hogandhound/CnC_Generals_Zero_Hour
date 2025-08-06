@@ -151,7 +151,7 @@ enum VKSAMPLERSTATETYPE
 enum VKRENDERSTATETYPE {
 	VKRS_FILLMODE,    /* D3DFILLMODE */
 	VKRS_ZWRITEENABLE,   /* TRUE to enable z writes */
-	VKRS_ALPHATESTENABLE,   /* TRUE to enable alpha tests */\
+	VKRS_ALPHATESTENABLE,   /* TRUE to enable alpha tests */
 	VKRS_SRCBLEND,   /* D3DBLEND */
 	VKRS_DESTBLEND,   /* D3DBLEND */
 	VKRS_CULLMODE,   /* D3DCULL */
@@ -1024,7 +1024,17 @@ WWINLINE void DX8Wrapper::_Set_DX8_Transform(VkTransformState transform,const Ma
 
 WWINLINE void DX8Wrapper::_Get_DX8_Transform(VkTransformState transform, Matrix4x4& m)
 {
-	m = DX8Transforms[(uint32_t)transform];
+	switch (transform) {
+	case VkTS::WORLD:
+		m = render_state.world;
+		break;
+	case VkTS::VIEW:
+		m = render_state.view;
+		break;
+	default:
+		m = DX8Transforms[(uint32_t)transform];
+		break;
+	}
 #ifdef INFO_VULKAN
 	DX8CALL(GetTransform(transform,(DirectX::XMMATRIX*)&m));
 #endif

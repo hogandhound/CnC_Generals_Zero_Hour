@@ -833,6 +833,15 @@ void GameEngine::execute( void )
 					else
 						RELEASE_CRASH(("Uncaught Exception in GameEngine::update"));
 				}
+				catch (const std::exception& ex) {
+					// ...
+					OutputDebugStringA(ex.what());
+
+				}
+				catch (const std::string& ex) {
+					// ...
+					OutputDebugStringA(ex.c_str());
+				}
 				catch (...)
 				{
 					// try to save info off

@@ -23,14 +23,51 @@
 	  "frag": { "name": "fvf_duv.frag" }
   },
   {
-	  "name": "FVF_DUV_NoDepth",
+	  "name": "FVF_DUV_NoDepthWrite",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "depthWrite": "VK_FALSE",
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
 		  "inputs": {}
 	  },
 	  "frag": { "name": "fvf_duv.frag" }
+  },
+  {
+	  "name": "FVF_DUV_NoDepth",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_ALWAYS",
+	  "depthWrite": "VK_FALSE",
+	  "vert":{
+		  "name": "fvf_xyzduv.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_duv.frag" }
+  },
+  {
+	  "name": "FVF_DUV_NoDepth_NoColor",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_ALWAYS",
+	  "depthWrite": "VK_FALSE",
+	  "blend": {
+		  "colorWriteMask": "(VkColorComponentFlagBits)0"
+	  },
+	  "vert":{
+		  "name": "fvf_xyzduv.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_duv.frag" }
+  },
+  {
+	  "name": "FVF_DUV_NoDepth_DropUV",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_ALWAYS",
+	  "depthWrite": "VK_FALSE",
+	  "vert":{
+		  "name": "fvf_xyzduv.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_d.frag" }
   },
   {
 	  "name": "FVF_DUV_Grayscale_NoDepth",
@@ -187,34 +224,6 @@
 	  "frag": { "name": "fvf_duv2.frag" }
   },
   {
-	  "name": "FVF_DUV2_NOCULL_NODEPTH",
-	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
-	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
-	  "cullMode": "VK_CULL_MODE_NONE",
-	  "depthWrite": "VK_FALSE",
-	  "vert":{
-		  "name": "fvf_xyzduv2.vert",
-		  "inputs": {}
-	  },
-	  "frag": { "name": "fvf_duv2.frag" }
-  },
-  {
-	  "name": "FVF_DUV2_NOCULL_NODEPTH_NOBLEND",
-	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
-	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
-	  "cullMode": "VK_CULL_MODE_NONE",
-	  "depthWrite": "VK_FALSE",
-	  "blend": {
-		  "srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
-		  "dstColorBlendFactor": "VK_BLEND_FACTOR_ONE"
-	  },
-	  "vert":{
-		  "name": "fvf_xyzduv2.vert",
-		  "inputs": {}
-	  },
-	  "frag": { "name": "fvf_duv2.frag" }
-  },
-  {
 	  "name": "FVF_NUV",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
@@ -255,6 +264,20 @@
 	  },
 	  "vert":{
 		  "name": "fvf_xyznuv1.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nuv.frag" }
+  },
+  {
+	  "name": "FVF_NUV_NoAlphaBlend_UVT",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "blend": {
+		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznuv1_uvt.vert",
 		  "inputs": {}
 	  },
 	  "frag": { "name": "fvf_nuv.frag" }
@@ -406,9 +429,51 @@
 	  "frag": { "name": "fvf_nduv2.frag" }
   },
   {
+	  "name": "FVF_NDUV2_DropUV_NoAlpha",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "blend": {
+		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv2_dropuv.frag" }
+  },
+  {
 	  "name": "FVF_NDUV2_NOL",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv2_noL.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_NOCULL_NODEPTH",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "depthWrite": "VK_FALSE",
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv2_noL.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_NOCULL_NODEPTH_NOBLEND",
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "depthWrite": "VK_FALSE",
+	  "blend": {
+		  "srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		  "dstColorBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
 	  "vert":{
 		  "name": "fvf_xyznduv2.vert",
 		  "inputs": {}
@@ -582,6 +647,12 @@
 	  "name": "Terrain",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "blend": {
+		"srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"dstColorBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO"
+	  },
 	  "vert":{
 		  "name": "fvf_xyzduv2.vert",
 		  "inputs": {}
@@ -592,6 +663,12 @@
 	  "name": "TerrainNoise",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "blend": {
+		"srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"dstColorBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO"
+	  },
 	  "vert":{
 		  "name": "fvf_xyzduv2.vert",
 		  "inputs": {}
@@ -602,6 +679,12 @@
 	  "name": "TerrainNoise2",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "blend": {
+		"srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"dstColorBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO"
+	  },
 	  "vert":{
 		  "name": "fvf_xyzduv2.vert",
 		  "inputs": {}
@@ -669,7 +752,7 @@
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "cullMode": "VK_CULL_MODE_NONE",
 	  "vert":{
-		  "name": "fvf_xyznduv2_camuvt2.vert",
+		  "name": "fvf_xyzduv2_camuvt2.vert",
 		  "inputs": {}
 	  },
 	  "frag": { "name": "WaterTrapezoid.frag" }
@@ -683,7 +766,7 @@
 		  "srcColorBlendFactor": "VK_BLEND_FACTOR_DST_ALPHA"
 	  },
 	  "vert":{
-		  "name": "fvf_xyznduv2_camuvt2.vert",
+		  "name": "fvf_xyzduv2_camuvt2.vert",
 		  "inputs": {}
 	  },
 	  "frag": { "name": "WaterTrapezoid.frag" }
@@ -698,7 +781,7 @@
 		  "dstColorBlendFactor": "VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA"
 	  },
 	  "vert":{
-		  "name": "fvf_xyznduv2_camuvt2.vert",
+		  "name": "fvf_xyzduv2_camuvt2.vert",
 		  "inputs": {}
 	  },
 	  "frag": { "name": "WaterTrapezoid.frag" }
@@ -708,7 +791,7 @@
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
-		  "name": "fvf_xyznduv2_camuvt2.vert",
+		  "name": "fvf_xyzduv2_camuvt2.vert",
 		  "inputs": {}
 	  },
 	  "frag": { "name": "WaterTrapezoid.frag" }

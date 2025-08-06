@@ -6,10 +6,10 @@ layout(binding = 5) uniform sampler2D tex2; //uv1
 layout(binding = 6) uniform sampler2D tex3; //uvcam
 layout(binding = 7) uniform sampler2D tex4; //uv2
 
-layout(location = 1) in vec4 fragDiffuse;
-layout(location = 3) in vec2 fragUv1;
-layout(location = 5) in vec2 fragUv2; //Modified Cam
-layout(location = 6) in vec2 fragUv3; //Modified Cam 2
+layout(location = 0) in vec4 fragDiffuse;
+layout(location = 1) in vec2 fragUv1;
+layout(location = 3) in vec2 fragUv2; //Modified Cam
+layout(location = 4) in vec2 fragUv3; //Modified Cam 2
 
 layout(location = 0) out vec4 finalColor;
 

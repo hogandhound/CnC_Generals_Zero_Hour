@@ -3370,7 +3370,7 @@ void W3DRoadBuffer::drawRoads(CameraClass * camera, TextureClass *cloudTexture, 
 				case W3DShaderManager::ST_ROAD_BASE:
 				{
 					WorldMatrix push;
-					DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+					DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
 					WWVK_UpdateRoadDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 						&W3DShaderManager::getShaderTexture(0)->Peek_D3D_Texture(),
 						DX8Wrapper::UboProj(), DX8Wrapper::UboView());
@@ -3386,8 +3386,8 @@ void W3DRoadBuffer::drawRoads(CameraClass * camera, TextureClass *cloudTexture, 
 					VK::Texture noiseTex = st == W3DShaderManager::ST_ROAD_BASE_NOISE1 ? 
 						W3DShaderManager::getShaderTexture(1)->Peek_D3D_Texture() : 
 						W3DShaderManager::getShaderTexture(2)->Peek_D3D_Texture();
-					DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
-					DX8Wrapper::Get_Transform(VkTS::TEXTURE1, *(Matrix4x4*)&push.uvt);
+					DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+					DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE1, *(Matrix4x4*)&push.uvt);
 					WWVK_UpdateRoadNoiseDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 						&W3DShaderManager::getShaderTexture(0)->Peek_D3D_Texture(), &noiseTex,
 						DX8Wrapper::UboProj(), DX8Wrapper::UboView());

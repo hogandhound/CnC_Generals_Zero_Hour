@@ -1289,7 +1289,7 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 #ifdef INFO_VULKAN
 			DX8Wrapper::_Get_D3D_Device8()->GetRenderState(VKRS_COLORWRITEENABLE, &oldColorWriteEnable);
 #else
-			oldColorWriteEnable = 0xF;
+			oldColorWriteEnable = DX8Wrapper::Get_DX8_Render_State(VKRS_COLORWRITEENABLE);
 #endif
 			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,0);
 		}

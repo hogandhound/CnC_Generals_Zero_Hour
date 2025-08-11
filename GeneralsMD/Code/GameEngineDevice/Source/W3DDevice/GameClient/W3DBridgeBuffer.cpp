@@ -143,8 +143,8 @@ void W3DBridge::renderBridge(Bool wireframe, VK::Buffer index, VK::Buffer vertex
 		// Draw all the bridges.
 		WWVKDSV;
 		WorldMatrixUvt push;
-		DX8Wrapper::Get_Transform(VkTS::TEXTURE0, *(Matrix4x4*)&push.uvt);
-		DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)push.world);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE0, *(Matrix4x4*)&push.uvt);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)push.world);
 		if (!wireframe && cloudTexture)
 		{
 			WWVK_UpdateFVF_NDUV_CAMUVT_NOLDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &baseTexture->Peek_D3D_Texture(),
@@ -155,7 +155,7 @@ void W3DBridge::renderBridge(Bool wireframe, VK::Buffer index, VK::Buffer vertex
 		else
 		{
 			WWVK_UpdateFVF_NDUV_UVT_NOLDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &baseTexture->Peek_D3D_Texture(),
-				DX8Wrapper::UboView(), DX8Wrapper::UboProj());
+				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 			WWVK_DrawFVF_NDUV_UVT_NOL(WWVKPIPES, WWVKRENDER.currentCmd, sets, index.buffer, m_numPolygons * 3, m_firstIndex,
 				VK_INDEX_TYPE_UINT16, vertex.buffer, 0, &push);
 		}

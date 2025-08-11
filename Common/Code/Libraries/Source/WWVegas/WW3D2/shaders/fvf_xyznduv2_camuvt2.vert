@@ -36,7 +36,7 @@ void main() {
 	fragNorm = norm;
 	fragDiffuse = unpackUnorm4x8(diffuse);
     
-	viewDir = (view.m * vec4(0,0,1,1)).xyz;
+	viewDir = normalize((view.m * vec4(0,0,1,1)).xyz);
     gl_Position = proj.m*view.m*push.world*vec4(vert, 1);
 	vec4 camuv = view.m*push.world*vec4(vert, 1);
 	camuv1 = (uvt.uvt1*camuv).xy;

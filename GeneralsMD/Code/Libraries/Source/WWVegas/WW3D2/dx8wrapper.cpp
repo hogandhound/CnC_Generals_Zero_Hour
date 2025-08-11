@@ -138,7 +138,7 @@ Vector3							DX8Wrapper::Ambient_Color;
 // shader system additions KJM ^
 
 bool								DX8Wrapper::world_identity;
-unsigned							DX8Wrapper::RenderStates[VKRS_MAX];
+unsigned							DX8Wrapper::RenderStates[VKRS_MAX * 2];
 unsigned							DX8Wrapper::TextureStageStates[MAX_TEXTURE_STAGES][VKTSS_MAX];
 unsigned							DX8Wrapper::SamplerStates[MAX_TEXTURE_STAGES][VKSAMP_MAX];
 VK::Texture							DX8Wrapper::Textures[MAX_TEXTURE_STAGES];
@@ -248,7 +248,7 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 {
 	DX8Wrapper::WWVK_Pipeline_State def = {};
 	def.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2;
-	def.isDynamic = 0;
+	def.isDynamic = (1<< VKRS_COLORWRITEENABLE);
 	def.topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	def.RenderStates[VKRS_FILLMODE] = VK_POLYGON_MODE_FILL;
 	def.RenderStates[VKRS_ZWRITEENABLE] = VK_TRUE;
@@ -275,7 +275,7 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 	def.RenderStates[VKRS_SPECULARMATERIALSOURCE] = 0;
 	def.RenderStates[VKRS_AMBIENTMATERIALSOURCE] = 0;
 	def.RenderStates[VKRS_EMISSIVEMATERIALSOURCE] = 0;
-	def.RenderStates[VKRS_COLORWRITEENABLE] = 0xF;
+	def.RenderStates[VKRS_COLORWRITEENABLE] = 0x7;
 	def.RenderStates[VKRS_BLENDOP] = VK_BLEND_OP_ADD;
 	def.RenderStates[VKRS_DEPTHBIAS] = 0;
 	for (int i = 0; i < 4; ++i)
@@ -399,14 +399,6 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 				p.RenderStates[VKRS_ZFUNC] = VK_COMPARE_OP_ALWAYS;
 				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_SELECTARG2;
 				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_SELECTARG2;
-				break;
-			case PIPELINE_WWVK_FVF_DUV_NoDepth_NoColor:
-				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX1;
-				p.RenderStates[VKRS_ZWRITEENABLE] = false;
-				p.RenderStates[VKRS_ZFUNC] = VK_COMPARE_OP_ALWAYS;
-				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
-				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
-				p.RenderStates[VKRS_COLORWRITEENABLE] = 0;
 				break;
 			case PIPELINE_WWVK_FVF_DUV_MultBlend: 
 				//SRCBLEND_ZERO, DSTBLEND_SRC_COLOR,
@@ -1525,7 +1517,11 @@ void DX8Wrapper::Invalidate_Cached_Render_States(void)
 	render_state_changed=0;
 
 	int a;
-	for (a=0;a<sizeof(RenderStates)/sizeof(unsigned);++a) {
+	for (a=0;a<sizeof(RenderStates)/(sizeof(unsigned)*2);++a) {
+		if (RenderStates[a] != 0x12345678)
+		{
+			RenderStates[VKRS_MAX + a] = RenderStates[a];
+		}
 		RenderStates[a]=0x12345678;
 	}
 	for (a=0;a<MAX_TEXTURE_STAGES;++a) 

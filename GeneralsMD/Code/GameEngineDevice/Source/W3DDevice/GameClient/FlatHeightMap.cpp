@@ -536,7 +536,8 @@ void FlatHeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
  	W3DShaderManager::setTexture(2,m_stageTwoTexture);	//cloud
  	W3DShaderManager::setTexture(3,m_stageThreeTexture);//noise
 	//Disable writes to destination alpha channel (if there is one)
-	if (DX8Wrapper::getBackBufferFormat() == WW3D_FORMAT_A8R8G8B8) {
+	//if (DX8Wrapper::getBackBufferFormat() == WW3D_FORMAT_A8R8G8B8)
+	{
 		DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<0)|(1<<1)|(1<<2));//(1<<2)|(1<<1)|(1<<0)
 	}
 

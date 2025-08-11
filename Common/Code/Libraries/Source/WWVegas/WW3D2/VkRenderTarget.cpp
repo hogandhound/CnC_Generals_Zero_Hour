@@ -24,7 +24,10 @@ const std::vector<const char*> validationLayers = {
 };
 
 const std::vector<const char*> deviceExtensions = {
-	VK_KHR_SWAPCHAIN_EXTENSION_NAME
+	VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+#ifdef USE_DYNAMIC_COLOR
+	VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME,
+#endif
 };
 bool VK_KHR_get_memory_requirements2_enabled = false;
 bool VK_KHR_get_physical_device_properties2_enabled = false;
@@ -42,6 +45,12 @@ bool g_BufferDeviceAddressEnabled = false;
 const bool enableValidationLayers = false;
 #else
 const bool enableValidationLayers = true;
+#endif
+
+
+#ifdef USE_DYNAMIC_COLOR
+/* Put this in a single .cpp file that's vulkan related: */
+PFN_vkCmdSetColorWriteMaskEXT vkCmdSetColorWriteMaskEXT_ = nullptr;
 #endif
 
 void VkRenderTarget::InitVulkan(void* window)
@@ -412,6 +421,12 @@ VkDescriptorSet VkRenderTarget::getDescSet(VkDescFormat fmt, uint32_t subIndex, 
 
 void VkRenderTarget::PushSingleFrameBuffer(VK::Buffer staging)
 {
+	if (!staging.buffer && !staging.allocation)
+		return;
+	if (singleFrame.empty())
+	{
+		vmaDestroyBuffer(allocator, staging.buffer, staging.allocation);
+	}
 	if (singleFrame[currentFrame].buffers.size() <= singleFrame[currentFrame].bufferIndex)
 		singleFrame[currentFrame].buffers.resize(singleFrame[currentFrame].bufferIndex + 1);
 	singleFrame[currentFrame].buffers[singleFrame[currentFrame].bufferIndex] = staging;
@@ -428,6 +443,12 @@ void VkRenderTarget::PushSingleTexture(VK::Texture staging)
 	staging.end = end;
 	staging.line = line;
 #endif
+	if (singleFrame.empty())
+	{
+		vmaDestroyImage(allocator, staging.image, staging.allocation);
+		vkDestroyImageView(device, staging.imageView, 0);
+		vkDestroySampler(device, staging.sampler, 0);
+	}
 	if (singleFrame[currentFrame].textures.size() <= singleFrame[currentFrame].textureIndex)
 		singleFrame[currentFrame].textures.resize(singleFrame[currentFrame].textureIndex + 1);
 	singleFrame[currentFrame].textures[singleFrame[currentFrame].textureIndex] = staging;
@@ -659,6 +680,11 @@ void VkRenderTarget::createInstance(void* window) {
 	if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
 		assert(0);
 	}
+
+#ifdef USE_DYNAMIC_COLOR
+	/* Put this in your code that initializes Vulkan (after you create your VkInstance and VkDevice): */
+	vkCmdSetColorWriteMaskEXT_ = (PFN_vkCmdSetColorWriteMaskEXT)vkGetInstanceProcAddr(instance, "vkCmdSetColorWriteMaskEXT"); // It depends on the function whether you want to use vkGetInstanceProcAddr or vkGetDeviceProcAddr
+#endif
 }
 
 void VkRenderTarget::createSurface(void* window)
@@ -675,7 +701,9 @@ void VkRenderTarget::createSurface(void* window)
 
 static constexpr uint32_t GetVulkanApiVersion()
 {
-#if VMA_VULKAN_VERSION == 1003000
+#if VMA_VULKAN_VERSION == 1004000
+	return VK_API_VERSION_1_4;
+#elif VMA_VULKAN_VERSION == 1003000
 	return VK_API_VERSION_1_3;
 #elif VMA_VULKAN_VERSION == 1002000
 	return VK_API_VERSION_1_2;
@@ -783,6 +811,12 @@ void VkRenderTarget::createLogicalDevice() {
 
 	VkPhysicalDeviceSynchronization2Features syncFeatures = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES };
 	syncFeatures.synchronization2 = 1;
+
+#ifdef USE_DYNAMIC_COLOR
+	VkPhysicalDeviceExtendedDynamicState3FeaturesEXT dynaFeatures = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT };
+	dynaFeatures.extendedDynamicState3ColorWriteMask = 1;
+	syncFeatures.pNext = &dynaFeatures;
+#endif
 
 	VkDeviceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -1073,7 +1107,11 @@ bool VkRenderTarget::IsDeviceSuitable(VkPhysicalDevice device) {
 
 	VkPhysicalDeviceFeatures2 supportedFeatures = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2 };
 	VkPhysicalDeviceVulkan13Features vk13 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES };
-	supportedFeatures.pNext = &vk13;
+	supportedFeatures.pNext = &vk13; //VK_EXT_extended_dynamic_state3
+#ifdef USE_DYNAMIC_COLOR
+	VkPhysicalDeviceExtendedDynamicState3FeaturesEXT cwExt = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT };
+	vk13.pNext = &cwExt;
+#endif
 	vkGetPhysicalDeviceFeatures2(device, &supportedFeatures);
 
 
@@ -1279,9 +1317,11 @@ void VkRenderTarget::createRenderPass() {
 }
 
 std::vector<const char*> VkRenderTarget::getRequiredExtensions(void* window) {
-
 	std::vector<const char*> extensionNames = {
-		VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_EXTENSION_NAME
+		VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_EXTENSION_NAME, 
+
+		//VK_EXT_COLOR_WRITE_ENABLE_EXTENSION_NAME//VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT
+
 	};
 
 	if (enableValidationLayers) {

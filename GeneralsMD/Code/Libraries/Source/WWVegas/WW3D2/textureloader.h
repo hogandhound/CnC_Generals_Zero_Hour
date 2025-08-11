@@ -223,8 +223,8 @@ class TextureLoadTaskClass : public TextureLoadTaskListNodeClass
 		StateType				Get_State					(void) const		{ return State;			}
 
 		WW3DFormat				Get_Format					(void) const		{ return D3DFormat_To_WW3DFormat( Surface.format); }
-		unsigned int			Get_Width					(void) const		{ return Surface.width;			}
-		unsigned int			Get_Height					(void) const		{ return Surface.height;			}
+		unsigned int			Get_Width					(void) const		{ return Width;			}
+		unsigned int			Get_Height					(void) const		{ return Height;			}
 		unsigned int			Get_Mip_Level_Count		(void) const		{ return MipLevelCount; }
 		unsigned int			Get_Reduction				(void) const		{ return Reduction;		}
 
@@ -265,8 +265,8 @@ class TextureLoadTaskClass : public TextureLoadTaskListNodeClass
 #endif
 		//WW3DFormat				Format;
 
-		//unsigned int			Width;
-		//unsigned	int			Height;
+		unsigned int			Width;
+		unsigned	int			Height;
 		unsigned	int			MipLevelCount;
 		unsigned	int			Reduction;
 		Vector3					HSVShift;

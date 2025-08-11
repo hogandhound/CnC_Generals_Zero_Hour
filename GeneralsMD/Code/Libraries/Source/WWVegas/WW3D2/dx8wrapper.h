@@ -726,7 +726,8 @@ public:
 	static void Get_DX8_Sampler_Stage_State_Value_Name(StringClass& name, D3DSAMPLERSTATETYPE state, unsigned value);
 	static void Get_DX8_Render_State_Value_Name(StringClass& name, D3DRENDERSTATETYPE state, unsigned value);
 #endif
-	static unsigned Get_DX8_Render_State(VKRENDERSTATETYPE state) { return RenderStates[state]; }
+	static unsigned Get_DX8_Render_State(VKRENDERSTATETYPE state) 
+	{ return RenderStates[state] == 0x12345678 ? RenderStates[VKRS_MAX + state] : RenderStates[state]; }
 
 	static const char* Get_DX8_Texture_Address_Name(unsigned value);
 	static const char* Get_DX8_Texture_Filter_Name(unsigned value);
@@ -871,7 +872,7 @@ protected:
 	// shader system updates KJM ^
 
 	static bool world_identity;
-	static unsigned RenderStates[VKRS_MAX];
+	static unsigned RenderStates[VKRS_MAX * 2];
 	static unsigned TextureStageStates[MAX_TEXTURE_STAGES][VKTSS_MAX];
 	static unsigned SamplerStates[MAX_TEXTURE_STAGES][VKSAMP_MAX];
 	static VK::Texture Textures[MAX_TEXTURE_STAGES];
@@ -1125,6 +1126,24 @@ WWINLINE void DX8Wrapper::Set_DX8_Render_State(VKRENDERSTATETYPE state, unsigned
 	DX8_RECORD_RENDER_STATE_CHANGE();
 #endif
 	RenderStates[state] = value;
+#if 1
+	if (state == VKRS_COLORWRITEENABLE)
+	{
+		VkColorComponentFlags flags[4] = {};
+		unsigned int flagCount = 0;
+		if (0x1 & RenderStates[state]) { flags[flagCount] |= VK_COLOR_COMPONENT_R_BIT; }
+		if (0x2 & RenderStates[state]) { flags[flagCount] |= VK_COLOR_COMPONENT_G_BIT; }
+		if (0x4 & RenderStates[state]) { flags[flagCount] |= VK_COLOR_COMPONENT_B_BIT; }
+		if (0x8 & RenderStates[state]) { flags[flagCount] |= VK_COLOR_COMPONENT_A_BIT; }
+		flagCount = 1;
+		if (state == 0x12345678)
+		{
+			flags[0] = VK_COLOR_COMPONENT_R_BIT| VK_COLOR_COMPONENT_G_BIT| VK_COLOR_COMPONENT_B_BIT| VK_COLOR_COMPONENT_A_BIT;
+			flagCount = 1;
+		}
+		vkCmdSetColorWriteMaskEXT(target.currentCmd, 0, flagCount, flags);
+	}
+#endif
 }
 
 WWINLINE void DX8Wrapper::Set_DX8_Texture_Stage_State(unsigned stage, VKTEXTURESTAGESTATETYPE state, unsigned value)
@@ -1534,7 +1553,7 @@ WWINLINE void DX8Wrapper::Set_Projection_Transform_With_Z_Bias(const Matrix4x4& 
 {
 	ZFar=zfar;
 	ZNear=znear;
-	ProjectionMatrix=matrix.Transpose();
+	ProjectionMatrix = matrix.Transpose();
 
 	auto flip = DirectX::XMMatrixScaling(1, -1, 1);
 	DirectX::XMMATRIX set, base = DirectX::XMMATRIX((float*)&ProjectionMatrix);
@@ -1582,26 +1601,28 @@ WWINLINE void DX8Wrapper::Set_Transform(VkTransformState transform,const Matrix4
 {
 	switch (transform) {
 	case VkTS::WORLD:
-		render_state.world=m.Transpose();
+		render_state.world = m.Transpose();
 		render_state_changed|=(unsigned)WORLD_CHANGED;
 		render_state_changed&=~(unsigned)WORLD_IDENTITY;
 		break;
 	case VkTS::VIEW:
-		render_state.view=m.Transpose();
+		render_state.view = m.Transpose();
 		render_state_changed|=(unsigned)VIEW_CHANGED;
 		render_state_changed&=~(unsigned)VIEW_IDENTITY;
 		break;
 	case VkTS::PROJECTION:
 		{
-			Matrix4x4 ProjectionMatrix=m.Transpose();
+		Matrix4x4 ProjectionMatrix = m.Transpose();
 			ZFar=0.0f;
 			ZNear=0.0f;
+			WWVKRENDER.PushSingleFrameBuffer(ProjUbo);
 			VkBufferTools::CreateUniformBuffer(&target, sizeof(float) * 16, &ProjectionMatrix, ProjUbo);
 		}
 		break;
 	default:
 		DX8_RECORD_MATRIX_CHANGE();
-		Matrix4x4 m2=m.Transpose();
+		Matrix4x4 m2 = m.Transpose();
+		WWVKRENDER.PushSingleFrameBuffer(DX8TransformsUbos[(int)transform]);
 		VkBufferTools::CreateUniformBuffer(&target, sizeof(float) * 16, &m2, DX8TransformsUbos[(int)transform]);
 		break;
 	}
@@ -1612,18 +1633,18 @@ WWINLINE void DX8Wrapper::Set_Transform(VkTransformState transform,const Matrix3
 	Matrix4x4 m2(m);
 	switch (transform) {
 	case VkTS::WORLD:
-		render_state.world=m2.Transpose();
+		render_state.world = m2.Transpose();
 		render_state_changed|=(unsigned)WORLD_CHANGED;
 		render_state_changed&=~(unsigned)WORLD_IDENTITY;
 		break;
 	case VkTS::VIEW:
-		render_state.view=m2.Transpose();
+		render_state.view = m2.Transpose();
 		render_state_changed|=(unsigned)VIEW_CHANGED;
 		render_state_changed&=~(unsigned)VIEW_IDENTITY;
 		break;
 	default:
 		DX8_RECORD_MATRIX_CHANGE();
-		m2=m2.Transpose();
+		m2 = m2.Transpose();
 		target.PushSingleFrameBuffer(DX8TransformsUbos[(int)transform]);
 		VkBufferTools::CreateUniformBuffer(&target, sizeof(float) * 16, &m2, DX8TransformsUbos[(int)transform]);
 		break;

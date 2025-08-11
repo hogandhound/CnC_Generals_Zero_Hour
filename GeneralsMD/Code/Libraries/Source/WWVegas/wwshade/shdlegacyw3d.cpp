@@ -536,7 +536,7 @@ void Shd6LegacyW3DClass::Draw(int cur_pass, RenderInfoClass& rinfo, unsigned sho
 		std::vector<VkDescriptorSet> sets;
 		WWVK_UpdateFVF_DUVDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(),
 			sets, &Textures[cur_pass][0]->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-		//WWVK_DrawFVF_DUV(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets, vertexCount, uv, uvOffset, push);;
+		//WWVK_DrawFVF_DUV_NI(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets, vertexCount, uv, uvOffset, push);;
 		
 	}
 	else if ((FVF & VKFVF_NORMAL))

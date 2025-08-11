@@ -27,6 +27,6 @@ void main() {
     fragUv2 = uv2;
 	fragNorm = norm;
     
-	viewDir = (view.m * vec4(0,0,1,1)).xyz;
+	viewDir = normalize((view.m * vec4(0,0,1,1)).xyz);
     gl_Position = proj.m*view.m*push.world*vec4(vert, 1);
 }

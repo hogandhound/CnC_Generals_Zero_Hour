@@ -15,6 +15,16 @@ struct QueueFamilyIndices {
     }
 };
 
+#ifndef vkCmdSetColorWriteMaskEXT
+#define USE_DYNAMIC_COLOR
+#ifdef USE_DYNAMIC_COLOR
+/* Put this somewhere in a header file and include it alongside (and after) vulkan.h: */
+extern PFN_vkCmdSetColorWriteMaskEXT vkCmdSetColorWriteMaskEXT_;
+// This #define lets you call the function the same way as if it was coming from the vulkan.h header
+#define vkCmdSetColorWriteMaskEXT vkCmdSetColorWriteMaskEXT_
+#endif
+#endif
+
 struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
     std::vector<VkSurfaceFormatKHR> formats;

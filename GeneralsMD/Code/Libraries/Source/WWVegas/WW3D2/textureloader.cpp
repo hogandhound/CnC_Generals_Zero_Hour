@@ -1518,10 +1518,9 @@ bool TextureLoadTaskClass::Begin_Compressed_Load(void)
 		}
 	}
 
-	Surface.width = width;
-	Surface.height = height;
+	Width = width;
+	Height = height;
 	Surface.format = WW3DFormat_To_D3DFormat( Get_Valid_Texture_Format(orig_format, Texture->Is_Compression_Allowed()) );
-	Surface.buffer.resize(width * height * VK::SizeOfFormat(Surface.format));
 	Reduction = reduction;
 
 
@@ -1537,8 +1536,8 @@ bool TextureLoadTaskClass::Begin_Compressed_Load(void)
 		Reduction = 0;	//should not be possible to get here, but check just in case.
 
 	unsigned int mip_level_count = Get_Mip_Level_Count();
-	int reducedWidth= Surface.width;
-	int reducedHeight= Surface.height;
+	int reducedWidth= Width;
+	int reducedHeight= Height;
 
 	// If texture wants all mip levels, take as many as the file contains (not necessarily all)
 	// Otherwise take as many mip levels as the texture wants, not to exceed the count in file...
@@ -1563,6 +1562,9 @@ bool TextureLoadTaskClass::Begin_Compressed_Load(void)
 			mip_level_count -= Reduction;	//reduced requested number by those removed.
 		}
 	}
+	Surface.width = reducedWidth;
+	Surface.height = reducedHeight;
+	Surface.buffer.resize(reducedWidth * reducedHeight * VK::SizeOfFormat(Surface.format));
 
 	// Once more, verify that the mip level count is correct (in case it was changed here it might not
 	// match the size...well actually it doesn't have to match but it can't be bigger than the size)
@@ -1641,8 +1643,8 @@ bool TextureLoadTaskClass::Begin_Uncompressed_Load(void)
 		WWDEBUG_SAY(("Invalid texture size, scaling required. Texture: %s, size: %d x %d -> %d x %d\n", Texture->Get_Full_Path(), ow, oh, width, height));
 	}
 
-	Surface.width		= width;
-	Surface.height	= height;
+	Width		= width;
+	Height	= height;
 	Reduction = reduction;
 
 	if (!Texture->Is_Reducible() || Texture->MipLevelCount == MIP_LEVELS_1)
@@ -1665,7 +1667,6 @@ bool TextureLoadTaskClass::Begin_Uncompressed_Load(void)
 	{
 		Surface.format = WW3DFormat_To_D3DFormat(Get_Valid_Texture_Format(D3DFormat_To_WW3DFormat( Surface.format), false));
 	}
-	Surface.buffer.resize(width* height* VK::SizeOfFormat(Surface.format));
 
 	int reducedWidth=width;
 	int reducedHeight=height;
@@ -1678,6 +1679,9 @@ bool TextureLoadTaskClass::Begin_Uncompressed_Load(void)
 		if (reducedMipCount != MIP_LEVELS_ALL)
 			reducedMipCount -= Reduction;
 	}
+	Surface.width = reducedWidth;
+	Surface.height = reducedHeight;
+	Surface.buffer.resize(reducedWidth* reducedHeight* VK::SizeOfFormat(Surface.format));
 
 #ifdef INFO_VULKAN
 	D3DTexture = DX8Wrapper::_Create_DX8_Texture

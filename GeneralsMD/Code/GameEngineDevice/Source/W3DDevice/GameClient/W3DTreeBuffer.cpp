@@ -1778,8 +1778,8 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 
 		std::vector<VkDescriptorSet> sets;
 		WWVK_UpdateTreesDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets,
-			&m_treeTexture->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(), 
-			DX8Wrapper::UboView(), uboTrees, DX8Wrapper::UboProj());
+			&m_treeTexture->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
+			DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uboTrees);
 		//void WWVK_DrawTrees(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, 
 		// VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push);
 		WWVK_DrawTrees(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets,

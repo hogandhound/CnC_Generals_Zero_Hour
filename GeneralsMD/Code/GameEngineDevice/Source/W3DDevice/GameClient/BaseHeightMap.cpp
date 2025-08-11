@@ -188,7 +188,7 @@ void BaseHeightMapRenderObjClass::drawScorches(void)
 	DX8Wrapper::Set_Texture(0,m_scorchTexture);
 	if (Is_Hidden() == 0) {
 		Matrix4x4 world;
-		DX8Wrapper::Get_Transform(VkTS::WORLD, world);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, world);
 		//DX8Wrapper::Draw_Triangles(	0,m_curNumScorchIndices/3, 0,	m_curNumScorchVertices);
 		std::vector<VkDescriptorSet> sets;
 		WWVK_UpdateFVF_DUVDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets,
@@ -2470,8 +2470,8 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 		return;
 
 	//Check if video card is capable of using this effect
-	if (DX8Wrapper::getBackBufferFormat() != WW3D_FORMAT_A8R8G8B8)
-		return;	//can't apply effect on cards without destination alpha
+	//if (DX8Wrapper::getBackBufferFormat() != WW3D_FORMAT_A8R8G8B8)
+	//	return;	//can't apply effect on cards without destination alpha
 
 	Int vertexCount = 0;
 	Int indexCount = 0;
@@ -2509,7 +2509,7 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 			UnsignedShort *ib=lockib.Get_Index_Array();
 			if (!ib || !vb)
 			{	
-				//DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<2)|(1<<1)|(1<<0));
+				DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<2)|(1<<1)|(1<<0));
 				return;
 			}
 
@@ -2612,7 +2612,7 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 		if (indexCount > 0 && vertexCount > 0)
 		{
 			Matrix4x4 push;
-			DX8Wrapper::Get_Transform(VkTS::WORLD, push);
+			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, push);
 			DX8Wrapper::Set_Index_Buffer(ib_access,0);
 			DX8Wrapper::Set_Vertex_Buffer(vb_access);
 			WWVKDSV;
@@ -2633,7 +2633,7 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 	}//for all shore tiles
 
 	//Disable writes to destination alpha
-	//DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<2)|(1<<1)|(1<<0));
+	DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<2)|(1<<1)|(1<<0));
 	ShaderClass::Invalidate();
 }
 
@@ -2649,8 +2649,8 @@ void BaseHeightMapRenderObjClass::renderShoreLinesSorted(CameraClass *pCamera)
 		return;
 
 	//Check if video card is capable of using this effect
-	if (DX8Wrapper::getBackBufferFormat() != WW3D_FORMAT_A8R8G8B8)
-		return;	//can't apply effect on cards without destination alpha
+	//if (DX8Wrapper::getBackBufferFormat() != WW3D_FORMAT_A8R8G8B8)
+	//	return;	//can't apply effect on cards without destination alpha
 
 	Int vertexCount = 0;
 	Int indexCount = 0;
@@ -2712,7 +2712,7 @@ void BaseHeightMapRenderObjClass::renderShoreLinesSorted(CameraClass *pCamera)
 			UnsignedShort *ib=lockib.Get_Index_Array();
 			if (!ib || !vb)
 			{	
-				//DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<2)|(1<<1)|(1<<0));
+				DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<2)|(1<<1)|(1<<0));
 				return;
 			}
 
@@ -2971,12 +2971,13 @@ flushVertexBuffer1:
 			DX8Wrapper::Set_Index_Buffer(ib_access,0);
 			DX8Wrapper::Set_Vertex_Buffer(vb_access);
 			Matrix4x4 push;
-			DX8Wrapper::Get_Transform(VkTS::WORLD, push);
+			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, push);
 			DX8Wrapper::Set_Index_Buffer(ib_access, 0);
 			DX8Wrapper::Set_Vertex_Buffer(vb_access);
 			WWVKDSV;
+			auto tex1 = DX8Wrapper::Get_Texture(1);
 			WWVK_UpdateFVF_NDUV2_DepthLEDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
-				&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
+				&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), tex1 ? &tex1->Peek_D3D_Texture() : &DX8Wrapper::Get_DX8_Texture(1),
 				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 			WWVK_DrawFVF_NDUV2_DepthLE(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
@@ -2992,7 +2993,7 @@ flushVertexBuffer1:
 	}//for all shore tiles
 
 	//Disable writes to destination alpha
-	//DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<2)|(1<<1)|(1<<0));
+	DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,(1<<2)|(1<<1)|(1<<0));
 	ShaderClass::Invalidate();
 }
 

@@ -436,7 +436,7 @@ void W3DBibBuffer::renderBibs()
 	if (m_curNumNormalBibIndices) {
 		DX8Wrapper::Set_Texture(0,m_bibTexture);
 		Matrix4x4 push;
-		DX8Wrapper::Get_Transform(VkTS::WORLD, push);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, push);
 		WWVKDSV;
 		WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, 
 			&m_bibTexture->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
@@ -450,7 +450,7 @@ void W3DBibBuffer::renderBibs()
 	if (m_curNumBibIndices>m_curNumNormalBibIndices) {
 		DX8Wrapper::Set_Texture(0,m_highlightBibTexture);
 		Matrix4x4 push;
-		DX8Wrapper::Get_Transform(VkTS::WORLD, push);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, push);
 		WWVKDSV;
 		WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 			&m_highlightBibTexture->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());

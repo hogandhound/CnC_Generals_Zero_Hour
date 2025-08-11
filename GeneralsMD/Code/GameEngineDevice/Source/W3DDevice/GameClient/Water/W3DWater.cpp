@@ -2491,8 +2491,8 @@ void WaterRenderObjClass::renderWaterMesh(void)
 	// std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex1, VK::Texture* texture_tex2, 
 	// VK::Texture* texture_tex3, VK::Texture* texture_tex4, VK::Buffer ubo_Projection, VK::Buffer ubo_ViewMatrix);
 	UVT2 uvt2;
-	DX8Wrapper::Get_Transform(VkTS::TEXTURE2, *(Matrix4x4*)&uvt2.m1);
-	DX8Wrapper::Get_Transform(VkTS::TEXTURE3, *(Matrix4x4*)&uvt2.m1);
+	DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE2, *(Matrix4x4*)&uvt2.m1);
+	DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE3, *(Matrix4x4*)&uvt2.m1);
 	VK::Buffer uvtUbo;
 	VkBufferTools::CreateUniformBuffer(&WWVKRENDER, sizeof(UVT2), &uvt2, uvtUbo);
 	WWVK_UpdateWaterTrapezoidStripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &m_riverTexture->Peek_D3D_Texture(),
@@ -3002,8 +3002,8 @@ void WaterRenderObjClass::drawRiverWater(PolygonTrigger* pTrig)
 			&m_waterSparklesTexture->Peek_D3D_Texture(), &m_waterNoiseTexture->Peek_D3D_Texture(), &m_riverAlphaEdge->Peek_D3D_Texture(),
 			DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 		WorldMatrixUVT push;
-		DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
-		DX8Wrapper::Get_Transform(VkTS::TEXTURE2, *(Matrix4x4*)&push.uvt);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE2, *(Matrix4x4*)&push.uvt);
 		WWVK_DrawRiverWater(WWVKPIPES, WWVKRENDER.currentCmd, sets, 
 			((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, rectangleCount * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
 			((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
@@ -3015,8 +3015,8 @@ void WaterRenderObjClass::drawRiverWater(PolygonTrigger* pTrig)
 			&m_waterSparklesTexture->Peek_D3D_Texture(), &m_waterNoiseTexture->Peek_D3D_Texture(), &m_riverAlphaEdge->Peek_D3D_Texture(),
 			DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 		WorldMatrixUVT push;
-		DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
-		DX8Wrapper::Get_Transform(VkTS::TEXTURE2, *(Matrix4x4*)&push.uvt);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE2, *(Matrix4x4*)&push.uvt);
 		WWVK_DrawRiverWaterAdd(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 			((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, rectangleCount * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
 			((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
@@ -3054,7 +3054,7 @@ void WaterRenderObjClass::drawRiverWater(PolygonTrigger* pTrig)
 			&m_waterSparklesTexture->Peek_D3D_Texture(), &m_waterNoiseTexture->Peek_D3D_Texture(), &m_riverAlphaEdge->Peek_D3D_Texture(),
 			DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uvtUbo);
 		WorldMatrix push;
-		DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
 		WWVK_DrawRiverWaterShroud(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 			((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, rectangleCount * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
 			((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
@@ -3423,7 +3423,8 @@ void WaterRenderObjClass::drawTrapezoidWater(Vector3 points[4])
 	setupFlatWaterShader();// lorenzen sez use the alpha shader
 
 	//If video card supports it and it's enabled, feather the water edge using destination alpha
-	if (DX8Wrapper::getBackBufferFormat() == WW3D_FORMAT_A8R8G8B8 && TheGlobalData->m_showSoftWaterEdge && TheWaterTransparency->m_transparentWaterDepth !=0)
+	if (//DX8Wrapper::getBackBufferFormat() == WW3D_FORMAT_A8R8G8B8 && 
+		TheGlobalData->m_showSoftWaterEdge && TheWaterTransparency->m_transparentWaterDepth !=0)
 	{		DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND, VK_BLEND_FACTOR_DST_ALPHA );
 			if (!TheWaterTransparency->m_additiveBlend)
 				DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA );
@@ -3465,14 +3466,14 @@ void WaterRenderObjClass::drawTrapezoidWater(Vector3 points[4])
 		// std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex1, VK::Texture* texture_tex2, 
 		// VK::Texture* texture_tex3, VK::Texture* texture_tex4, VK::Buffer ubo_Projection, VK::Buffer ubo_ViewMatrix);
 		UVT2 uvt2;
-		DX8Wrapper::Get_Transform(VkTS::TEXTURE2, *(Matrix4x4*)&uvt2.m1);
-		DX8Wrapper::Get_Transform(VkTS::TEXTURE3, *(Matrix4x4*)&uvt2.m1);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE2, *(Matrix4x4*)&uvt2.m1);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE3, *(Matrix4x4*)&uvt2.m2);
 		VK::Buffer uvtUbo;
 		VkBufferTools::CreateUniformBuffer(&WWVKRENDER, sizeof(UVT2), &uvt2, uvtUbo);
 
 		if (TheGlobalData->m_showSoftWaterEdge && TheWaterTransparency->m_transparentWaterDepth != 0)
 		{
-			if (!TheWaterTransparency->m_additiveBlend)
+			if (TheWaterTransparency->m_additiveBlend)
 			{
 				WWVK_UpdateWaterTrapezoid_DstAlphaDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &m_riverTexture->Peek_D3D_Texture(),
 					&m_waterSparklesTexture->Peek_D3D_Texture(), &m_waterNoiseTexture->Peek_D3D_Texture(),

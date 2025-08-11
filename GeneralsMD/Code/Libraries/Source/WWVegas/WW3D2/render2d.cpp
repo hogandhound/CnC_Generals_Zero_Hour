@@ -721,13 +721,6 @@ void Render2DClass::Render(void)
 				((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
 				((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
 			break;
-		case PIPELINE_WWVK_FVF_DUV_NoDepth_NoColor:
-			WWVK_UpdateFVF_DUV_NoDepth_NoColorDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &Texture->Peek_D3D_Texture(),
-				DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
-			WWVK_DrawFVF_DUV_NoDepth_NoColor(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-				((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
-				((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
-			break;
 		case PIPELINE_WWVK_FVF_DUV_NoDepth_DropUV:
 			WWVK_UpdateFVF_DUV_NoDepth_DropUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 				DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());

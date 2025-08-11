@@ -249,7 +249,7 @@ void DebugHintObject::Render(RenderInfoClass & rinfo)
 		tm.Set_Translation(vec);
 		DX8Wrapper::Set_Transform(VkTS::WORLD, tm);
 		Matrix4x4 tm2;
-		DX8Wrapper::Get_Transform(VkTS::WORLD, tm2);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, tm2);
 		//DX8Wrapper::Draw_Triangles(	0, 1, 0, 3);
 
 		std::vector<VkDescriptorSet> sets;

@@ -500,8 +500,8 @@ Int WaterTracksObj::render(DX8VertexBufferClass	*vertexBuffer, Int batchStart)
 	if (TheTerrainRenderObject->getShroud())
 	{
 		WorldMatrixUVT push;
-		DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
-		DX8Wrapper::Get_Transform(VkTS::TEXTURE1, *(Matrix4x4*)&push.uvt);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE1, *(Matrix4x4*)&push.uvt);
 
 		WWVK_UpdateFVF_DUV_CAMUVT_DepthBias_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(),
 			&DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
@@ -512,7 +512,7 @@ Int WaterTracksObj::render(DX8VertexBufferClass	*vertexBuffer, Int batchStart)
 	else
 	{
 		WorldMatrix push;
-		DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
 
 		WWVK_UpdateFVF_DUV_DepthBias_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(),
 			DX8Wrapper::UboProj(), DX8Wrapper::UboView());

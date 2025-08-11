@@ -567,7 +567,7 @@ Int W3DProjectedShadowManager::renderProjectedTerrainShadow(W3DProjectedShadow *
 			Debug_Statistics::Record_DX8_Polys_And_Vertices(numPolys, numVerts, ShaderClass::_PresetOpaqueShader);
 			std::vector<VkDescriptorSet> sets;
 			WWVK_UpdateProjShadowDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-			WWVK_DrawProjShadow(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, numIndex, nShadowStartBatchIndex, VK_INDEX_TYPE_UINT16,
+			WWVK_DrawProjShadow(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, numIndex, 0, VK_INDEX_TYPE_UINT16,
 				shadowVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
 #ifdef INFO_VULKAN
 			m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, nShadowStartBatchVertex, 0, numVerts, nShadowStartBatchIndex, numPolys);

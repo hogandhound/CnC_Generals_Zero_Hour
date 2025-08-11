@@ -2046,7 +2046,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
  		W3DShaderManager::setTexture(2,m_stageTwoTexture);	//cloud
  		W3DShaderManager::setTexture(3,m_stageThreeTexture);//noise
 		//Disable writes to destination alpha channel (if there is one)
-		if (DX8Wrapper::getBackBufferFormat() == WW3D_FORMAT_A8R8G8B8)
+		//if (DX8Wrapper::getBackBufferFormat() == WW3D_FORMAT_A8R8G8B8)
 			DX8Wrapper::Set_DX8_Render_State(VKRS_COLORWRITEENABLE,0x7);//(1<<2)|(1<<1)|(1<<0)
 
 	}
@@ -2267,8 +2267,8 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 				auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBufferTiles[j * m_numVBTilesX + i]->FVF_Info().FVF);
 				assert(pipelines.size() == 1);
 				WorldMatrixUVT push;
-				DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
-				DX8Wrapper::Get_Transform(VkTS::TEXTURE0, *(Matrix4x4*)&push.uvt);
+				DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+				DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE0, *(Matrix4x4*)&push.uvt);
 				switch (pipelines[0]) {
 				case PIPELINE_WWVK_FVF_DUV2_TerrainPass:
 					WWVK_UpdateFVF_DUV2_TerrainPassDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
@@ -2493,7 +2493,7 @@ void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 					case W3DShaderManager::ST_ROAD_BASE:
 					{
 						WorldMatrix push;
-						DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+						DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
 						WWVK_UpdateRoadDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 							&m_stageOneTexture->Peek_D3D_Texture(),
 							DX8Wrapper::UboProj(), DX8Wrapper::UboView());
@@ -2506,8 +2506,8 @@ void HeightMapRenderObjClass::renderExtraBlendTiles(void)
 					case W3DShaderManager::ST_ROAD_BASE_NOISE2:
 					{
 						WorldMatrixUVT push;
-						DX8Wrapper::Get_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
-						DX8Wrapper::Get_Transform(VkTS::TEXTURE1, *(Matrix4x4*)&push.uvt);
+						DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+						DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE1, *(Matrix4x4*)&push.uvt);
 						WWVK_UpdateRoadNoiseDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 							&m_stageOneTexture->Peek_D3D_Texture(),
 							&m_stageTwoTexture->Peek_D3D_Texture(),

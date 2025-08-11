@@ -4,6 +4,7 @@
   "shaders": [
   {
 	  "name": "FVF_D",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -14,6 +15,7 @@
   },
   {
 	  "name": "FVF_DUV",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -24,6 +26,7 @@
   },
   {
 	  "name": "FVF_DUV_NoDepthWrite",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "depthWrite": "VK_FALSE",
@@ -35,23 +38,10 @@
   },
   {
 	  "name": "FVF_DUV_NoDepth",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_ALWAYS",
 	  "depthWrite": "VK_FALSE",
-	  "vert":{
-		  "name": "fvf_xyzduv.vert",
-		  "inputs": {}
-	  },
-	  "frag": { "name": "fvf_duv.frag" }
-  },
-  {
-	  "name": "FVF_DUV_NoDepth_NoColor",
-	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
-	  "depth": "VK_COMPARE_OP_ALWAYS",
-	  "depthWrite": "VK_FALSE",
-	  "blend": {
-		  "colorWriteMask": "(VkColorComponentFlagBits)0"
-	  },
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
 		  "inputs": {}
@@ -60,6 +50,7 @@
   },
   {
 	  "name": "FVF_DUV_NoDepth_DropUV",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_ALWAYS",
 	  "depthWrite": "VK_FALSE",
@@ -71,6 +62,7 @@
   },
   {
 	  "name": "FVF_DUV_Grayscale_NoDepth",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
@@ -79,17 +71,8 @@
 	  "frag": { "name": "fvf_duv_grayscale.frag" }
   },
   {
-	  "name": "FVF_NDUV_NOL",
-	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
-	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
-	  "vert":{
-		  "name": "fvf_xyznduv1.vert",
-		  "inputs": {}
-	  },
-	  "frag": { "name": "fvf_nduv_noL.frag" }
-  },
-  {
 	  "name": "FVF_DUV_MultBlend",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "blend": { 
@@ -104,6 +87,7 @@
   },
   {
 	  "name": "FVF_DUV_AddBlend",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "blend": { 
@@ -118,6 +102,7 @@
   },
   {
 	  "name": "FVF_DUV_Strip",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -128,6 +113,7 @@
   },
   {
 	  "name": "FVF_DUV_CAMUVT_Strip",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -138,6 +124,7 @@
   },
   {
 	  "name": "FVF_DUV_DepthBias_Strip",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "depthBias": { "depthBiasConstantFactor": "8 * -0.000005f"},
@@ -149,6 +136,7 @@
   },
   {
 	  "name": "FVF_DUV_CAMUVT_DepthBias_Strip",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "depthBias": { "depthBiasConstantFactor": "8 * -0.000005f"},
@@ -160,6 +148,7 @@
   },
   {
 	  "name": "FVF_DUV2",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -170,6 +159,7 @@
   },
   {
 	  "name": "FVF_DUV2_DropUV",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -180,6 +170,7 @@
   },
   {
 	  "name": "FVF_DUV2_DropUV_Strip",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -190,6 +181,7 @@
   },
   {
 	  "name": "FVF_DUV2_DropUV_ARef",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -200,6 +192,7 @@
   },
   {
 	  "name": "FVF_DUV2_TerrainPass",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_EQUAL",
 	  "depthWrite": "VK_FALSE",
@@ -215,6 +208,7 @@
   },
   {
 	  "name": "FVF_DUV2_Strip",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -225,6 +219,7 @@
   },
   {
 	  "name": "FVF_NUV",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -235,6 +230,7 @@
   },
   {
 	  "name": "FVF_NUV_Strip",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -245,6 +241,7 @@
   },
   {
 	  "name": "FVF_NUV_NoDepth",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "depthWrite": "VK_FALSE",
@@ -256,6 +253,7 @@
   },
   {
 	  "name": "FVF_NUV_NoAlphaBlend",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "blend": {
@@ -270,6 +268,7 @@
   },
   {
 	  "name": "FVF_NUV_NoAlphaBlend_UVT",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "blend": {
@@ -284,6 +283,7 @@
   },
   {
 	  "name": "FVF_NUV_DROPUV_REFLUVT",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -294,6 +294,7 @@
   },
   {
 	  "name": "FVF_NUV_DROPUV_REFLUVT_NoAlphaBlend",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "blend": {
@@ -308,6 +309,7 @@
   },
   {
 	  "name": "FVF_NUV_ARef_Strip",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -318,6 +320,7 @@
   },
   {
 	  "name": "FVF_NUV_ARef",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -328,6 +331,7 @@
   },
   {
 	  "name": "FVF_NUV_ARefNoCull_Strip",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "cullMode": "VK_CULL_MODE_NONE",
@@ -339,6 +343,7 @@
   },
   {
 	  "name": "FVF_NUV_ARefNoCull",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "cullMode": "VK_CULL_MODE_NONE",
@@ -350,6 +355,7 @@
   },
   {
 	  "name": "FVF_N",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -360,6 +366,7 @@
   },
   {
 	  "name": "FVF_N_Strip",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -370,6 +377,7 @@
   },
   {
 	  "name": "FVF_NDUV",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -379,7 +387,19 @@
 	  "frag": { "name": "fvf_nduv.frag" }
   },
   {
+	  "name": "FVF_NDUV_NOL",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "vert":{
+		  "name": "fvf_xyznduv1.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv_noL.frag" }
+  },
+  {
 	  "name": "FVF_NDUV_AREF",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -390,6 +410,7 @@
   },
   {
 	  "name": "FVF_NDUV_AREF_Strip",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -400,6 +421,7 @@
   },
   {
 	  "name": "FVF_NDUV_CAMUVT_NOL",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -410,6 +432,7 @@
   },
   {
 	  "name": "FVF_NDUV_UVT_NOL",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -420,6 +443,7 @@
   },
   {
 	  "name": "FVF_NDUV2",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -430,6 +454,7 @@
   },
   {
 	  "name": "FVF_NDUV2_DropUV_NoAlpha",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "blend": {
@@ -444,6 +469,7 @@
   },
   {
 	  "name": "FVF_NDUV2_NOL",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -454,6 +480,7 @@
   },
   {
 	  "name": "FVF_NDUV2_NOCULL_NODEPTH",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "cullMode": "VK_CULL_MODE_NONE",
@@ -466,6 +493,7 @@
   },
   {
 	  "name": "FVF_NDUV2_NOCULL_NODEPTH_NOBLEND",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "cullMode": "VK_CULL_MODE_NONE",
@@ -482,6 +510,7 @@
   },
   {
 	  "name": "FVF_NDUV2_DepthLE",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -492,6 +521,7 @@
   },
   {
 	  "name": "Halo",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "cullMode": "VK_CULL_MODE_NONE",
 	  "blend": {
@@ -506,6 +536,7 @@
   },
   {
 	  "name": "Dazzle",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "cullMode": "VK_CULL_MODE_NONE",
 	  "depth": "VK_COMPARE_OP_ALWAYS",
@@ -522,6 +553,7 @@
   },
   {
 	  "name": "Snow",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_POINT_LIST",
 	  "vert":{
 		  "name": "snow.vert",
@@ -531,6 +563,7 @@
   },
   {
 	  "name": "FTerrain",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "vert":{
 		  "name": "fvf_xyzduv_camuv.vert",
@@ -540,6 +573,7 @@
   },
   {
 	  "name": "FTerrainNoise",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "vert":{
 		  "name": "fvf_xyzduv_camuv.vert",
@@ -549,6 +583,7 @@
   },
   {
 	  "name": "FTerrainNoise2",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "vert":{
 		  "name": "fvf_xyzduv_camuv.vert",
@@ -558,6 +593,7 @@
   },
   {
 	  "name": "Road",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "depthWrite": "VK_FALSE",
@@ -569,6 +605,7 @@
   },
   {
 	  "name": "RoadNoise",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "depthWrite": "VK_FALSE",
@@ -580,6 +617,7 @@
   },
   {
 	  "name": "RoadNoise12",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "depthWrite": "VK_FALSE",
@@ -591,6 +629,7 @@
   },
   {
 	  "name": "Monochrome",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
@@ -600,6 +639,7 @@
   },
   {
 	  "name": "MotionBlur",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
@@ -609,6 +649,7 @@
   },
   {
 	  "name": "BumpDiff",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "vert":{
 		  "name": "shd8bumpdiff.vert",
@@ -618,6 +659,7 @@
   },
   {
 	  "name": "BumpSpec",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "vert":{
 		  "name": "shd8bumpspec.vert",
@@ -627,6 +669,7 @@
   },
   {
 	  "name": "SSBumpDiff",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "vert":{
 		  "name": "shd8ssbumpdiff.vert",
@@ -636,6 +679,7 @@
   },
   {
 	  "name": "SSBumpSpec",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "vert":{
 		  "name": "shd8ssbumpspec.vert",
@@ -645,6 +689,7 @@
   },
   {
 	  "name": "Terrain",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "blend": {
@@ -661,6 +706,7 @@
   },
   {
 	  "name": "TerrainNoise",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "blend": {
@@ -677,6 +723,7 @@
   },
   {
 	  "name": "TerrainNoise2",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "blend": {
@@ -693,6 +740,7 @@
   },
   {
 	  "name": "Trees",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -703,6 +751,7 @@
   },
   {
 	  "name": "Wave",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -713,6 +762,7 @@
   },
   {
 	  "name": "RiverWater",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "vert":{
@@ -723,6 +773,7 @@
   },
   {
 	  "name": "RiverWaterAdd",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "blend": {
@@ -737,6 +788,7 @@
   },
   {
 	  "name": "RiverWaterShroud",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_EQUAL",
 	  "cullMode": "VK_CULL_MODE_NONE",
@@ -748,9 +800,11 @@
   },
   {
 	  "name": "WaterTrapezoid",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "cullMode": "VK_CULL_MODE_NONE",
+	  "depthWrite": "VK_FALSE",
 	  "vert":{
 		  "name": "fvf_xyzduv2_camuvt2.vert",
 		  "inputs": {}
@@ -759,9 +813,11 @@
   },
   {
 	  "name": "WaterTrapezoid_DstAlpha",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "cullMode": "VK_CULL_MODE_NONE",
+	  "depthWrite": "VK_FALSE",
 	  "blend": { 
 		  "srcColorBlendFactor": "VK_BLEND_FACTOR_DST_ALPHA"
 	  },
@@ -773,9 +829,11 @@
   },
   {
 	  "name": "WaterTrapezoid_DstAlphaInvDest",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "cullMode": "VK_CULL_MODE_NONE",
+	  "depthWrite": "VK_FALSE",
 	  "blend": { 
 		  "srcColorBlendFactor": "VK_BLEND_FACTOR_DST_ALPHA",
 		  "dstColorBlendFactor": "VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA"
@@ -788,8 +846,10 @@
   },
   {
 	  "name": "WaterTrapezoidStrip",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "depthWrite": "VK_FALSE",
 	  "vert":{
 		  "name": "fvf_xyzduv2_camuvt2.vert",
 		  "inputs": {}
@@ -819,7 +879,7 @@
   {
 	  "name": "VolumeStencilShadow",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
-	  "dynamic": [ "VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK" ],
+	  "dynamic": [ "VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK", "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "stencil":{
 		"compareMask": "0xffffffff",
 		"writeMask": "0xffffffff",
@@ -837,6 +897,7 @@
   },
   {
 	  "name": "ProjShadow",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "stencil":{
 		"compareMask": "0xffffffff",
@@ -860,7 +921,8 @@
   {
 	  "name": "StencilPlayerColor",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
-	  "dynamic": [ "VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK", "VK_DYNAMIC_STATE_STENCIL_OP", "VK_DYNAMIC_STATE_STENCIL_REFERENCE", "VK_DYNAMIC_STATE_DEPTH_WRITE_ENABLE" ],
+	  "dynamic": [  ],
+	  "dynamic": [ "VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK", "VK_DYNAMIC_STATE_STENCIL_OP", "VK_DYNAMIC_STATE_STENCIL_REFERENCE", "VK_DYNAMIC_STATE_DEPTH_WRITE_ENABLE", "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "stencil":{
 		"writeMask": "0xffffffff"
 	  },

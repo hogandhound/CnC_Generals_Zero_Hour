@@ -920,7 +920,7 @@ Try improving the fit to vertical surfaces like cliffs.
 						&mod->m_stageZeroTexture->Peek_D3D_Texture(),
 						DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 					WWVK_DrawFVF_DUV_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-						m_indexBuffer->Get_DX8_Index_Buffer().buffer, (mod->m_activeEdgeCount - 1) * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
+						m_indexBuffer->Get_DX8_Index_Buffer().buffer, (mod->m_activeEdgeCount - 1) * 2 * 3, trackStartIndex, VK_INDEX_TYPE_UINT16,
 						m_vertexBuffer->Get_DX8_Vertex_Buffer().buffer, 0,
 						(WorldMatrix*)&tm);
 					break;
@@ -932,7 +932,7 @@ Try improving the fit to vertical surfaces like cliffs.
 						&mod->m_stageZeroTexture->Peek_D3D_Texture(),
 						DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 					WWVK_DrawFVF_DUV_NoDepthWrite(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-						m_indexBuffer->Get_DX8_Index_Buffer().buffer, (mod->m_activeEdgeCount - 1) * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
+						m_indexBuffer->Get_DX8_Index_Buffer().buffer, (mod->m_activeEdgeCount - 1) * 2 * 3, trackStartIndex, VK_INDEX_TYPE_UINT16,
 						m_vertexBuffer->Get_DX8_Vertex_Buffer().buffer, 0,
 						(WorldMatrix*)&tm);
 					break;

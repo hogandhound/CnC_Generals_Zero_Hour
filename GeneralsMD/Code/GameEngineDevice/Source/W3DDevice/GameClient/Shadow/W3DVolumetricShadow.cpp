@@ -1562,7 +1562,7 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 		std::vector<VkDescriptorSet> sets;
 		WWVK_UpdateVolumeShadowDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 		WWVK_DrawVolumeShadow(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-			shadowIndexBufferD3D.buffer, numPolys * 3, nShadowStartBatchIndex, VK_INDEX_TYPE_UINT16,
+			shadowIndexBufferD3D.buffer, numPolys * 3, 0, VK_INDEX_TYPE_UINT16,
 			shadowVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
 #ifdef INFO_VULKAN
 		m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, nShadowStartBatchVertex,0,numVerts,nShadowStartBatchIndex,numPolys);

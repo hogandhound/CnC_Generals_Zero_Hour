@@ -656,9 +656,6 @@
     <ClInclude Include="stripoptimizer.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="surfaceclass.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="texfcach.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -729,6 +726,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="WWVKStructs.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\surfaceclass.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

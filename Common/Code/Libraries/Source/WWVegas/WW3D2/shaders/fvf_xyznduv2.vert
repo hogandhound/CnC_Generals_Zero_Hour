@@ -27,9 +27,9 @@ void main() {
     // Pass the tex coord straight through to the fragment shader
     fragUv1 = uv1;
 	fragUv2 = uv2;
-	fragNorm = norm;
 	fragDiffuse = unpackUnorm4x8(diffuse);
     
-	viewDir = normalize((view.m * vec4(0,0,1,1)).xyz);
+	fragNorm = normalize(push.world * vec4(norm,0)).xyz;
+	viewDir = normalize(vec3(view.m[0].z, view.m[1].z, view.m[2].z)); //view.m[2].rgb
     gl_Position = proj.m*view.m*push.world*vec4(vert, 1);
 }

@@ -465,6 +465,7 @@ public:
 	static void Set_Index_Buffer_Index_Offset(unsigned offset);
 
 	static void Get_Render_State(RenderStateStruct& state);
+	static RenderStateStruct& Get_Render_State() { return render_state; };
 	static void Set_Render_State(const RenderStateStruct& state);
 	static void Release_Render_State();
 
@@ -1271,7 +1272,23 @@ WWINLINE void DX8Wrapper::Set_DX8_Texture(unsigned int stage, VK::Texture textur
 WWINLINE VK::Texture DX8Wrapper::Get_DX8_Texture(unsigned int stage)
 {
 	if (Textures[stage].image)
+	{
+		VK::SamplerSettings settings = {};
+		settings.minF = SamplerStates[stage][VKSAMP_MINFILTER];
+		settings.maxF = SamplerStates[stage][VKSAMP_MAGFILTER];
+		settings.mipF = SamplerStates[stage][VKSAMP_MIPFILTER];
+		settings.addU = SamplerStates[stage][VKSAMP_ADDRESSU];
+		settings.addV = SamplerStates[stage][VKSAMP_ADDRESSV];
+		if (Textures[stage].sampSettings != settings)
+		{
+			VK::Texture dump = {};
+			dump.sampler = Textures[stage].sampler;
+			target.PushSingleTexture(dump);
+			VK::CreateTextureSampler(&target, Textures[stage], settings, Textures[stage].mips);
+		}
+
 		return Textures[stage];
+	}
 	if (!WhiteTexture.image)
 	{
 		uint32_t white = 0xffffffff;

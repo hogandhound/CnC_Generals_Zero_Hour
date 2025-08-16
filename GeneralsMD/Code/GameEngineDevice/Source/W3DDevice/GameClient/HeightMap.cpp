@@ -2062,6 +2062,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 			assert(pipelines.size() == 1);
 		}
 
+		DX8Wrapper::Apply_Render_State_Changes();
 		for (j=0; j<m_numVBTilesY; j++)
 			for (i=0; i<m_numVBTilesX; i++)
 			{
@@ -2099,7 +2100,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 					if (st == W3DShaderManager::ST_TERRAIN_BASE)
 					{
 						WWVK_UpdateTerrainDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets,
-							&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
+							&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),
 							DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 						WWVK_DrawTerrain(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets,
 							m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, 0, VK_INDEX_TYPE_UINT16,
@@ -2108,8 +2109,8 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 					else if (st == W3DShaderManager::ST_TERRAIN_BASE_NOISE1 || W3DShaderManager::ST_TERRAIN_BASE_NOISE2)
 					{
 						WWVK_UpdateTerrainNoiseDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets,
-							&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
-							&DX8Wrapper::Get_Texture(2)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+							&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),
+							&DX8Wrapper::Get_DX8_Texture(2), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 						WWVK_DrawTerrainNoise(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets,
 							m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, 0, VK_INDEX_TYPE_UINT16,
 							m_vertexBufferTiles[j * m_numVBTilesX + i]->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm);
@@ -2117,8 +2118,8 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 					else if (st == W3DShaderManager::ST_TERRAIN_BASE_NOISE12)
 					{
 						WWVK_UpdateTerrainNoise2DescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets,
-							&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
-							&DX8Wrapper::Get_Texture(2)->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(3)->Peek_D3D_Texture(),
+							&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),
+							&DX8Wrapper::Get_DX8_Texture(2), &DX8Wrapper::Get_DX8_Texture(3),
 							DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 						WWVK_DrawTerrainNoise2(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets,
 							m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, 0, VK_INDEX_TYPE_UINT16,
@@ -2272,14 +2273,14 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 				switch (pipelines[0]) {
 				case PIPELINE_WWVK_FVF_DUV2_TerrainPass:
 					WWVK_UpdateFVF_DUV2_TerrainPassDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
-						&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+						&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 					WWVK_DrawFVF_DUV2_TerrainPass(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 						m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, 0, VK_INDEX_TYPE_UINT16,
 						m_vertexBufferTiles[j * m_numVBTilesX + i]->Get_DX8_Vertex_Buffer().buffer, 0, &push);
 					break;
 				case PIPELINE_WWVK_FVF_DUV2_DropUV:
 					WWVK_UpdateFVF_DUV2_DropUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
-						&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+						&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 					WWVK_DrawFVF_DUV2_DropUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 						m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, 0, VK_INDEX_TYPE_UINT16,
 						m_vertexBufferTiles[j * m_numVBTilesX + i]->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);

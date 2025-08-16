@@ -803,7 +803,7 @@ TextureClass::TextureClass
 	SurfaceClass::SurfaceDescription desc;
 	surface->Get_Description(desc);
 	VK::CreateTexture(&WWVKRENDER, this->Peek_D3D_Texture(), desc.Width, desc.Height, surface->Peek_D3D_Surface().data(), 
-		(uint32_t)(VK::TexNearest | VK::TexClamp), WW3DFormat_To_D3DFormat(desc.Format));
+		{}, WW3DFormat_To_D3DFormat(desc.Format));
 	LastAccessed=WW3D::Get_Sync_Time();
 }
 

@@ -2615,13 +2615,32 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, push);
 			DX8Wrapper::Set_Index_Buffer(ib_access,0);
 			DX8Wrapper::Set_Vertex_Buffer(vb_access);
+			DX8Wrapper::Apply_Render_State_Changes();
 			WWVKDSV;
-			WWVK_UpdateFVF_NDUV2_DepthLEDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
-				&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
-				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-			WWVK_DrawFVF_NDUV2_DepthLE(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-				((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
-				((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
+			auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
+			assert(pipelines.size() == 1);
+			switch (pipelines[0]) {
+			case PIPELINE_WWVK_FVF_NDUV2_NoDepthWrite_NoAlphaBlend_OnlyTex1:
+				WWVK_UpdateFVF_NDUV2_NoDepthWrite_NoAlphaBlend_OnlyTex1DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0),
+					DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				WWVK_DrawFVF_NDUV2_NoDepthWrite_NoAlphaBlend_OnlyTex1(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
+					((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
+				break;
+			case PIPELINE_WWVK_FVF_NDUV2_DepthLE:
+			{
+				assert(false);//Shouldn't be used
+				auto tex1 = DX8Wrapper::Get_Texture(1);
+				WWVK_UpdateFVF_NDUV2_DepthLEDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0), tex1 ? &tex1->Peek_D3D_Texture() : &DX8Wrapper::Get_DX8_Texture(1),
+					DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				WWVK_DrawFVF_NDUV2_DepthLE(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
+					((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
+				break;
+			}
+			}
 #ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles(	0,indexCount/3, 0,	vertexCount);	//draw a quad, 2 triangles, 4 verts
 #endif
@@ -2974,14 +2993,33 @@ flushVertexBuffer1:
 			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, push);
 			DX8Wrapper::Set_Index_Buffer(ib_access, 0);
 			DX8Wrapper::Set_Vertex_Buffer(vb_access);
+			DX8Wrapper::Apply_Render_State_Changes();
+			auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
+			assert(pipelines.size() == 1);
 			WWVKDSV;
-			auto tex1 = DX8Wrapper::Get_Texture(1);
-			WWVK_UpdateFVF_NDUV2_DepthLEDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
-				&DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(), tex1 ? &tex1->Peek_D3D_Texture() : &DX8Wrapper::Get_DX8_Texture(1),
-				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-			WWVK_DrawFVF_NDUV2_DepthLE(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-				((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
-				((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
+			switch (pipelines[0]) {
+			case PIPELINE_WWVK_FVF_NDUV2_NoDepthWrite_NoAlphaBlend_OnlyTex1:
+				WWVK_UpdateFVF_NDUV2_NoDepthWrite_NoAlphaBlend_OnlyTex1DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0),
+					DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				WWVK_DrawFVF_NDUV2_NoDepthWrite_NoAlphaBlend_OnlyTex1(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
+					((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
+				break;
+			case PIPELINE_WWVK_FVF_NDUV2_DepthLE:
+			{
+				assert(false);//Shouldn't be used
+				auto tex1 = DX8Wrapper::Get_Texture(1);
+				WWVK_UpdateFVF_NDUV2_DepthLEDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0), tex1 ? &tex1->Peek_D3D_Texture() : &DX8Wrapper::Get_DX8_Texture(1),
+					DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				WWVK_DrawFVF_NDUV2_DepthLE(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
+					((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
+				break;
+			}
+			default: assert(false);
+			}
 #ifdef INFO_VULKAN
 			DX8Wrapper::Draw_Triangles(	0,indexCount/3, 0,	vertexCount);	//draw a quad, 2 triangles, 4 verts
 #endif

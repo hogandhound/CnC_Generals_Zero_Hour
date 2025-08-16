@@ -543,12 +543,52 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
 				p.RenderStates[VKRS_LIGHTING] = true;
 				break;
-			case PIPELINE_WWVK_FVF_NDUV2_DropUV_NoAlpha:
+			case PIPELINE_WWVK_FVF_NDUV2_DropTex_NoAlpha:
 				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2 | VKFVF_NORMAL;
 				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
 				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
 				p.RenderStates[VKRS_LIGHTING] = true;
 				p.RenderStates[VKRS_ALPHABLENDENABLE] = false;
+				break;
+			case PIPELINE_WWVK_FVF_NDUV2_DropUV:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2 | VKFVF_NORMAL;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_TEXCOORDINDEX] = 0;
+				p.RenderStates[VKRS_LIGHTING] = true;
+				break;
+			case PIPELINE_WWVK_FVF_NDUV2_DropUV_NoDepthWrite:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2 | VKFVF_NORMAL;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_TEXCOORDINDEX] = 0;
+				p.RenderStates[VKRS_ZWRITEENABLE] = false;
+				p.RenderStates[VKRS_LIGHTING] = true;
+				break;
+			case PIPELINE_WWVK_FVF_NDUV2_DropUV_NoDepthWrite_AddBlend:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2 | VKFVF_NORMAL;
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_TEXCOORDINDEX] = 0;
+				p.RenderStates[VKRS_ZWRITEENABLE] = false;
+				p.RenderStates[VKRS_LIGHTING] = true;
+				p.RenderStates[VKRS_SRCBLEND] = VK_BLEND_FACTOR_ONE;
+				p.RenderStates[VKRS_DESTBLEND] = VK_BLEND_FACTOR_ONE;
+				break;
+			case PIPELINE_WWVK_FVF_NDUV2_NoDepthWrite_NoAlphaBlend_OnlyTex1:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2 | VKFVF_NORMAL;
+				p.RenderStates[VKRS_ZWRITEENABLE] = VK_FALSE;
+				p.RenderStates[VKRS_CULLMODE] = VK_FRONT_FACE_CLOCKWISE;
+				p.RenderStates[VKRS_ALPHABLENDENABLE] = 0;
+				p.isDynamic |= (1 << VKRS_DIFFUSEMATERIALSOURCE);
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_SELECTARG1;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_SELECTARG1;
 				break;
 			case PIPELINE_WWVK_FVF_NDUV2_NOCULL_NODEPTH:
 				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2 | VKFVF_NORMAL;
@@ -3195,6 +3235,7 @@ void DX8Wrapper::Apply_Render_State_Changes()
 	if (render_state_changed&LIGHTS_CHANGED)
 	{
 		unsigned mask=LIGHT0_CHANGED;
+		unsigned lightMax = 0;
 		for (unsigned index=0;index<4;++index,mask<<=1) {
 			if (render_state_changed&mask) {
 				SNAPSHOT_SAY(("DX8 - apply light %d\n",index));
@@ -3217,6 +3258,7 @@ void DX8Wrapper::Apply_Render_State_Changes()
 #endif
 
 					Set_Light(index,&render_state.Lights.lights[index]);
+					lightMax = index;
 				}
 				else {
 					Set_Light(index,NULL);
@@ -3225,6 +3267,7 @@ void DX8Wrapper::Apply_Render_State_Changes()
 			}
 		}
 		target.PushSingleFrameBuffer(LightUbo);
+		render_state.Lights.lightCount[0] = lightMax + 1;
 		VkBufferTools::CreateUniformBuffer(&target, sizeof(LightCollection), &render_state.Lights, LightUbo);
 	}
 

@@ -88,6 +88,31 @@ namespace VK
 
         BufferType type;
     };
+    struct SamplerSettings
+    {
+        //Sampler Settings
+        uint8_t minF : 1;
+        uint8_t maxF : 1;
+        uint8_t mipF : 1;
+        uint8_t addU : 3;
+        uint8_t addV : 3;
+        bool operator==(SamplerSettings& other)
+        {
+            return minF == other.minF &&
+                maxF == other.maxF &&
+                mipF == other.mipF &&
+                addU == other.addU &&
+                addV == other.addV;
+        }
+        bool operator!=(SamplerSettings& other)
+        {
+            return minF != other.minF ||
+                maxF != other.maxF ||
+                mipF != other.mipF ||
+                addU != other.addU ||
+                addV != other.addV;
+        }
+    };
     struct Texture
     {
         VkImage image;
@@ -97,17 +122,11 @@ namespace VK
         VkFormat format;
         uint16_t width, height;
         uint8_t mips;
+        SamplerSettings sampSettings;
 #if _DEBUG
         const char *end = 0;
         int line = 0;
 #endif
-    };
-    enum TexFlags
-    {
-        TexNearest = 0x01,
-        TexLinear = 0x02,
-        TexClamp = 0x10,
-        TexRepeat = 0x20,
     };
     struct FrameBuffer
     {

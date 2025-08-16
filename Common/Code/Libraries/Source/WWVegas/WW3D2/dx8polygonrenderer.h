@@ -225,17 +225,18 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 		auto pipelines = DX8Wrapper::FindClosestPipelines(DX8Wrapper::Get_Vertex_Buffer()->FVF_Info().FVF);
 		assert(pipelines.size() == 1);
 		switch (pipelines[0]) {
-		case PIPELINE_WWVK_FVF_NDUV2_DropUV_NoAlpha:
+		case PIPELINE_WWVK_FVF_NDUV2_DropTex_NoAlpha:
 		{
+			auto& render_state = DX8Wrapper::Get_Render_State();
 			WorldMatrix push;
 			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
-			WWVK_UpdateFVF_NDUV2_DropUV_NoAlphaDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+			WWVK_UpdateFVF_NDUV2_DropTex_NoAlphaDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 				&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView(), 
 				DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
-			WWVK_DrawFVF_NDUV2_DropUV_NoAlpha(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			WWVK_DrawFVF_NDUV2_DropTex_NoAlpha(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
-				0, (WorldMatrix*)&push);
+				(render_state.index_base_offset) * sizeof(VertexFormatXYZNDUV2), (WorldMatrix*)&push);
 			break;
 		}
 		case PIPELINE_WWVK_FVF_DUV2_DropUV:

@@ -24,9 +24,8 @@ layout(location = 3) out vec2 reflUv;
 void main() {
     // Pass the tex coord straight through to the fragment shader
     fragUv = uv;
-	fragNorm = norm;
-    
-	viewDir = normalize((view.m * vec4(0,0,1,1)).xyz);
+	fragNorm = normalize(push.world * vec4(norm,0)).xyz;
+	viewDir = normalize(vec3(view.m[0].z, view.m[1].z, view.m[2].z)); //view.m[2].rgb
     gl_Position = proj.m*view.m*push.world*vec4(vert, 1);
 	vec3 refl = vert - 2 * dot(vert,norm) * norm;
 	reflUv = (push.uvt*view.m*push.world*vec4(refl, 1)).xy;

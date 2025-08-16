@@ -526,7 +526,7 @@ HRESULT WaterRenderObjClass::initBumpMap(VK::Texture *pTex, TextureClass *pBumpS
 		int smallerSide = d3dsd.Width < d3dsd.Height ? d3dsd.Width : d3dsd.Height;
 		int mips = 0;
 		for (; smallerSide > 0; mips++, smallerSide = smallerSide >> 1)
-		VK::CreateTextureMips(&WWVKRENDER, pTex[0], mips, d3dsd.Width, d3dsd.Height, bump.data(), 0, VK_FORMAT_R8G8_UINT);
+		VK::CreateTextureMips(&WWVKRENDER, pTex[0], mips, d3dsd.Width, d3dsd.Height, bump.data(), {}, VK_FORMAT_R8G8_UINT);
 	}//for each level
 
 #else
@@ -2491,13 +2491,14 @@ void WaterRenderObjClass::renderWaterMesh(void)
 	// std::vector<VkDescriptorSet>& output, VK::Texture* texture_tex1, VK::Texture* texture_tex2, 
 	// VK::Texture* texture_tex3, VK::Texture* texture_tex4, VK::Buffer ubo_Projection, VK::Buffer ubo_ViewMatrix);
 	UVT2 uvt2;
+	DX8Wrapper::Apply_Render_State_Changes();
 	DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE2, *(Matrix4x4*)&uvt2.m1);
 	DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE3, *(Matrix4x4*)&uvt2.m1);
 	VK::Buffer uvtUbo;
 	VkBufferTools::CreateUniformBuffer(&WWVKRENDER, sizeof(UVT2), &uvt2, uvtUbo);
 	WWVK_UpdateWaterTrapezoidStripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &m_riverTexture->Peek_D3D_Texture(),
 		&m_waterSparklesTexture->Peek_D3D_Texture(), &m_waterNoiseTexture->Peek_D3D_Texture(),
-		&DX8Wrapper::Get_Texture(3)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uvtUbo);
+		&DX8Wrapper::Get_DX8_Texture(3), DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uvtUbo);
 	WWVK_DrawWaterTrapezoidStrip(WWVKPIPES, WWVKRENDER.currentCmd, sets, m_indexBufferD3D.buffer, m_numIndices, 0, 
 		VK_INDEX_TYPE_UINT16, m_vertexBufferD3D.buffer, 0, (WorldMatrix*)&tm2);
 	WWVKRENDER.PushSingleFrameBuffer(uvtUbo);
@@ -3431,10 +3432,7 @@ void WaterRenderObjClass::drawTrapezoidWater(Vector3 points[4])
 	}
 
 
-#ifdef INFO_VULKAN
- 	DWORD cull;
-	DX8Wrapper::_Get_D3D_Device8()->GetRenderState(VKRS_CULLMODE, &cull);
-#endif
+ 	DWORD cull = DX8Wrapper::Get_DX8_Render_State(VKRS_CULLMODE);
 	DX8Wrapper::Set_DX8_Render_State(VKRS_CULLMODE, VK_FRONT_FACE_MAX_ENUM);
 	
 
@@ -3470,6 +3468,7 @@ void WaterRenderObjClass::drawTrapezoidWater(Vector3 points[4])
 		DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE3, *(Matrix4x4*)&uvt2.m2);
 		VK::Buffer uvtUbo;
 		VkBufferTools::CreateUniformBuffer(&WWVKRENDER, sizeof(UVT2), &uvt2, uvtUbo);
+		DX8Wrapper::Apply_Render_State_Changes();
 
 		if (TheGlobalData->m_showSoftWaterEdge && TheWaterTransparency->m_transparentWaterDepth != 0)
 		{
@@ -3477,7 +3476,7 @@ void WaterRenderObjClass::drawTrapezoidWater(Vector3 points[4])
 			{
 				WWVK_UpdateWaterTrapezoid_DstAlphaDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &m_riverTexture->Peek_D3D_Texture(),
 					&m_waterSparklesTexture->Peek_D3D_Texture(), &m_waterNoiseTexture->Peek_D3D_Texture(),
-					&DX8Wrapper::Get_Texture(3)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uvtUbo);
+					&DX8Wrapper::Get_DX8_Texture(3), DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uvtUbo);
 				WWVK_DrawWaterTrapezoid_DstAlpha(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 					((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer,
 					rectangleCount * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
@@ -3487,7 +3486,7 @@ void WaterRenderObjClass::drawTrapezoidWater(Vector3 points[4])
 			{
 				WWVK_UpdateWaterTrapezoid_DstAlphaInvDestDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &m_riverTexture->Peek_D3D_Texture(),
 					&m_waterSparklesTexture->Peek_D3D_Texture(), &m_waterNoiseTexture->Peek_D3D_Texture(),
-					&DX8Wrapper::Get_Texture(3)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uvtUbo);
+					&DX8Wrapper::Get_DX8_Texture(3), DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uvtUbo);
 				WWVK_DrawWaterTrapezoid_DstAlphaInvDest(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 					((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer,
 					rectangleCount * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
@@ -3498,7 +3497,7 @@ void WaterRenderObjClass::drawTrapezoidWater(Vector3 points[4])
 		{
 			WWVK_UpdateWaterTrapezoidDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &m_riverTexture->Peek_D3D_Texture(),
 				&m_waterSparklesTexture->Peek_D3D_Texture(), &m_waterNoiseTexture->Peek_D3D_Texture(),
-				&DX8Wrapper::Get_Texture(3)->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uvtUbo);
+				&DX8Wrapper::Get_DX8_Texture(3), DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uvtUbo);
 			WWVK_DrawWaterTrapezoid(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer,
 				rectangleCount * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
@@ -3525,20 +3524,18 @@ void WaterRenderObjClass::drawTrapezoidWater(Vector3 points[4])
 		DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND, VK_BLEND_FACTOR_ONE );
 		DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_ONE );
 	}
-#ifdef INFO_VULKAN
 	if (TheTerrainRenderObject->getShroud())
 	{
+#ifdef INFO_VULKAN
 		if (m_trapezoidWaterPixelShader)
+#endif
 		{	//shroud was applied in stage3 of main pass so just need to restore state here.
 			W3DShaderManager::resetShader(W3DShaderManager::ST_SHROUD_TEXTURE);
-			DX8Wrapper::_Get_D3D_Device8()->SetTexture(3,NULL);	//free possible reference to shroud texture
-			DX8Wrapper::_Get_D3D_Device8()->SetRenderState(VKRS_ZFUNC, VK_COMPARE_OP_EQUAL);
+			DX8Wrapper::Set_Texture(3,NULL);	//free possible reference to shroud texture
+			DX8Wrapper::Set_DX8_Render_State(VKRS_ZFUNC, VK_COMPARE_OP_EQUAL);
 		}
 	}
-	DX8Wrapper::_Get_D3D_Device8()->SetRenderState(VKRS_CULLMODE, cull);
-#else
-	W3DShaderManager::resetShader(W3DShaderManager::ST_SHROUD_TEXTURE);
-#endif
+	DX8Wrapper::Set_DX8_Render_State(VKRS_CULLMODE, cull);
 }
 
 

@@ -298,7 +298,7 @@ void SurfaceClass::Unlock(VK::Texture* tex)
 	{
 		WWVKRENDER.PushSingleTexture(*tex);
 		VK::CreateTexture(&WWVKRENDER, *tex, surface.width, surface.height, surface.buffer.data(),
-			(uint32_t)(VK::TexNearest | VK::TexClamp), surface.format);
+			{}, surface.format);
 	}
 }
 
@@ -330,7 +330,7 @@ void SurfaceClass::Clear(VK::Texture* texture)
 	{
 		WWVKRENDER.PushSingleTexture(*texture);
 		VK::CreateTexture(&WWVKRENDER, *texture, surface.width, surface.height, surface.buffer.data(),
-			(uint32_t)(VK::TexNearest | VK::TexClamp), surface.format);
+			{}, surface.format);
 	}
 #ifdef INFO_VULKAN
 	D3DLOCKED_RECT lock_rect;	
@@ -373,11 +373,11 @@ void SurfaceClass::Copy(const unsigned char *other, VK::Texture* texture)
 	// size of each pixel in bytes
 	unsigned int size=PixelSize(sd);
 
-	memset(surface.buffer.data(), 0, surface.width * surface.height * VK::SizeOfFormat(surface.format));
+	memcpy(surface.buffer.data(), other, surface.width * surface.height * VK::SizeOfFormat(surface.format));
 	if (texture)
 	{
 		VK::CreateTexture(&WWVKRENDER, *texture, surface.width, surface.height, surface.buffer.data(),
-			(uint32_t)(VK::TexNearest | VK::TexClamp), surface.format);
+			{}, surface.format);
 	}
 #ifdef INFO_VULKAN
 	D3DLOCKED_RECT lock_rect;	
@@ -453,7 +453,7 @@ void SurfaceClass::Copy(Vector2i &min,Vector2i &max, const unsigned char *other,
 	}
 	if (texture)
 		VK::CreateTexture(&WWVKRENDER, *texture, surface.width, surface.height, surface.buffer.data(),
-			(uint32_t)(VK::TexNearest | VK::TexClamp), surface.format);
+			{}, surface.format);
 #endif
 }
 
@@ -598,7 +598,7 @@ void SurfaceClass::Copy(
 		if (texture)
 		{
 			VK::CreateTexture(&WWVKRENDER, *texture, surface.width, surface.height, surface.buffer.data(),
-				(uint32_t)(VK::TexNearest | VK::TexClamp), surface.format);
+				{}, surface.format);
 		}
 #ifdef INFO_VULKAN
 		DX8_ErrorCode(D3DXLoadSurfaceFromSurface(D3DSurface,NULL,&dest,other->D3DSurface,NULL,&src,D3DX_FILTER_NONE,0));

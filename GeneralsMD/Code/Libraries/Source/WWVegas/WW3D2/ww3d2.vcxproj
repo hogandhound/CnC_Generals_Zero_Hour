@@ -1135,6 +1135,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\surfaceclass.h" />
     <ClInclude Include="..\..\..\..\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\VkBufferTools.h" />
     <ClInclude Include="..\..\..\..\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\VkRenderTarget.h" />
     <ClInclude Include="..\..\..\..\..\..\Common\Code\Libraries\Source\WWVegas\WW3D2\VkStructs.h" />
@@ -1240,7 +1241,6 @@
     <ClInclude Include="streak.h" />
     <ClInclude Include="streakRender.h" />
     <ClInclude Include="stripoptimizer.h" />
-    <ClInclude Include="surfaceclass.h" />
     <ClInclude Include="texfcach.h" />
     <ClInclude Include="texproject.h" />
     <ClInclude Include="texture.h" />

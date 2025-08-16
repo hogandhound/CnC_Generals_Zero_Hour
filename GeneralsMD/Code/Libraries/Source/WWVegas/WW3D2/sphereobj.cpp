@@ -355,7 +355,7 @@ void SphereRenderObjClass::Init_Material (void)
 	SphereMaterial->Set_Specular(0,0,0);
 	SphereMaterial->Set_Emissive(1,1,1);
 	SphereMaterial->Set_Opacity(0.25f);	
-	SphereMaterial->Set_Shininess(0.0f);
+	SphereMaterial-> Set_Shininess(0.0f);
 	SphereMaterial->Set_Lighting(true);
 
 	// Texturing, zbuffer, primary gradient, alpha blending

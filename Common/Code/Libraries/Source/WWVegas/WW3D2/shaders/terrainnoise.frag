@@ -38,7 +38,7 @@ layout(location = 0) in vec4 fragDiffuse;
 layout(location = 0) out vec4 finalColor;
 
 void main() {
-    finalColor = mix(texture(tex1, fragUv1), texture(tex0, fragUv0), fragDiffuse.a) * fragDiffuse * texture(tex2, gl_FragCoord.xy);
+    finalColor = mix(texture(tex1, fragUv1), texture(tex0, fragUv0), 1-fragDiffuse.a) * fragDiffuse * texture(tex2, gl_FragCoord.xy);
 }
 // Declare pixel shader version 1.1
 #if 0

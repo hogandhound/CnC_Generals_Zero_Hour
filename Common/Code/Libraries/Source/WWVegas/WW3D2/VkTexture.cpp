@@ -3,7 +3,8 @@
 #include "vulkan/vulkan.h"
 #include "vk_mem_alloc.h"
 
-void VK::CreateTexture(VkRenderTarget* target, VK::Texture& texture, uint32_t width, uint32_t height, uint8_t* rgba, uint32_t flags, VkFormat format)
+void VK::CreateTexture(VkRenderTarget* target, VK::Texture& texture, uint32_t width, uint32_t height, uint8_t* rgba, 
+    VK::SamplerSettings settings, VkFormat format)
 {
     texture.width = width;
     texture.height = height;
@@ -149,9 +150,10 @@ void VK::CreateTexture(VkRenderTarget* target, VK::Texture& texture, uint32_t wi
     textureImageViewInfo.subresourceRange.layerCount = 1;
     vkCreateImageView(target->device, &textureImageViewInfo, nullptr, &texture.imageView);
 
-    CreateTextureSampler(target, texture, flags);
+    CreateTextureSampler(target, texture, settings);
 }
-void VK::CreateTexture(VkRenderTarget* target, VK::Texture& texture, uint32_t width, uint32_t height, uint32_t usage, uint32_t flags, VkFormat format)
+void VK::CreateTexture(VkRenderTarget* target, VK::Texture& texture, uint32_t width, uint32_t height, uint32_t usage, 
+    VK::SamplerSettings settings, VkFormat format)
 {
     VkDeviceSize imageSize;
     switch (format)
@@ -202,34 +204,18 @@ void VK::CreateTexture(VkRenderTarget* target, VK::Texture& texture, uint32_t wi
     textureImageViewInfo.subresourceRange.layerCount = 1;
     vkCreateImageView(target->device, &textureImageViewInfo, nullptr, &texture.imageView);
 
-    CreateTextureSampler(target, texture, flags);
+    CreateTextureSampler(target, texture, settings);
 }
-void VK::CreateTextureSampler(VkRenderTarget* target, VK::Texture& texture, uint32_t flags, uint32_t mips) {
+void VK::CreateTextureSampler(VkRenderTarget* target, VK::Texture& texture, VK::SamplerSettings settings, uint32_t mips) {
     VkSamplerCreateInfo samplerInfo = {};
     samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-    if (flags & VK::TexLinear)
-    {
-        samplerInfo.magFilter = VK_FILTER_LINEAR;
-        samplerInfo.minFilter = VK_FILTER_LINEAR;
-    }
-    else
-    {
-        samplerInfo.magFilter = VK_FILTER_NEAREST;
-        samplerInfo.minFilter = VK_FILTER_NEAREST;
-    }
-
-    if (flags & VK::TexClamp)
-    {
-        samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-        samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-        samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    }
-    else
-    {
-        samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-        samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-        samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-    }
+    texture.sampSettings = settings;
+    samplerInfo.minFilter = (VkFilter)settings.minF;
+    samplerInfo.magFilter = (VkFilter)settings.maxF;
+    samplerInfo.mipmapMode = (VkSamplerMipmapMode)settings.minF;
+    samplerInfo.addressModeU = (VkSamplerAddressMode)settings.addU;
+    samplerInfo.addressModeV = (VkSamplerAddressMode)settings.addV;
+    samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
 
     samplerInfo.anisotropyEnable = VK_FALSE;
     samplerInfo.maxAnisotropy = 16;
@@ -343,7 +329,7 @@ void generateMipmaps(VkRenderTarget* target, VkImage image, VkFormat imageFormat
 }
 
 void VK::CreateTextureMips(VkRenderTarget* target, VK::Texture& texture, uint32_t mips, uint32_t width, uint32_t height, 
-    uint8_t* rgba, uint32_t flags, VkFormat format)
+    uint8_t* rgba, VK::SamplerSettings settings, VkFormat format)
 {
     VkFormatProperties formatProperties;
     vkGetPhysicalDeviceFormatProperties(target->physicalDevice, format, &formatProperties);
@@ -351,7 +337,7 @@ void VK::CreateTextureMips(VkRenderTarget* target, VK::Texture& texture, uint32_
     if (!(formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_2_BLIT_DST_BIT)
         || mips <= 1
         ) {
-        VK::CreateTexture(target, texture, width, height, rgba, flags, format);
+        VK::CreateTexture(target, texture, width, height, rgba, settings, format);
         return;
         //throw std::runtime_error("texture image format does not support linear blitting!");
     }
@@ -492,5 +478,5 @@ void VK::CreateTextureMips(VkRenderTarget* target, VK::Texture& texture, uint32_
     textureImageViewInfo.subresourceRange.layerCount = 1;
     vkCreateImageView(target->device, &textureImageViewInfo, nullptr, &texture.imageView);
 
-    CreateTextureSampler(target, texture, flags, mips);
+    CreateTextureSampler(target, texture, settings, mips);
 }

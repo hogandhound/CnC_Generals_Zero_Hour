@@ -93,9 +93,9 @@ void VkRenderTarget::BeginFramebuffer(VkExtent2D extent, VkFormat imageFormat)
 	}
 	VK::FrameBuffer& fbo = sfr.fbos[sfr.fboIndex++];
 
-	VK::CreateTexture(this, fbo.image, extent.width, extent.height, VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, 0, imageFormat);
+	VK::CreateTexture(this, fbo.image, extent.width, extent.height, VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, {}, imageFormat);
 	fbo.image.imageView = createImageView(fbo.image.image, imageFormat);
-	VK::CreateTexture(this, fbo.depth, extent.width, extent.height, (uint32_t)0, 0, VK_FORMAT_D32_SFLOAT_S8_UINT);
+	VK::CreateTexture(this, fbo.depth, extent.width, extent.height, (uint32_t)0, {}, VK_FORMAT_D32_SFLOAT_S8_UINT);
 	fbo.depth.imageView = createImageView(fbo.depth.image, VK_FORMAT_D32_SFLOAT_S8_UINT);
 	
 	VkImageView attachments[] = {
@@ -939,7 +939,7 @@ void VkRenderTarget::createSwapChain(SwapChainSupportDetails swapChainSupport, V
 	for (uint32_t i = 0; i < imageCount; ++i)
 	{
 		swapChainFBOs[i].image.image = images[i];
-		VK::CreateTexture(this, swapChainFBOs[i].depth, extent.width, extent.height, (uint32_t)0, 0, VK_FORMAT_D32_SFLOAT_S8_UINT);
+		VK::CreateTexture(this, swapChainFBOs[i].depth, extent.width, extent.height, (uint32_t)0, {}, VK_FORMAT_D32_SFLOAT_S8_UINT);
 	}
 
 	swapChainImageFormat = surfaceFormat.format;

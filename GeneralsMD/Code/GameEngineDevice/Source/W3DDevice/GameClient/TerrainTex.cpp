@@ -214,7 +214,7 @@ int TerrainTextureClass::update(WorldHeightMap *htMap)
 #endif
 	WWVKRENDER.PushSingleTexture(Peek_D3D_Texture());
 	VK::Texture tex = {};
-	VK::CreateTexture(&WWVKRENDER, tex, surface_desc.Width, surface_desc.Height, buffer.data(), 0, WW3DFormat_To_D3DFormat(surface_desc.Format));
+	VK::CreateTexture(&WWVKRENDER, tex, surface_desc.Width, surface_desc.Height, buffer.data(), {}, WW3DFormat_To_D3DFormat(surface_desc.Format));
 	Poke_Texture(tex);
 	return(surface_desc.Height);
 }
@@ -459,7 +459,7 @@ Bool TerrainTextureClass::updateFlat(WorldHeightMap *htMap, Int xCell, Int yCell
 #endif
 	WWVKRENDER.PushSingleTexture(Peek_D3D_Texture());
 	VK::Texture tex = {};
-	VK::CreateTexture(&WWVKRENDER, tex, surface_desc.Width, surface_desc.Height, buffer.data(), 0, WW3DFormat_To_D3DFormat(surface_desc.Format));
+	VK::CreateTexture(&WWVKRENDER, tex, surface_desc.Width, surface_desc.Height, buffer.data(), {}, WW3DFormat_To_D3DFormat(surface_desc.Format));
 	return(surface_desc.Height);
 }
 
@@ -885,7 +885,7 @@ int AlphaEdgeTextureClass::update(WorldHeightMap *htMap)
 #endif
 	WWVKRENDER.PushSingleTexture(Peek_D3D_Texture());
 	VK::Texture tex = {};
-	VK::CreateTexture(&WWVKRENDER, tex, surface_desc.Width, surface_desc.Height, buffer.data(), 0, WW3DFormat_To_D3DFormat(surface_desc.Format));
+	VK::CreateTexture(&WWVKRENDER, tex, surface_desc.Width, surface_desc.Height, buffer.data(), {}, WW3DFormat_To_D3DFormat(surface_desc.Format));
 	return(surface_desc.Height);
 }
 

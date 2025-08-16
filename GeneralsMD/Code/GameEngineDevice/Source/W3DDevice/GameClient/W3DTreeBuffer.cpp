@@ -208,7 +208,7 @@ int W3DTreeBuffer::W3DTreeTextureClass::update(W3DTreeBuffer* buffer)
 #endif
 	VK::Texture tex = Peek_D3D_Texture();
 	WWVKRENDER.PushSingleTexture(tex);
-	VK::CreateTexture(&WWVKRENDER, tex, desc.Width, desc.Height, (uint8_t*)buf, 17, WW3DFormat_To_D3DFormat( desc.Format));
+	VK::CreateTexture(&WWVKRENDER, tex, desc.Width, desc.Height, (uint8_t*)buf, {}, WW3DFormat_To_D3DFormat( desc.Format));
 	Poke_Texture(tex);
 	return(desc.Height);
 }
@@ -1763,6 +1763,14 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 	VkBufferTools::CreateUniformBuffer(&DX8Wrapper::_GetRenderTarget(), sizeof(Trees), &treeConstants, uboTrees);
 	DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(uboTrees);
 
+	DX8Wrapper::Set_DX8_Texture_Stage_State(0, VKTSS_TEXCOORDINDEX, 0);
+	DX8Wrapper::Set_DX8_Texture_Stage_State(1, VKTSS_TEXCOORDINDEX, 1);
+	DX8Wrapper::Set_DX8_Texture_Stage_State(1, VKTSS_TEXTURETRANSFORMFLAGS, VKTTFF_DISABLE);
+	// Draw all the trees.
+	DX8Wrapper::Apply_Render_State_Changes();
+	W3DShaderManager::setShroudTex(1);
+	DX8Wrapper::Apply_Render_State_Changes();
+
 	DirectX::XMMATRIX matWorld;
 	DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&matWorld);
 	Int bNdx;
@@ -1778,7 +1786,7 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 
 		std::vector<VkDescriptorSet> sets;
 		WWVK_UpdateTreesDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets,
-			&m_treeTexture->Peek_D3D_Texture(), &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
+			&m_treeTexture->Peek_D3D_Texture(), &DX8Wrapper::Get_DX8_Texture(1),
 			DX8Wrapper::UboProj(), DX8Wrapper::UboView(), uboTrees);
 		//void WWVK_DrawTrees(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, 
 		// VkBuffer indexBuffer, uint32_t indexCount, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push);
@@ -1788,12 +1796,6 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 	}
 
 #ifdef INFO_VULKAN
-	DX8Wrapper::Set_DX8_Texture_Stage_State(0,  VKTSS_TEXCOORDINDEX, 0);
-	DX8Wrapper::Set_DX8_Texture_Stage_State(1,  VKTSS_TEXCOORDINDEX, 1);
-	// Draw all the trees.
-	DX8Wrapper::Apply_Render_State_Changes();
-	W3DShaderManager::setShroudTex(1);
-	DX8Wrapper::Apply_Render_State_Changes();
  
 	if (m_dwTreeVertexShader) {
 		D3DXMATRIX matProj, matView, matWorld;

@@ -321,7 +321,7 @@ VK::Texture Load_Compressed_Texture(
 	VK::Surface surface = Load_Compressed_Surface(filename, dest_format);
 
 	VK::Texture d3d_texture = {};
-	VK::CreateTexture(&WWVKRENDER, d3d_texture, surface.width, surface.height, surface.buffer.data(), 0, surface.format);
+	VK::CreateTexture(&WWVKRENDER, d3d_texture, surface.width, surface.height, surface.buffer.data(), {}, surface.format);
 #endif
 	return d3d_texture;
 }
@@ -550,7 +550,7 @@ VK::Texture TextureLoader::Load_Thumbnail(const StringClass& filename, const Vec
 		//width>>=1;
 		//height>>=1;
 		VK::Texture ret = {};
-		VK::CreateTextureMips(&WWVKRENDER, ret, 1, width, height, buffer.data(), 0, WW3DFormat_To_D3DFormat(dest_format));
+		VK::CreateTextureMips(&WWVKRENDER, ret, 1, width, height, buffer.data(), {}, WW3DFormat_To_D3DFormat(dest_format));
 		return ret;
 	}
 
@@ -1755,7 +1755,7 @@ void TextureLoadTaskClass::Unlock_Surfaces(void)
 #else
 	WWVKRENDER.PushSingleTexture(D3DTexture);
 	VK::CreateTextureMips(&WWVKRENDER, D3DTexture, MipLevelCount, Surface.width, Surface.height,
-		Surface.buffer.data(), (uint32_t)(VK::TexNearest | VK::TexClamp), Surface.format);
+		Surface.buffer.data(), {}, Surface.format);
 	LockedSurfacePtr[0] = 0;
 #endif
 }

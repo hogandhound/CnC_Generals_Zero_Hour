@@ -7,6 +7,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzd.vert",
 		  "inputs": {}
@@ -18,6 +19,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
 		  "inputs": {}
@@ -29,6 +31,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "depthWrite": "VK_FALSE",
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
@@ -41,6 +44,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_ALWAYS",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "depthWrite": "VK_FALSE",
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
@@ -53,6 +57,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_ALWAYS",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "depthWrite": "VK_FALSE",
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
@@ -64,6 +69,7 @@
 	  "name": "FVF_DUV_Grayscale_NoDepth",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
 		  "inputs": {}
@@ -75,6 +81,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "blend": { 
 		  "srcColorBlendFactor": "VK_BLEND_FACTOR_ZERO",
 		  "dstColorBlendFactor": "VK_BLEND_FACTOR_SRC_COLOR"
@@ -90,6 +97,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "blend": { 
 		  "srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
 		  "dstColorBlendFactor": "VK_BLEND_FACTOR_ONE"
@@ -105,6 +113,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
 		  "inputs": {}
@@ -116,6 +125,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv_camuvt.vert",
 		  "inputs": {}
@@ -127,6 +137,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "depthBias": { "depthBiasConstantFactor": "8 * -0.000005f"},
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
@@ -139,6 +150,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "depthBias": { "depthBiasConstantFactor": "8 * -0.000005f"},
 	  "vert":{
 		  "name": "fvf_xyzduv_camuvt.vert",
@@ -151,6 +163,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv2.vert",
 		  "inputs": {}
@@ -162,6 +175,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv2.vert",
 		  "inputs": {}
@@ -173,6 +187,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv2.vert",
 		  "inputs": {}
@@ -184,6 +199,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv2.vert",
 		  "inputs": {}
@@ -196,6 +212,7 @@
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_EQUAL",
 	  "depthWrite": "VK_FALSE",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "blend": {
 		  "srcColorBlendFactor": "VK_BLEND_FACTOR_ZERO",
 		  "dstColorBlendFactor": "VK_BLEND_FACTOR_SRC_COLOR"
@@ -211,6 +228,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv2.vert",
 		  "inputs": {}
@@ -222,6 +240,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyznuv1.vert",
 		  "inputs": {}
@@ -233,6 +252,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyznuv1.vert",
 		  "inputs": {}
@@ -245,6 +265,7 @@
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "depthWrite": "VK_FALSE",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyznuv1.vert",
 		  "inputs": {}
@@ -256,6 +277,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "blend": {
 		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
 		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
@@ -271,6 +293,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "blend": {
 		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
 		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
@@ -286,6 +309,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyznuv1_refluvt.vert",
 		  "inputs": {}
@@ -297,6 +321,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "blend": {
 		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
 		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
@@ -312,6 +337,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyznuv1.vert",
 		  "inputs": {}
@@ -323,6 +349,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyznuv1.vert",
 		  "inputs": {}
@@ -358,6 +385,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzn.vert",
 		  "inputs": {}
@@ -369,6 +397,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzn.vert",
 		  "inputs": {}
@@ -380,6 +409,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyznduv1.vert",
 		  "inputs": {}
@@ -391,6 +421,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyznduv1.vert",
 		  "inputs": {}
@@ -402,6 +433,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyznduv1.vert",
 		  "inputs": {}
@@ -413,6 +445,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyznduv1.vert",
 		  "inputs": {}
@@ -424,6 +457,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyznduv1_camuvt.vert",
 		  "inputs": {}
@@ -435,6 +469,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyznduv1_uvt.vert",
 		  "inputs": {}
@@ -446,6 +481,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyznduv2.vert",
 		  "inputs": {}
@@ -453,11 +489,40 @@
 	  "frag": { "name": "fvf_nduv2.frag" }
   },
   {
-	  "name": "FVF_NDUV2_DropUV_NoAlpha",
+	  "name": "FVF_NDUV2_DropUV",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv2_dropuv.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_DropUV_NoDepthWrite",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "depthWrite": "VK_FALSE",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv2_dropuv.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_DropUV_NoDepthWrite_AddBlend",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "depthWrite": "VK_FALSE",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "blend": {
+		"srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"dstColorBlendFactor": "VK_BLEND_FACTOR_ONE",
 		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
 		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
 	  },
@@ -468,15 +533,49 @@
 	  "frag": { "name": "fvf_nduv2_dropuv.frag" }
   },
   {
+	  "name": "FVF_NDUV2_DropTex_NoAlpha",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
+	  "blend": {
+		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv.frag" }
+  },
+  {
 	  "name": "FVF_NDUV2_NOL",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyznduv2.vert",
 		  "inputs": {}
 	  },
 	  "frag": { "name": "fvf_nduv2_noL.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_NoDepthWrite_NoAlphaBlend_OnlyTex1",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
+	  "depthWrite": "VK_FALSE",
+	  "blend": {
+		  "srcAlphaBlendFactor": "VK_BLEND_FACTOR_DST_ALPHA",
+		  "dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv2_noL_onlytex1.frag" }
   },
   {
 	  "name": "FVF_NDUV2_NOCULL_NODEPTH",
@@ -513,6 +612,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyznduv2.vert",
 		  "inputs": {}
@@ -555,6 +655,7 @@
 	  "name": "Snow",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_POINT_LIST",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "snow.vert",
 		  "inputs": {}
@@ -565,6 +666,7 @@
 	  "name": "FTerrain",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv_camuv.vert",
 		  "inputs": {}
@@ -575,6 +677,7 @@
 	  "name": "FTerrainNoise",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv_camuv.vert",
 		  "inputs": {}
@@ -585,6 +688,7 @@
 	  "name": "FTerrainNoise2",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv_camuv.vert",
 		  "inputs": {}
@@ -596,6 +700,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "depthWrite": "VK_FALSE",
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
@@ -609,6 +714,7 @@
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "depthWrite": "VK_FALSE",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv_camuvt.vert",
 		  "inputs": {}
@@ -621,6 +727,7 @@
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "depthWrite": "VK_FALSE",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv_camuvt2.vert",
 		  "inputs": {}
@@ -631,6 +738,7 @@
 	  "name": "Monochrome",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
 		  "inputs": {}
@@ -641,6 +749,7 @@
 	  "name": "MotionBlur",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
 		  "inputs": {}
@@ -651,6 +760,7 @@
 	  "name": "BumpDiff",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "shd8bumpdiff.vert",
 		  "inputs": {}
@@ -661,6 +771,7 @@
 	  "name": "BumpSpec",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "shd8bumpspec.vert",
 		  "inputs": {}
@@ -671,6 +782,7 @@
 	  "name": "SSBumpDiff",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "shd8ssbumpdiff.vert",
 		  "inputs": {}
@@ -681,6 +793,7 @@
 	  "name": "SSBumpSpec",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "shd8ssbumpspec.vert",
 		  "inputs": {}
@@ -692,6 +805,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "blend": {
 		"srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
 		"dstColorBlendFactor": "VK_BLEND_FACTOR_ZERO",
@@ -709,6 +823,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "blend": {
 		"srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
 		"dstColorBlendFactor": "VK_BLEND_FACTOR_ZERO",
@@ -726,6 +841,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "blend": {
 		"srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
 		"dstColorBlendFactor": "VK_BLEND_FACTOR_ZERO",
@@ -743,6 +859,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "Trees.vert",
 		  "inputs": {}
@@ -754,6 +871,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "wave.vert",
 		  "inputs": {}
@@ -765,6 +883,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv2_camuvt.vert",
 		  "inputs": {}
@@ -776,6 +895,7 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "blend": {
 		  "srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
 		  "dstColorBlendFactor": "VK_BLEND_FACTOR_ONE"
@@ -836,7 +956,9 @@
 	  "depthWrite": "VK_FALSE",
 	  "blend": { 
 		  "srcColorBlendFactor": "VK_BLEND_FACTOR_DST_ALPHA",
-		  "dstColorBlendFactor": "VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA"
+		  "dstColorBlendFactor": "VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA",
+		  "srcAlphaBlendFactor": "VK_BLEND_FACTOR_DST_ALPHA",
+		  "dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA"
 	  },
 	  "vert":{
 		  "name": "fvf_xyzduv2_camuvt2.vert",
@@ -850,6 +972,7 @@
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "depthWrite": "VK_FALSE",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzduv2_camuvt2.vert",
 		  "inputs": {}
@@ -869,7 +992,7 @@
 	  },
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "depthWrite": "VK_FALSE",
-	  "cullMode": "VK_CULL_MODE_FRONT_BIT",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "ProjShadow.vert",
 		  "inputs": {}
@@ -889,6 +1012,7 @@
 		"depthFailOp": "VK_STENCIL_OP_KEEP",
 		"passOp": "VK_STENCIL_OP_KEEP"
 	  },
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "vert":{
 		  "name": "fvf_xyzd.vert",
 		  "inputs": {}
@@ -899,6 +1023,7 @@
 	  "name": "ProjShadow",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "stencil":{
 		"compareMask": "0xffffffff",
 		"writeMask": "0xffffffff",
@@ -921,8 +1046,8 @@
   {
 	  "name": "StencilPlayerColor",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
-	  "dynamic": [  ],
 	  "dynamic": [ "VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK", "VK_DYNAMIC_STATE_STENCIL_OP", "VK_DYNAMIC_STATE_STENCIL_REFERENCE", "VK_DYNAMIC_STATE_DEPTH_WRITE_ENABLE", "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "stencil":{
 		"writeMask": "0xffffffff"
 	  },
@@ -936,6 +1061,7 @@
 	  "name": "StencilPlayerColorClear",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "dynamic": [ "VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK", "VK_DYNAMIC_STATE_STENCIL_OP", "VK_DYNAMIC_STATE_STENCIL_REFERENCE", "VK_DYNAMIC_STATE_DEPTH_WRITE_ENABLE" ],
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
 	  "stencil":{
 		"writeMask": "0xffffffff"
 	  },

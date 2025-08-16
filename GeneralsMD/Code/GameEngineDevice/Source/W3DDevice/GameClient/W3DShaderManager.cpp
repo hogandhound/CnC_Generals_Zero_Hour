@@ -721,8 +721,9 @@ Bool ScreenCrossFadeFilter::postRender(enum FilterModes mode, Coord2D &scrollDel
 	VK::Buffer vbo;
 	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANS_LIT_TEX_VERTEX) * 4, v, vbo);
 
+	DX8Wrapper::Apply_Render_State_Changes();
 	std::vector<VkDescriptorSet> sets;
-	WWVK_UpdateFVF_DUV2_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(), 
+	WWVK_UpdateFVF_DUV2_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, &DX8Wrapper::Get_DX8_Texture(1), 
 		DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
 	WWVK_DrawFVF_DUV2_Strip_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
 	WWVKRENDER.PushSingleFrameBuffer(vbo);
@@ -956,8 +957,9 @@ Bool ScreenMotionBlurFilter::postRender(enum FilterModes mode, Coord2D &scrollDe
 	VK::Buffer vbo;
 	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANS_LIT_TEX_VERTEX) * 4, v, vbo);
 
+	DX8Wrapper::Apply_Render_State_Changes();
 	std::vector<VkDescriptorSet> sets;
-	WWVK_UpdateFVF_DUV2_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
+	WWVK_UpdateFVF_DUV2_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, &DX8Wrapper::Get_DX8_Texture(1),
 		DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
 	WWVK_DrawFVF_DUV2_Strip_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
 	WWVKRENDER.PushSingleFrameBuffer(vbo);
@@ -996,8 +998,9 @@ Bool ScreenMotionBlurFilter::postRender(enum FilterModes mode, Coord2D &scrollDe
 			VK::Buffer vbo;
 			VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANS_LIT_TEX_VERTEX) * 4, v, vbo);
 
+			DX8Wrapper::Apply_Render_State_Changes();
 			std::vector<VkDescriptorSet> sets;
-			WWVK_UpdateFVF_DUV2_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, &DX8Wrapper::Get_Texture(1)->Peek_D3D_Texture(),
+			WWVK_UpdateFVF_DUV2_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &tex, &DX8Wrapper::Get_DX8_Texture(1),
 				DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
 			WWVK_DrawFVF_DUV2_Strip_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
 			WWVKRENDER.PushSingleFrameBuffer(vbo);
@@ -2351,8 +2354,9 @@ void W3DShaderManager::drawViewport(Int color)
 	VK::Buffer vbo;
 	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, sizeof(_TRANS_LIT_TEX_VERTEX) * 4, v, vbo);
 
+	DX8Wrapper::Apply_Render_State_Changes();
 	std::vector<VkDescriptorSet> sets;
-	WWVK_UpdateFVF_DUV_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_Texture(0)->Peek_D3D_Texture(),
+	WWVK_UpdateFVF_DUV_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),
 		DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
 	WWVK_DrawFVF_DUV_Strip_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets, 4, vbo.buffer, 0, (WorldMatrix*)&ident);
 	WWVKRENDER.PushSingleFrameBuffer(vbo);

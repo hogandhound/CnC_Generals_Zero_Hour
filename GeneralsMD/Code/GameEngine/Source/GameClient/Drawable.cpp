@@ -2540,7 +2540,7 @@ void Drawable::validatePos() const
 		const Coord3D* objPos = getObject()->getPosition();
 		if (ourPos->x != objPos->x || ourPos->y != objPos->y || ourPos->z != objPos->z)
 		{
-			DEBUG_CRASH(("Drawable/Object position mismatch! '%s'\n", getTemplate()->getName().str()));
+			DEBUG_LOG(("Drawable/Object position mismatch! '%s'\n", getTemplate()->getName().str()));
 		}
 	}
 }

@@ -26,7 +26,7 @@ layout(location = 4) out vec2 camuv;
 void main() {
     // Pass the tex coord straight through to the fragment shader
     fragUv = uv;
-	fragDiffuse = unpackUnorm4x8(diffuse);
+	fragDiffuse = unpackUnorm4x8(diffuse).bgra;
     
 	fragNorm = normalize(push.world * vec4(norm,0)).xyz;
 	viewDir = normalize(vec3(view.m[0].z, view.m[1].z, view.m[2].z)); //view.m[2].rgb

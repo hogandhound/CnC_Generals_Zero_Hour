@@ -309,8 +309,33 @@ void Line3DClass::Render(RenderInfoClass & rinfo)
 	DX8Wrapper::Apply_Render_State_Changes();
 	auto pipelines = DX8Wrapper::FindClosestPipelines(vb.FVF_Info().FVF);
 	assert(pipelines.size() == 1);
+	WWVKDSV;
 	switch (pipelines[0]) {
-	case 0:
+	case PIPELINE_WWVK_FVF_NDUV2_NODEPTH_DROPTEX:
+	{
+		WorldMatrix push;
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+		WWVK_UpdateFVF_NDUV2_NODEPTH_DROPTEXDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+			&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		WWVK_DrawFVF_NDUV2_NODEPTH_DROPTEX(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, 36, 0,
+			VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+			0, (WorldMatrix*)&push);
+		break;
+	}
+	case PIPELINE_WWVK_FVF_NDUV2_NODEPTH_DROPTEX2:
+	{
+		WorldMatrix push;
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+		WWVK_UpdateFVF_NDUV2_NODEPTH_DROPTEX2DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+			DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+		WWVK_DrawFVF_NDUV2_NODEPTH_DROPTEX2(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, 36, 0,
+			VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+			0, (WorldMatrix*)&push);
+		break;
+	}
+
 	default: assert(false);
 	}
 #ifdef INFO_VULKAN

@@ -138,7 +138,7 @@
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "cullMode": "VK_CULL_MODE_BACK_BIT",
-	  "depthBias": { "depthBiasConstantFactor": "8 * -0.000005f"},
+	  "depthBias": { "depthBiasConstantFactor": "-0.0005f"},
 	  "vert":{
 		  "name": "fvf_xyzduv.vert",
 		  "inputs": {}
@@ -150,8 +150,9 @@
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "depthWrite": "VK_FALSE",
 	  "cullMode": "VK_CULL_MODE_BACK_BIT",
-	  "depthBias": { "depthBiasConstantFactor": "8 * -0.000005f"},
+	  "depthBias": { "depthBiasConstantFactor": "-0.0005f"},
 	  "vert":{
 		  "name": "fvf_xyzduv_camuvt.vert",
 		  "inputs": {}
@@ -514,6 +515,57 @@
 	  "frag": { "name": "fvf_nduv2_dropuv.frag" }
   },
   {
+	  "name": "FVF_NDUV2_DropTex_NoDepthWrite",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "depthWrite": "VK_FALSE",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_DropUV_NoCull_NoDepthWrite_AddBlend",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "depthWrite": "VK_FALSE",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "blend": {
+		"srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"dstColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv2_dropuv.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_DropTex_NoCull_NoDepthWrite_AddBlend",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "depthWrite": "VK_FALSE",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "blend": {
+		"srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"dstColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv.frag" }
+  },
+  {
 	  "name": "FVF_NDUV2_DropUV_NoDepthWrite_AddBlend",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
@@ -531,6 +583,37 @@
 		  "inputs": {}
 	  },
 	  "frag": { "name": "fvf_nduv2_dropuv.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_DropTex_NoDepthWrite_AddBlend",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "depthWrite": "VK_FALSE",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
+	  "blend": {
+		"srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"dstColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_DropTex",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv.frag" }
   },
   {
 	  "name": "FVF_NDUV2_DropTex_NoAlpha",
@@ -591,6 +674,60 @@
 	  "frag": { "name": "fvf_nduv2_noL.frag" }
   },
   {
+	  "name": "FVF_NDUV2_NOCULL_NODEPTH_DROPTEX",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "depthWrite": "VK_FALSE",
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv2_noL_onlytex1.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_NODEPTH_DROPTEX",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "depthWrite": "VK_FALSE",
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv2_noL_onlytex1.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_NODEPTH_DROPTEX2",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "depthWrite": "VK_FALSE",
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nd_noL.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_NODEPTH_NOBLEND_DROPTEX",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
+	  "depthWrite": "VK_FALSE",
+	  "blend": {
+		  "srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		  "dstColorBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv2_noL_onlytex1.frag" }
+  },
+  {
 	  "name": "FVF_NDUV2_NOCULL_NODEPTH_NOBLEND",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
@@ -606,6 +743,23 @@
 		  "inputs": {}
 	  },
 	  "frag": { "name": "fvf_nduv2_noL.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_NOCULL_NODEPTH_NOBLEND_DROPTEX",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "depthWrite": "VK_FALSE",
+	  "blend": {
+		  "srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		  "dstColorBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv2_noL_onlytex1.frag" }
   },
   {
 	  "name": "FVF_NDUV2_DepthLE",

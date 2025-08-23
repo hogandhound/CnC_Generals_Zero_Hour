@@ -52,7 +52,7 @@ layout(location = 0) out vec4 fragDiffuse;
 void main() {
     // Pass the tex coord straight through to the fragment shader
     fragUv0 = uv;
-	fragDiffuse = unpackUnorm4x8(diffuse);
+	fragDiffuse = unpackUnorm4x8(diffuse).bgra;
     
 	vec4 r0 = proj.m*view.m*push.world*vec4(vert, 1);
     gl_Position = r0;

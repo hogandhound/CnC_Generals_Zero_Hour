@@ -43,7 +43,7 @@ layout(location = 0) out vec4 finalColor;
 void main() {
 	vec4 t0 = texture(tex, fragUv);
 	vec4 r1 = dot(t0.rgb, push.c0.rgb) * push.c1;
-    finalColor = mix(r1, t0, push.c2);
+    finalColor = mix(r1, t0, 1-push.c2);
 }
 
 // Declare pixel shader version 1.1

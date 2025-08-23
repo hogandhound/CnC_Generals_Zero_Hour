@@ -586,13 +586,14 @@ void SurfaceClass::Copy(
 		if (dest.right>int(sd.Width)) dest.right=int(sd.Width);
 		if (dest.bottom>int(sd.Height)) dest.bottom=int(sd.Height);
 		
+		uint32_t formatSize = VK::SizeOfFormat(surface.format);
 		auto& o = other->Peek_D3D_Surface();
 		for (uint32_t y = 0; y + dsty < (uint32_t)dest.bottom; ++y)
 		{
-			for (uint32_t x = 0; x + dstx < (uint32_t)dest.right; ++x)
+			for (uint32_t x = 0; x + dstx < (uint32_t)dest.right * formatSize; ++x)
 			{
-				surface.buffer[(y + dsty) * surface.width + x + dstx] =
-					o[(y + srcy) * osd.Width + x + srcx];
+				surface.buffer[(y + dsty) * surface.width * formatSize + x + dstx] =
+					o[(y + srcy) * osd.Width * formatSize + x + srcx];
 			}
 		}
 		if (texture)

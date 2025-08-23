@@ -25,4 +25,6 @@ void main() {
  baseColor.rgb, baseColor.rgb, baseColor.rgb);
 	if (finalColor.a > ref)
 		discard;
+    finalColor.a = baseColor.a;
+    if (baseColor.a < 0.01) discard;
 }

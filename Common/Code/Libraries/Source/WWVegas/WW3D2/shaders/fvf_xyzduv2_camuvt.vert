@@ -26,7 +26,7 @@ void main() {
     // Pass the tex coord straight through to the fragment shader
     fragUv1 = uv1;
     fragUv2 = uv2;
-	fragDiffuse = unpackUnorm4x8(diffuse);
+	fragDiffuse = unpackUnorm4x8(diffuse).bgra;
     
     gl_Position = proj.m*view.m*push.world*vec4(vert, 1);
 	camuv1 = (push.uvt*view.m*push.world*vec4(vert, 1)).xy;

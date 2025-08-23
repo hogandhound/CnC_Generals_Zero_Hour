@@ -1138,8 +1138,7 @@ void SegLineRendererClass::Render
 		** Render
 		*/		
 		
-		DynamicVBAccessClass Verts((sorting?BUFFER_TYPE_DYNAMIC_SORTING:BUFFER_TYPE_DYNAMIC_DX8), 
-			VKFVF_XYZ | VKFVF_TEX1 | VKFVF_DIFFUSE,vnum);
+		DynamicVBAccessClass Verts((sorting?BUFFER_TYPE_DYNAMIC_SORTING:BUFFER_TYPE_DYNAMIC_DX8), dynamic_fvf_type,vnum);
 		// Copy in the data to the  VB
 		{
 			DynamicVBAccessClass::WriteLockClass Lock(&Verts);

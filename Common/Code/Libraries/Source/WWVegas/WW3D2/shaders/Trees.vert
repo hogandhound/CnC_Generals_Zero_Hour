@@ -61,7 +61,7 @@ layout(location = 4) out vec2 fragUv2;
 void main() {
     // Pass the tex coord straight through to the fragment shader
     fragUv1 = uv;
-	vec4 localDiffuse = unpackUnorm4x8(diffuse);
+	vec4 localDiffuse = unpackUnorm4x8(diffuse).bgra;
 	viewDir = normalize((view.m * vec4(0,0,1,1)).xyz);
 	
 	vec4 r2 = vec4(vert,0.0) - vec4(0,0,norm.z,0);

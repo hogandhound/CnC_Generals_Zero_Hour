@@ -602,6 +602,42 @@ void SortingRendererClass::Flush_Sorting_Pool()
 					((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
 					0, (WorldMatrix*)&push);
 				break;
+			case PIPELINE_WWVK_FVF_NDUV2_DropTex_NoDepthWrite:
+				WWVK_UpdateFVF_NDUV2_DropTex_NoDepthWriteDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0),
+					DX8Wrapper::UboProj(), DX8Wrapper::UboView(), DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
+				//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+				// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+				WWVK_DrawFVF_NDUV2_DropTex_NoDepthWrite(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+					start_index * 3, VK_INDEX_TYPE_UINT16,
+					((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+					0, (WorldMatrix*)&push);
+				break;
+			case PIPELINE_WWVK_FVF_NDUV2_DropUV_NoCull_NoDepthWrite_AddBlend:
+				WWVK_UpdateFVF_NDUV2_DropUV_NoCull_NoDepthWrite_AddBlendDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),
+					DX8Wrapper::UboProj(), DX8Wrapper::UboView(), DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
+				//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+				// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+				WWVK_DrawFVF_NDUV2_DropUV_NoCull_NoDepthWrite_AddBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+					start_index * 3, VK_INDEX_TYPE_UINT16,
+					((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+					0, (WorldMatrix*)&push);
+				break;
+			case PIPELINE_WWVK_FVF_NDUV2_DropTex_NoCull_NoDepthWrite_AddBlend:
+				WWVK_UpdateFVF_NDUV2_DropTex_NoCull_NoDepthWrite_AddBlendDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0),
+					DX8Wrapper::UboProj(), DX8Wrapper::UboView(), DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
+				//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+				// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+				WWVK_DrawFVF_NDUV2_DropTex_NoCull_NoDepthWrite_AddBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+					start_index * 3, VK_INDEX_TYPE_UINT16,
+					((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+					0, (WorldMatrix*)&push);
+				break;
 			case PIPELINE_WWVK_FVF_NDUV2_DropUV_NoDepthWrite_AddBlend:
 				WWVK_UpdateFVF_NDUV2_DropUV_NoDepthWrite_AddBlendDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 					&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),
@@ -609,6 +645,30 @@ void SortingRendererClass::Flush_Sorting_Pool()
 				//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
 				// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
 				WWVK_DrawFVF_NDUV2_DropUV_NoDepthWrite_AddBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+					start_index * 3, VK_INDEX_TYPE_UINT16,
+					((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+					0, (WorldMatrix*)&push);
+				break;
+			case PIPELINE_WWVK_FVF_NDUV2_DropTex_NoDepthWrite_AddBlend:
+				WWVK_UpdateFVF_NDUV2_DropTex_NoDepthWrite_AddBlendDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0), 
+					DX8Wrapper::UboProj(), DX8Wrapper::UboView(), DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
+				//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+				// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+				WWVK_DrawFVF_NDUV2_DropTex_NoDepthWrite_AddBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+					start_index * 3, VK_INDEX_TYPE_UINT16,
+					((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+					0, (WorldMatrix*)&push);
+				break;
+			case PIPELINE_WWVK_FVF_NDUV2_NOCULL_NODEPTH_NOBLEND_DROPTEX:
+				WWVK_UpdateFVF_NDUV2_NOCULL_NODEPTH_NOBLEND_DROPTEXDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0),
+					DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+				// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+				WWVK_DrawFVF_NDUV2_NOCULL_NODEPTH_NOBLEND_DROPTEX(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 					((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
 					start_index * 3, VK_INDEX_TYPE_UINT16,
 					((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
@@ -633,6 +693,18 @@ void SortingRendererClass::Flush_Sorting_Pool()
 				//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
 				// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
 				WWVK_DrawFVF_NDUV2_NOCULL_NODEPTH(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+					start_index * 3, VK_INDEX_TYPE_UINT16,
+					((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+					0, (WorldMatrix*)&push);
+				break;
+			case PIPELINE_WWVK_FVF_NDUV2_NOCULL_NODEPTH_DROPTEX:
+				WWVK_UpdateFVF_NDUV2_NOCULL_NODEPTH_DROPTEXDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0),
+					DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+				// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+				WWVK_DrawFVF_NDUV2_NOCULL_NODEPTH_DROPTEX(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 					((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
 					start_index * 3, VK_INDEX_TYPE_UINT16,
 					((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
@@ -676,6 +748,42 @@ void SortingRendererClass::Flush_Sorting_Pool()
 				((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
 				0, (WorldMatrix*)&push);
 			break;
+		case PIPELINE_WWVK_FVF_NDUV2_DropTex_NoDepthWrite:
+			WWVK_UpdateFVF_NDUV2_DropTex_NoDepthWriteDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+				&DX8Wrapper::Get_DX8_Texture(0),
+				DX8Wrapper::UboProj(), DX8Wrapper::UboView(), DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
+			//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+			// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+			WWVK_DrawFVF_NDUV2_DropTex_NoDepthWrite(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+				start_index * 3, VK_INDEX_TYPE_UINT16,
+				((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+				0, (WorldMatrix*)&push);
+			break;
+		case PIPELINE_WWVK_FVF_NDUV2_DropUV_NoCull_NoDepthWrite_AddBlend:
+			WWVK_UpdateFVF_NDUV2_DropUV_NoCull_NoDepthWrite_AddBlendDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+				&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),
+				DX8Wrapper::UboProj(), DX8Wrapper::UboView(), DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
+			//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+			// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+			WWVK_DrawFVF_NDUV2_DropUV_NoCull_NoDepthWrite_AddBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+				start_index * 3, VK_INDEX_TYPE_UINT16,
+				((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+				0, (WorldMatrix*)&push);
+			break;
+		case PIPELINE_WWVK_FVF_NDUV2_DropTex_NoCull_NoDepthWrite_AddBlend:
+			WWVK_UpdateFVF_NDUV2_DropTex_NoCull_NoDepthWrite_AddBlendDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+				&DX8Wrapper::Get_DX8_Texture(0),
+				DX8Wrapper::UboProj(), DX8Wrapper::UboView(), DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
+			//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+			// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+			WWVK_DrawFVF_NDUV2_DropTex_NoCull_NoDepthWrite_AddBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+				start_index * 3, VK_INDEX_TYPE_UINT16,
+				((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+				0, (WorldMatrix*)&push);
+			break;
 		case PIPELINE_WWVK_FVF_NDUV2_DropUV_NoDepthWrite_AddBlend:
 			WWVK_UpdateFVF_NDUV2_DropUV_NoDepthWrite_AddBlendDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 				&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),
@@ -683,6 +791,30 @@ void SortingRendererClass::Flush_Sorting_Pool()
 			//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
 			// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
 			WWVK_DrawFVF_NDUV2_DropUV_NoDepthWrite_AddBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+				start_index * 3, VK_INDEX_TYPE_UINT16,
+				((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+				0, (WorldMatrix*)&push);
+			break;
+		case PIPELINE_WWVK_FVF_NDUV2_DropTex_NoDepthWrite_AddBlend:
+			WWVK_UpdateFVF_NDUV2_DropTex_NoDepthWrite_AddBlendDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+				&DX8Wrapper::Get_DX8_Texture(0),
+				DX8Wrapper::UboProj(), DX8Wrapper::UboView(), DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
+			//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+			// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+			WWVK_DrawFVF_NDUV2_DropTex_NoDepthWrite_AddBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+				start_index * 3, VK_INDEX_TYPE_UINT16,
+				((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+				0, (WorldMatrix*)&push);
+			break;
+		case PIPELINE_WWVK_FVF_NDUV2_NOCULL_NODEPTH_NOBLEND_DROPTEX:
+			WWVK_UpdateFVF_NDUV2_NOCULL_NODEPTH_NOBLEND_DROPTEXDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+				&DX8Wrapper::Get_DX8_Texture(0),
+				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+			//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+			// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+			WWVK_DrawFVF_NDUV2_NOCULL_NODEPTH_NOBLEND_DROPTEX(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
 				start_index * 3, VK_INDEX_TYPE_UINT16,
 				((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
@@ -707,6 +839,18 @@ void SortingRendererClass::Flush_Sorting_Pool()
 			//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
 			// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
 			WWVK_DrawFVF_NDUV2_NOCULL_NODEPTH(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
+				start_index * 3, VK_INDEX_TYPE_UINT16,
+				((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+				0, (WorldMatrix*)&push);
+			break;
+		case PIPELINE_WWVK_FVF_NDUV2_NOCULL_NODEPTH_DROPTEX:
+			WWVK_UpdateFVF_NDUV2_NOCULL_NODEPTH_DROPTEXDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+				&DX8Wrapper::Get_DX8_Texture(0),
+				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+			//VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, 
+			// VkBuffer uv1, VkDeviceSize offset_uv1, WorldMatrix* push)
+			WWVK_DrawFVF_NDUV2_NOCULL_NODEPTH_DROPTEX(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)dyn_ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, count_to_render * 3,
 				start_index * 3, VK_INDEX_TYPE_UINT16,
 				((DX8VertexBufferClass*)dyn_vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,

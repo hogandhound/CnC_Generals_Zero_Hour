@@ -19,4 +19,6 @@ void main() {
 	vec4 baseColor = texture(tex1, fragUv);
 	finalColor = CalculateLights(lights, material, fragNorm, gl_FragCoord.xyz, viewDir,
  baseColor.rgb, baseColor.rgb, baseColor.rgb);
+    finalColor.a = baseColor.a;
+    if (baseColor.a < 0.01) discard;
 }

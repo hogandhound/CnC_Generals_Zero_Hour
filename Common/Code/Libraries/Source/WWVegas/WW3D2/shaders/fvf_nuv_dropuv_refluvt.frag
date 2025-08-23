@@ -12,7 +12,9 @@ layout(location = 3) in vec2 viewRefl;
 layout(location = 0) out vec4 finalColor;
 
 void main() {
-    finalColor = texture(tex1, viewRefl) * vec4(1,1,1,1);
+    vec4 baseColor = texture(tex1, viewRefl) * vec4(1,1,1,1);
     finalColor = CalculateLights(lights, material, fragNorm, gl_FragCoord.xyz, viewDir,
-			finalColor.rgb, finalColor.rgb, finalColor.rgb);
+			baseColor.rgb, baseColor.rgb, baseColor.rgb);
+    finalColor.a = baseColor.a;
+    if (baseColor.a < 0.01) discard;
 }

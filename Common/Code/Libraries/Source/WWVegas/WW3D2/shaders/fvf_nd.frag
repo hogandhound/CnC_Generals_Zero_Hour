@@ -1,12 +1,21 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
+#include "lightCommon.frag.inc"
+
+layout(set = 0, binding = 2) uniform LightCollectionBlock {LightCollection lights;};
+
+layout(set = 0, binding = 3) uniform MaterialBlock { DX8Material material;};
+
 layout(location = 0) in vec3 fragNorm;
 layout(location = 1) in vec4 fragDiffuse;
-
+layout(location = 2) in vec3 viewDir;
 layout(location = 0) out vec4 finalColor;
 
 void main() {
-	//TODO: NORMALS CODE
-    finalColor = fragDiffuse;
+	vec4 baseColor = fragDiffuse;
+	finalColor = CalculateLights(lights, material, fragNorm, gl_FragCoord.xyz, viewDir,
+ baseColor.rgb, baseColor.rgb, baseColor.rgb);
+	finalColor.a = baseColor.a;
+    if (baseColor.a < 0.01) discard;
 }

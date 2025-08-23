@@ -35,7 +35,7 @@
 
 class CameraClass;
 class DazzleVisibilityClass;
-struct VertexFormatXYZNDUV1;
+struct VertexFormatXYZNDUV2;
 
 class DazzleInitClass
 {
@@ -215,7 +215,7 @@ public:
 	TextureClass* Get_Texture();
 
 	void Generate_Vertex_Buffers(
-		VertexFormatXYZNDUV1* vertex,
+		VertexFormatXYZNDUV2* vertex,
 		int& vertex_count,
 		float screen_x_scale,
 		float screen_y_scale,

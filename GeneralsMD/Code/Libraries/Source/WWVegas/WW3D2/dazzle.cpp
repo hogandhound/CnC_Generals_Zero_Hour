@@ -365,7 +365,7 @@ TextureClass* LensflareTypeClass::Get_Texture()
 }
 
 void LensflareTypeClass::Generate_Vertex_Buffers(
-	VertexFormatXYZNDUV1* vertex,
+	VertexFormatXYZNDUV2* vertex,
 	int& vertex_count,
 	float screen_x_scale,
 	float screen_y_scale,
@@ -1073,10 +1073,10 @@ void DazzleRenderObjClass::Render_Dazzle(CameraClass* camera)
 		lens_max_verts=4*lensflare->lic.flare_count;
 	}
 
-	DynamicVBAccessClass vb_access(BUFFER_TYPE_DYNAMIC_DX8, VKFVF_XYZ | VKFVF_TEX1 | VKFVF_DIFFUSE,vertex_count*2+lens_max_verts);
+	DynamicVBAccessClass vb_access(BUFFER_TYPE_DYNAMIC_DX8, dynamic_fvf_type,vertex_count*2+lens_max_verts);
 	{
 		DynamicVBAccessClass::WriteLockClass lock(&vb_access);
-		VertexFormatXYZNDUV1* verts=(VertexFormatXYZNDUV1*)lock.Get_Formatted_Vertex_Array();
+		VertexFormatXYZNDUV2* verts=(VertexFormatXYZNDUV2*)lock.Get_Formatted_Vertex_Array();
 
 		float halo_size=1.0f;
 
@@ -1089,7 +1089,7 @@ void DazzleRenderObjClass::Render_Dazzle(CameraClass* camera)
 		dazzle_dyt*=dazzle_scale_y;
 
 		if (current_dazzle_intensity>0.0f) {
-			VertexFormatXYZNDUV1* vertex=verts;
+			VertexFormatXYZNDUV2* vertex=verts;
 			dazzle_vertex_count+=4;
 
 			Vector3 col(
@@ -1133,7 +1133,7 @@ void DazzleRenderObjClass::Render_Dazzle(CameraClass* camera)
 		}
 
 		if (current_halo_intensity) {
-			VertexFormatXYZNDUV1* vertex=verts+dazzle_vertex_count;
+			VertexFormatXYZNDUV2* vertex=verts+dazzle_vertex_count;
 			halo_vertex_count+=4;
 
 			Vector3 col(
@@ -1182,7 +1182,7 @@ void DazzleRenderObjClass::Render_Dazzle(CameraClass* camera)
 		}
 
 		if (lensflare && current_dazzle_intensity>0.0f) {
-			VertexFormatXYZNDUV1* vertex=verts+halo_vertex_count+dazzle_vertex_count;
+			VertexFormatXYZNDUV2* vertex=verts+halo_vertex_count+dazzle_vertex_count;
 
 			lensflare->Generate_Vertex_Buffers(
 				vertex,

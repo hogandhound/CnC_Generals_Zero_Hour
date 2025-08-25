@@ -3098,7 +3098,7 @@ void SoLoudAudioManager::playBinkStream(uint8_t* data, size_t len, float sampleR
 		if (!m_binkHandle->queue.isCurrentlyPlaying(*playQueue_[i]))
 		{
 			delete playQueue_[i];
-			playQueue_.erase(playQueue_.begin());
+			playQueue_.erase(playQueue_.begin() + i);
 			i--;
 		}
 		else

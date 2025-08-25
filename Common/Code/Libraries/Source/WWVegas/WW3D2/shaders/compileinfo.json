@@ -358,6 +358,18 @@
 	  "frag": { "name": "fvf_nuv_aref.frag" }
   },
   {
+	  "name": "FVF_NUV_2Tex_ARef",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_BACK_BIT",
+	  "vert":{
+		  "name": "fvf_xyznuv1.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nuv_2tex_aref.frag" }
+  },
+  {
 	  "name": "FVF_NUV_ARefNoCull_Strip",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
@@ -508,6 +520,19 @@
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "depthWrite": "VK_FALSE",
 	  "cullMode": "VK_CULL_MODE_BACK_BIT",
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv2_dropuv.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_DropUV_NoCull_NoDepthWrite",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "depthWrite": "VK_FALSE",
+	  "cullMode": "VK_CULL_MODE_NONE",
 	  "vert":{
 		  "name": "fvf_xyznduv2.vert",
 		  "inputs": {}
@@ -711,6 +736,36 @@
 	  "frag": { "name": "fvf_nd_noL.frag" }
   },
   {
+	  "name": "FVF_NDUV2_NOL_NOALPHABLEND_DROPTEX2",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "blend": {
+		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nd_noL.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_NOALPHABLEND_DROPTEX2",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "blend": {
+		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nd.frag" }
+  },
+  {
 	  "name": "FVF_NDUV2_NODEPTH_NOBLEND_DROPTEX",
 	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
@@ -760,6 +815,38 @@
 		  "inputs": {}
 	  },
 	  "frag": { "name": "fvf_nduv2_noL_onlytex1.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_NOCULL_NOALPHA_AREF",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "blend": {
+		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv2_noL_aref.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_NOCULL_NOALPHA_AREF_DROPTEX",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "blend": {
+		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv_noL_aref.frag" }
   },
   {
 	  "name": "FVF_NDUV2_DepthLE",

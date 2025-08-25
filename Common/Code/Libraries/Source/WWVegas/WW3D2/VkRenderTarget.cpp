@@ -44,7 +44,7 @@ bool g_BufferDeviceAddressEnabled = false;
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
 #else
-const bool enableValidationLayers = true;
+const bool enableValidationLayers = false;// true;
 #endif
 
 
@@ -303,6 +303,7 @@ void VkRenderTarget::StartRender(VkExtent2D extent)
 		case VK::UNIFORM:
 			vmaPools_.uniform.free(sf.buffers[i]);
 			break;
+		default: assert(false);
 		}
 		//vmaDestroyBuffer(allocator, sf.buffers[i].buffer, sf.buffers[i].allocation);
 	}
@@ -1416,7 +1417,7 @@ VK::Buffer VK::MemoryPool::alloc(void* memory, size_t size)
 		}
 		if (ret.buffer != nullptr)
 		{
-			if (usage & VK_BUFFER_USAGE_TRANSFER_SRC_BIT)
+			if (usage & VK_BUFFER_USAGE_TRANSFER_SRC_BIT && memory)
 			{
 				void* mapped = 0;
 				VkResult mr = vmaMapMemory(target->allocator, ret.allocation, &mapped);
@@ -1445,7 +1446,7 @@ VK::Buffer VK::MemoryPool::alloc(void* memory, size_t size)
 	ret.type = type;
 	VmaAllocationInfo stagingBufferAllocInfo = {};
 	VkResult cr = vmaCreateBuffer(target->allocator, &vbInfo, &vbAllocCreateInfo, &ret.buffer, &ret.allocation, &stagingBufferAllocInfo);
-	if (usage & VK_BUFFER_USAGE_TRANSFER_SRC_BIT)
+	if (usage & VK_BUFFER_USAGE_TRANSFER_SRC_BIT && memory)
 	{
 		if (stagingBufferAllocInfo.pMappedData)
 			memcpy(stagingBufferAllocInfo.pMappedData, memory, size);

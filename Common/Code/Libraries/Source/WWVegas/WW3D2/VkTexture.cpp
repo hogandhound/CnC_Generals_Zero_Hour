@@ -41,11 +41,11 @@ void VK::CreateTexture(VkRenderTarget* target, VK::Texture& texture, uint32_t wi
     stagingBufAllocCreateInfo.usage = VMA_MEMORY_USAGE_CPU_ONLY;
     stagingBufAllocCreateInfo.flags = VMA_ALLOCATION_CREATE_MAPPED_BIT;
 
-    VK::Buffer staging = {};
-    VmaAllocationInfo stagingBufAllocInfo = {};
-    vmaCreateBuffer(target->allocator, &stagingBufInfo, &stagingBufAllocCreateInfo, &staging.buffer, &staging.allocation, &stagingBufAllocInfo);
+    VK::Buffer staging = target->vmaPools_.transfer.alloc(nullptr, imageSize);
+    void* mapped;
+    VkResult mr = vmaMapMemory(target->allocator, staging.allocation, &mapped);
 
-    unsigned char* const pImageData = (unsigned char*)stagingBufAllocInfo.pMappedData;
+    unsigned char* const pImageData = (unsigned char*)mapped;
     switch (format)
     {
     default:
@@ -63,6 +63,7 @@ void VK::CreateTexture(VkRenderTarget* target, VK::Texture& texture, uint32_t wi
         break;
     }
     }
+    vmaUnmapMemory(target->allocator, staging.allocation);
     texture.format = format;
 
     VkImageCreateInfo imageInfo = { VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
@@ -360,11 +361,11 @@ void VK::CreateTextureMips(VkRenderTarget* target, VK::Texture& texture, uint32_
     stagingBufAllocCreateInfo.usage = VMA_MEMORY_USAGE_CPU_ONLY;
     stagingBufAllocCreateInfo.flags = VMA_ALLOCATION_CREATE_MAPPED_BIT;
 
-    VK::Buffer staging = {};
-    VmaAllocationInfo stagingBufAllocInfo = {};
-    vmaCreateBuffer(target->allocator, &stagingBufInfo, &stagingBufAllocCreateInfo, &staging.buffer, &staging.allocation, &stagingBufAllocInfo);
+    VK::Buffer staging = target->vmaPools_.transfer.alloc(nullptr, imageSize);
+    void* mapped;
+    VkResult mr = vmaMapMemory(target->allocator, staging.allocation, &mapped);
 
-    unsigned char* const pImageData = (unsigned char*)stagingBufAllocInfo.pMappedData;
+    unsigned char* const pImageData = (unsigned char*)mapped;
     switch (format)
     {
     case VK_FORMAT_R8G8B8A8_UNORM: memcpy(pImageData, rgba, imageSize); break;
@@ -381,6 +382,7 @@ void VK::CreateTextureMips(VkRenderTarget* target, VK::Texture& texture, uint32_
         break;
     }
     }
+    vmaUnmapMemory(target->allocator, staging.allocation);
     texture.format = format;
 
     VkImageCreateInfo imageInfo = { VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };

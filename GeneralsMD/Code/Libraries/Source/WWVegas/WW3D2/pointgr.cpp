@@ -985,9 +985,35 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 		else
 		{
 			auto pipelines = DX8Wrapper::FindClosestPipelines(PointVerts.FVF_Info().FVF);
+			WWVKDSV;
 			assert(pipelines.size() == 1);
 			switch (pipelines[0]) {
-			case 0:
+			case PIPELINE_WWVK_FVF_NDUV2_NOCULL_NOALPHA_AREF:
+			{
+				WorldMatrix_AlphaRef push;
+				DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.vert.world);
+				push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF);
+				WWVK_UpdateFVF_NDUV2_NOCULL_NOALPHA_AREFDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				WWVK_DrawFVF_NDUV2_NOCULL_NOALPHA_AREF(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, delta / verticesperprimitive*3, 0,
+					VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+					0, (WorldMatrix_AlphaRef*)&push);
+				break;
+			}
+			case PIPELINE_WWVK_FVF_NDUV2_NOCULL_NOALPHA_AREF_DROPTEX:
+			{
+				WorldMatrix_AlphaRef push;
+				DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.vert.world);
+				push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF);
+				WWVK_UpdateFVF_NDUV2_NOCULL_NOALPHA_AREF_DROPTEXDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				WWVK_DrawFVF_NDUV2_NOCULL_NOALPHA_AREF_DROPTEX(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, delta / verticesperprimitive * 3, 0,
+					VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+					0, (WorldMatrix_AlphaRef*)&push);
+				break;
+			}
 			default: assert(false);
 			}
 #ifdef INFO_VULKAN

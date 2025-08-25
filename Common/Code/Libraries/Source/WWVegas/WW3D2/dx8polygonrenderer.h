@@ -253,6 +253,32 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 				(render_state.index_base_offset) * sizeof(VertexFormatXYZNDUV2), (WorldMatrix*)&push);
 			break;
 		}
+		case PIPELINE_WWVK_FVF_NDUV2_NOL_NOALPHABLEND_DROPTEX2:
+		{
+			auto& render_state = DX8Wrapper::Get_Render_State();
+			WorldMatrix push;
+			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+			WWVK_UpdateFVF_NDUV2_NOL_NOALPHABLEND_DROPTEX2DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+			WWVK_DrawFVF_NDUV2_NOL_NOALPHABLEND_DROPTEX2(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
+				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+				(render_state.index_base_offset) * sizeof(VertexFormatXYZNDUV2), (WorldMatrix*)&push);
+			break;
+		}
+		case PIPELINE_WWVK_FVF_NDUV2_NOALPHABLEND_DROPTEX2:
+		{
+			auto& render_state = DX8Wrapper::Get_Render_State();
+			WorldMatrix push;
+			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
+			WWVK_UpdateFVF_NDUV2_NOALPHABLEND_DROPTEX2DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+				DX8Wrapper::UboProj(), DX8Wrapper::UboView(), DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
+			WWVK_DrawFVF_NDUV2_NOALPHABLEND_DROPTEX2(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
+				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+				(render_state.index_base_offset) * sizeof(VertexFormatXYZNDUV2), (WorldMatrix*)&push);
+			break;
+		}
 		case PIPELINE_WWVK_FVF_NDUV2_DropUV:
 		{
 			WorldMatrix push;
@@ -300,6 +326,20 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 				&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView(),
 				DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
 			WWVK_DrawFVF_NUV_ARef(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
+				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
+				base_vertex_offset * sizeof(VertexFormatXYZNUV1), (WorldMatrix_AlphaRef*)&push);
+			break;
+		}
+		case PIPELINE_WWVK_FVF_NUV_2Tex_ARef:
+		{
+			WorldMatrix_AlphaRef push;
+			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.vert.world);
+			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF);
+			WWVK_UpdateFVF_NUV_2Tex_ARefDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+				&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1), DX8Wrapper::UboProj(), DX8Wrapper::UboView(),
+				DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
+			WWVK_DrawFVF_NUV_2Tex_ARef(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)DX8Wrapper::Set_Index_Buffer())->Get_DX8_Index_Buffer().buffer, index_count, index_offset,
 				VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,
 				base_vertex_offset * sizeof(VertexFormatXYZNUV1), (WorldMatrix_AlphaRef*)&push);

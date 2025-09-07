@@ -997,6 +997,10 @@ WWINLINE void DX8Wrapper::_Set_DX8_Transform(VkTransformState transform,const Ma
 #if 0 // (gth) this optimization is breaking generals because they set the transform behind our backs.
 	if (m!=DX8Transforms[transform]) 
 #endif
+	if (transform == VkTS::WORLD)
+	{
+		render_state.world = m;
+	}
 	{
 		target.PushSingleFrameBuffer(DX8TransformsUbos[(uintptr_t)transform]);
 		VkBufferTools::CreateUniformBuffer(&target, sizeof(float) * 16, (uint8_t*) & m, DX8TransformsUbos[(uintptr_t)transform]);

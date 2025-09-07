@@ -146,7 +146,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 		{
 			WorldMatrix_AlphaRef push;
 			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.vert.world);
-			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF);
+			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF) / 255.f;
 			WWVK_UpdateFVF_NUV_ARef_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 				&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView(),
 				DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
@@ -160,7 +160,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 		{
 			WorldMatrix_AlphaRef push;
 			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.vert.world);
-			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF);
+			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF) / 255.f;
 			WWVK_UpdateFVF_NUV_ARefNoCull_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 				&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView(),
 				DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
@@ -200,7 +200,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 		{
 			WorldMatrix_AlphaRef push;
 			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.vert.world);
-			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF);
+			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF) / 255.f;
 			WWVK_UpdateFVF_NDUV_AREF_StripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 				&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView(),
 				DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
@@ -308,7 +308,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 		{
 			WorldMatrix_AlphaRef push;
 			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.vert.world);
-			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF);
+			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF) / 255.f;
 			WWVK_UpdateFVF_DUV2_DropUV_ARefDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 				&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 			WWVK_DrawFVF_DUV2_DropUV_ARef(WWVKPIPES, WWVKRENDER.currentCmd, sets,
@@ -321,7 +321,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 		{
 			WorldMatrix_AlphaRef push;
 			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.vert.world);
-			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF);
+			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF) / 255.f;
 			WWVK_UpdateFVF_NUV_ARefDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 				&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView(),
 				DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
@@ -335,7 +335,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 		{
 			WorldMatrix_AlphaRef push;
 			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.vert.world);
-			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF);
+			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF) / 255.f;
 			WWVK_UpdateFVF_NUV_2Tex_ARefDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 				&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1), DX8Wrapper::UboProj(), DX8Wrapper::UboView(),
 				DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
@@ -349,7 +349,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 		{
 			WorldMatrix_AlphaRef push;
 			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.vert.world);
-			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF);
+			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF) / 255.f;
 			WWVK_UpdateFVF_NUV_ARefNoCullDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 				&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView(),
 				DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());
@@ -457,7 +457,7 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 		{
 			WorldMatrix_AlphaRef push;
 			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.vert.world);
-			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF);
+			push.frag.ref[0] = DX8Wrapper::Get_DX8_Render_State(VKRS_ALPHAREF) / 255.f;
 			WWVK_UpdateFVF_NDUV_AREFDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 				&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView(),
 				DX8Wrapper::UboLight(), DX8Wrapper::UboMaterial());

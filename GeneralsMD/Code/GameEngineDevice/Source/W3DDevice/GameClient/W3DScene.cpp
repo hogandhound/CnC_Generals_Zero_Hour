@@ -1232,7 +1232,7 @@ stencil mask*/
 void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool clear=FALSE)
 {
 	struct _TRANSLITVERTEX {
-	    Vector4 p;
+	    Vector3 p;
 		DWORD color;   // diffuse color    
 	} v[4];
 
@@ -1242,10 +1242,10 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 	width=TheTacticalView->getWidth();
 	height=TheTacticalView->getHeight();
 
-    v[0].p.Set(xpos+width, ypos+height, 0.0f, 1.0f );
-    v[1].p.Set(xpos+width, 0, 0.0f, 1.0f );
-    v[2].p.Set(xpos, ypos+height, 0.0f, 1.0f );
-    v[3].p.Set(xpos,  0, 0.0f, 1.0f );
+    v[0].p.Set(xpos+width, ypos+height, 0.0f );
+    v[1].p.Set(xpos+width, 0, 0.0f );
+    v[2].p.Set(xpos, ypos+height, 0.0f );
+    v[3].p.Set(xpos,  0, 0.0f );
     v[0].color = color;
     v[1].color = color;
     v[2].color = color;
@@ -1321,7 +1321,7 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 		Int occludedMask = TheW3DShadowManager->getStencilShadowMask();
 		vkCmdSetStencilCompareMask(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, occludedMask);
 		vkCmdSetStencilReference(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, 0x80808080);
-		vkCmdSetStencilOp(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, VK_STENCIL_OP_ZERO, 
+		vkCmdSetStencilOp(WWVKRENDER.currentCmd, VK_STENCIL_FRONT_AND_BACK, VK_STENCIL_OP_ZERO,
 			VK_STENCIL_OP_REPLACE, VK_STENCIL_OP_REPLACE, VK_COMPARE_OP_LESS);
 		vkCmdSetDepthWriteEnable(WWVKRENDER.currentCmd, false);
 	}
@@ -1329,7 +1329,7 @@ void renderStenciledPlayerColor( UnsignedInt color, UnsignedInt stencilRef, Bool
 	{
 		vkCmdSetStencilCompareMask(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, 0xffffffff);
 		vkCmdSetStencilReference(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, stencilRef);
-		vkCmdSetStencilOp(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, VK_STENCIL_OP_KEEP,
+		vkCmdSetStencilOp(WWVKRENDER.currentCmd, VK_STENCIL_FRONT_AND_BACK, VK_STENCIL_OP_KEEP,
 			VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_COMPARE_OP_EQUAL);
 		vkCmdSetDepthWriteEnable(WWVKRENDER.currentCmd, true);
 	}

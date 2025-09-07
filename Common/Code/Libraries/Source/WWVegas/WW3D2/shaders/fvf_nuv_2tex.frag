@@ -11,14 +11,13 @@ layout(binding = 5) uniform sampler2D tex1;
 layout(binding = 6) uniform sampler2D tex2;
 
 layout(location = 0) in vec3 fragNorm;
-layout(location = 1) in vec3 viewDir;
 layout(location = 2) in vec2 fragUv;
 
 layout(location = 0) out vec4 finalColor;
 
 void main() {
 	vec4 baseColor = texture(tex1, fragUv) * texture(tex2, fragUv);
-	finalColor = CalculateLights(lights, material, fragNorm, gl_FragCoord.xyz, viewDir,
+	finalColor = CalculateLights(lights, material, fragNorm, fragPos, viewPos,
  baseColor.rgb, baseColor.rgb, baseColor.rgb);
     finalColor.a = baseColor.a;
     if (baseColor.a < 0.01) discard;

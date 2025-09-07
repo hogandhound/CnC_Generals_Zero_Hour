@@ -1430,6 +1430,7 @@ void W3DVolumetricShadow::RenderMeshVolume(Int meshIndex, Int lightIndex, const 
 	m_pDev->SetIndices(ibSlot->m_IB->m_DX8IndexBuffer->Get_DX8_Index_Buffer());
 #endif
 
+	DX8Wrapper::Apply_Render_State_Changes();
 	if (DX8Wrapper::_Is_Triangle_Draw_Enabled())
 	{
 		Debug_Statistics::Record_DX8_Polys_And_Vertices(numPolys,numVerts,ShaderClass::_PresetOpaqueShader);
@@ -1437,7 +1438,7 @@ void W3DVolumetricShadow::RenderMeshVolume(Int meshIndex, Int lightIndex, const 
 		WWVK_UpdateVolumeShadowDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 		WWVK_DrawVolumeShadow(WWVKPIPES, WWVKRENDER.currentCmd, sets, 
 			ibSlot->m_IB->m_DX8IndexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, ibSlot->m_start, VK_INDEX_TYPE_UINT16,
-			vbSlot->m_VB->m_DX8VertexBuffer->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*) & mWorld);
+			vbSlot->m_VB->m_DX8VertexBuffer->Get_DX8_Vertex_Buffer().buffer, vbSlot->m_start * sizeof(VertexFormatXYZ), (WorldMatrix*)&mWorld);
 #ifdef INFO_VULKAN
 		m_pDev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, vbSlot->m_start,0,numVerts,ibSlot->m_start,numPolys);
 #endif
@@ -1556,6 +1557,7 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 #endif
 	
 
+	DX8Wrapper::Apply_Render_State_Changes();
 	if (DX8Wrapper::_Is_Triangle_Draw_Enabled())
 	{
 		Debug_Statistics::Record_DX8_Polys_And_Vertices(numPolys,numVerts,ShaderClass::_PresetOpaqueShader);
@@ -3429,7 +3431,7 @@ void W3DVolumetricShadowManager::renderStencilShadows( void )
 #endif
 
 	struct _TRANSLITVERTEX {
-	    DirectX::XMVECTOR p;
+	    Vector3 p;
 		DWORD color;   // diffuse color    
 	} v[4];
 
@@ -3439,10 +3441,10 @@ void W3DVolumetricShadowManager::renderStencilShadows( void )
 	width=TheTacticalView->getWidth();
 	height=TheTacticalView->getHeight();
 
-	v[0].p = { (float)xpos + width, (float)ypos + height, 0.0f, 1.0f };
-	v[1].p = { (float)xpos + width, 0, 0.0f, 1.0f };
-	v[2].p = { (float)xpos, (float)ypos + height, 0.0f, 1.0f };
-	v[3].p = { (float)xpos,  0, 0.0f, 1.0f };
+	v[0].p = { (float)xpos + 1.f, (float)ypos + 1.f, 0.0f };
+	v[1].p = { (float)xpos + 1.f, -1.f, 0.0f };
+	v[2].p = { (float)xpos - 1.f, (float)ypos + 1.f, 0.0f };
+	v[3].p = { (float)xpos - 1.f,  -1, 0.0f };
     v[0].color = TheW3DShadowManager->getShadowColor();
     v[1].color = TheW3DShadowManager->getShadowColor();
     v[2].color = TheW3DShadowManager->getShadowColor();
@@ -3474,9 +3476,9 @@ void W3DVolumetricShadowManager::renderStencilShadows( void )
 	//pixels and only use the lower bits for shadow calculations.
 	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILMASK, ~TheW3DShadowManager->getStencilShadowMask());
 	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILREF, 0x1);
-	vkCmdSetStencilCompareMask(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_BIT, ~TheW3DShadowManager->getStencilShadowMask());
+	vkCmdSetStencilCompareMask(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_AND_BACK, ~TheW3DShadowManager->getStencilShadowMask());
 	std::vector<VkDescriptorSet> sets;
-	WWVK_UpdateVolumeStencilShadowDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
+	WWVK_UpdateVolumeStencilShadowDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
 	Matrix4x4 ident(true);
 	VK::Buffer vbo;
 	VkBufferTools::CreateVertexBuffer(&WWVKRENDER, 4 * sizeof(_TRANSLITVERTEX), v, vbo);
@@ -3603,12 +3605,12 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILWRITEMASK,0xffffffff );
 		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILZFAIL, VK_STENCIL_OP_KEEP );
 		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILFAIL,  VK_STENCIL_OP_KEEP );
-		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILPASS,  VK_STENCIL_OP_INCREMENT_AND_CLAMP );
+		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILPASS, VK_STENCIL_OP_INCREMENT_AND_WRAP);
 		vkCmdSetStencilOp(WWVKRENDER.currentCmd, VK_STENCIL_FRONT_AND_BACK, VK_STENCIL_OP_KEEP,
-			VK_STENCIL_OP_INCREMENT_AND_CLAMP, VK_STENCIL_OP_KEEP,
+			VK_STENCIL_OP_INCREMENT_AND_WRAP, VK_STENCIL_OP_KEEP,
 			TheW3DShadowManager->getStencilShadowMask() == 0x80808080 ? VK_COMPARE_OP_NOT_EQUAL : VK_COMPARE_OP_GREATER_OR_EQUAL);
 		vkCmdSetStencilCompareMask(WWVKRENDER.currentCmd, VK_STENCIL_FRONT_AND_BACK, TheW3DShadowManager->getStencilShadowMask());
-		vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_CLOCKWISE);
+		vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_COUNTER_CLOCKWISE);
 #ifdef INFO_VULKAN
 		m1_pDev->SetFVF(SHADOW_DYNAMIC_VOLUME_FVF);
 #endif
@@ -3666,7 +3668,7 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 		vkCmdSetStencilOp(WWVKRENDER.currentCmd, VK_STENCIL_FRONT_AND_BACK, VK_STENCIL_OP_KEEP,
 			VK_STENCIL_OP_DECREMENT_AND_CLAMP, VK_STENCIL_OP_KEEP,
 			TheW3DShadowManager->getStencilShadowMask() == 0x80808080 ? VK_COMPARE_OP_NOT_EQUAL : VK_COMPARE_OP_GREATER_OR_EQUAL);
-		vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_COUNTER_CLOCKWISE);
+		vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_CLOCKWISE);
 
 		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILPASS, VK_STENCIL_OP_DECREMENT_AND_CLAMP);
 

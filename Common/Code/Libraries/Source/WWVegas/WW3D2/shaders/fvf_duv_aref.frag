@@ -12,7 +12,9 @@ layout(location = 0) in vec4 fragDiffuse;
 layout(location = 0) out vec4 finalColor;
 
 void main() {
-    finalColor = texture(tex, fragUv) * fragDiffuse;
-	if (finalColor.a > ref)
+    vec4 baseColor = texture(tex, fragUv) * fragDiffuse;
+	if (baseColor.a < ref)
 		discard;
+	finalColor = baseColor;
+	finalColor.a = 1.0;
 }

@@ -709,7 +709,7 @@
 		  "name": "fvf_xyznduv2.vert",
 		  "inputs": {}
 	  },
-	  "frag": { "name": "fvf_nduv2_noL_onlytex1.frag" }
+	  "frag": { "name": "fvf_nduv_noL.frag" }
   },
   {
 	  "name": "FVF_NDUV2_NODEPTH_DROPTEX",
@@ -721,7 +721,7 @@
 		  "name": "fvf_xyznduv2.vert",
 		  "inputs": {}
 	  },
-	  "frag": { "name": "fvf_nduv2_noL_onlytex1.frag" }
+	  "frag": { "name": "fvf_nduv_noL.frag" }
   },
   {
 	  "name": "FVF_NDUV2_NODEPTH_DROPTEX2",
@@ -780,7 +780,7 @@
 		  "name": "fvf_xyznduv2.vert",
 		  "inputs": {}
 	  },
-	  "frag": { "name": "fvf_nduv2_noL_onlytex1.frag" }
+	  "frag": { "name": "fvf_nduv_noL.frag" }
   },
   {
 	  "name": "FVF_NDUV2_NOCULL_NODEPTH_NOBLEND",
@@ -814,7 +814,7 @@
 		  "name": "fvf_xyznduv2.vert",
 		  "inputs": {}
 	  },
-	  "frag": { "name": "fvf_nduv2_noL_onlytex1.frag" }
+	  "frag": { "name": "fvf_nduv_noL.frag" }
   },
   {
 	  "name": "FVF_NDUV2_NOCULL_NOALPHA_AREF",
@@ -831,6 +831,42 @@
 		  "inputs": {}
 	  },
 	  "frag": { "name": "fvf_nduv2_noL_aref.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_NOCULL_NOALPHA_ADDBLEND_AREF",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "blend": {
+		"srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"dstColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv2_noL_aref.frag" }
+  },
+  {
+	  "name": "FVF_NDUV2_NOCULL_NOALPHA_ADDBLEND_AREF_DROPTEX",
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST",
+	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "blend": {
+		"srcColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"dstColorBlendFactor": "VK_BLEND_FACTOR_ONE",
+		"srcAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		"dstAlphaBlendFactor": "VK_BLEND_FACTOR_ONE"
+	  },
+	  "vert":{
+		  "name": "fvf_xyznduv2.vert",
+		  "inputs": {}
+	  },
+	  "frag": { "name": "fvf_nduv_noL_aref.frag" }
   },
   {
 	  "name": "FVF_NDUV2_NOCULL_NOALPHA_AREF_DROPTEX",
@@ -1229,7 +1265,8 @@
 		"reference": "0x80808080"
 	  },
 	  "blend": {
-		  "colorWriteMask": "(VkColorComponentFlagBits)0"
+		  "colorWriteMask": "(VkColorComponentFlagBits)0",
+		  "blendEnable": "VK_FALSE"
 	  },
 	  "depth": "VK_COMPARE_OP_LESS_OR_EQUAL",
 	  "depthWrite": "VK_FALSE",
@@ -1243,7 +1280,7 @@
   {
 	  "name": "VolumeStencilShadow",
 	  "topo": "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP",
-	  "dynamic": [ "VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK", "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
+	  "dynamic": [ "VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT" ],
 	  "stencil":{
 		"compareMask": "0xffffffff",
 		"writeMask": "0xffffffff",
@@ -1253,7 +1290,15 @@
 		"depthFailOp": "VK_STENCIL_OP_KEEP",
 		"passOp": "VK_STENCIL_OP_KEEP"
 	  },
-	  "cullMode": "VK_CULL_MODE_BACK_BIT",
+	  "cullMode": "VK_CULL_MODE_NONE",
+	  "depth": "VK_COMPARE_OP_ALWAYS",
+	  "depthWrite": "VK_FALSE",
+	  "blend": {
+		  "srcColorBlendFactor": "VK_BLEND_FACTOR_DST_COLOR",
+		  "dstColorBlendFactor": "VK_BLEND_FACTOR_ZERO",
+		  "srcAlphaBlendFactor": "VK_BLEND_FACTOR_DST_COLOR",
+		  "dstAlphaBlendFactor": "VK_BLEND_FACTOR_ZERO"
+	  },
 	  "vert":{
 		  "name": "fvf_xyzd.vert",
 		  "inputs": {}

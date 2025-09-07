@@ -2106,7 +2106,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 							m_indexBuffer->Get_DX8_Index_Buffer().buffer, numPolys * 3, 0, VK_INDEX_TYPE_UINT16,
 							m_vertexBufferTiles[j * m_numVBTilesX + i]->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm);
 					}
-					else if (st == W3DShaderManager::ST_TERRAIN_BASE_NOISE1 || W3DShaderManager::ST_TERRAIN_BASE_NOISE2)
+					else if (st == W3DShaderManager::ST_TERRAIN_BASE_NOISE1 || st == W3DShaderManager::ST_TERRAIN_BASE_NOISE2)
 					{
 						WWVK_UpdateTerrainNoiseDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets,
 							&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),

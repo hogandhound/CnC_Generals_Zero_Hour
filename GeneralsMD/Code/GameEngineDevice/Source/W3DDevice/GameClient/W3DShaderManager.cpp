@@ -201,7 +201,7 @@ Bool ScreenDefaultFilter::postRender(enum FilterModes mode, Coord2D& scrollDelta
 	LPDIRECT3DDEVICE9 pDev = DX8Wrapper::_Get_D3D_Device8();
 #endif
 	struct _TRANS_LIT_TEX_VERTEX {
-		DirectX::XMVECTOR p;
+		Vector3 p;
 		DWORD color;   // diffuse color    
 		float	u;
 		float	v;
@@ -217,16 +217,16 @@ Bool ScreenDefaultFilter::postRender(enum FilterModes mode, Coord2D& scrollDelta
 	height = TheTacticalView->getHeight();
 
 	//bottom right
-	v[0].p = { xpos + width - 0.5f, ypos + height - 0.5f, 0.0f, 1.0f };
+	v[0].p = { xpos + width - 0.5f, ypos + height - 0.5f, 0.0f };
 	v[0].u = (Real)(xpos + width) / (Real)TheDisplay->getWidth();	v[0].v = (Real)(ypos + height) / (Real)TheDisplay->getHeight();
 	//top right
-	v[1].p = { xpos + width - 0.5f, ypos - 0.5f, 0.0f, 1.0f };
+	v[1].p = { xpos + width - 0.5f, ypos - 0.5f, 0.0f };
 	v[1].u = (Real)(xpos + width) / (Real)TheDisplay->getWidth();	v[1].v = (Real)(ypos) / (Real)TheDisplay->getHeight();
 	//bottom left
-	v[2].p = { xpos - 0.5f, ypos + height - 0.5f, 0.0f, 1.0f };
+	v[2].p = { xpos - 0.5f, ypos + height - 0.5f, 0.0f };
 	v[2].u = (Real)(xpos) / (Real)TheDisplay->getWidth();	v[2].v = (Real)(ypos + height) / (Real)TheDisplay->getHeight();
 	//top left
-	v[3].p = { xpos - 0.5f, ypos - 0.5f, 0.0f, 1.0f };
+	v[3].p = { xpos - 0.5f, ypos - 0.5f, 0.0f };
 	v[3].u = (Real)(xpos)/(Real)TheDisplay->getWidth();	v[3].v = (Real)(ypos)/(Real)TheDisplay->getHeight();
 	v[0].color = 0xffffffff;
 	v[1].color = 0xffffffff;
@@ -351,7 +351,7 @@ Bool ScreenBWFilter::postRender(enum FilterModes mode, Coord2D &scrollDelta,Bool
 #endif
 
 	struct _TRANS_LIT_TEX_VERTEX {
-		DirectX::XMVECTOR p;
+		Vector3 p;
 		DWORD color;   // diffuse color    
 		float	u;
 		float	v;
@@ -365,16 +365,16 @@ Bool ScreenBWFilter::postRender(enum FilterModes mode, Coord2D &scrollDelta,Bool
 	height=TheTacticalView->getHeight();
 
 	//bottom right
-	v[0].p = { xpos + width - 0.5f, ypos + height - 0.5f, 0.0f, 1.0f };
+	v[0].p = { xpos + width - 0.5f, ypos + height - 0.5f, 0.0f };
 	v[0].u = (Real)(xpos+width)/(Real)TheDisplay->getWidth();	v[0].v = (Real)(ypos+height)/(Real)TheDisplay->getHeight();
 	//top right
-	v[1].p = { xpos + width - 0.5f, ypos - 0.5f, 0.0f, 1.0f };
+	v[1].p = { xpos + width - 0.5f, ypos - 0.5f, 0.0f };
 	v[1].u = (Real)(xpos+width)/(Real)TheDisplay->getWidth();	v[1].v = (Real)(ypos)/(Real)TheDisplay->getHeight();
 	//bottom left
-	v[2].p = { xpos - 0.5f, ypos + height - 0.5f, 0.0f, 1.0f };
+	v[2].p = { xpos - 0.5f, ypos + height - 0.5f, 0.0f };
 	v[2].u = (Real)(xpos)/(Real)TheDisplay->getWidth();	v[2].v = (Real)(ypos+height)/(Real)TheDisplay->getHeight();
 	//top left
-	v[3].p = { xpos - 0.5f,  ypos - 0.5f, 0.0f, 1.0f };
+	v[3].p = { xpos - 0.5f,  ypos - 0.5f, 0.0f };
 	v[3].u = (Real)(xpos)/(Real)TheDisplay->getWidth();	v[3].v = (Real)(ypos)/(Real)TheDisplay->getHeight();
 	v[0].color = 0xffffffff;
 	v[1].color = 0xffffffff;
@@ -649,7 +649,7 @@ Bool ScreenCrossFadeFilter::postRender(enum FilterModes mode, Coord2D &scrollDel
 	LPDIRECT3DDEVICE9 pDev=DX8Wrapper::_Get_D3D_Device8();
 #endif 
 	struct _TRANS_LIT_TEX_VERTEX {
-		DirectX::XMVECTOR p;
+		Vector3 p;
 		DWORD color;   // diffuse color    
 		float	u;
 		float	v;
@@ -683,19 +683,19 @@ Bool ScreenCrossFadeFilter::postRender(enum FilterModes mode, Coord2D &scrollDel
 	radius = 25.0f-radius*24.75f;
 */
 	//bottom right
-	v[0].p = { xpos + width - 0.5f, ypos + height - 0.5f, 0.0f, 1.0f };
+	v[0].p = { xpos + width - 0.5f, ypos + height - 0.5f, 0.0f };
 	v[0].u = (Real)(xpos+width)/(Real)TheDisplay->getWidth();	v[0].v = (Real)(ypos+height)/(Real)TheDisplay->getHeight();
 	v[0].u1 = 0.5f+radius;	v[0].v1 = 0.5f+radius;
 	//top right
-	v[1].p = {xpos+width-0.5f, ypos-0.5f, 0.0f, 1.0f };
+	v[1].p = {xpos+width-0.5f, ypos-0.5f, 0.0f };
 	v[1].u = (Real)(xpos+width)/(Real)TheDisplay->getWidth();	v[1].v = (Real)(ypos)/(Real)TheDisplay->getHeight();
 	v[1].u1 = 0.5f+radius;	v[1].v1 = 0.5f-radius;
 	//bottom left
-	v[2].p = { xpos-0.5f, ypos+height-0.5f, 0.0f, 1.0f };
+	v[2].p = { xpos-0.5f, ypos+height-0.5f, 0.0f };
 	v[2].u = (Real)(xpos)/(Real)TheDisplay->getWidth();	v[2].v = (Real)(ypos+height)/(Real)TheDisplay->getHeight();
 	v[2].u1 = 0.5f-radius;	v[2].v1 = 0.5f+radius;
 	//top left
-	v[3].p = { xpos-0.5f,  ypos-0.5f, 0.0f, 1.0f };
+	v[3].p = { xpos-0.5f,  ypos-0.5f, 0.0f };
 	v[3].u = (Real)(xpos)/(Real)TheDisplay->getWidth();	v[3].v = (Real)(ypos)/(Real)TheDisplay->getHeight();
 	v[3].u1 = 0.5f-radius;	v[3].v1 = 0.5f-radius;
 
@@ -837,7 +837,7 @@ Bool ScreenMotionBlurFilter::postRender(enum FilterModes mode, Coord2D &scrollDe
 
 	Bool continueEffect = true;
 	struct _TRANS_LIT_TEX_VERTEX {
-		DirectX::XMVECTOR p;
+		Vector3 p;
 		DWORD color;   // diffuse color    
 		float	u;
 		float	v;
@@ -852,16 +852,16 @@ Bool ScreenMotionBlurFilter::postRender(enum FilterModes mode, Coord2D &scrollDe
 	height=TheTacticalView->getHeight();
 
 	//bottom right
-	v[0].p = { xpos + width - 0.5f, ypos + height - 0.5f, 0.0f, 1.0f };
+	v[0].p = { xpos + width - 0.5f, ypos + height - 0.5f, 0.0f };
 	v[0].u = (Real)(xpos+width)/(Real)TheDisplay->getWidth();	v[0].v = (Real)(ypos+height)/(Real)TheDisplay->getHeight();
 	//top right
-	v[1].p = { xpos + width - 0.5f, ypos - 0.5f, 0.0f, 1.0f };
+	v[1].p = { xpos + width - 0.5f, ypos - 0.5f, 0.0f };
 	v[1].u = (Real)(xpos+width)/(Real)TheDisplay->getWidth();	v[1].v = (Real)(ypos)/(Real)TheDisplay->getHeight();
 	//bottom left
-	v[2].p = { xpos - 0.5f, ypos + height - 0.5f, 0.0f, 1.0f };
+	v[2].p = { xpos - 0.5f, ypos + height - 0.5f, 0.0f };
 	v[2].u = (Real)(xpos)/(Real)TheDisplay->getWidth();	v[2].v = (Real)(ypos+height)/(Real)TheDisplay->getHeight();
 	//top left
-	v[3].p = { xpos - 0.5f,  ypos - 0.5f, 0.0f, 1.0f };
+	v[3].p = { xpos - 0.5f,  ypos - 0.5f, 0.0f };
 	v[3].u = (Real)(xpos)/(Real)TheDisplay->getWidth();	v[3].v = (Real)(ypos)/(Real)TheDisplay->getHeight();
 	v[0].color = 0xffffffff;
 	v[1].color = 0xffffffff;
@@ -2313,7 +2313,7 @@ void W3DShaderManager::drawViewport(Int color)
 #endif
 
 	struct _TRANS_LIT_TEX_VERTEX {
-		DirectX::XMVECTOR p;
+		Vector3 p;
 		DWORD color;   // diffuse color    
 		float	u;
 		float	v;
@@ -2326,16 +2326,16 @@ void W3DShaderManager::drawViewport(Int color)
 	height=TheTacticalView->getHeight();
 
 	//bottom right
-	v[0].p = {xpos+width-0.5f, ypos+height-0.5f, 0.0f, 1.0f };
+	v[0].p = {xpos+width-0.5f, ypos+height-0.5f, 0.0f };
 	v[0].u = (Real)(xpos+width)/(Real)TheDisplay->getWidth();	v[0].v = (Real)(ypos+height)/(Real)TheDisplay->getHeight();
 	//top right
-	v[1].p = {xpos+width-0.5f, ypos-0.5f, 0.0f, 1.0f };
+	v[1].p = {xpos+width-0.5f, ypos-0.5f, 0.0f };
 	v[1].u = (Real)(xpos+width)/(Real)TheDisplay->getWidth();	v[1].v = (Real)(ypos)/(Real)TheDisplay->getHeight();
 	//bottom left
-	v[2].p = { xpos-0.5f, ypos+height-0.5f, 0.0f, 1.0f };
+	v[2].p = { xpos-0.5f, ypos+height-0.5f, 0.0 };
 	v[2].u = (Real)(xpos)/(Real)TheDisplay->getWidth();	v[2].v = (Real)(ypos+height)/(Real)TheDisplay->getHeight();
 	//top left
-	v[3].p = { xpos-0.5f,  ypos-0.5f, 0.0f, 1.0f };
+	v[3].p = { xpos-0.5f,  ypos-0.5f, 0.0f };
 	v[3].u = (Real)(xpos)/(Real)TheDisplay->getWidth();	v[3].v = (Real)(ypos)/(Real)TheDisplay->getHeight();
 	v[0].color = color;
 	v[1].color = color;
@@ -2373,7 +2373,7 @@ void W3DShaderManager::startRenderToTexture(void)
 
 	if (m_renderingToTexture// || m_newRenderSurface==NULL || m_oldDepthSurface==NULL
 		) return;
-	WWVKRENDER.BeginFramebuffer(WWVKRENDER.swapChainExtent, VK_FORMAT_R8G8B8A8_SRGB);
+	WWVKRENDER.BeginFramebuffer(WWVKRENDER.swapChainExtent, VK_FORMAT_R8G8B8A8_UNORM);
 	m_renderTexture = WWVKRENDER.currentImage;
 #ifdef INFO_VULKAN
 	HRESULT hr = DX8Wrapper::_Get_D3D_Device8()->SetRenderTarget(1, m_newRenderSurface);

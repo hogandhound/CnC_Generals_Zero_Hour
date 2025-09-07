@@ -535,7 +535,7 @@ Int W3DProjectedShadowManager::renderProjectedTerrainShadow(W3DProjectedShadow *
 		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILWRITEMASK, 0xffffffff);
 		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILZFAIL, VK_STENCIL_OP_KEEP);
 		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILFAIL, VK_STENCIL_OP_KEEP);
-		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILPASS, VK_STENCIL_OP_INCREMENT_AND_CLAMP);
+		DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILPASS, VK_STENCIL_OP_INCREMENT_AND_WRAP);
 
 		//    DX8Wrapper::Set_DX8_Render_State( VKRS_ALPHABLENDENABLE, FALSE );	//useful to see bounds
 		DX8Wrapper::Set_DX8_Render_State(VKRS_LIGHTING, FALSE);

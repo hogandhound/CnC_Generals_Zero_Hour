@@ -575,7 +575,6 @@ void SortingRendererClass::Flush_Sorting_Pool()
 	DX8Wrapper::Apply_Render_State_Changes();
 
 	Matrix4x4 push;
-	DX8Wrapper::Get_Transform(VkTS::WORLD, push);
 
 	unsigned count_to_render=1;
 	unsigned start_index=0;
@@ -586,6 +585,7 @@ void SortingRendererClass::Flush_Sorting_Pool()
 			SortingNodeStruct* state=overlapping_nodes[node_id];
 			Apply_Render_State(state->sorting_state);
 			DX8Wrapper::Apply_Render_State_Changes();
+			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, push);
 
 			auto pipelines = DX8Wrapper::FindClosestPipelines(dyn_vb_access.FVF_Info().FVF);
 			assert(pipelines.size() == 1);
@@ -743,6 +743,8 @@ void SortingRendererClass::Flush_Sorting_Pool()
 	if (count_to_render) {
 		SortingNodeStruct* state=overlapping_nodes[node_id];
 		Apply_Render_State(state->sorting_state);
+		DX8Wrapper::Apply_Render_State_Changes();
+		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, push);
 
 
 		auto pipelines = DX8Wrapper::FindClosestPipelines(dyn_vb_access.FVF_Info().FVF);

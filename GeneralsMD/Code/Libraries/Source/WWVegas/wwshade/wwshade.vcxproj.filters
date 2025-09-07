@@ -152,30 +152,4 @@
       <Filter>Shaders\LegacyW3D</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="shd8bumpspec.psh">
-      <Filter>Shaders\Bump Specular</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd8bumpspec.vsh">
-      <Filter>Shaders\Bump Specular</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd8ssbumpspec.psh">
-      <Filter>Shaders\Bump Specular</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd8ssbumpspec.vsh">
-      <Filter>Shaders\Bump Specular</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd8bumpdiff.psh">
-      <Filter>Shaders\Bump Diffuse</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd8bumpdiff.vsh">
-      <Filter>Shaders\Bump Diffuse</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd8ssbumpdiff.psh">
-      <Filter>Shaders\Bump Diffuse</Filter>
-    </CustomBuild>
-    <CustomBuild Include="shd8ssbumpdiff.vsh">
-      <Filter>Shaders\Bump Diffuse</Filter>
-    </CustomBuild>
-  </ItemGroup>
 </Project>

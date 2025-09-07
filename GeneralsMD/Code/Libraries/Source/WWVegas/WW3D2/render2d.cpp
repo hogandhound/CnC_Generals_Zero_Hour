@@ -700,7 +700,7 @@ void Render2DClass::Render(void)
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLOROP, VKTOP_MODULATE);
 		}
 #endif
-		WWVK_UpdateFVF_DUV_Grayscale_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &Texture->Peek_D3D_Texture(),
+		WWVK_UpdateFVF_DUV_Grayscale_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),
 			DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
 		WWVK_DrawFVF_DUV_Grayscale_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 			((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
@@ -715,7 +715,7 @@ void Render2DClass::Render(void)
 		switch (pipelines[0])
 		{
 		case PIPELINE_WWVK_FVF_DUV_NoDepth:
-			WWVK_UpdateFVF_DUV_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &Texture->Peek_D3D_Texture(),
+			WWVK_UpdateFVF_DUV_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),//&Texture->Peek_D3D_Texture(),
 				DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
 			WWVK_DrawFVF_DUV_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,

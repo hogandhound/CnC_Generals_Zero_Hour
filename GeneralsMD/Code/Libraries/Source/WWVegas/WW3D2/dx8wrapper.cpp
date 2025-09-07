@@ -749,6 +749,32 @@ void PopulateShaderCompare(DX8Wrapper::WWVK_Pipeline_State* states)
 				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
 				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
 				break;
+			case PIPELINE_WWVK_FVF_NDUV2_NOCULL_NOALPHA_ADDBLEND_AREF_DROPTEX:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2 | VKFVF_NORMAL;
+				p.RenderStates[VKRS_ALPHABLENDENABLE] = false;
+				p.RenderStates[VKRS_ALPHATESTENABLE] = true;
+				p.RenderStates[VKRS_CULLMODE] = VK_FRONT_FACE_MAX_ENUM;
+				p.RenderStates[VKRS_ALPHAFUNC] = VK_COMPARE_OP_GREATER_OR_EQUAL;
+				p.RenderStates[VKRS_SRCBLEND] = VK_BLEND_FACTOR_ONE;
+				p.RenderStates[VKRS_DESTBLEND] = VK_BLEND_FACTOR_ONE;
+				p.isDynamic |= (1 << VKRS_DIFFUSEMATERIALSOURCE) | (1 << VKRS_ALPHAREF);
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				break;
+			case PIPELINE_WWVK_FVF_NDUV2_NOCULL_NOALPHA_ADDBLEND_AREF:
+				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2 | VKFVF_NORMAL;
+				p.RenderStates[VKRS_ALPHABLENDENABLE] = false;
+				p.RenderStates[VKRS_ALPHATESTENABLE] = true;
+				p.RenderStates[VKRS_CULLMODE] = VK_FRONT_FACE_MAX_ENUM;
+				p.RenderStates[VKRS_ALPHAFUNC] = VK_COMPARE_OP_GREATER_OR_EQUAL;
+				p.RenderStates[VKRS_SRCBLEND] = VK_BLEND_FACTOR_ONE;
+				p.RenderStates[VKRS_DESTBLEND] = VK_BLEND_FACTOR_ONE;
+				p.isDynamic |= (1 << VKRS_DIFFUSEMATERIALSOURCE) | (1 << VKRS_ALPHAREF);
+				p.TextureStageStates[0][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[0][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_COLOROP] = VKTOP_MODULATE;
+				p.TextureStageStates[1][VKTSS_ALPHAOP] = VKTOP_MODULATE;
+				break;
 			case PIPELINE_WWVK_FVF_NDUV2_NOCULL_NOALPHA_AREF_DROPTEX:
 				p.FVF = VKFVF_XYZ | VKFVF_DIFFUSE | VKFVF_TEX2 | VKFVF_NORMAL;
 				p.RenderStates[VKRS_ALPHABLENDENABLE] = false;
@@ -2932,7 +2958,7 @@ void DX8Wrapper::Clear(bool clear_color, bool clear_z_stencil, const Vector3 &co
 	/*bool has_stencil = (	_PresentParameters.AutoDepthStencilFormat == D3DFMT_D15S1 ||
 								_PresentParameters.AutoDepthStencilFormat == D3DFMT_D24S8 ||
 								_PresentParameters.AutoDepthStencilFormat == D3DFMT_D24X4S4);*/
-	bool has_stencil=false;
+	bool has_stencil=true;
 #ifdef INFO_VULKAN
 	IDirect3DSurface9* depthbuffer;
 

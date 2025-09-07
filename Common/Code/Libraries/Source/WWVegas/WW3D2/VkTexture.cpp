@@ -175,7 +175,7 @@ void VK::CreateTexture(VkRenderTarget* target, VK::Texture& texture, uint32_t wi
     imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
     imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | usage;
-    if (format == VK_FORMAT_D32_SFLOAT_S8_UINT)
+    if (format == VK_FORMAT_D24_UNORM_S8_UINT)
         imageInfo.usage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -191,7 +191,7 @@ void VK::CreateTexture(VkRenderTarget* target, VK::Texture& texture, uint32_t wi
     textureImageViewInfo.image = texture.image;
     textureImageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
     textureImageViewInfo.format = format;
-    if (format == VK_FORMAT_D32_SFLOAT_S8_UINT)
+    if (format == VK_FORMAT_D24_UNORM_S8_UINT)
     {
         textureImageViewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
     }

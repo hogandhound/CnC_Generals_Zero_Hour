@@ -17,11 +17,15 @@ layout(location = 2) in uint diffuse;
 
 layout(location = 0) out vec3 fragNorm;
 layout(location = 1) out vec4 fragDiffuse;
+layout(location = 9) out vec3 fragPos;
+layout(location = 10) out vec3 viewPos;
 
 void main() {
-    // Pass the tex coord straight through to the fragment shader
-	fragNorm = normalize(push.world * vec4(norm,0)).xyz;
-	//viewDir = normalize(vec3(view.m[0].z, view.m[1].z, view.m[2].z)); //view.m[2].rgb
+	mat3 normalMat = transpose(inverse(mat3(push.world)));
+	fragNorm = normalize(normalMat * norm);
+	fragPos = (push.world * vec4(vert,1)).xyz;
+	viewPos = (inverse(view.m)*vec4(0,0,0,1)).xyz;
+	
 	fragDiffuse = unpackUnorm4x8(diffuse).bgra;
     
     gl_Position = proj.m*view.m*push.world*vec4(vert, 1);

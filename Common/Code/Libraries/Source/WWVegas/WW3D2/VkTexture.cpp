@@ -24,7 +24,7 @@ void VK::CreateTexture(VkRenderTarget* target, VK::Texture& texture, uint32_t wi
     else {
         switch (format)
         {
-        case VK_FORMAT_R8G8B8_UNORM:
+        case VK_FORMAT_B8G8R8_UNORM:
             break;
         default:
             printf("Bad Texture Format\n");
@@ -60,6 +60,30 @@ void VK::CreateTexture(VkRenderTarget* target, VK::Texture& texture, uint32_t wi
             pImageData[i * 4 + 3] = 0xff;
         }
         format = VK_FORMAT_R8G8B8A8_UNORM;
+        break;
+    }
+    case VK_FORMAT_B8G8R8_UNORM:
+    {
+        for (uint32_t i = 0; i < width * height; ++i)
+        {
+            pImageData[i * 4 + 0] = rgba[i * 3 + 0];
+            pImageData[i * 4 + 1] = rgba[i * 3 + 1];
+            pImageData[i * 4 + 2] = rgba[i * 3 + 2];
+            pImageData[i * 4 + 3] = 0xff;
+        }
+        format = VK_FORMAT_B8G8R8A8_UNORM;
+        break;
+    }
+    case VK_FORMAT_B8G8R8A8_SRGB:
+    {
+        for (uint32_t i = 0; i < width * height; ++i)
+        {
+            pImageData[i * 4 + 0] = rgba[i * 4 + 0];
+            pImageData[i * 4 + 1] = rgba[i * 4 + 1];
+            pImageData[i * 4 + 2] = rgba[i * 4 + 2];
+            pImageData[i * 4 + 3] = 0xff;
+        }
+        format = VK_FORMAT_B8G8R8A8_UNORM;
         break;
     }
     }
@@ -140,7 +164,11 @@ void VK::CreateTexture(VkRenderTarget* target, VK::Texture& texture, uint32_t wi
     target->PushSingleFrameBuffer(staging);
     // Create ImageView
 
+    VkImageViewUsageCreateInfo tivci = {};
+    tivci.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_USAGE_CREATE_INFO;
+    tivci.usage = VK_IMAGE_USAGE_SAMPLED_BIT;
     VkImageViewCreateInfo textureImageViewInfo = { VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
+    textureImageViewInfo.pNext = &tivci;
     textureImageViewInfo.image = texture.image;
     textureImageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
     textureImageViewInfo.format = format;
@@ -369,6 +397,18 @@ void VK::CreateTextureMips(VkRenderTarget* target, VK::Texture& texture, uint32_
     switch (format)
     {
     case VK_FORMAT_R8G8B8A8_UNORM: memcpy(pImageData, rgba, imageSize); break;
+    case VK_FORMAT_B8G8R8_UNORM:
+    {
+        for (uint32_t i = 0; i < width * height; ++i)
+        {
+            pImageData[i * 4 + 0] = rgba[i * 3 + 0];
+            pImageData[i * 4 + 1] = rgba[i * 3 + 1];
+            pImageData[i * 4 + 2] = rgba[i * 3 + 2];
+            pImageData[i * 4 + 3] = 0xff;
+        }
+        format = VK_FORMAT_B8G8R8A8_UNORM;
+        break;
+    }
     case VK_FORMAT_R8G8B8_UNORM:
     {
         for (uint32_t i = 0; i < width * height; ++i)
@@ -379,6 +419,18 @@ void VK::CreateTextureMips(VkRenderTarget* target, VK::Texture& texture, uint32_
             pImageData[i * 4 + 3] = 0xff;
         }
         format = VK_FORMAT_R8G8B8A8_UNORM;
+        break;
+    }
+    case VK_FORMAT_B8G8R8A8_SRGB:
+    {
+        for (uint32_t i = 0; i < width * height; ++i)
+        {
+            pImageData[i * 4 + 0] = rgba[i * 4 + 0];
+            pImageData[i * 4 + 1] = rgba[i * 4 + 1];
+            pImageData[i * 4 + 2] = rgba[i * 4 + 2];
+            pImageData[i * 4 + 3] = 0xff;
+        }
+        format = VK_FORMAT_B8G8R8A8_UNORM;
         break;
     }
     }

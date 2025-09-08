@@ -651,6 +651,10 @@ void Render2DClass::Render(void)
 			*(Vector3*)(va+fi.Get_Location_Offset())=temp;
 			*(unsigned int*)(va+fi.Get_Diffuse_Offset())=Colors[i];
 			*(Vector2*)(va+fi.Get_Tex_Offset(0))=UVCoordinates[i];
+			// This is to fix the gaps in the buttons in the intro
+			// No idea why this is necessary compared to the base
+			((Vector2*)(va + fi.Get_Tex_Offset(0)))->X += 0.001f;
+			((Vector2*)(va + fi.Get_Tex_Offset(0)))->Y += 0.001f;
 			va+=fi.Get_FVF_Size();
 		}		
 	}

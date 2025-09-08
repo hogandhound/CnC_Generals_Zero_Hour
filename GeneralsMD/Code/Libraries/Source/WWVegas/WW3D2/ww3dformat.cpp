@@ -208,10 +208,15 @@ void Color_to_Vector4(Vector4* outc,const unsigned int inc,const WW3DFormat form
 
 	switch (format)
 	{
-	case WW3D_FORMAT_R8G8B8:
 	case WW3D_FORMAT_A8R8G8B8:
+		a = argb[0];
+		r = argb[1];
+		g = argb[2];
+		b = argb[3];
+		break;
+	case WW3D_FORMAT_R8G8B8:
 	case WW3D_FORMAT_X8R8G8B8:
-		a=argb[0];
+		a=255;
 		r=argb[1];
 		g=argb[2];
 		b=argb[3];

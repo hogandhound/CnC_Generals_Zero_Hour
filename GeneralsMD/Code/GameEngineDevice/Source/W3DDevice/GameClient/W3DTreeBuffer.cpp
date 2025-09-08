@@ -1701,7 +1701,7 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 	DX8Wrapper::Apply_Render_State_Changes();
 
 	VK::Buffer uboTrees;
-	Trees treeConstants;
+	Trees treeConstants = {};
 	{
 		DirectX::XMMATRIX matProj, matView, matWorld;
 		DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&matWorld);

@@ -21226,27 +21226,27 @@ void WWVK_CreateTreesPipeline(VkRenderTarget* target, VKPipelineData& pipeline) 
     VkVertexInputAttributeDescription attributeDescriptions[4] = {};
     {
         attributeDescriptions[0].binding = 0;
-        attributeDescriptions[0].location = 2;
-        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
-        attributeDescriptions[0].offset = sizeof(float) * 6;
+        attributeDescriptions[0].location = 1;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[0].offset = sizeof(float) * 3;
     }
     {
         attributeDescriptions[1].binding = 0;
-        attributeDescriptions[1].location = 3;
-        attributeDescriptions[1].format = VK_FORMAT_R32_UINT;
-        attributeDescriptions[1].offset = sizeof(float) * 8;
+        attributeDescriptions[1].location = 0;
+        attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[1].offset = sizeof(float) * 0;
     }
     {
         attributeDescriptions[2].binding = 0;
-        attributeDescriptions[2].location = 0;
-        attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
-        attributeDescriptions[2].offset = sizeof(float) * 0;
+        attributeDescriptions[2].location = 3;
+        attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[2].offset = sizeof(float) * 7;
     }
     {
         attributeDescriptions[3].binding = 0;
-        attributeDescriptions[3].location = 1;
-        attributeDescriptions[3].format = VK_FORMAT_R32G32B32_SFLOAT;
-        attributeDescriptions[3].offset = sizeof(float) * 3;
+        attributeDescriptions[3].location = 2;
+        attributeDescriptions[3].format = VK_FORMAT_R32_UINT;
+        attributeDescriptions[3].offset = sizeof(float) * 6;
     }
     vertexInputInfo.vertexBindingDescriptionCount = 1;
     vertexInputInfo.vertexAttributeDescriptionCount = 4;
@@ -29096,12 +29096,12 @@ void WWVK_DrawTerrainNoise2(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer 
     vkCmdDrawIndexed(command, indexCount, 1, indexOffset, 0, 0);
 }
 
-void WWVK_DrawTrees_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawTrees_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, uint32_t vertexCount, VkBuffer norm, VkDeviceSize offset_norm, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Trees].graphicsPipeline);
 
-    VkBuffer vertexBuffers[] = { uv,  };
-    VkDeviceSize offsets[] = { offset_uv,  };
+    VkBuffer vertexBuffers[] = { norm,  };
+    VkDeviceSize offsets[] = { offset_norm,  };
     vkCmdPushConstants(
         command,
         pipeline.pipelines[PIPELINE_WWVK_Trees].pipelineLayout,
@@ -29118,12 +29118,12 @@ void WWVK_DrawTrees_NI(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer comma
     vkCmdDraw(command, vertexCount, 1, 0, 0); 
 }
 
-void WWVK_DrawTrees(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer uv, VkDeviceSize offset_uv, WorldMatrix* push)
+void WWVK_DrawTrees(WWVK_Pipeline_Collection& pipeline, VkCommandBuffer command, std::vector<VkDescriptorSet>& sets, VkBuffer indexBuffer, uint32_t indexCount, uint32_t indexOffset, VkIndexType indexType, VkBuffer norm, VkDeviceSize offset_norm, WorldMatrix* push)
 {
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelines[PIPELINE_WWVK_Trees].graphicsPipeline);
 
-    VkBuffer vertexBuffers[] = { uv,  };
-    VkDeviceSize offsets[] = { offset_uv,  };
+    VkBuffer vertexBuffers[] = { norm,  };
+    VkDeviceSize offsets[] = { offset_norm,  };
     vkCmdPushConstants(
         command,
         pipeline.pipelines[PIPELINE_WWVK_Trees].pipelineLayout,

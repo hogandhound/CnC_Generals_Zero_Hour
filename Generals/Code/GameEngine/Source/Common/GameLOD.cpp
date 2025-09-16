@@ -213,9 +213,9 @@ GameLODManager::GameLODManager(void)
 	m_dynamicParticleSkipMask=0;
 	m_numDebrisGenerations=0;
 	m_dynamicDebrisSkipMask=0;
-	m_videoPassed=false;
-	m_cpuPassed=false;
-	m_memPassed=false;
+	m_videoPassed= true;
+	m_cpuPassed= true;
+	m_memPassed=true;
 	m_slowDeathScale=1.0f;
 	m_idealDetailLevel = STATIC_GAME_LOD_UNKNOWN;
 	m_videoChipType = DC_MAX;

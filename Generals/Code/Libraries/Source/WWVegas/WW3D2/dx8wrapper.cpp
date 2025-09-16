@@ -511,11 +511,11 @@ void DX8Wrapper::Enumerate_Devices()
 			** Enumerate the DXS::G().Resolutions
 			*/
 			desc.reset_resolution_list();
-			int mode_count = DXS::G().D3DInterface->GetAdapterModeCount(adapter_index, D3DFMT_A8R8G8B8);
+			int mode_count = DXS::G().D3DInterface->GetAdapterModeCount(adapter_index, D3DFMT_X8R8G8B8);
 			for (int mode_index=0; mode_index<mode_count; mode_index++) {
 				D3DDISPLAYMODE d3dmode;
 				::ZeroMemory(&d3dmode, sizeof(D3DDISPLAYMODE));
-				HRESULT res = DXS::G().D3DInterface->EnumAdapterModes(adapter_index, D3DFMT_A8R8G8B8,mode_index,&d3dmode);
+				HRESULT res = DXS::G().D3DInterface->EnumAdapterModes(adapter_index, D3DFMT_X8R8G8B8,mode_index,&d3dmode);
 				
 				if (res == D3D_OK) {
 					int bits = 0;

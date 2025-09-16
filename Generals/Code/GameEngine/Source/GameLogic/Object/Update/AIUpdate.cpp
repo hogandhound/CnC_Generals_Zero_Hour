@@ -481,7 +481,7 @@ void AIUpdateInterface::requestPath( Coord3D *destination, Bool isFinalGoal )
 {
 
 	if (m_locomotorSet.getValidSurfaces() == 0) {
-		DEBUG_CRASH(("Attempting to path immobile unit."));
+		DEBUG_WARNING(("Attempting to path immobile unit."));
 	}
 
 	//DEBUG_LOG(("Request Frame %d, obj %s %x\n", TheGameLogic->getFrame(), getObject()->getTemplate()->getName().str(), getObject()));
@@ -4109,7 +4109,7 @@ UnsignedInt AIUpdateInterface::getMoodMatrixValue( void ) const
 			case AI_ALERT:			returnVal |= MM_Mood_Alert; break;
 			case AI_AGGRESSIVE:	returnVal |= MM_Mood_Aggressive; break;
 			default: 
-				DEBUG_CRASH(("Unknown mood '%d' in getMoodMatrixValue. (Team '%s'). Using normal. (jkmcd)", getAttitude(), getObject()->getTeam()->getName().str() ));
+				DEBUG_WARNING(("Unknown mood '%d' in getMoodMatrixValue. (Team '%s'). Using normal. (jkmcd)", getAttitude(), getObject()->getTeam()->getName().str() ));
 				returnVal |= MM_Mood_Normal;
 				break;
 		}

@@ -234,7 +234,7 @@ Object *ResourceGatheringManager::findBestSupplyCenter( Object *queryObject )
 
 		if( currentCenter == NULL )
 		{
-			iterator = m_supplyWarehouses.erase( iterator );
+			iterator = m_supplyCenters.erase( iterator );
 		}
 		else
 		{

@@ -99,10 +99,10 @@ void View::init( void )
 	m_cameraLockDrawable = NULL;
 	m_zoomLimited = TRUE;
 	
-	m_maxZoom = 1.3f;
+	m_maxZoom = 2.0f;
 	m_minZoom = 0.2f;
 	m_zoom = m_maxZoom;
-	m_maxHeightAboveGround = TheGlobalData->m_maxCameraHeight;
+	m_maxHeightAboveGround = TheGlobalData->m_maxCameraHeight *2;
 	m_minHeightAboveGround = TheGlobalData->m_minCameraHeight;
 	m_okToAdjustHeight = FALSE;
 

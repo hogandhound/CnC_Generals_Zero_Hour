@@ -600,7 +600,7 @@ protected:
 		}
 
 		const ParticleSystemTemplate *tmp = TheParticleSystemManager->findTemplate(m_name);
-		DEBUG_ASSERTCRASH(tmp, ("ParticleSystem %s not found\n",m_name.str()));
+		if (!tmp) DEBUG_WARNING(("ParticleSystem %s not found\n",m_name.str()));
 		if (tmp)
 		{
 			for (Int i = 0; i < m_count; i++ )

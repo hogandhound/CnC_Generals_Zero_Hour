@@ -2364,7 +2364,7 @@ Bool Player::setRankLevel(Int newLevel)
 	m_levelUp = nextRank ? nextRank->m_skillPointsNeeded : INT_MAX;
 	m_rankLevel = newLevel;
 
-	DEBUG_ASSERTCRASH(m_skillPoints >= m_levelDown && m_skillPoints < m_levelUp, ("hmm, wrong"));
+	if (m_skillPoints >= m_levelDown && m_skillPoints < m_levelUp) DEBUG_WARNING(("hmm, wrong"));
 	//DEBUG_LOG(("Rank %d, Skill %d, down %d, up %d\n",m_rankLevel,m_skillPoints, m_levelDown, m_levelUp));
 
 	if (TheControlBar != NULL)

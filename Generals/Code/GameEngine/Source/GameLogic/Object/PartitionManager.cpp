@@ -1304,7 +1304,7 @@ void PartitionCell::removeLooker(Int playerIndex)
 		m_shroudLevel[playerIndex].m_currentShroud = min( m_shroudLevel[playerIndex].m_activeShroudLevel, (Short)1 );
 	else
 	{
-		DEBUG_ASSERTCRASH( m_shroudLevel[playerIndex].m_currentShroud < 0, ("Someone is RemoveLooker-ing on a cell that is not looked at.  This will make a permanent shroud blob.") );
+		DEBUG_ASSERTLOG( m_shroudLevel[playerIndex].m_currentShroud < 0, ("Someone is RemoveLooker-ing on a cell that is not looked at.  This will make a permanent shroud blob.") );
 		m_shroudLevel[playerIndex].m_currentShroud++;
 	}
 	CellShroudStatus newShroud = getShroudStatusForPlayer( playerIndex );
@@ -3196,7 +3196,7 @@ Object *PartitionManager::getClosestObjects(
 	
 #ifdef _DEBUG
 	static Int theEntrancyCount = 0;
-	DEBUG_ASSERTCRASH(theEntrancyCount == 0, ("sorry, this routine is not reentrant"));
+	DEBUG_ASSERTLOG(theEntrancyCount == 0, ("sorry, this routine is not reentrant"));
 	++theEntrancyCount;
 #endif
 
@@ -5344,7 +5344,7 @@ Bool PartitionFilterPossibleToAttack::allow(Object *objOther)
 	// we should have already filtered out isAbleToAttack!
 #ifdef _DEBUG
 	// disable this assert for INTERNAL builds (srj)
-	DEBUG_ASSERTCRASH(m_obj && m_obj->isAbleToAttack(), ("if the object is unable to attack at all, you should filter that out ahead of time!"));
+	DEBUG_ASSERTLOG(m_obj && m_obj->isAbleToAttack(), ("if the object is unable to attack at all, you should filter that out ahead of time!"));
 #endif
 	CanAttackResult result = m_obj->getAbleToAttackSpecificObject( m_attackType, objOther, m_commandSource );
 	if( result == ATTACKRESULT_POSSIBLE || result == ATTACKRESULT_POSSIBLE_AFTER_MOVING )

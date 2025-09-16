@@ -38,7 +38,7 @@
     <SccProjectName>"$/RTS/Code", CAAAAAAA</SccProjectName>
     <SccLocalPath>.</SccLocalPath>
     <ProjectGuid>{FA69FE81-526B-478D-928D-03F3694EED39}</ProjectGuid>
-    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">
@@ -319,7 +319,7 @@
       <SubSystem>Windows</SubSystem>
       <IgnoreSpecificDefaultLibraries>libcd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <OutputFile>..\Run\RTSD.exe</OutputFile>
-      <AdditionalLibraryDirectories>GameEngine;GameEngine\Lib;GameEngineDevice\Lib;$(SolutionDir)\Libraries\Lib;$(SolutionDir)\Libraries\DX90SDK\lib\$(LibrariesArchitecture);$(SolutionDir)\Libraries\GameSpy-master\bin\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>GameEngine;GameEngine\Lib;GameEngineDevice\Lib;$(SolutionDir)\Libraries\Lib;$(SolutionDir)\Libraries\DX90SDK\lib\$(Platform);$(SolutionDir)\Libraries\GameSpy-master\bin\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>WW3D2Debug.lib;WWDebugDebug.lib;WWUtilDebug.lib;WWLibDebug.lib;WWMathDebug.lib;WWDownloadDebug.lib;GameEngineDebug.lib;GameEngineDeviceDebug.lib;CompressionDebug.lib;dxguid.lib;dinput8.lib;odbc32.lib;odbccp32.lib;d3dx9.lib;d3d9.lib;dxerr.lib;winmm.lib;vfw32.lib;dsound.lib;wsock32.lib;imm32.lib;wininet.lib;soloud_static.lib;GameSpy.lib;%(AdditionalDependencies);avcodec.lib;avutil.lib;avformat.lib;avdevice.lib;swscale.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>

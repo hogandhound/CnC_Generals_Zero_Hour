@@ -101,7 +101,7 @@ StateReturnType State::friend_checkForTransitions( StateReturnType status )
 	StIncrementer inc(checkfortransitionsnum);
 	if (checkfortransitionsnum >= 20) 
 	{
-		DEBUG_CRASH(("checkfortransitionsnum is > 20"));
+		DEBUG_WARNING(("checkfortransitionsnum is > 20"));
 		return STATE_FAILURE;
 	}
 

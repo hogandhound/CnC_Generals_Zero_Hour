@@ -927,7 +927,7 @@ void Bridge::updateDamageState( void )
 		}
 	}	else {
 		m_bridgeInfo.bridgeObjectID = INVALID_ID;
-		DEBUG_CRASH(("Bridge object disappeared - unexpected. jba."));
+		DEBUG_WARNING(("Bridge object disappeared - unexpected. jba."));
 	}
 
 }

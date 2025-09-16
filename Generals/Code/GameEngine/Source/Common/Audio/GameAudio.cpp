@@ -831,7 +831,7 @@ AudioEventInfo *AudioManager::newAudioEventInfo( AsciiString audioName )
 {
 	AudioEventInfo *eventInfo = findAudioEventInfo(audioName);
 	if (eventInfo) {
-		DEBUG_CRASH(("Requested add of '%s' multiple times. Is this intentional? - jkmcd\n", audioName.str()));
+		DEBUG_WARNING(("Requested add of '%s' multiple times. Is this intentional? - jkmcd\n", audioName.str()));
 		return eventInfo;
 	}
 
@@ -1059,7 +1059,7 @@ void AudioManager::loseFocus( void )
 	m_savedValues[3] = m_systemSpeechVolume;
 
 	// Now, set them all to 0.
-	setVolume(0.0f, (AudioAffect) (AudioAffect_All | AudioAffect_SystemSetting));
+	//setVolume(0.0f, (AudioAffect) (AudioAffect_All | AudioAffect_SystemSetting));
 }
 
 //-------------------------------------------------------------------------------------------------

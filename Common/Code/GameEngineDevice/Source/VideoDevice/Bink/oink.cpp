@@ -34,12 +34,16 @@ OINK* __stdcall BinkOpen(const char* name, unsigned int flags)
     ret->fmt_ctx = 0;
     if (avformat_open_input(&ret->fmt_ctx, name, NULL, NULL) < 0) {
         av_log(NULL, AV_LOG_ERROR, "Cannot open input file\n");
+        delete ret;
+        ret = 0;
         return ret;
     }
 
 
     if (avformat_find_stream_info(ret->fmt_ctx, NULL) < 0) {
         av_log(NULL, AV_LOG_ERROR, "Cannot find stream information\n");
+        delete ret;
+        ret = 0;
         return ret;
     }
 
@@ -49,6 +53,8 @@ OINK* __stdcall BinkOpen(const char* name, unsigned int flags)
     int hr = av_find_best_stream(ret->fmt_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, &dec, 0);
     if (hr < 0) {
         av_log(NULL, AV_LOG_ERROR, "Cannot find a video stream in the input file\n");
+        delete ret;
+        ret = 0;
         return ret;
     }
     ret->video_stream_index = hr;
@@ -63,6 +69,8 @@ OINK* __stdcall BinkOpen(const char* name, unsigned int flags)
     hr = av_find_best_stream(ret->fmt_ctx, AVMEDIA_TYPE_AUDIO, -1, -1, &dec, 0);
     if (hr < 0) {
         av_log(NULL, AV_LOG_ERROR, "Cannot find a video stream in the input file\n");
+        delete ret;
+        ret = 0;
         return ret;
     }
     ret->audio_stream_index = hr;
@@ -255,9 +263,9 @@ int __stdcall BinkCopyToBuffer(
             default:
             case BINKSURFACE32:
                 break;
-            case BINKSURFACE24: outputType = AV_PIX_FMT_BGR24; break;
-            case BINKSURFACE565: outputType = AV_PIX_FMT_BGR565LE; break;
-            case BINKSURFACE555: outputType = AV_PIX_FMT_BGR555LE; break;
+            case BINKSURFACE24: outputType = AV_PIX_FMT_RGB24; break;
+            case BINKSURFACE565: outputType = AV_PIX_FMT_RGB565LE; break;
+            case BINKSURFACE555: outputType = AV_PIX_FMT_RGB555LE; break;
             }
             i420ToRgbContext = sws_getContext(handle->Width, handle->Height, AV_PIX_FMT_YUV420P, handle->Width, handle->Height, outputType, SWS_BICUBIC, NULL, NULL, NULL);
             if (i420ToRgbContext == NULL) {

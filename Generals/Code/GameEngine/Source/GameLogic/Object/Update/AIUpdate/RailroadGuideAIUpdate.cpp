@@ -1383,15 +1383,15 @@ void RailroadBehavior::FindPosByPathDistance( Coord3D *pos, const Real dist, con
 	{
 		const TrackPoint *thisPoint = &(*pointIter);
 		++pointIter;// next pointIter in this list, so then...
-		const TrackPoint *nextPoint = &(*pointIter);
 
 
 		if (thisPoint && thisPoint->m_distanceFromFirst < actualDistance)// I am after this point, and
 		{
 			Coord3D thisPointPos = thisPoint->m_position;
 			
-			if (nextPoint && nextPoint->m_distanceFromFirst > actualDistance)
+			if (pointIter != pointList->end() && pointIter->m_distanceFromFirst > actualDistance)
 			{
+				const TrackPoint* nextPoint = &(*pointIter);
 				//I am between this point and the next
 				const Int handleFound = ((TrackPoint*)thisPoint)->getHandle();
 				Bool edge = (m_currentPointHandle != handleFound);

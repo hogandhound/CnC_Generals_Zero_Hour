@@ -696,7 +696,7 @@ void GarrisonContain::trackTargets( void )
 	for( ContainedItemsList::const_iterator it = containList.begin(); it != containList.end(); ++it )
 	{
 		if (!m_garrisonPointsInitialized)
-		DEBUG_WARNING(("garrisonPoints are not inited"));
+			DEBUG_WARNING(("garrisonPoints are not inited"));
 
 		// get the object
 		obj = *it;

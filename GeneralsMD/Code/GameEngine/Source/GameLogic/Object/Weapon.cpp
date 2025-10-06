@@ -897,7 +897,8 @@ UnsignedInt WeaponTemplate::fireWeaponTemplate
 		if (distSqr < minAttackRangeSqr-0.5f && !isProjectileDetonation)
 #endif
 		{
-			DEBUG_ASSERTCRASH(distSqr > minAttackRangeSqr*0.8f, ("*** victim is closer than min attack range (%f vs %f) of this weapon -- why did we attempt to fire?\n",sqrtf(distSqr),sqrtf(minAttackRangeSqr)));
+			if (distSqr > minAttackRangeSqr * 0.8f)
+				DEBUG_WARNING("*** victim is closer than min attack range (%f vs %f) of this weapon -- why did we attempt to fire?\n",sqrtf(distSqr),sqrtf(minAttackRangeSqr));
 
 			//-extraLogging 
 			#if (defined(_DEBUG) || defined(_INTERNAL))
@@ -2971,7 +2972,7 @@ void Weapon::processRequestAssistance( const Object *requestingObject, Object *v
 	if (!draw || !draw->getProjectileLaunchOffset(wslot, specificBarrelToUse, &attachTransform, tur, &turretRotPos, &turretPitchPos))
 	{
 		//CRCDEBUG_LOG(("ProjectileLaunchPos %d %d not found!\n",wslot, specificBarrelToUse));
-		DEBUG_CRASH(("ProjectileLaunchPos %d %d not found!\n",wslot, specificBarrelToUse));
+		DEBUG_WARNING("ProjectileLaunchPos %d %d not found!\n",wslot, specificBarrelToUse);
 		attachTransform.Make_Identity();
 		turretRotPos.zero();
 		turretPitchPos.zero();

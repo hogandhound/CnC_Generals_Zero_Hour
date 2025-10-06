@@ -6173,7 +6173,7 @@ void ScriptEngine::createNamedMapReveal(const AsciiString& revealName, const Asc
 	// Will fail if there's already one in existence of the same name.
 	for (it = m_namedReveals.begin(); it != m_namedReveals.end(); ++it) {
 		if (it->m_revealName == revealName) {
-			DEBUG_CRASH(("ScriptEngine::createNamedMapReveal: Attempted to redefine named Reveal '%s', so I won't change it.\n", revealName.str()));
+			DEBUG_WARNING(("ScriptEngine::createNamedMapReveal: Attempted to redefine named Reveal '%s', so I won't change it.\n", revealName.str()));
 			return;
 		}
 	}
@@ -7883,12 +7883,12 @@ void ScriptEngine::setSequentialTimer(Team *team, Int frameCount)
 
 void ScriptEngine::evaluateAndProgressAllSequentialScripts( void )
 {
-	VecSequentialScriptPtrIt it, lastIt;
-	lastIt = m_sequentialScripts.end();
+	VecSequentialScriptPtrIt it;
+	size_t iti = 0, lastIt = m_sequentialScripts.size();
 
 	Int spinCount = 0;
 	for (it = m_sequentialScripts.begin(); it != m_sequentialScripts.end(); /* empty */) {
-		if (it == lastIt) {
+		if (iti == lastIt) {
 			++spinCount;
 		} else {
 			spinCount = 0;
@@ -7900,11 +7900,11 @@ void ScriptEngine::evaluateAndProgressAllSequentialScripts( void )
 				DEBUG_LOG(("Sequential script %s appears to be in an infinite loop.\n", 
 					seqScript->m_scriptToExecuteSequentially->getName().str()));
 			}
-			++it;
+			++iti;
 			continue;
 		}
 
-		lastIt = it;
+		lastIt = iti;
 		
 		Bool itAdvanced = false;
 
@@ -8008,7 +8008,7 @@ void ScriptEngine::evaluateAndProgressAllSequentialScripts( void )
 					
 					// Check to see if executing our action told us to wait. If so, skip to the next Sequential script
 					if (seqScript->m_dontAdvanceInstruction) {
-						++it;
+						++iti;
 						itAdvanced = true;
 						continue;
 					}
@@ -8057,7 +8057,7 @@ void ScriptEngine::evaluateAndProgressAllSequentialScripts( void )
 		}
 
 		if (!itAdvanced) {
-			++it;
+			++iti;
 		}
 	}
 	m_currentPlayer = NULL;

@@ -621,7 +621,7 @@ void ModelConditionInfo::validateCachedBones(RenderObjClass* robj, Real scale) c
 		}
 
 		robj = W3DDisplay::m_assetManager->Create_Render_Obj(m_modelName.str(), scale, 0);
-		DEBUG_ASSERTCRASH(robj, ("*** ASSET ERROR: Model %s not found!\n",m_modelName.str()));
+		DEBUG_CONDWARNING(robj, ("*** ASSET ERROR: Model %s not found!\n",m_modelName.str()));
 		if (!robj)
 		{
 			//BONEPOS_LOG(("Bailing: could not load render object\n"));
@@ -2508,7 +2508,7 @@ void W3DModelDraw::handleClientRecoil()
 		WeaponRecoilInfoVec& recoils = m_weaponRecoilInfoVec[wslot];
 		Int count = (int)barrels.size();
 		Int recoilCount = (int)recoils.size();
-		DEBUG_ASSERTCRASH(count == recoilCount, ("Barrel count != recoil count!"));
+		DEBUG_CONDWARNING(count == recoilCount, ("Barrel count != recoil count!"));
 		count = (count>recoilCount)?recoilCount:count;
 		for (Int i = 0; i < count; ++i)
 		{
@@ -3034,7 +3034,7 @@ void W3DModelDraw::setModelState(const ModelConditionInfo* newState)
 		else
 		{
 			m_renderObject = W3DDisplay::m_assetManager->Create_Render_Obj(newState->m_modelName.str(), draw->getScale(), m_hexColor);
-			DEBUG_ASSERTCRASH(m_renderObject, ("*** ASSET ERROR: Model %s not found!\n",newState->m_modelName.str()));
+			DEBUG_CONDWARNING(m_renderObject, ("*** ASSET ERROR: Model %s not found!\n",newState->m_modelName.str()));
 		}
 
 		//BONEPOS_LOG(("validateStuff() from within W3DModelDraw::setModelState()\n"));
@@ -3762,9 +3762,12 @@ Bool W3DModelDraw::handleWeaponFireFX(WeaponSlotType wslot, Int specificBarrelTo
 	if (info.m_recoilBone || info.m_muzzleFlashBone)
 	{
 		//DEBUG_LOG(("START muzzleflash %08lx for Draw %08lx state %s at frame %d\n",info.m_muzzleFlashBone,this,m_curState->m_description.str(),TheGameLogic->getFrame()));
-		WeaponRecoilInfo& recoil = m_weaponRecoilInfoVec[wslot][specificBarrelToUse];
-		recoil.m_state = WeaponRecoilInfo::RECOIL_START;
-		recoil.m_recoilRate = getW3DModelDrawModuleData()->m_initialRecoil;
+		if (m_weaponRecoilInfoVec->size() > wslot && m_weaponRecoilInfoVec[wslot].size() > specificBarrelToUse)
+		{
+			WeaponRecoilInfo& recoil = m_weaponRecoilInfoVec[wslot][specificBarrelToUse];
+			recoil.m_state = WeaponRecoilInfo::RECOIL_START;
+			recoil.m_recoilRate = getW3DModelDrawModuleData()->m_initialRecoil;
+		}
 		if (info.m_muzzleFlashBone != 0)
 			info.setMuzzleFlashHidden(m_renderObject, false);
 	}

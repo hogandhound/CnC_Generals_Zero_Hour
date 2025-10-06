@@ -38,6 +38,7 @@
     <SccProjectName>EABrowserDispatch</SccProjectName>
     <SccLocalPath>.</SccLocalPath>
     <ProjectGuid>{70B43099-529D-4589-804A-2A2CDA381825}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">

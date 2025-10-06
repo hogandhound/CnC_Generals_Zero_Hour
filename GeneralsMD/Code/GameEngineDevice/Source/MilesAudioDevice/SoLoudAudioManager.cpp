@@ -1091,7 +1091,7 @@ void SoLoudAudioManager::releaseMilesHandles(PlayingAudio* release)
 	{
 	case PAT_Sample:
 	{
-		if (release->m_file) {
+		if (release->m_file || release->m_handle != 0xFFFFFFFF) {
 			m_digitalHandle.stop(release->m_handle);
 			release->m_file.reset();
 			m_availableSamples++;
@@ -1100,7 +1100,7 @@ void SoLoudAudioManager::releaseMilesHandles(PlayingAudio* release)
 	}
 	case PAT_3DSample:
 	{
-		if (release->m_file) {
+		if (release->m_file || release->m_handle != 0xFFFFFFFF) {
 			m_digitalHandle.stop(release->m_handle);
 			release->m_file.reset();
 			m_available3DSamples++;
@@ -1109,7 +1109,7 @@ void SoLoudAudioManager::releaseMilesHandles(PlayingAudio* release)
 	}
 	case PAT_Stream:
 	{
-		if (release->m_stream) {
+		if (release->m_stream || release->m_handle != 0xFFFFFFFF) {
 			m_digitalHandle.stop(release->m_handle);
 			release->m_stream.reset();
 		}
@@ -1124,12 +1124,12 @@ void SoLoudAudioManager::releasePlayingAudio(PlayingAudio* release)
 {
 	if (release->m_audioEventRTS->getAudioEventInfo()->m_soundType == AT_SoundEffect) {
 		if (release->m_type == PAT_Sample) {
-			if (release->m_file) {
+			if (release->m_file || release->m_handle != 0xFFFFFFFF) {
 				m_sound->notifyOf2DSampleCompletion();
 			}
 		}
 		else {
-			if (release->m_file) {
+			if (release->m_file || release->m_handle != 0xFFFFFFFF) {
 				m_sound->notifyOf3DSampleCompletion();
 			}
 		}
@@ -1206,21 +1206,8 @@ void SoLoudAudioManager::freeAllMilesHandles(void)
 	// all of our currently playing audio.
 	stopAllAudioImmediately();
 
-	// Walks through the available 2-D and 3-D handles and releases them
-	//std::vector<HSAMPLE>::iterator it;
-	//for (it = m_availableSamples.begin(); it != m_availableSamples.end(); /* empty */) {
-	//	HSAMPLE sample = *it;
-	//	AIL_release_sample_handle(sample);
-	//	it = m_availableSamples.erase(it);
-	//}
 	m_num2DSamples = 0;
 
-	//std::vector<H3DSAMPLE>::iterator it3D;
-	//for (it3D = m_available3DSamples.begin(); it3D != m_available3DSamples.end(); /* empty */) {
-	//	H3DSAMPLE sample3D = *it3D;
-	//	AIL_release_3D_sample_handle(sample3D);
-	//	it3D = m_available3DSamples.erase(it3D);
-	//}
 	m_num3DSamples = 0;
 	m_numStreams = 0;
 }
@@ -1228,34 +1215,17 @@ void SoLoudAudioManager::freeAllMilesHandles(void)
 //-------------------------------------------------------------------------------------------------
 bool SoLoudAudioManager::getFirst2DSample(AudioEventRTS* event)
 {
-#if 0
-	if (m_availableSamples.begin() != m_availableSamples.end()) {
-		HSAMPLE retSample = *m_availableSamples.begin();
-		m_availableSamples.erase(m_availableSamples.begin());
-		return (retSample);
-	}
-
-	// Find the first sample of lower priority than my augmented priority that is interruptable and take its handle
-
-	return NULL;
-#endif
-	return m_availableSamples-- > 0;
+	if (m_availableSamples > 0)
+		return m_availableSamples-- > 0;
+	return 0;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool SoLoudAudioManager::getFirst3DSample(AudioEventRTS* event)
 {
-#if 0
-	if (m_available3DSamples.begin() != m_available3DSamples.end()) {
-		H3DSAMPLE retSample = *m_available3DSamples.begin();
-		m_available3DSamples.erase(m_available3DSamples.begin());
-		return (retSample);
-	}
-
-	// Find the first sample of lower priority than my augmented priority that is interruptable and take its handle
-	return NULL;
-#endif
-	return m_available3DSamples-- > 0;
+	if (m_available3DSamples > 0)
+		return m_available3DSamples-- > 0;
+	return 0;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1267,7 +1237,7 @@ void SoLoudAudioManager::adjustPlayingVolume(PlayingAudio* audio)
 
 	}
 	else if (audio->m_type == PAT_3DSample) {
-		m_digitalHandle.setVolume(audio->m_handle, m_soundVolume * desiredVolume);
+		m_digitalHandle.setVolume(audio->m_handle, m_sound3DVolume * desiredVolume);
 
 	}
 	else if (audio->m_type == PAT_Stream) {
@@ -2120,7 +2090,7 @@ Bool SoLoudAudioManager::killLowestPrioritySoundImmediately(AudioEventRTS* event
 				{
 					//Release this 3D sound channel immediately because we are going to play another sound in it's place.
 					releasePlayingAudio(playing);
-					m_playing3DSounds.erase(it);
+					it = m_playing3DSounds.erase(it);
 					return TRUE;
 				}
 			}
@@ -2154,6 +2124,8 @@ void SoLoudAudioManager::adjustVolumeOfPlayingAudio(AsciiString eventName, Real 
 {
 	//Real pan;
 	std::vector<PlayingAudio*>::iterator it;
+	if (newVolume > 1.5f)
+		newVolume = 1.5f;
 
 	PlayingAudio* playing = NULL;
 	for (it = m_playingSounds.begin(); it != m_playingSounds.end(); ++it) {
@@ -2161,7 +2133,7 @@ void SoLoudAudioManager::adjustVolumeOfPlayingAudio(AsciiString eventName, Real 
 		if (playing && playing->m_audioEventRTS->getEventName() == eventName) {
 			// Adjust it
 			playing->m_audioEventRTS->setVolume(newVolume);
-			Real desiredVolume = playing->m_audioEventRTS->getVolume() * playing->m_audioEventRTS->getVolumeShift();
+			Real desiredVolume = playing->m_audioEventRTS->getVolume() * playing->m_audioEventRTS->getVolumeShift() * m_soundVolume;
 			m_digitalHandle.setVolume(playing->m_handle, desiredVolume);
 			//AIL_sample_volume_pan(playing->m_sample, NULL, &pan);
 			//AIL_set_sample_volume_pan(playing->m_sample, desiredVolume, pan);
@@ -2173,7 +2145,7 @@ void SoLoudAudioManager::adjustVolumeOfPlayingAudio(AsciiString eventName, Real 
 		if (playing && playing->m_audioEventRTS->getEventName() == eventName) {
 			// Adjust it
 			playing->m_audioEventRTS->setVolume(newVolume);
-			Real desiredVolume = playing->m_audioEventRTS->getVolume() * playing->m_audioEventRTS->getVolumeShift();
+			Real desiredVolume = playing->m_audioEventRTS->getVolume() * playing->m_audioEventRTS->getVolumeShift() * m_sound3DVolume;
 			m_digitalHandle.setVolume(playing->m_handle, desiredVolume);
 			//AIL_set_3D_sample_volume(playing->m_3DSample, desiredVolume);
 		}
@@ -2184,7 +2156,8 @@ void SoLoudAudioManager::adjustVolumeOfPlayingAudio(AsciiString eventName, Real 
 		if (playing && playing->m_audioEventRTS->getEventName() == eventName) {
 			// Adjust it
 			playing->m_audioEventRTS->setVolume(newVolume);
-			Real desiredVolume = playing->m_audioEventRTS->getVolume() * playing->m_audioEventRTS->getVolumeShift();
+			Real desiredVolume = playing->m_audioEventRTS->getVolume() * playing->m_audioEventRTS->getVolumeShift()
+				* ((playing->m_audioEventRTS->getAudioEventInfo()->m_soundType == AT_Music) ? m_musicVolume : m_speechVolume);
 			m_digitalHandle.setVolume(playing->m_handle, desiredVolume);
 			/*AIL_stream_volume_pan(playing->m_stream, NULL, &pan);
 			AIL_set_stream_volume_pan(playing->m_stream, desiredVolume, pan);*/
@@ -2332,7 +2305,7 @@ void SoLoudAudioManager::processPlayingList(void)
 			continue;
 		}
 
-		if (playing->m_status == PS_Stopped || !m_digitalHandle.isValidVoiceHandle(playing->m_handle))
+		if (playing->m_status == PS_Stopped || !m_digitalHandle.isValidVoiceHandle(playing->m_handle) || playing->m_requestStop)
 		{
 			//m_stoppedAudio.push_back(playing);
 			releasePlayingAudio(playing);
@@ -2357,7 +2330,7 @@ void SoLoudAudioManager::processPlayingList(void)
 			continue;
 		}
 
-		if (playing->m_status == PS_Stopped || !m_digitalHandle.isValidVoiceHandle(playing->m_handle))
+		if (playing->m_status == PS_Stopped || !m_digitalHandle.isValidVoiceHandle(playing->m_handle) || playing->m_requestStop)
 		{
 			//m_stoppedAudio.push_back(playing);			
 			releasePlayingAudio(playing);
@@ -2424,7 +2397,7 @@ void SoLoudAudioManager::processPlayingList(void)
 			continue;
 		}
 
-		if (playing->m_status == PS_Stopped || !m_digitalHandle.isValidVoiceHandle(playing->m_handle))
+		if (playing->m_status == PS_Stopped || !m_digitalHandle.isValidVoiceHandle(playing->m_handle) || playing->m_requestStop)
 		{
 			//m_stoppedAudio.push_back(playing);			
 			releasePlayingAudio(playing);
@@ -2847,7 +2820,7 @@ Bool SoLoudAudioManager::startNextLoop(PlayingAudio* looping)
 //-------------------------------------------------------------------------------------------------
 SoLoud::handle SoLoudAudioManager::playStream(AudioEventRTS* event, SoLoud::Wav& stream)
 {
-	auto handle = m_digitalHandle.play(stream);
+	auto handle = m_digitalHandle.play(stream, event->getVolume());
 
 	// Force it to the beginning
 	if (event->getAudioEventInfo()->m_soundType == AT_Music) {
@@ -2872,25 +2845,17 @@ SoLoud::handle SoLoudAudioManager::playSample(AudioEventRTS* event, std::shared_
 	//AIL_register_EOS_callback(sample, setSampleCompleted);
 
 	sample = loadFileForRead(event);
-	SoLoud::handle handle = -1;
 	if (sample)
 	{
-		m_digitalHandle.play(*sample);
+		Real volume = event->getVolume() * event->getVolumeShift() * m_soundVolume;
+		SoLoud::handle handle = m_digitalHandle.play(*sample, volume);
 
 		initFilters(handle, event);
+
+		return handle;
 	}
-
-	// Load the file in
-	//void* fileBuffer = NULL;
-	//fileBuffer = loadFileForRead(event);
-	//if (fileBuffer) {
-	//	AIL_set_sample_file(sample, fileBuffer, 0);
-
-	//	// Start playback
-	//	AIL_start_sample(sample);
-	//}
-
-	return handle;
+	m_availableSamples++;
+	return 0;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2902,7 +2867,8 @@ SoLoud::handle SoLoudAudioManager::playSample3D(AudioEventRTS* event, std::share
 		sample3D = loadFileForRead(event);
 		SoLoud::handle handle = -1;
 		if (sample3D) {
-			handle = m_digitalHandle.play3d(*sample3D, pos->x, pos->y, pos->z);
+			Real volume = event->getVolume() * event->getVolumeShift() * m_sound3DVolume;
+			handle = m_digitalHandle.play3d(*sample3D, pos->x, pos->y, pos->z, 0.f, 0.f, 0.f, volume);
 			// Set the position values of the sample here
 			if (event->getAudioEventInfo()->m_type & ST_GLOBAL) {
 				m_digitalHandle.set3dSourceMinMaxDistance(handle, TheAudio->getAudioSettings()->m_globalMinRange, TheAudio->getAudioSettings()->m_globalMaxRange);
@@ -2936,8 +2902,13 @@ SoLoud::handle SoLoudAudioManager::playSample3D(AudioEventRTS* event, std::share
 			AIL_start_3D_sample(sample3D);
 #endif
 		}
+		else
+		{
+			this->m_available3DSamples++;
+		}
 		return handle;
 	}
+	this->m_available3DSamples++;
 
 	return NULL;
 }
@@ -3001,32 +2972,8 @@ void SoLoudAudioManager::initSamplePools(void)
 		return;
 	}
 
-#if 0
-	int i = 0;
-	for (i = 0; i < getAudioSettings()->m_sampleCount2D; ++i) {
-		HSAMPLE sample = AIL_allocate_sample_handle(m_digitalHandle);
-		DEBUG_ASSERTCRASH(sample, ("Couldn't get %d 2D samples\n", i + 1));
-		if (sample) {
-			AIL_init_sample(sample);
-			AIL_set_sample_user_data(sample, 0, i + 1);
-			m_availableSamples.push_back(sample);
-			++m_num2DSamples;
-		}
-	}
-
-	for (i = 0; i < getAudioSettings()->m_sampleCount3D; ++i) {
-		H3DSAMPLE sample = AIL_allocate_3D_sample_handle(m_provider3D[m_selectedProvider].id);
-		DEBUG_ASSERTCRASH(sample, ("Couldn't get %d 3D samples\n", i + 1));
-		if (sample) {
-			AIL_set_3D_user_data(sample, 0, i + 1);
-			m_available3DSamples.push_back(sample);
-			++m_num3DSamples;
-		}
-	}
-#else
 	m_num2DSamples = m_availableSamples = getAudioSettings()->m_sampleCount2D;
 	m_num3DSamples = m_available3DSamples = getAudioSettings()->m_sampleCount3D;
-#endif
 
 	// Streams are basically free, so we can just allocate the appropriate number
 	m_numStreams = getAudioSettings()->m_streamCount;
@@ -3076,7 +3023,7 @@ void SoLoudAudioManager::playBinkStream(uint8_t* data, size_t len, float sampleR
 	m_binkHandle->queue.play(*wav);
 	if (!m_digitalHandle.isValidVoiceHandle(m_binkHandle->m_handle))
 	{
-		m_binkHandle->m_handle = m_digitalHandle.play(m_binkHandle->queue);
+		m_binkHandle->m_handle = m_digitalHandle.play(m_binkHandle->queue, m_speechVolume);
 	}
 	for (int i = 0; i < playQueue_.size(); ++i)
 	{
@@ -3375,7 +3322,7 @@ void AudioFileCache::setMaxSize(UnsignedInt size)
 	// Protect the function, in case we're trying to use this value elsewhere.
 	ScopedMutex mut(m_mutex);
 
-	m_maxSize = size;
+	m_maxSize = size * 4;
 }
 
 //-------------------------------------------------------------------------------------------------

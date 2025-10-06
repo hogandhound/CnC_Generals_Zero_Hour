@@ -844,7 +844,7 @@ AudioEventInfo *AudioManager::newAudioEventInfo( AsciiString audioName )
 {
 	AudioEventInfo *eventInfo = findAudioEventInfo(audioName);
 	if (eventInfo) {
-		DEBUG_CRASH(("Requested add of '%s' multiple times. Is this intentional? - jkmcd\n", audioName.str()));
+		DEBUG_WARNING(("Requested add of '%s' multiple times. Is this intentional? - jkmcd\n", audioName.str()));
 		return eventInfo;
 	}
 

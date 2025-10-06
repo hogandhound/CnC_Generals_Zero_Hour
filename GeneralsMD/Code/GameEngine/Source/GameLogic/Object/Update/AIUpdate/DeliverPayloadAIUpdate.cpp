@@ -628,7 +628,7 @@ StateReturnType ApproachState::update()
       return STATE_FAILURE;
     else
     {
-		  DEBUG_CRASH(("hmm, bailed from moveto state early... should this be possible?"));
+		  DEBUG_WARNING(("hmm, bailed from moveto state early... should this be possible?"));
 		  ai->aiMoveToPosition( ai->getMoveToPos(), CMD_FROM_AI );
     }
 

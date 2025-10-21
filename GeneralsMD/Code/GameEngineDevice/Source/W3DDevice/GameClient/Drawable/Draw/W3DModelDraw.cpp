@@ -3755,7 +3755,7 @@ Bool W3DModelDraw::handleWeaponFireFX(WeaponSlotType wslot, Int specificBarrelTo
 		}
 		else
 		{
-			DEBUG_LOG(("*** no FXBone found for a non-null FXL\n"));
+			DEBUG_WARNING(("*** no FXBone found for a non-null FXL\n"));
 		}
 	}
 

@@ -659,9 +659,9 @@ void W3DProjectedShadowManager::flushDecals(W3DShadowTexture *texture, ShadowTyp
 		switch (type)
 		{
 		case SHADOW_DECAL:
-			WWVK_UpdateFVF_DUV_MultBlendDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &texture->getTexture()->Peek_D3D_Texture(),
+			WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &texture->getTexture()->Peek_D3D_Texture(),
 				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-			WWVK_DrawFVF_DUV_MultBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3, nShadowDecalStartBatchIndex,
+			WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3, nShadowDecalStartBatchIndex,
 				VK_INDEX_TYPE_UINT16, shadowVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
 			break;
 		case SHADOW_ALPHA_DECAL:
@@ -671,9 +671,9 @@ void W3DProjectedShadowManager::flushDecals(W3DShadowTexture *texture, ShadowTyp
 				VK_INDEX_TYPE_UINT16, shadowVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
 			break;
 		case SHADOW_ADDITIVE_DECAL:
-			WWVK_UpdateFVF_DUV_AddBlendDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &texture->getTexture()->Peek_D3D_Texture(),
+			WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &texture->getTexture()->Peek_D3D_Texture(),
 				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-			WWVK_DrawFVF_DUV_AddBlend(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3, nShadowDecalStartBatchIndex,
+			WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3, nShadowDecalStartBatchIndex,
 				VK_INDEX_TYPE_UINT16, shadowVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
 			break;
 		}

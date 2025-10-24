@@ -52,6 +52,7 @@ const bool enableValidationLayers = false;// true;
 /* Put this in a single .cpp file that's vulkan related: */
 PFN_vkCmdSetColorWriteMaskEXT vkCmdSetColorWriteMaskEXT_ = nullptr;
 #endif
+PFN_vkCmdSetColorBlendEquationEXT vkCmdSetColorBlendEquationEXT_ = nullptr;
 
 void VkRenderTarget::InitVulkan(void* window)
 {
@@ -452,6 +453,11 @@ void VkRenderTarget::PushSingleTexture(VK::Texture staging)
 	}
 	if (singleFrame[currentFrame].textures.size() <= singleFrame[currentFrame].textureIndex)
 		singleFrame[currentFrame].textures.resize(singleFrame[currentFrame].textureIndex + 1);
+	if (staging.image && singleFrame[currentFrame].textureIndex > 0 &&
+		singleFrame[currentFrame].textures[singleFrame[currentFrame].textureIndex-1].image == staging.image)
+	{
+		printf("wtf\n");
+	}
 	singleFrame[currentFrame].textures[singleFrame[currentFrame].textureIndex] = staging;
 	singleFrame[currentFrame].textureIndex++;
 }
@@ -686,6 +692,7 @@ void VkRenderTarget::createInstance(void* window) {
 	/* Put this in your code that initializes Vulkan (after you create your VkInstance and VkDevice): */
 	vkCmdSetColorWriteMaskEXT_ = (PFN_vkCmdSetColorWriteMaskEXT)vkGetInstanceProcAddr(instance, "vkCmdSetColorWriteMaskEXT"); // It depends on the function whether you want to use vkGetInstanceProcAddr or vkGetDeviceProcAddr
 #endif
+	vkCmdSetColorBlendEquationEXT_ = (PFN_vkCmdSetColorBlendEquationEXT)vkGetInstanceProcAddr(instance, "vkCmdSetColorBlendEquationEXT");
 }
 
 void VkRenderTarget::createSurface(void* window)
@@ -816,6 +823,7 @@ void VkRenderTarget::createLogicalDevice() {
 #ifdef USE_DYNAMIC_COLOR
 	VkPhysicalDeviceExtendedDynamicState3FeaturesEXT dynaFeatures = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT };
 	dynaFeatures.extendedDynamicState3ColorWriteMask = 1;
+	dynaFeatures.extendedDynamicState3ColorBlendEquation = 1;
 	syncFeatures.pNext = &dynaFeatures;
 #endif
 
@@ -1202,6 +1210,7 @@ void VkRenderTarget::createDescPools()
 		case VkDS_TTTUUUU: texs = 3; ubos = 4; break;
 		case VkDS_TTTTUUUU: texs = 4; ubos = 4; break;
 		case VkDS_TTUUUUU: texs = 2; ubos = 5; break;
+		case VkDS_TUUUUU: texs = 1; ubos = 5; break;
 		}
 		VkDescriptorPoolSize poolSizes[8] = {};
 		for (int i = 0; i < texs; ++i)
@@ -1219,7 +1228,7 @@ void VkRenderTarget::createDescPools()
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		poolInfo.poolSizeCount = texs+ubos;
 		poolInfo.pPoolSizes = poolSizes;
-		poolInfo.maxSets = 4096;
+		poolInfo.maxSets = 8192;
 
 		if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descPools[fmt]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create descriptor pool!");

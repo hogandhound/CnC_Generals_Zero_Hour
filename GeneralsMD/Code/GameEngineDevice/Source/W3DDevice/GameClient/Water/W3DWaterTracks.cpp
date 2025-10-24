@@ -947,7 +947,7 @@ Try improving the fit to vertical surfaces like cliffs.
 	DX8Wrapper::Set_Shader(m_shaderClass);
 
 	DX8Wrapper::Set_Vertex_Buffer(m_vertexBuffer);
-	DX8Wrapper::Set_DX8_Render_State(VKRS_DEPTHBIAS,8 * -0.000005f);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_DEPTHBIAS,8);
 	//Force apply of render states so we can override them.
 	DX8Wrapper::Apply_Render_State_Changes();
 

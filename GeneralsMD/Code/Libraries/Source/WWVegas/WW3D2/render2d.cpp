@@ -704,9 +704,9 @@ void Render2DClass::Render(void)
 			DX8Wrapper::Set_DX8_Texture_Stage_State( 0, VKTSS_COLOROP, VKTOP_MODULATE);
 		}
 #endif
-		WWVK_UpdateFVF_DUV_Grayscale_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),
+		WWVK_UpdateFVF_DUV_GrayscaleDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),
 			DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
-		WWVK_DrawFVF_DUV_Grayscale_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+		WWVK_DrawFVF_DUV_Grayscale(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 			((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
 			((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
 	}
@@ -718,17 +718,17 @@ void Render2DClass::Render(void)
 		assert(pipelines.size() == 1);
 		switch (pipelines[0])
 		{
-		case PIPELINE_WWVK_FVF_DUV_NoDepth:
-			WWVK_UpdateFVF_DUV_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),//&Texture->Peek_D3D_Texture(),
+		case PIPELINE_WWVK_FVF_DUV:
+			WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),//&Texture->Peek_D3D_Texture(),
 				DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
-			WWVK_DrawFVF_DUV_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
 				((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
 			break;
-		case PIPELINE_WWVK_FVF_DUV_NoDepth_DropUV:
-			WWVK_UpdateFVF_DUV_NoDepth_DropUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+		case PIPELINE_WWVK_FVF_DUV_DropUV:
+			WWVK_UpdateFVF_DUV_DropUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 				DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
-			WWVK_DrawFVF_DUV_NoDepth_DropUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+			WWVK_DrawFVF_DUV_DropUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 				((DX8IndexBufferClass*)ib.IndexBuffer)->Get_DX8_Index_Buffer().buffer, Indices.Count(), 0, VK_INDEX_TYPE_UINT16,
 				((DX8VertexBufferClass*)vb.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&identity);
 			break;

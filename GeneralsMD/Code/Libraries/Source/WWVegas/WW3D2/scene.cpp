@@ -230,7 +230,7 @@ void SceneClass::Render(RenderInfoClass & rinfo)
 			DX8Wrapper::Clear(true, false, Vector3(0.0f,0.0f,0.0f));	// Clear color but not z
 			WW3D::Enable_Texturing(false);
 			DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,VK_POLYGON_MODE_LINE);
-			DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 7 * -0.000005f);
+			DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 7);
 			Customized_Render(rinfo);
 			break;
 		}

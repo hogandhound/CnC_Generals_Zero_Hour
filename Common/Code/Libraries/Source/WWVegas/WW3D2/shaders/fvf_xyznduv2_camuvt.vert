@@ -26,7 +26,6 @@ layout(location = 1) out vec4 fragDiffuse;
 layout(location = 3) out vec2 fragUv1;
 layout(location = 4) out vec2 fragUv2;
 layout(location = 5) out vec2 camuv1;
-layout(location = 6) out vec2 camuv2;
 layout(location = 9) out vec3 fragPos;
 layout(location = 10) out vec3 viewPos;
 
@@ -42,5 +41,4 @@ void main() {
     gl_Position = proj.m*view.m*push.world*vec4(vert, 1);
 	vec4 camuv = view.m*push.world*vec4(vert, 1);
 	camuv1 = (uvt.m1*camuv).xy;
-	camuv2 = (uvt.m2*camuv).xy;
 }

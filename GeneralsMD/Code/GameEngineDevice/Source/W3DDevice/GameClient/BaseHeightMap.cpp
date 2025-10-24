@@ -2620,11 +2620,11 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 			auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
 			assert(pipelines.size() == 1);
 			switch (pipelines[0]) {
-			case PIPELINE_WWVK_FVF_NDUV2_NoDepthWrite_NoAlphaBlend_OnlyTex1:
-				WWVK_UpdateFVF_NDUV2_NoDepthWrite_NoAlphaBlend_OnlyTex1DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+			case PIPELINE_WWVK_FVF_NDUV2_OnlyTex1:
+				WWVK_UpdateFVF_NDUV2_OnlyTex1DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 					&DX8Wrapper::Get_DX8_Texture(0),
 					DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-				WWVK_DrawFVF_NDUV2_NoDepthWrite_NoAlphaBlend_OnlyTex1(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				WWVK_DrawFVF_NDUV2_OnlyTex1(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 					((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
 					((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
 				break;
@@ -2986,11 +2986,11 @@ flushVertexBuffer1:
 			assert(pipelines.size() == 1);
 			WWVKDSV;
 			switch (pipelines[0]) {
-			case PIPELINE_WWVK_FVF_NDUV2_NoDepthWrite_NoAlphaBlend_OnlyTex1:
-				WWVK_UpdateFVF_NDUV2_NoDepthWrite_NoAlphaBlend_OnlyTex1DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+			case PIPELINE_WWVK_FVF_NDUV2_OnlyTex1:
+				WWVK_UpdateFVF_NDUV2_OnlyTex1DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 					&DX8Wrapper::Get_DX8_Texture(0),
 					DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-				WWVK_DrawFVF_NDUV2_NoDepthWrite_NoAlphaBlend_OnlyTex1(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+				WWVK_DrawFVF_NDUV2_OnlyTex1(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 					((DX8IndexBufferClass*)ib_access.IndexBuffer)->Get_DX8_Index_Buffer().buffer, indexCount, 0, VK_INDEX_TYPE_UINT16,
 					((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&push);
 				break;

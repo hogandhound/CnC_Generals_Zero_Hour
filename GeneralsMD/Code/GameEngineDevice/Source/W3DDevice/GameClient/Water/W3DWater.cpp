@@ -2172,13 +2172,15 @@ void WaterRenderObjClass::renderSky(void)
 	DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 	Matrix4x4 tm2(tm);
 
+	DX8Wrapper::Apply_Render_State_Changes();
+
 #ifdef INFO_VULKAN
 	DX8Wrapper::Draw_Triangles(	0,2, 0,	4);	//draw a quad, 2 triangles, 4 verts
 #endif
 	WWVKDSV;
-	WWVK_UpdateFVF_DUV_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &setting->skyTexture->Peek_D3D_Texture(),
+	WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &setting->skyTexture->Peek_D3D_Texture(),
 		DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-	WWVK_DrawFVF_DUV_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets, m_indexBuffer->Get_DX8_Index_Buffer().buffer, 6, 0, VK_INDEX_TYPE_UINT16,
+	WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets, m_indexBuffer->Get_DX8_Index_Buffer().buffer, 6, 0, VK_INDEX_TYPE_UINT16,
 		((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm2);
 }
 
@@ -2279,13 +2281,15 @@ void WaterRenderObjClass::renderSkyBody(Matrix3D *mat)
 	DX8Wrapper::Set_Index_Buffer(m_indexBuffer,0);
 	DX8Wrapper::Set_Vertex_Buffer(vb_access);
 
+	DX8Wrapper::Apply_Render_State_Changes();
+
 #ifdef INFO_VULKAN
 	DX8Wrapper::Draw_Triangles(	0,2, 0,	4);	//draw a quad, 2 triangles, 4 verts
 #endif
 	WWVKDSV;
-	WWVK_UpdateFVF_DUV_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &m_alphaClippingTexture->Peek_D3D_Texture(),
+	WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &m_alphaClippingTexture->Peek_D3D_Texture(),
 		DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-	WWVK_DrawFVF_DUV_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets, m_indexBuffer->Get_DX8_Index_Buffer().buffer, 6, 0, VK_INDEX_TYPE_UINT16,
+	WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets, m_indexBuffer->Get_DX8_Index_Buffer().buffer, 6, 0, VK_INDEX_TYPE_UINT16,
 		((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm2);
 }
 
@@ -2493,7 +2497,7 @@ void WaterRenderObjClass::renderWaterMesh(void)
 	UVT2 uvt2;
 	DX8Wrapper::Apply_Render_State_Changes();
 	DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE2, *(Matrix4x4*)&uvt2.m1);
-	DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE3, *(Matrix4x4*)&uvt2.m1);
+	DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE3, *(Matrix4x4*)&uvt2.m2);
 	VK::Buffer uvtUbo;
 	VkBufferTools::CreateUniformBuffer(&WWVKRENDER, sizeof(UVT2), &uvt2, uvtUbo);
 	WWVK_UpdateWaterTrapezoidStripDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &m_riverTexture->Peek_D3D_Texture(),

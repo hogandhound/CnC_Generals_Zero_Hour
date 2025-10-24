@@ -913,25 +913,13 @@ Try improving the fit to vertical surfaces like cliffs.
 				DX8Wrapper::Set_Index_Buffer_Index_Offset(trackStartIndex);
 				switch (pipelines[0])
 				{
-				case PIPELINE_WWVK_FVF_DUV_NoDepth:
+				case PIPELINE_WWVK_FVF_DUV:
 				{
 					WWVKDSV;
-					WWVK_UpdateFVF_DUV_NoDepthDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 						&mod->m_stageZeroTexture->Peek_D3D_Texture(),
 						DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-					WWVK_DrawFVF_DUV_NoDepth(WWVKPIPES, WWVKRENDER.currentCmd, sets,
-						m_indexBuffer->Get_DX8_Index_Buffer().buffer, (mod->m_activeEdgeCount - 1) * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
-						m_vertexBuffer->Get_DX8_Vertex_Buffer().buffer, trackStartIndex * sizeof(VertexFormatXYZDUV1),
-						(WorldMatrix*)&tm);
-					break;
-				}
-				case PIPELINE_WWVK_FVF_DUV_NoDepthWrite:
-				{
-					WWVKDSV;
-					WWVK_UpdateFVF_DUV_NoDepthWriteDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
-						&mod->m_stageZeroTexture->Peek_D3D_Texture(),
-						DX8Wrapper::UboProj(), DX8Wrapper::UboView());
-					WWVK_DrawFVF_DUV_NoDepthWrite(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets,
 						m_indexBuffer->Get_DX8_Index_Buffer().buffer, (mod->m_activeEdgeCount - 1) * 2 * 3, 0, VK_INDEX_TYPE_UINT16,
 						m_vertexBuffer->Get_DX8_Vertex_Buffer().buffer, trackStartIndex * sizeof(VertexFormatXYZDUV1),
 						(WorldMatrix*)&tm);

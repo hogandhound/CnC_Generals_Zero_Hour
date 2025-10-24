@@ -495,7 +495,17 @@ AlphaTerrainTextureClass::AlphaTerrainTextureClass( TextureClass *pBaseTex ):
 		WW3D_FORMAT_A1R5G5B5, MIP_LEVELS_1 )
 { 
 	// Attach the base texture's d3d texture.
-	Set_D3D_Base_Texture(pBaseTex->Peek_D3D_Texture());
+	SurfaceClass* sur = pBaseTex->Get_Surface_Level();
+	if (sur)
+	{
+		surface = sur;
+		sur->Add_Ref();
+		Upload();
+	}
+	else
+	{
+		Set_D3D_Base_Texture(pBaseTex->Peek_D3D_Texture());
+	}
 }
 
 

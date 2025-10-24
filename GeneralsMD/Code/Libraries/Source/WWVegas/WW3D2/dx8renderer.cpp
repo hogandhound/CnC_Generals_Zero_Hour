@@ -2229,7 +2229,7 @@ void DX8MeshRendererClass::Render_Decal_Meshes(void)
 	DecalMeshClass * decal_mesh = visible_decal_meshes;
 	if (!decal_mesh) return;
 
-	DX8Wrapper::Set_DX8_Render_State(VKRS_DEPTHBIAS,8 * -0.000005f);
+	DX8Wrapper::Set_DX8_Render_State(VKRS_DEPTHBIAS,8);
 	
 	while (decal_mesh != NULL) {
 		decal_mesh->Render();

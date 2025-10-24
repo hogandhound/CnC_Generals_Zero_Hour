@@ -11,8 +11,8 @@ layout(set = 0, binding = 1) uniform ViewMatrix{
 	mat4 m;
 } view;
 layout(set = 0, binding = 2) uniform UVT2{
-	mat4 uvt1;
-	mat4 uvt2;
+	mat4 m1;
+	mat4 m2;
 } uvt;
 
 layout(location = 0) in vec3 vert;
@@ -34,6 +34,6 @@ void main() {
     
     gl_Position = proj.m*view.m*push.world*vec4(vert, 1);
 	vec4 camuv = view.m*push.world*vec4(vert, 1);
-	camuv1 = (uvt.uvt1*camuv).xy;
-	camuv2 = (uvt.uvt2*camuv).xy;
+	camuv1 = (uvt.m1*camuv).xy;
+	camuv2 = (uvt.m2*camuv).xy;
 }

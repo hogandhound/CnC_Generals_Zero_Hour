@@ -1060,7 +1060,7 @@ void RTS3DScene::Render(RenderInfoClass & rinfo)
 				WW3D::Enable_Texturing(false);
 				WW3D::Enable_Coloring(0xff008000);
 				DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,VK_POLYGON_MODE_LINE);
-				DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 7 * -0.000005f);
+				DX8Wrapper::Set_DX8_Render_State (VKRS_DEPTHBIAS, 7);
 				Customized_Render(rinfo);
 				break;
 			}

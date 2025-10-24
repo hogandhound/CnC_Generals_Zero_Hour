@@ -358,8 +358,17 @@ void W3DStatusCircle::Render(RenderInfoClass & rinfo)
 		{
 			auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBufferScreen->FVF_Info().FVF);
 			assert(pipelines.size() == 1);
+			WWVKDSV;
+			WorldMatrix push;
+			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
 			switch (pipelines[0]) {
-			case 0:
+			case PIPELINE_WWVK_FVF_DUV_NoDiffuse:
+				WWVK_UpdateFVF_DUV_NoDiffuseDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				WWVK_DrawFVF_DUV_NoDiffuse_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					6, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, &push
+				);
+				break;
 			default: assert(false);
 			}
 #ifdef INFO_VULKAN
@@ -408,8 +417,17 @@ void W3DStatusCircle::Render(RenderInfoClass & rinfo)
 			DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_SRC_COLOR);
 			auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBufferScreen->FVF_Info().FVF);
 			assert(pipelines.size() == 1);
+			WWVKDSV;
+			WorldMatrix push;
+			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
 			switch (pipelines[0]) {
-			case 0:
+			case PIPELINE_WWVK_FVF_DUV_NoDiffuse:
+				WWVK_UpdateFVF_DUV_NoDiffuseDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
+					&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+				WWVK_DrawFVF_DUV_NoDiffuse_NI(WWVKPIPES, WWVKRENDER.currentCmd, sets,
+					6, ((DX8VertexBufferClass*)DX8Wrapper::Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, &push
+				);
+				break;
 			default: assert(false);
 			}
 #ifdef INFO_VULKAN

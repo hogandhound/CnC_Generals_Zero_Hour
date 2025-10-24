@@ -1130,7 +1130,10 @@ WWINLINE void DX8Wrapper::Set_DX8_Render_State(VKRENDERSTATETYPE state, unsigned
 	DX8CALL(SetRenderState( state, value ));
 	DX8_RECORD_RENDER_STATE_CHANGE();
 #endif
+	if (RenderStates[state] == value) return;
 	RenderStates[state] = value;
+	if (!target.currentCmd)
+		return;
 #if 1
 	if (state == VKRS_COLORWRITEENABLE)
 	{
@@ -1147,6 +1150,46 @@ WWINLINE void DX8Wrapper::Set_DX8_Render_State(VKRENDERSTATETYPE state, unsigned
 			flagCount = 1;
 		}
 		vkCmdSetColorWriteMaskEXT(target.currentCmd, 0, flagCount, flags);
+	}
+	else if (state == VKRS_DEPTHBIAS)
+	{
+		vkCmdSetDepthBias(target.currentCmd, RenderStates[VKRS_DEPTHBIAS] * -0.000005f, -1, 0);
+	}
+	else if (state == VKRS_ZWRITEENABLE)
+	{
+		vkCmdSetDepthWriteEnable(target.currentCmd, RenderStates[VKRS_ZWRITEENABLE]);
+	}
+	else if (state == VKRS_ZFUNC)
+	{
+		vkCmdSetDepthCompareOp(target.currentCmd, (VkCompareOp)RenderStates[VKRS_ZFUNC]);
+	}
+	else if (state == VKRS_CULLMODE)
+	{
+		VkCullModeFlags cull = {};
+		switch (RenderStates[VKRS_CULLMODE])
+		{
+		case VK_FRONT_FACE_MAX_ENUM: cull = VK_CULL_MODE_NONE; break;
+		default:
+		case VK_FRONT_FACE_CLOCKWISE: cull = VK_CULL_MODE_BACK_BIT; break;
+		case VK_FRONT_FACE_COUNTER_CLOCKWISE: cull = VK_CULL_MODE_FRONT_BIT; break;
+		}
+		vkCmdSetCullMode(target.currentCmd, cull);
+	}
+	else if (state == VKRS_STENCILMASK)
+	{
+		vkCmdSetStencilCompareMask(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_AND_BACK, RenderStates[VKRS_STENCILMASK]);
+	}
+	else if (state == VKRS_STENCILWRITEMASK)
+	{
+		vkCmdSetStencilWriteMask(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_AND_BACK, RenderStates[VKRS_STENCILWRITEMASK]);
+	}
+	else if (state == VKRS_STENCILREF)
+	{
+		vkCmdSetStencilReference(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_AND_BACK, RenderStates[VKRS_STENCILREF]);
+	}
+	else if (state == VKRS_STENCILENABLE)
+	{
+		vkCmdSetStencilTestEnable(WWVKRENDER.currentCmd, RenderStates[VKRS_STENCILENABLE]);
 	}
 #endif
 }

@@ -24,6 +24,12 @@ extern PFN_vkCmdSetColorWriteMaskEXT vkCmdSetColorWriteMaskEXT_;
 #define vkCmdSetColorWriteMaskEXT vkCmdSetColorWriteMaskEXT_
 #endif
 #endif
+#ifndef vkCmdSetColorBlendEquationEXT
+/* Put this somewhere in a header file and include it alongside (and after) vulkan.h: */
+extern PFN_vkCmdSetColorBlendEquationEXT vkCmdSetColorBlendEquationEXT_;
+// This #define lets you call the function the same way as if it was coming from the vulkan.h header
+#define vkCmdSetColorBlendEquationEXT vkCmdSetColorBlendEquationEXT_
+#endif
 
 struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
@@ -56,6 +62,7 @@ enum VkDescFormat
     VkDS_TTTUUUU,
     VkDS_TTTTUUUU,
     VkDS_TTUUUUU,
+    VkDS_TUUUUU,
     VkDS_MaxType,
     VkDS_ = VkDS_MaxType, //Dummy Value
 };

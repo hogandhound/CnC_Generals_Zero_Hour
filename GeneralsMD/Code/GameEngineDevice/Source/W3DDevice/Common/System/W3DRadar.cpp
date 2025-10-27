@@ -1246,6 +1246,7 @@ void W3DRadar::buildTerrainTexture( TerrainLogic *terrain )
 
 	}  // end for y
 
+	surface->Unlock(&m_terrainTexture->Peek_D3D_Texture());
 	// all done with the surface
 	REF_PTR_RELEASE(surface);
 
@@ -1268,6 +1269,7 @@ void W3DRadar::clearShroud()
 	{
 		surface->DrawHLine(y, 0, m_textureWidth-1, color);
 	}
+	surface->Unlock(&m_shroudTexture->Peek_D3D_Texture());
 	REF_PTR_RELEASE(surface);
 }
 
@@ -1334,6 +1336,7 @@ void W3DRadar::setShroudLevel(Int shroudX, Int shroudY, CellShroudStatus setting
 				surface->DrawPixel( x, y, GameMakeColor( 0, 0, 0, alpha ) );
 		}
 	}
+	surface->Unlock(&m_shroudTexture->Peek_D3D_Texture());
 	REF_PTR_RELEASE(surface);
 }
 

@@ -420,9 +420,9 @@ class DX8Wrapper
 		unsigned short min_vertex_index,
 		unsigned short vertex_count);
 
+public:
 	static void Convert_Sorting_IB_VB(SortingVertexBufferClass* sortingV, SortingIndexBufferClass* sortingI, VK::Buffer& vbo, VK::Buffer& ibo);
 
-public:
 #ifdef EXTENDED_STATS
 	static DX8_Stats stats;
 #endif

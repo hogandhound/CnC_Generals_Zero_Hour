@@ -3243,6 +3243,7 @@ void DX8Wrapper::Convert_Sorting_IB_VB(
 
 	DX8_RECORD_RENDER(polygon_count, vertex_count, render_state.shader);
 #endif
+#if 0
 	DX8Wrapper::Apply_Render_State_Changes();
 	auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
 	assert(pipelines.size() == 1);
@@ -3250,6 +3251,7 @@ void DX8Wrapper::Convert_Sorting_IB_VB(
 	case 0:
 	default: assert(false);
 	}
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -3360,8 +3362,8 @@ void DX8Wrapper::Apply_Render_State_Changes()
 		colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
 		if (RenderStates[VKRS_ALPHABLENDENABLE])
 		{
-			colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
-			colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+			colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+			colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
 		}
 		else
 		{
@@ -3403,9 +3405,14 @@ void DX8Wrapper::Apply_Render_State_Changes()
 							light->Direction[0], light->Direction[1], light->Direction[2]));
 					}
 #endif
-
+					if (index == 0)
+					{
+						LightGeneric* light = &(render_state.Lights.lights[index]);
+						light->Ambient[0] = Ambient_Color.X;
+						light->Ambient[1] = Ambient_Color.Y;
+						light->Ambient[2] = Ambient_Color.Z;
+					}
 					Set_Light(index,&render_state.Lights.lights[index]);
-					lightMax = index;
 				}
 				else {
 					Set_Light(index,NULL);

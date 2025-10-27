@@ -454,7 +454,7 @@ void ShaderClass::Apply()
 
 		BOOL blendOn = FALSE;
 
-		if(sf != VK_BLEND_FACTOR_ONE || df != VK_BLEND_FACTOR_ZERO)
+		//if(sf != VK_BLEND_FACTOR_ONE || df != VK_BLEND_FACTOR_ZERO)
 		{
 			DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND,sf);
 			DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, df);

@@ -3476,6 +3476,9 @@ void W3DVolumetricShadowManager::renderStencilShadows( void )
 	//pixels and only use the lower bits for shadow calculations.
 	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILMASK, ~TheW3DShadowManager->getStencilShadowMask());
 	DX8Wrapper::Set_DX8_Render_State(VKRS_STENCILREF, 0x1);
+
+	DX8Wrapper::Apply_Render_State_Changes();
+
 	vkCmdSetStencilCompareMask(WWVKRENDER.currentCmd, VK_STENCIL_FACE_FRONT_AND_BACK, ~TheW3DShadowManager->getStencilShadowMask());
 	std::vector<VkDescriptorSet> sets;
 	WWVK_UpdateVolumeStencilShadowDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, DX8Wrapper::UboIdentProj(), DX8Wrapper::UboIdent());
@@ -3610,7 +3613,7 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 			VK_STENCIL_OP_INCREMENT_AND_WRAP, VK_STENCIL_OP_KEEP,
 			TheW3DShadowManager->getStencilShadowMask() == 0x80808080 ? VK_COMPARE_OP_NOT_EQUAL : VK_COMPARE_OP_GREATER_OR_EQUAL);
 		vkCmdSetStencilCompareMask(WWVKRENDER.currentCmd, VK_STENCIL_FRONT_AND_BACK, TheW3DShadowManager->getStencilShadowMask());
-		vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_COUNTER_CLOCKWISE);
+		//vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_COUNTER_CLOCKWISE);
 #ifdef INFO_VULKAN
 		m1_pDev->SetFVF(SHADOW_DYNAMIC_VOLUME_FVF);
 #endif
@@ -3668,7 +3671,7 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 		vkCmdSetStencilOp(WWVKRENDER.currentCmd, VK_STENCIL_FRONT_AND_BACK, VK_STENCIL_OP_KEEP,
 			VK_STENCIL_OP_DECREMENT_AND_CLAMP, VK_STENCIL_OP_KEEP,
 			TheW3DShadowManager->getStencilShadowMask() == 0x80808080 ? VK_COMPARE_OP_NOT_EQUAL : VK_COMPARE_OP_GREATER_OR_EQUAL);
-		vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_CLOCKWISE);
+		//vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_CLOCKWISE);
 
 		DX8Wrapper::Set_DX8_Render_State( VKRS_STENCILPASS, VK_STENCIL_OP_DECREMENT_AND_CLAMP);
 
@@ -3706,7 +3709,7 @@ void W3DVolumetricShadowManager::renderShadows( Bool forceStencilFill )
 			nextVb->m_renderTaskList=NULL;
 		}
 
-		vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_COUNTER_CLOCKWISE);
+		//vkCmdSetFrontFace(WWVKRENDER.currentCmd, VK_FRONT_FACE_COUNTER_CLOCKWISE);
 		DX8Wrapper::Set_DX8_Render_State(VKRS_CULLMODE,VK_FRONT_FACE_CLOCKWISE);
 //		DX8Wrapper::Set_DX8_Render_State(VKRS_DEPTHBIAS,0);	///@todo: See if this helps or makes things worse.
 		//DX8Wrapper::Set_DX8_Render_State(VKRS_FILLMODE,VK_POLYGON_MODE_FILL);

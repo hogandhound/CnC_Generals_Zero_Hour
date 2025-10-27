@@ -42,6 +42,8 @@
 #include "common/GlobalData.h"
 #include "GameLogic/PartitionManager.h"
 
+#include <timeapi.h>
+
 #ifdef _INTERNAL
 // for occasional debugging...
 //#pragma optimize("", off)

@@ -923,6 +923,7 @@ void SurfaceClass::DrawPixel(const unsigned int x,const unsigned int y, unsigned
 	uint32_t pitch = //VK::SizeOfFormat(surface.format) * 
 		surface.width;
 	unsigned char* cptr = (unsigned char*)surface.buffer.data() + y * pitch + x;
+	unsigned char* c3ptr = (unsigned char*)surface.buffer.data() + y * pitch*3 + x*3;
 	unsigned short* sptr = (unsigned short*)surface.buffer.data() + y * pitch + x;
 	unsigned int* lptr = (unsigned int*)surface.buffer.data() + y * pitch + x;
 	switch (size)
@@ -932,6 +933,9 @@ void SurfaceClass::DrawPixel(const unsigned int x,const unsigned int y, unsigned
 		break;
 	case 2:
 		*sptr = (unsigned short)(color & 0xFFFF);
+		break;
+	case 3:
+		memcpy(c3ptr, &color, sizeof(char) * 3);
 		break;
 	case 4:
 		*lptr = color;
@@ -1002,6 +1006,7 @@ void SurfaceClass::DrawHLine(const unsigned int y,const unsigned int x1, const u
 	uint32_t pitch = //VK::SizeOfFormat(surface.format) * 
 		surface.width;
 	unsigned char* cptr = (unsigned char*)surface.buffer.data() + y * pitch + x1;
+	unsigned char* c3ptr = (unsigned char*)surface.buffer.data() + y * pitch*3 + x1*3;
 	unsigned short* sptr = (unsigned short*)surface.buffer.data() + y * pitch + x1;
 	unsigned int* lptr = (unsigned int*)surface.buffer.data() + y * pitch + x1;
 	for (uint32_t x = x1; x <= x2; x++)
@@ -1013,6 +1018,10 @@ void SurfaceClass::DrawHLine(const unsigned int y,const unsigned int x1, const u
 			break;
 		case 2:
 			*sptr++ = (unsigned short)(color & 0xFFFF);
+			break;
+		case 3:
+			memcpy(c3ptr, &color, sizeof(char) * 3);
+			c3ptr+=3;
 			break;
 		case 4:
 			*lptr++ = color;

@@ -63,6 +63,8 @@
 #include "WW3D2/DX8Wrapper.h"
 #include "VkTexture.h"
 
+#include <timeapi.h>
+
 //#pragma optimize("", off)
 
 //#define ALLOW_WATER_TRACK_EDIT

@@ -54,7 +54,7 @@
 #include "always.h"
 #include "wwmath.h"
 #include <math.h>
-#include <DirectXMath.h>
+#include <xmmintrin.h>
 
 /*
 ** Vector4 - 4 dimensional vectors
@@ -78,7 +78,7 @@ public:
 	
 	// Assignment
 	WWINLINE Vector4& operator = (const Vector4& v) { X = v.X; Y = v.Y; Z = v.Z; W = v.W; return *this; }
-	WWINLINE Vector4 & operator = (const DirectX::FXMVECTOR & v) 
+	WWINLINE Vector4 & operator = (const __m128& v)
 		{ X = v.m128_f32[0]; Y = v.m128_f32[1]; Z = v.m128_f32[2]; W = v.m128_f32[3]; return *this; }
 	WWINLINE void	Set(float x, float y, float z, float w) { X = x; Y = y; Z = z; W = w; }
 	

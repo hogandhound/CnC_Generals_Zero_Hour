@@ -65,6 +65,8 @@
 #include "W3DDevice/GameClient/W3DCustomScene.h"
 #include <VkTexture.h>
 
+#include <timeapi.h>
+
 
 #ifdef _INTERNAL
 // for occasional debugging...

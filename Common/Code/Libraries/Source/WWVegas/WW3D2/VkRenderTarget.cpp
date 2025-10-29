@@ -450,6 +450,7 @@ void VkRenderTarget::PushSingleTexture(VK::Texture staging)
 		vmaDestroyImage(allocator, staging.image, staging.allocation);
 		vkDestroyImageView(device, staging.imageView, 0);
 		vkDestroySampler(device, staging.sampler, 0);
+		return;
 	}
 	if (singleFrame[currentFrame].textures.size() <= singleFrame[currentFrame].textureIndex)
 		singleFrame[currentFrame].textures.resize(singleFrame[currentFrame].textureIndex + 1);

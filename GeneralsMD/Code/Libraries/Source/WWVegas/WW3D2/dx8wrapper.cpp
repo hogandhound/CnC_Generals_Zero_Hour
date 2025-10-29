@@ -1452,6 +1452,7 @@ bool DX8Wrapper::Init(void * hwnd, bool lite)
 	target.InitVulkan(hwnd);
 	WWVK_PopulatePipeline(&target, pipelineCol_);
 	IsInitted = true;
+	Enumerate_Devices();
 #ifdef INFO_VULKAN
 	D3DInterface = NULL;
 	D3DDevice = NULL;
@@ -1972,11 +1973,52 @@ void DX8Wrapper::Release_Device(void)
 	}
 #endif
 }
-
+#include <Winuser.h>
 void DX8Wrapper::Enumerate_Devices()
 {
 	DX8_Assert();
+	int w, h;
+	DEVMODE devMode;
+	devMode.dmSize = sizeof(devMode);
 
+	if (EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devMode)) {
+	}
+	w = devMode.dmPelsWidth;
+	h = devMode.dmPelsHeight;
+
+	_RenderDeviceNameTable.Add("Vulkan");
+	_RenderDeviceShortNameTable.Add("Vulkan");	// for now, just add the same name to the "pretty name table"
+	RenderDeviceDescClass desc;
+	int lastRes[8] = { 1024, 576, 960, 540, 768, 576, 800, 600 };
+	int incrRes[8] = { 16 * 16, 16 * 9, 10 * 16,10 * 9, 16 * 16, 16 * 12, 10 * 16, 10 * 9 };
+
+	for (;;)
+	{
+		int bestIndex = 0;
+		for (int i = 1; i < 4; ++i)
+		{
+			if (lastRes[bestIndex * 2 + 0] > lastRes[i * 2 + 0] ||
+				(lastRes[bestIndex * 2 + 0] == lastRes[i * 2 + 0] && lastRes[bestIndex * 2 + 1] > lastRes[i * 2 + 1]))
+				bestIndex = i;
+		}
+		
+		if (lastRes[bestIndex * 2 + 0] > w)
+			break;
+		if (lastRes[bestIndex * 2 + 1] > h)
+		{
+			lastRes[bestIndex * 2 + 0] += incrRes[bestIndex * 2 + 0];
+			lastRes[bestIndex * 2 + 1] += incrRes[bestIndex * 2 + 1];
+			continue;
+		}
+
+		desc.add_resolution(lastRes[bestIndex * 2 + 0], lastRes[bestIndex * 2 + 1], 32);
+		lastRes[bestIndex * 2 + 0] += incrRes[bestIndex * 2 + 0];
+		lastRes[bestIndex * 2 + 1] += incrRes[bestIndex * 2 + 1];
+	}
+	/*
+	** Add the render device to our table
+	*/
+	_RenderDeviceDescriptionTable.Add(desc);
 #ifdef INFO_VULKAN
 	int adapter_count = D3DInterface->GetAdapterCount();
 	for (int adapter_index=0; adapter_index<adapter_count; adapter_index++) {

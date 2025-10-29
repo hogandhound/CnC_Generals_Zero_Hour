@@ -3199,7 +3199,7 @@ AudioFileCache::~AudioFileCache()
 		OpenFilesHashIt it;
 		for (it = m_openFiles.begin(); it != m_openFiles.end(); ++it) {
 			if (it->second.m_openCount > 0) {
-				DEBUG_CRASH(("Sample '%s' is still playing, and we're trying to quit.\n", it->second.m_eventInfo->m_audioName.str()));
+				DEBUG_WARNING(("Sample '%s' is still playing, and we're trying to quit.\n", it->second.m_eventInfo->m_audioName.str()));
 			}
 
 			releaseOpenAudioFile(&it->second);

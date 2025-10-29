@@ -1723,7 +1723,7 @@ void W3DTreeBuffer::drawTrees(CameraClass * camera, RefRenderObjListIterator *pD
 		for (i = 0; i < MAX_SWAY_TYPES; i++) {
 			Vector4 sway4(swayFactor[i].X, swayFactor[i].Y, swayFactor[i].Z, 0);
 			//DX8Wrapper::_Get_D3D_Device8()->SetVertexShaderConstantF(9 + i, &sway4.X, 1);
-			memcpy(treeConstants.tilt[9+i], &swayFactor[i], sizeof(float) * 4);
+			memcpy(treeConstants.tilt[9+i], &sway4, sizeof(float) * 4);
 		}
 
 		W3DShroud* shroud;

@@ -6743,7 +6743,7 @@ StateReturnType AIGuardState::update()
 	Object* owner = getMachineOwner();	
 	if( owner->getAI()->getJetAIUpdate() && owner->isOutOfAmmo() && !owner->isKindOf(KINDOF_PROJECTILE) && !owner->getTemplate()->isEnterGuard())
 	{
-		DEBUG_CRASH(("Hmm, this should probably never happen, since this case should be intercepted by JetAIUpdate\n"));
+		DEBUG_WARNING(("Hmm, this should probably never happen, since this case should be intercepted by JetAIUpdate\n"));
 		return STATE_FAILURE;
 	}
 

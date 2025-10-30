@@ -4644,7 +4644,7 @@ void ScriptEngine::reset( void )
 
 	VecSequentialScriptPtrIt seqScriptIt;
 	for (seqScriptIt = m_sequentialScripts.begin(); seqScriptIt != m_sequentialScripts.end(); ) {
-		cleanupSequentialScript(seqScriptIt, TRUE);
+		seqScriptIt = cleanupSequentialScript(seqScriptIt, TRUE);
 	}
 
 	// clear out all the lists of object types that were in the old map.

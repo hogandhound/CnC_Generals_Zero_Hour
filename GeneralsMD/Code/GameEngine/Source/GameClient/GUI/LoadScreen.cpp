@@ -531,6 +531,7 @@ void SinglePlayerLoadScreen::init( GameInfo *game )
 	{
 		Int progressUpdateCount = m_videoStream->frameCount() / FRAME_FUDGE_ADD;
 		Int shiftedPercent = -FRAME_FUDGE_ADD + 1;
+		DWORD prevTime = timeGetTime();
 		while (m_videoStream->frameIndex() < m_videoStream->frameCount() - 1 )
 		{
 			TheGameEngine->serviceWindowsOS();
@@ -584,6 +585,19 @@ void SinglePlayerLoadScreen::init( GameInfo *game )
 		m_videoStream = NULL;
 		m_loadScreen->winGetInstanceData()->setVideoBuffer( NULL );
 		TheDisplay->draw();
+
+		// limit the framerate
+		DWORD now = timeGetTime();
+		DWORD limit = (1000.0f / TheGlobalData->m_framesPerSecondLimit) - 1;
+		while (TheGlobalData->m_useFpsLimit && (now - prevTime) < limit)
+		{
+			::Sleep(0);
+			now = timeGetTime();
+		}
+		//Int slept = now - prevTime;
+		//DEBUG_LOG(("delayed %d\n",slept));
+
+		prevTime = now;
 	}
 	else
 	{

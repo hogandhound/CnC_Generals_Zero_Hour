@@ -320,7 +320,7 @@ AsciiString Dict::getAsciiString(NameKeyType key, Bool *exists/*=NULL*/) const
 		if (exists) *exists = true;
 		return *pair->asAsciiString();
 	}
-	DEBUG_ASSERTCRASH(exists != NULL,("dict key missing, or of wrong type\n"));	// only assert if they didn't check result
+	DEBUG_ASSERTLOG(exists != NULL,("dict key missing, or of wrong type\n"));	// only assert if they didn't check result
 	if (exists) *exists = false;
 	return AsciiString::TheEmptyString;
 }

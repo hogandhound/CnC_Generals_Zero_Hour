@@ -477,7 +477,7 @@ Bool FlightDeckBehavior::reserveSpace(ObjectID id, Real parkingOffset, ParkingPl
 		ppi = findEmptyPPI();
 		if (ppi == NULL)
 		{
-			DEBUG_CRASH(("No parking places!"));
+			DEBUG_WARNING(("No parking places!"));
 			return false;	// nothing available
 		}
 	}

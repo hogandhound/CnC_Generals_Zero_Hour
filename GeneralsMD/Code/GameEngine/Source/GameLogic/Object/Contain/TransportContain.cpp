@@ -240,7 +240,7 @@ void TransportContain::letRidersUpgradeWeaponSet( void )
 		ContainedItemsList::const_iterator it;
 		it = riderList->begin();
 
-		while( *it )
+		while( it != riderList->end())
 		{
 			Object *rider = *it;
 
@@ -374,13 +374,13 @@ void TransportContain::onRemoving( Object *rider )
 	}
 
 	Int transportSlotCount = rider->getTransportSlotCount();
-	DEBUG_ASSERTCRASH(transportSlotCount > 0, ("Hmm, this object isnt transportable"));
+	DEBUG_ASSERTLOG(transportSlotCount > 0, ("Hmm, this object isnt transportable"));
 	m_extraSlotsInUse -= transportSlotCount - 1;
 
 #if (defined(_DEBUG) || defined(_INTERNAL))
 	UnsignedInt containCount = getContainCount();
 	UnsignedInt containMax = getContainMax();
-	DEBUG_ASSERTCRASH(m_extraSlotsInUse >= 0 && m_extraSlotsInUse + containCount <= containMax, ("Hmm, bad slot count"));
+	DEBUG_ASSERTLOG(m_extraSlotsInUse >= 0 && m_extraSlotsInUse + containCount <= containMax, ("Hmm, bad slot count"));
 #endif
 
 	// when we are empty again, clear the model condition for loaded

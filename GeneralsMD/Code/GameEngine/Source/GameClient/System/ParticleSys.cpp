@@ -478,7 +478,7 @@ Bool Particle::update( void )
 	if (m_lifetimeLeft && --m_lifetimeLeft == 0)
 		return false;
 
-	DEBUG_ASSERTCRASH( m_lifetimeLeft, ( "A particle has an infinite lifetime..." ));
+	DEBUG_ASSERTLOG( m_lifetimeLeft, ( "A particle has an infinite lifetime..." ));
 
 	// if we've gone totally invisible, destroy ourselves
 	if (isInvisible())

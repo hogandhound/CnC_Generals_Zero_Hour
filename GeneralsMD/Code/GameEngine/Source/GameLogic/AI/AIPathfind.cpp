@@ -8672,7 +8672,7 @@ Path *Pathfinder::findClosestPath( Object *obj, const LocomotorSet& locomotorSet
 	}
 
 	if (locomotorSet.getValidSurfaces() == 0) {
-		DEBUG_CRASH(("Attempting to path immobile unit."));
+		DEBUG_WARNING(("Attempting to path immobile unit."));
 		return NULL;
 	}
 

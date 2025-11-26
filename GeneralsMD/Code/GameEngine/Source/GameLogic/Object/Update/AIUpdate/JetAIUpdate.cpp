@@ -2329,7 +2329,7 @@ void JetAIUpdate::doLandingCommand(Object *airfield, CommandSourceType cmdSource
 			}
 
 			getObject()->setProducer(airfield);
-			DEBUG_ASSERTCRASH(isOutOfSpecialReloadAmmo() == false, ("Hmm, this seems unlikely -- isOutOfSpecialReloadAmmo()==false"));
+			DEBUG_ASSERTLOG(isOutOfSpecialReloadAmmo() == false, ("Hmm, this seems unlikely -- isOutOfSpecialReloadAmmo()==false"));
 			setFlag(USE_SPECIAL_RETURN_LOCO, false);
 			setFlag(ALLOW_INTERRUPT_AND_RESUME_OF_CUR_STATE_FOR_RELOAD, false);
 			setLastCommandSource( cmdSource );

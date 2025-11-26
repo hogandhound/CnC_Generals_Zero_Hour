@@ -1206,7 +1206,7 @@ void ThingTemplate::validate()
 		{
 			if (it->getDamageFX() == NULL)
 			{
-				DEBUG_CRASH(("Structure %s has no ArmorDamageFX, and really should.\n",getName().str()));
+				DEBUG_WARNING(("Structure %s has no ArmorDamageFX, and really should.\n",getName().str()));
 			}
 		}
 	}

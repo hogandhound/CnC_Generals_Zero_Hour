@@ -1008,7 +1008,7 @@ Bool ScriptConditions::evaluateBuildingEntered( Parameter *pPlayerParm, Paramete
 	ContainModuleInterface *contain = theObj->getContain();
 	if( !contain )
 	{
-		DEBUG_CRASH( ("evaluateBuildingEntered script condition -- building doesn't have a container.") );
+		DEBUG_WARNING( ("evaluateBuildingEntered script condition -- building doesn't have a container.") );
 		return false;
 	}
 	PlayerMaskType playerMask = theObj->getContain()->getPlayerWhoEntered();

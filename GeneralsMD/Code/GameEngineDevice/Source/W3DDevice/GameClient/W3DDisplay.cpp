@@ -1840,6 +1840,10 @@ AGAIN:
 				}
 				prevTime = now;
 			}
+			else
+			{
+				prevTime = timeGetTime();
+			}
 		}
 
 		// update all views of the world - recomputes data which will affect drawing
@@ -1890,7 +1894,19 @@ AGAIN:
 					TheInGameUI->draw();
 					if( TheMouse )
 						TheMouse->draw();	//keep applying the current cursor style so it remains hidden if needed.
+
+					// limit the framerate
+					now = timeGetTime();
+					int limit = (1000.0f / TheGlobalData->m_framesPerSecondLimit) - 1;
+					while (TheGlobalData->m_useFpsLimit && (now - prevTime) < limit)
+					{
+						::Sleep(0);
+						now = timeGetTime();
+					}
+					prevTime = now;
+
 					WW3D::End_Render();	
+
 					continue;
 				}
 				couldRender = true;

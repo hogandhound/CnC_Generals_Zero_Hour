@@ -7883,11 +7883,10 @@ void ScriptEngine::setSequentialTimer(Team *team, Int frameCount)
 
 void ScriptEngine::evaluateAndProgressAllSequentialScripts( void )
 {
-	VecSequentialScriptPtrIt it;
 	size_t iti = 0, lastIt = m_sequentialScripts.size();
 
 	Int spinCount = 0;
-	for (it = m_sequentialScripts.begin(); it != m_sequentialScripts.end(); /* empty */) {
+	for (; iti < m_sequentialScripts.size(); /* empty */) {
 		if (iti == lastIt) {
 			++spinCount;
 		} else {
@@ -7895,7 +7894,7 @@ void ScriptEngine::evaluateAndProgressAllSequentialScripts( void )
 		}
 
 		if (spinCount > MAX_SPIN_COUNT) {
-			SequentialScript *seqScript = (*it);
+			SequentialScript *seqScript = m_sequentialScripts[iti];
 			if (seqScript) {
 				DEBUG_LOG(("Sequential script %s appears to be in an infinite loop.\n", 
 					seqScript->m_scriptToExecuteSequentially->getName().str()));
@@ -7908,16 +7907,16 @@ void ScriptEngine::evaluateAndProgressAllSequentialScripts( void )
 		
 		Bool itAdvanced = false;
 
-		SequentialScript *seqScript = (*it);
+		SequentialScript *seqScript = m_sequentialScripts[iti];
 		if (seqScript == NULL) {
-			it = cleanupSequentialScript(it, false);
+			cleanupSequentialScript(m_sequentialScripts.begin() + iti, false);
 			continue;
 		}
 
 		Team *team = seqScript->m_teamToExecOn;
 		Object *obj = TheGameLogic->findObjectByID(seqScript->m_objectID);
 		if (!(obj || team)) {
-			it = cleanupSequentialScript(it, false);
+			cleanupSequentialScript(m_sequentialScripts.begin() + iti, false);
 			itAdvanced = true;
 			continue;
 		}
@@ -8029,12 +8028,12 @@ void ScriptEngine::evaluateAndProgressAllSequentialScripts( void )
 
 					if (itAdvanced) {	// check to make sure they aren't dead.
 						if (obj && obj->isEffectivelyDead()) {
-							it = cleanupSequentialScript(it, true);
+							cleanupSequentialScript(m_sequentialScripts.begin() + iti, true);
 							continue;
 						}
 
 						if (aigroup && aigroup->isGroupAiDead()) {
-							it = cleanupSequentialScript(it, true);
+							cleanupSequentialScript(m_sequentialScripts.begin() + iti, true);
 							continue;
 						}
 					}
@@ -8048,7 +8047,7 @@ void ScriptEngine::evaluateAndProgressAllSequentialScripts( void )
 						appendSequentialScript(seqScript);
 					}
 
-					it = cleanupSequentialScript(it, false);
+					cleanupSequentialScript(m_sequentialScripts.begin() + iti, false);
 					itAdvanced = true;
 				}
 			} else if (seqScript->m_framesToWait > 0) {

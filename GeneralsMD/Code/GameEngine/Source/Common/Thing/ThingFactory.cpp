@@ -295,7 +295,7 @@ ThingTemplate *ThingFactory::findTemplateInternal( const AsciiString& name, Bool
 	
 	if( check && name.isNotEmpty() )
 	{
-		DEBUG_CRASH( ("Failed to find thing template %s (case sensitive) This issue has a chance of crashing after you ignore it!", name.str() ) );
+		DEBUG_WARNING( ("Failed to find thing template %s (case sensitive) This issue has a chance of crashing after you ignore it!", name.str() ) );
 	}
 	return NULL;
 

@@ -451,21 +451,21 @@ void Player::init(const PlayerTemplate* pt)
 		m_nightColor = m_color;
 
 		m_money = *pt->getMoney();
-		m_money.setPlayerIndex(getPlayerIndex());
 
 		m_handicap = *pt->getHandicap();
 
-		if( m_money.countMoney() == 0 )
+		if (m_money.countMoney() == 0)
 		{
-      if ( TheGameInfo )
-      {
-        m_money = TheGameInfo->getStartingCash();
-      }
-      else
-      {
-  			m_money = TheGlobalData->m_defaultStartingCash;
-      }
+			if (TheGameInfo)
+			{
+				m_money = TheGameInfo->getStartingCash();
+			}
+			else
+			{
+				m_money = TheGlobalData->m_defaultStartingCash;
+			}
 		}
+		m_money.setPlayerIndex(getPlayerIndex());
 
 		m_playerDisplayName.clear();
 		m_playerName.clear();

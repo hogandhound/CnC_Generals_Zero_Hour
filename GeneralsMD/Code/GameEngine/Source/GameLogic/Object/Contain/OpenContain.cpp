@@ -175,12 +175,12 @@ OpenContain::~OpenContain()
 {
 
 	// sanity, the system should be cleaning these up itself if all is going well
-	DEBUG_ASSERTCRASH( m_containList.empty(), 
+	DEBUG_ASSERTLOG( m_containList.empty(), 
 										 ("OpenContain %s: destroying a container that still has items in it!\n", 
 										  getObject()->getTemplate()->getName().str() ) );
 
 	// sanity
-	DEBUG_ASSERTCRASH( m_xferContainIDList.empty(),
+	DEBUG_ASSERTLOG( m_xferContainIDList.empty(),
 										 ("OpenContain %s: m_xferContainIDList is not empty but should be\n", 
 											getObject()->getTemplate()->getName().str() ) );
 

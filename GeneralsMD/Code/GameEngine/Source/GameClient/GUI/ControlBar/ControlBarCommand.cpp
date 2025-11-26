@@ -1260,7 +1260,7 @@ CommandAvailability ControlBar::getCommandAvailability( const CommandButton *com
 			// no production update, can't possibly do this command
 			if( pu == NULL )
 			{
-				DEBUG_CRASH(("Objects that have Object-Level Upgrades must also have ProductionUpdate. Just cuz."));
+				DEBUG_WARNING(("Objects that have Object-Level Upgrades must also have ProductionUpdate. Just cuz."));
 				return COMMAND_RESTRICTED;
 			}
 

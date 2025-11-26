@@ -176,7 +176,7 @@ void Energy::objectLeavingInfluence( Object *obj )
 		addProduction( -energy );
 
 	// sanity
-	DEBUG_ASSERTCRASH( m_energyProduction >= 0 && m_energyConsumption >= 0, 
+	DEBUG_ASSERTLOG( m_energyProduction >= 0 && m_energyConsumption >= 0, 
 										 ("Energy - Negative Energy numbers, Produce=%d Consume=%d\n",
 										 m_energyProduction, m_energyConsumption) );
 

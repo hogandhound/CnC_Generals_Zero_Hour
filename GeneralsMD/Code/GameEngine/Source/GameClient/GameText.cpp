@@ -1208,7 +1208,7 @@ Bool GameTextManager::parseMapStringFile( const char *filename )
 		{
 			if (!readLine ( m_buffer, sizeof(m_buffer)-1, file ))
 			{
-				DEBUG_ASSERTCRASH (FALSE, ("Unexpected end of string file"));
+				DEBUG_ASSERTLOG (FALSE, ("Unexpected end of string file"));
 				ok = FALSE;
 				goto quit;
 			}

@@ -885,7 +885,8 @@ void GameClient::removeDrawableFromLookupTable( Drawable *draw )
 
 	// remove from table
 //	m_drawableHash.erase( draw->getID() );
-	m_drawableVector[ draw->getID() ] = NULL;
+	if (draw->getID() < m_drawableVector.size())
+		m_drawableVector[ draw->getID() ] = NULL;
 
 }  // end removeDrawableFromLookupTable
 

@@ -195,7 +195,7 @@ UpdateSleepTime AutoHealBehavior::update( void )
 	// do not heal if our status is effectively dead.  There ain't no coming back, man!
 	if (!isUpgradeActive() || obj->isEffectivelyDead())
 	{
-		DEBUG_ASSERTCRASH(isUpgradeActive(), ("hmm, this should not be possible"));
+		DEBUG_ASSERTLOG(isUpgradeActive(), ("hmm, this should not be possible"));
 		return UPDATE_SLEEP_FOREVER;
 	}
 

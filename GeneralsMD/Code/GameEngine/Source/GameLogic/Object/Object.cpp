@@ -435,7 +435,7 @@ Object::Object( const ThingTemplate *tt, const ObjectStatusMaskType &objectStatu
     StealthUpdate* stealth = (StealthUpdate*)newMod->getStealth();
     if ( stealth )
     {
-      DEBUG_ASSERTCRASH( m_stealth == NULL, ("DuplicateStealthUpdates!") );
+      DEBUG_ASSERTLOG( m_stealth == NULL, ("DuplicateStealthUpdates!") );
       m_stealth = stealth;
     }
 
@@ -2543,7 +2543,7 @@ Bool Object::didExit(const PolygonTrigger *pTrigger) const
 //-------------------------------------------------------------------------------------------------
 Bool Object::isInside(const PolygonTrigger *pTrigger) const
 {
-	DEBUG_ASSERTCRASH(!isKindOf(KINDOF_INERT), ("Asking whether an inert is inside a trigger area. This is invalid.\n"));
+	DEBUG_ASSERTLOG(!isKindOf(KINDOF_INERT), ("Asking whether an inert is inside a trigger area. This is invalid.\n"));
 
 	for (Int i=0; i<m_numTriggerAreasActive; i++) 
 	{
@@ -4649,7 +4649,7 @@ void Object::onDie( DamageInfo *damageInfo )
 			RebuildHoleBehaviorInterface *rhbi = RebuildHoleBehavior::getRebuildHoleBehaviorInterfaceFromObject( hole );
 
 			// sanity
-			DEBUG_ASSERTCRASH( rhbi, ("Object::onDie() -  No Rebuild Hole Behavior interface on hole\n") );
+			DEBUG_ASSERTLOG( rhbi, ("Object::onDie() -  No Rebuild Hole Behavior interface on hole\n") );
 
 			// start the rebuild process
 			if( rhbi )
@@ -5539,7 +5539,7 @@ void Object::doCommandButton( const CommandButton *commandButton, CommandSourceT
 			default:
 				break;
 		}
-		DEBUG_CRASH( ("WARNING: Script doCommandButton for button %s not implemented. Doing nothing.", commandButton->getName().str()) );
+		DEBUG_WARNING( ("WARNING: Script doCommandButton for button %s not implemented. Doing nothing.", commandButton->getName().str()) );
 	}
 }
 

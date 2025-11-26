@@ -157,7 +157,7 @@ void ControlBar::markUIDirty( void )
 
 	if( m_consecutiveDirtyFrames > 20 )
 	{
-		DEBUG_CRASH( ("Serious flaw in interface system! Either new code or INI has caused the interface to be marked dirty every frame. This problem actually causes the interface to completely lockup not allowing you to click normal game buttons.") );
+		DEBUG_WARNING( ("Serious flaw in interface system! Either new code or INI has caused the interface to be marked dirty every frame. This problem actually causes the interface to completely lockup not allowing you to click normal game buttons.") );
 	}
 
 #endif

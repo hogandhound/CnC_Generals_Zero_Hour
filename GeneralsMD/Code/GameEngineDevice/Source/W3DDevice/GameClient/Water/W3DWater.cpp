@@ -1014,6 +1014,7 @@ void WaterRenderObjClass::ReAcquireResources(void)
 	{	m_whiteTexture->Init();
 		SurfaceClass *surface=m_whiteTexture->Get_Surface_Level();
 		surface->DrawPixel(0,0,0xffffffff);
+		surface->Unlock(&m_whiteTexture->Peek_D3D_Texture(), m_whiteTexture->Get_Filter().GetSamplerSettings());
 		REF_PTR_RELEASE(surface);
 	}
 }
@@ -1160,6 +1161,7 @@ Int WaterRenderObjClass::init(Real waterLevel, Real dx, Real dy, SceneClass *par
 	m_whiteTexture= new TextureClass(1,1,WW3D_FORMAT_A4R4G4B4, MipCountType::MIP_LEVELS_1);
 	SurfaceClass *surface=m_whiteTexture->Get_Surface_Level();
 	surface->DrawPixel(0,0,0xffffffff);
+	surface->Unlock(&m_whiteTexture->Peek_D3D_Texture(), m_whiteTexture->Get_Filter().GetSamplerSettings());
 	REF_PTR_RELEASE(surface);
 
 	m_waterNoiseTexture=WW3DAssetManager::Get_Instance()->Get_Texture("Noise0000.tga");
@@ -2181,7 +2183,7 @@ void WaterRenderObjClass::renderSky(void)
 	DX8Wrapper::Draw_Triangles(	0,2, 0,	4);	//draw a quad, 2 triangles, 4 verts
 #endif
 	WWVKDSV;
-	WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &setting->skyTexture->Peek_D3D_Texture(),
+	WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),
 		DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 	WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets, m_indexBuffer->Get_DX8_Index_Buffer().buffer, 6, 0, VK_INDEX_TYPE_UINT16,
 		((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer, 0, (WorldMatrix*)&tm2);

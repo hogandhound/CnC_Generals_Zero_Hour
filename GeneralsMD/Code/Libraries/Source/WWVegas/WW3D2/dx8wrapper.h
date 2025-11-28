@@ -1106,6 +1106,34 @@ WWINLINE void DX8Wrapper::Set_DX8_Material(const DX8Material* mat)
 	DX8CALL(SetMaterial(mat));
 #endif
 	Material = *mat;
+	if (RenderStates[VKRS_DIFFUSEMATERIALSOURCE] != VertexMaterialClass::COLOR1)
+	{
+		Material.Diffuse[0] = 1.0;
+		Material.Diffuse[1] = 1.0;
+		Material.Diffuse[2] = 1.0;
+		Material.Diffuse[3] = 1.0;
+	}
+	if (RenderStates[VKRS_AMBIENTMATERIALSOURCE] != VertexMaterialClass::COLOR1)
+	{
+		Material.Ambient[0] = 1.0;
+		Material.Ambient[1] = 1.0;
+		Material.Ambient[2] = 1.0;
+		Material.Ambient[3] = 1.0;
+	}
+	if (RenderStates[VKRS_SPECULARMATERIALSOURCE] != VertexMaterialClass::COLOR1)
+	{
+		Material.Specular[0] = 1.0;
+		Material.Specular[1] = 1.0;
+		Material.Specular[2] = 1.0;
+		Material.Specular[3] = 1.0;
+	}
+	if (RenderStates[VKRS_EMISSIVEMATERIALSOURCE] != VertexMaterialClass::COLOR1)
+	{
+		Material.Emissive[0] = 1.0;
+		Material.Emissive[1] = 1.0;
+		Material.Emissive[2] = 1.0;
+		Material.Emissive[3] = 1.0;
+	}
 	target.PushSingleFrameBuffer(MaterialUbo);
 	VkBufferTools::CreateUniformBuffer(&target, sizeof(Material), &Material, MaterialUbo);
 }

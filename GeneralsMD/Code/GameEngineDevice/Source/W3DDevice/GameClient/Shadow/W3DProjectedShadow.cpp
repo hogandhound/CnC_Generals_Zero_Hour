@@ -671,19 +671,19 @@ void W3DProjectedShadowManager::flushDecals(W3DShadowTexture *texture, ShadowTyp
 		switch (type)
 		{
 		case SHADOW_DECAL:
-			WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &texture->getTexture()->Peek_D3D_Texture(),
+			WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),
 				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 			WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowDecalIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3, nShadowDecalStartBatchIndex,
 				VK_INDEX_TYPE_UINT16, shadowDecalVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
 			break;
 		case SHADOW_ALPHA_DECAL:
-			WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &texture->getTexture()->Peek_D3D_Texture(),
+			WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),
 				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 			WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowDecalIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3, nShadowDecalStartBatchIndex,
 				VK_INDEX_TYPE_UINT16, shadowDecalVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);
 			break;
 		case SHADOW_ADDITIVE_DECAL:
-			WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &texture->getTexture()->Peek_D3D_Texture(),
+			WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),
 				DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 			WWVK_DrawFVF_DUV(WWVKPIPES, WWVKRENDER.currentCmd, sets, shadowDecalIndexBufferD3D.buffer, nShadowDecalPolysInBatch * 3, nShadowDecalStartBatchIndex,
 				VK_INDEX_TYPE_UINT16, shadowDecalVertexBufferD3D.buffer, 0, (WorldMatrix*)&mWorld);

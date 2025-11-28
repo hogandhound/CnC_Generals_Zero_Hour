@@ -1282,7 +1282,7 @@ void DazzleRenderObjClass::Render_Dazzle(CameraClass* camera)
 		DX8Wrapper::Set_Index_Buffer(ib_access,dazzle_vertex_count+halo_vertex_count);
 		DX8Wrapper::Set_Shader(default_dazzle_shader);
 		DX8Wrapper::Set_Texture(0,lensflare->Get_Texture());
-		WWVK_UpdateHaloDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &lensflare->Get_Texture()->Peek_D3D_Texture(),
+		WWVK_UpdateHaloDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),
 			DX8Wrapper::UboIdent(), DX8Wrapper::UboIdent());
 		WWVK_DrawDazzle(WWVKPIPES, WWVKRENDER.currentCmd, sets, ((DX8IndexBufferClass*)&ib_access)->Get_DX8_Index_Buffer().buffer,
 			dazzle_poly_count, 0, VK_INDEX_TYPE_UINT16, ((DX8VertexBufferClass*)vb_access.Get_Vertex_Buffer())->Get_DX8_Vertex_Buffer().buffer,

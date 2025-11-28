@@ -737,6 +737,7 @@ void W3DRadar::renderObjectList( const RadarObject *listHead, TextureClass *text
 			surface->DrawPixel(radarPoint.x, radarPoint.y, c);
 
 	}  // end for
+	surface->Unlock(&texture->Peek_D3D_Texture(), texture->Get_Filter().GetSamplerSettings());
 	REF_PTR_RELEASE(surface);
 
 }  // end renderObjectList

@@ -193,7 +193,7 @@ void BaseHeightMapRenderObjClass::drawScorches(void)
 		//DX8Wrapper::Draw_Triangles(	0,m_curNumScorchIndices/3, 0,	m_curNumScorchVertices);
 		std::vector<VkDescriptorSet> sets;
 		WWVK_UpdateFVF_DUVDescriptorSets(&DX8Wrapper::_GetRenderTarget(), DX8Wrapper::_GetPipelineCol(), sets,
-			&m_scorchTexture->Peek_D3D_Texture(), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
+			&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 		WWVK_DrawFVF_DUV(DX8Wrapper::_GetPipelineCol(), DX8Wrapper::_GetRenderTarget().currentCmd, sets,
 			m_indexScorch->Get_DX8_Index_Buffer().buffer, (uint32_t)m_curNumScorchIndices, 0, VK_INDEX_TYPE_UINT16,
 			(VkBuffer)m_vertexScorch->Get_DX8_Vertex_Buffer().buffer, 0ULL, (WorldMatrix*)&world);

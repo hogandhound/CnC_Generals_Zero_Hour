@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35825.156 d17.13
+VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Benchmark", "LIBRARIES\Source\Benchmark\Benchmark.vcxproj", "{A5C15323-77EF-44A2-B320-EFEF8BB700AC}"
 EndProject
@@ -20,16 +20,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameEngine", "GameEngine\GameEngine.vcxproj", "{9CAF03BB-274B-4288-86A0-ADB1D653FF60}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameEngineDevice", "GameEngineDevice\GameEngineDevice.vcxproj", "{0DC0E8C4-3BD6-4E05-AE4F-3DD2BB1A85BC}"
-EndProject
-Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "GameSpyHTTP", "Libraries\Source\GameSpy\GameSpy\ghttp\GameSpyHTTP.dsp", "{3C007839-9942-4E4C-81C4-307D6F77F51E}"
-EndProject
-Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "GameSpyPatching", "Libraries\Source\GameSpy\GameSpy\pt\GameSpyPatching.dsp", "{EC12A1E4-0B90-45EC-8530-790E9C909DC3}"
-EndProject
-Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "GameSpyPeer", "Libraries\Source\GameSpy\GameSpy\peer\GameSpyPeer.dsp", "{9AEF4191-B28B-4734-BDA3-C1224C80BB5F}"
-EndProject
-Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "GameSpyPresence", "Libraries\Source\GameSpy\GameSpy\gp\GameSpyPresence.dsp", "{CCA0FBB6-AB49-4FC0-87D0-5B298482866B}"
-EndProject
-Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "GameSpyStats", "Libraries\Source\GameSpy\GameSpy\gstats\GameSpyStats.dsp", "{D4E21C57-1D78-4DAC-B78E-D4AC4430E359}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImagePacker", "Tools\ImagePacker\ImagePacker.vcxproj", "{08E93044-34F7-47CE-8538-B610CE1304B8}"
 EndProject

@@ -2059,7 +2059,7 @@ void HeightMapRenderObjClass::Render(RenderInfoClass & rinfo)
 		{
 			W3DShaderManager::setShader(st, pass);
 			auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBufferTiles[0]->FVF_Info().FVF);
-			assert(pipelines.size() == 1);
+			assert(pipelines != PIPELINE_WWVK_MAX);
 		}
 
 		DX8Wrapper::Apply_Render_State_Changes();
@@ -2266,11 +2266,11 @@ void HeightMapRenderObjClass::renderTerrainPass(CameraClass *pCamera)
 				WWVKDSV;
 				//Figure out the install materials
 				auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBufferTiles[j * m_numVBTilesX + i]->FVF_Info().FVF);
-				assert(pipelines.size() == 1);
+				assert(pipelines != PIPELINE_WWVK_MAX);
 				WorldMatrixUVT push;
 				DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
 				DX8Wrapper::_Get_DX8_Transform(VkTS::TEXTURE0, *(Matrix4x4*)&push.uvt);
-				switch (pipelines[0]) {
+				switch (pipelines) {
 				case PIPELINE_WWVK_FVF_DUV2_TerrainPass:
 					WWVK_UpdateFVF_DUV2_TerrainPassDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 						&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView());

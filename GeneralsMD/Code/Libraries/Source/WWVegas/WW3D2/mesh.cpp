@@ -956,8 +956,8 @@ void MeshClass::Render_Material_Pass(MaterialPassClass * pass,IndexBufferClass *
 			DX8Wrapper::Apply_Render_State_Changes();
 
 			auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
-			assert(pipelines.size() == 1);
-			switch (pipelines[0]) {
+			assert(pipelines != PIPELINE_WWVK_MAX);
+			switch (pipelines) {
 			case 0:
 			default: assert(false);
 			}

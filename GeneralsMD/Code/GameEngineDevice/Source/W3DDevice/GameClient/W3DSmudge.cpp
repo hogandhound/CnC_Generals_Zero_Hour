@@ -444,8 +444,8 @@ flushSmudges:
 		DX8Wrapper::Apply_Render_State_Changes();
 		WWVKDSV;
 		auto pipelines = DX8Wrapper::FindClosestPipelines(DX8Wrapper::Get_Vertex_Buffer()->FVF_Info().FVF);
-		assert(pipelines.size() == 1);
-		switch (pipelines[0]) {
+		assert(pipelines != PIPELINE_WWVK_MAX);
+		switch (pipelines) {
 		case PIPELINE_WWVK_FVF_NDUV2_NOL:
 			WWVK_UpdateFVF_NDUV2_NOLDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &backTexture, &backTexture, DX8Wrapper::UboProj(), DX8Wrapper::UboView());
 			WWVK_DrawFVF_NDUV2_NOL(WWVKPIPES, WWVKRENDER.currentCmd, sets,

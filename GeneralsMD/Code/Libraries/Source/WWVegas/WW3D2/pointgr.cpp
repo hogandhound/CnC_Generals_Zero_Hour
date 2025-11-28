@@ -986,8 +986,8 @@ void PointGroupClass::Render(RenderInfoClass &rinfo)
 		{
 			auto pipelines = DX8Wrapper::FindClosestPipelines(PointVerts.FVF_Info().FVF);
 			WWVKDSV;
-			assert(pipelines.size() == 1);
-			switch (pipelines[0]) {
+			assert(pipelines != PIPELINE_WWVK_MAX);
+			switch (pipelines) {
 			case PIPELINE_WWVK_FVF_NDUV2_NOL_AREF:
 			{
 				WorldMatrix_AlphaRef push;
@@ -1935,8 +1935,8 @@ void PointGroupClass::RenderVolumeParticle(RenderInfoClass &rinfo, unsigned int 
 			else
 			{
 				auto pipelines = DX8Wrapper::FindClosestPipelines(PointVerts.FVF_Info().FVF);
-				assert(pipelines.size() == 1);
-				switch (pipelines[0]) {
+				assert(pipelines != PIPELINE_WWVK_MAX);
+				switch (pipelines) {
 				case 0:
 				default: assert(false);
 				}

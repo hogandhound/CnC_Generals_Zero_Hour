@@ -358,8 +358,8 @@ void RigidDecalMeshClass::Render(void)
 		DX8Wrapper::Set_Vertex_Buffer(dynamic_vb);
 		DX8Wrapper::Apply_Render_State_Changes();
 		auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_vb.FVF_Info().FVF);
-		assert(pipelines.size() == 1);
-		switch (pipelines[0]) {
+		assert(pipelines != PIPELINE_WWVK_MAX);
+		switch (pipelines) {
 		case 0:
 		default: assert(false);
 		}
@@ -868,8 +868,8 @@ void SkinDecalMeshClass::Render(void)
 		DX8Wrapper::Set_Vertex_Buffer(dynamic_vb);
 		DX8Wrapper::Apply_Render_State_Changes();
 		auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_vb.FVF_Info().FVF);
-		assert(pipelines.size() == 1);
-		switch (pipelines[0]) {
+		assert(pipelines != PIPELINE_WWVK_MAX);
+		switch (pipelines) {
 		case 0:
 		default: assert(false);
 		}

@@ -427,7 +427,7 @@ public:
 	static DX8_Stats stats;
 #endif
 
-	static std::vector<WWVK_Pipeline_Entry> FindClosestPipelines(unsigned FVF, VkPrimitiveTopology topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	static WWVK_Pipeline_Entry FindClosestPipelines(unsigned FVF, VkPrimitiveTopology topo = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 
 	static bool Init(void * hwnd, bool lite = false);
 	static void Shutdown(void);

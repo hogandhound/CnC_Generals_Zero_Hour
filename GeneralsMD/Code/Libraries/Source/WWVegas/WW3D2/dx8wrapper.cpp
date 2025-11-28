@@ -1262,7 +1262,7 @@ void main() {
 	OutputDebugStringA(output.c_str());
 }
 
-std::vector<WWVK_Pipeline_Entry> DX8Wrapper::FindClosestPipelines(unsigned FVF, VkPrimitiveTopology topo)
+WWVK_Pipeline_Entry DX8Wrapper::FindClosestPipelines(unsigned FVF, VkPrimitiveTopology topo)
 {
 	static bool compInit = false;
 	if (!compInit)
@@ -1319,7 +1319,7 @@ std::vector<WWVK_Pipeline_Entry> DX8Wrapper::FindClosestPipelines(unsigned FVF, 
 		return { pipeline_ };
 	}
 
-	std::vector<WWVK_Pipeline_Entry> ret;
+	WWVK_Pipeline_Entry ret = PIPELINE_WWVK_MAX;
 	int pi = 0;
 	for (auto p : pipelineStates_)
 	{
@@ -1450,11 +1450,11 @@ std::vector<WWVK_Pipeline_Entry> DX8Wrapper::FindClosestPipelines(unsigned FVF, 
 		}
 		if (valid)
 		{
-			ret.push_back((WWVK_Pipeline_Entry)pi);
+			ret = (WWVK_Pipeline_Entry)pi;
 		}
 		pi++;
 	}
-	if (ret.empty())
+	if (ret == PIPELINE_WWVK_MAX)
 	{
 		pi = 0;
 		std::vector<std::pair<WWVK_Pipeline_Entry, int>> matches;
@@ -3503,8 +3503,8 @@ void DX8Wrapper::Draw_Sorting_IB_VB(
 #endif		
 	DX8Wrapper::Apply_Render_State_Changes();
 	auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
-	assert(pipelines.size() == 1);
-	switch (pipelines[0]) {
+	assert(pipelines != PIPELINE_WWVK_MAX);
+	switch (pipelines) {
 	case 0:
 	default: assert(false);
 	}
@@ -3583,8 +3583,8 @@ void DX8Wrapper::Convert_Sorting_IB_VB(
 #if 0
 	DX8Wrapper::Apply_Render_State_Changes();
 	auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
-	assert(pipelines.size() == 1);
-	switch (pipelines[0]) {
+	assert(pipelines != PIPELINE_WWVK_MAX);
+	switch (pipelines) {
 	case 0:
 	default: assert(false);
 	}

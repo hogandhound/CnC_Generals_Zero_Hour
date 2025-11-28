@@ -314,8 +314,8 @@ void W3DDebugIcons::Render(RenderInfoClass & rinfo)
 		WWVKDSV;
 		//WWVK_UpdateFVF_NDUV2DescriptorSets(&WWVKRENDER, WWVKPIPES, sets, )
 		auto pipelines = DX8Wrapper::FindClosestPipelines(vb_access.FVF_Info().FVF);
-		assert(pipelines.size() == 1);
-		switch (pipelines[0]) {
+		assert(pipelines != PIPELINE_WWVK_MAX);
+		switch (pipelines) {
 		case 0:
 		default: assert(false);
 		}

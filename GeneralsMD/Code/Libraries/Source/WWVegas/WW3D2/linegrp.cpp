@@ -478,8 +478,8 @@ void	LineGroupClass::Render(RenderInfoClass &rinfo)
 		SortingRendererClass::Insert_Triangles(0, num_tris, 0, num_vertices);
 	} else {
 		auto pipelines = DX8Wrapper::FindClosestPipelines(vba.FVF_Info().FVF);
-		assert(pipelines.size() == 1);
-		switch (pipelines[0]) {
+		assert(pipelines != PIPELINE_WWVK_MAX);
+		switch (pipelines) {
 		case 0:
 		default: assert(false);
 		}

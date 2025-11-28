@@ -904,7 +904,7 @@ Try improving the fit to vertical surfaces like cliffs.
 		DX8Wrapper::Set_Transform(VkTS::WORLD,tm);
 		DX8Wrapper::Apply_Render_State_Changes();
 		auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBuffer->FVF_Info().FVF);
-		assert(pipelines.size() == 1);
+		assert(pipelines != PIPELINE_WWVK_MAX);
 		while (mod)
 		{
 			if (mod->m_activeEdgeCount >= 2 && mod->Is_Really_Visible())
@@ -915,7 +915,7 @@ Try improving the fit to vertical surfaces like cliffs.
 				}
 				DX8Wrapper::Set_Texture(0,mod->m_stageZeroTexture);
 				DX8Wrapper::Set_Index_Buffer_Index_Offset(trackStartIndex);
-				switch (pipelines[0])
+				switch (pipelines)
 				{
 				case PIPELINE_WWVK_FVF_DUV:
 				{

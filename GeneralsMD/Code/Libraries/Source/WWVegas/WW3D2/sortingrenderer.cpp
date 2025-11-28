@@ -223,8 +223,8 @@ void SortingRendererClass::Insert_Triangles(
 	if (!WW3D::Is_Sorting_Enabled()) {
 		DX8Wrapper::Apply_Render_State_Changes();
 		auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
-		assert(pipelines.size() == 1);
-		switch (pipelines[0]) {
+		assert(pipelines != PIPELINE_WWVK_MAX);
+		switch (pipelines) {
 		case 0:
 		default: assert(false);
 		}
@@ -588,8 +588,8 @@ void SortingRendererClass::Flush_Sorting_Pool()
 			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, push);
 
 			auto pipelines = DX8Wrapper::FindClosestPipelines(dyn_vb_access.FVF_Info().FVF);
-			assert(pipelines.size() == 1);
-			switch (pipelines[0]) {
+			assert(pipelines != PIPELINE_WWVK_MAX);
+			switch (pipelines) {
 			case PIPELINE_WWVK_FVF_NDUV2_NOL:
 				WWVK_UpdateFVF_NDUV2_NOLDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 					&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),
@@ -793,8 +793,8 @@ void SortingRendererClass::Flush_Sorting_Pool()
 
 
 		auto pipelines = DX8Wrapper::FindClosestPipelines(dyn_vb_access.FVF_Info().FVF);
-		assert(pipelines.size() == 1);
-		switch (pipelines[0]) {
+		assert(pipelines != PIPELINE_WWVK_MAX);
+		switch (pipelines) {
 		case PIPELINE_WWVK_FVF_NDUV2_DropUV:
 			WWVK_UpdateFVF_NDUV2_DropUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 				&DX8Wrapper::Get_DX8_Texture(0), &DX8Wrapper::Get_DX8_Texture(1),
@@ -1006,8 +1006,8 @@ void SortingRendererClass::Flush()
 			DX8Wrapper::Apply_Render_State_Changes();
 
 			auto pipelines = DX8Wrapper::FindClosestPipelines(vb->FVF_Info().FVF);
-			assert(pipelines.size() == 1);
-			switch (pipelines[0]) {
+			assert(pipelines != PIPELINE_WWVK_MAX);
+			switch (pipelines) {
 			case 0:
 			default: assert(false);
 			}
@@ -1085,8 +1085,8 @@ void SortingRendererClass::Insert_VolumeParticle(
 
 		DX8Wrapper::Apply_Render_State_Changes();
 		auto pipelines = DX8Wrapper::FindClosestPipelines(vb->FVF_Info().FVF);
-		assert(pipelines.size() == 1);
-		switch (pipelines[0]) {
+		assert(pipelines != PIPELINE_WWVK_MAX);
+		switch (pipelines) {
 		case 0:
 		default: assert(false);
 		}

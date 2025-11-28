@@ -596,8 +596,8 @@ void RingRenderObjClass::render_ring(RenderInfoClass & rinfo,const Vector3 & cen
 		SortingRendererClass::Insert_Triangles(Get_Bounding_Sphere(), 0, ring.face_ct, 0, ring.Vertex_ct);
 	} else {
 		auto pipelines = DX8Wrapper::FindClosestPipelines(vb.FVF_Info().FVF);
-		assert(pipelines.size() == 1);
-		switch (pipelines[0]) {
+		assert(pipelines != PIPELINE_WWVK_MAX);
+		switch (pipelines) {
 		case 0:
 		default: assert(false);
 		}

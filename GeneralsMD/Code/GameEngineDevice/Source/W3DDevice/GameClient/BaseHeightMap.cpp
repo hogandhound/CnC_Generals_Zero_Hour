@@ -2619,8 +2619,8 @@ void BaseHeightMapRenderObjClass::renderShoreLines(CameraClass *pCamera)
 			DX8Wrapper::Apply_Render_State_Changes();
 			WWVKDSV;
 			auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
-			assert(pipelines.size() == 1);
-			switch (pipelines[0]) {
+			assert(pipelines != PIPELINE_WWVK_MAX);
+			switch (pipelines) {
 			case PIPELINE_WWVK_FVF_NDUV2_NOL_OnlyTex1:
 				WWVK_UpdateFVF_NDUV2_NOL_OnlyTex1DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 					&DX8Wrapper::Get_DX8_Texture(0),
@@ -2984,9 +2984,9 @@ flushVertexBuffer1:
 			DX8Wrapper::Set_Vertex_Buffer(vb_access);
 			DX8Wrapper::Apply_Render_State_Changes();
 			auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_fvf_type);
-			assert(pipelines.size() == 1);
+			assert(pipelines != PIPELINE_WWVK_MAX);
 			WWVKDSV;
-			switch (pipelines[0]) {
+			switch (pipelines) {
 			case PIPELINE_WWVK_FVF_NDUV2_NOL_OnlyTex1:
 				WWVK_UpdateFVF_NDUV2_NOL_OnlyTex1DescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 					&DX8Wrapper::Get_DX8_Texture(0),

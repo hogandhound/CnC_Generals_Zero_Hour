@@ -715,8 +715,8 @@ void Render2DClass::Render(void)
 		DX8Wrapper::Set_Shader(Shader);
 		DX8Wrapper::Apply_Render_State_Changes();	//force update of all regular W3D states.
 		auto pipelines = DX8Wrapper::FindClosestPipelines(vb.FVF_Info().FVF);
-		assert(pipelines.size() == 1);
-		switch (pipelines[0])
+		assert(pipelines != PIPELINE_WWVK_MAX);
+		switch (pipelines)
 		{
 		case PIPELINE_WWVK_FVF_DUV:
 			WWVK_UpdateFVF_DUVDescriptorSets(&WWVKRENDER, WWVKPIPES, sets, &DX8Wrapper::Get_DX8_Texture(0),//&Texture->Peek_D3D_Texture(),

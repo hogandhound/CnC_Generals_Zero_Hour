@@ -516,8 +516,8 @@ void BoxRenderObjClass::render_box(RenderInfoClass & rinfo,const Vector3 & cente
 
 		DX8Wrapper::Apply_Render_State_Changes();
 		auto pipelines = DX8Wrapper::FindClosestPipelines(vbaccess.FVF_Info().FVF);
-		assert(pipelines.size() == 1);
-		switch (pipelines[0]) {
+		assert(pipelines != PIPELINE_WWVK_MAX);
+		switch (pipelines) {
 		case 0:
 		default: assert(false);
 		}

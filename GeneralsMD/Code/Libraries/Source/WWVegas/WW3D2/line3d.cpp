@@ -308,9 +308,9 @@ void Line3DClass::Render(RenderInfoClass & rinfo)
 	DX8Wrapper::Set_Index_Buffer(ib,0);
 	DX8Wrapper::Apply_Render_State_Changes();
 	auto pipelines = DX8Wrapper::FindClosestPipelines(vb.FVF_Info().FVF);
-	assert(pipelines.size() == 1);
+	assert(pipelines != PIPELINE_WWVK_MAX);
 	WWVKDSV;
-	switch (pipelines[0]) {
+	switch (pipelines) {
 	case PIPELINE_WWVK_FVF_NDUV2_NOL_DROPTEX:
 	{
 		WorldMatrix push;

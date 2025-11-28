@@ -335,8 +335,8 @@ void DynamicMeshModel::Render(RenderInfoClass & rinfo)
 			}
 			else {
 				auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_vb.FVF_Info().FVF);
-				assert(pipelines.size() == 1);
-				switch (pipelines[0]) {
+				assert(pipelines != PIPELINE_WWVK_MAX);
+				switch (pipelines) {
 				case 0:
 				default: assert(false);
 				}
@@ -383,8 +383,8 @@ void DynamicMeshModel::Render(RenderInfoClass & rinfo)
 				}
 				else {
 					auto pipelines = DX8Wrapper::FindClosestPipelines(dynamic_vb.FVF_Info().FVF);
-					assert(pipelines.size() == 1);
-					switch (pipelines[0]) {
+					assert(pipelines != PIPELINE_WWVK_MAX);
+					switch (pipelines) {
 					case 0:
 					default: assert(false);
 					}

@@ -149,8 +149,8 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 		SNAPSHOT_SAY(("Draw_Strip(%d,%d,%d,%d)\n",index_offset,index_count-2,min_vertex_index,vertex_index_range));
 		auto pipelines = DX8Wrapper::FindClosestPipelines(DX8Wrapper::Get_Vertex_Buffer()->FVF_Info().FVF, 
 			VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
-		assert(pipelines.size() == 1);
-		switch (pipelines[0]) {
+		assert(pipelines != PIPELINE_WWVK_MAX);
+		switch (pipelines) {
 		case PIPELINE_WWVK_FVF_DUV2_DropUV_Strip:
 		{
 			WorldMatrix push;
@@ -230,8 +230,8 @@ inline void DX8PolygonRendererClass::Render(/*const Matrix3D & tm,*/int base_ver
 	else {
 		SNAPSHOT_SAY(("Draw_Triangles(%d,%d,%d,%d)\n",index_offset,index_count-2,min_vertex_index,vertex_index_range));
 		auto pipelines = DX8Wrapper::FindClosestPipelines(DX8Wrapper::Get_Vertex_Buffer()->FVF_Info().FVF);
-		assert(pipelines.size() == 1);
-		switch (pipelines[0]) {
+		assert(pipelines != PIPELINE_WWVK_MAX);
+		switch (pipelines) {
 		case PIPELINE_WWVK_FVF_NUV_ARef:
 		{
 			WorldMatrix_AlphaRef push;

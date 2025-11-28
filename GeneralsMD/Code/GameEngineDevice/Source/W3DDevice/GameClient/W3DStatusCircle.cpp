@@ -357,11 +357,11 @@ void W3DStatusCircle::Render(RenderInfoClass & rinfo)
 		case ScriptEngine::FADE_ADD:
 		{
 			auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBufferScreen->FVF_Info().FVF);
-			assert(pipelines.size() == 1);
+			assert(pipelines != PIPELINE_WWVK_MAX);
 			WWVKDSV;
 			WorldMatrix push;
 			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
-			switch (pipelines[0]) {
+			switch (pipelines) {
 			case PIPELINE_WWVK_FVF_DUV_NoDiffuse:
 				WWVK_UpdateFVF_DUV_NoDiffuseDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 					&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView());
@@ -383,8 +383,8 @@ void W3DStatusCircle::Render(RenderInfoClass & rinfo)
 			DX8Wrapper::Draw_Triangles(0, 2, 0, (2 * 3));
 #endif
 			auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBufferScreen->FVF_Info().FVF);
-			assert(pipelines.size() == 1);
-			switch (pipelines[0]) {
+			assert(pipelines != PIPELINE_WWVK_MAX);
+			switch (pipelines) {
 			case 0:
 			default: assert(false);
 			}
@@ -398,8 +398,8 @@ void W3DStatusCircle::Render(RenderInfoClass & rinfo)
 			DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND, VK_BLEND_FACTOR_DST_COLOR);
 			DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_SRC_COLOR);
 			auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBufferScreen->FVF_Info().FVF);
-			assert(pipelines.size() == 1);
-			switch (pipelines[0]) {
+			assert(pipelines != PIPELINE_WWVK_MAX);
+			switch (pipelines) {
 			case 0:
 			default: assert(false);
 			}
@@ -416,11 +416,11 @@ void W3DStatusCircle::Render(RenderInfoClass & rinfo)
 			DX8Wrapper::Set_DX8_Render_State(VKRS_SRCBLEND, VK_BLEND_FACTOR_ZERO);
 			DX8Wrapper::Set_DX8_Render_State(VKRS_DESTBLEND, VK_BLEND_FACTOR_SRC_COLOR);
 			auto pipelines = DX8Wrapper::FindClosestPipelines(m_vertexBufferScreen->FVF_Info().FVF);
-			assert(pipelines.size() == 1);
+			assert(pipelines != PIPELINE_WWVK_MAX);
 			WWVKDSV;
 			WorldMatrix push;
 			DX8Wrapper::_Get_DX8_Transform(VkTS::WORLD, *(Matrix4x4*)&push.world);
-			switch (pipelines[0]) {
+			switch (pipelines) {
 			case PIPELINE_WWVK_FVF_DUV_NoDiffuse:
 				WWVK_UpdateFVF_DUV_NoDiffuseDescriptorSets(&WWVKRENDER, WWVKPIPES, sets,
 					&DX8Wrapper::Get_DX8_Texture(0), DX8Wrapper::UboProj(), DX8Wrapper::UboView());

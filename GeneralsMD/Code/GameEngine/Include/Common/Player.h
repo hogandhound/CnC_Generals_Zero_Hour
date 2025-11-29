@@ -149,6 +149,7 @@ struct SpecialPowerReadyTimerType
 
 
 // ------------------------------------------------------------------------------------------------
+#include <array>
 typedef std::unordered_map< PlayerIndex, Relationship, std::hash<PlayerIndex>, std::equal_to<PlayerIndex> > PlayerRelationMapType;
 class PlayerRelationMap : public MemoryPoolObject,
 													public Snapshot
@@ -163,7 +164,10 @@ public:
 
 	/** @todo I'm jsut wrappign this up in a nice snapshot object, we really should isolate
 		* m_map from public access and make access methods for our operations */
-	PlayerRelationMapType m_map;
+	//PlayerRelationMapType m_map;
+#define RMAP_SIZE 16
+	std::array<Relationship,RMAP_SIZE> rmap;
+	int rmapCount = 0;
 
 protected:
 

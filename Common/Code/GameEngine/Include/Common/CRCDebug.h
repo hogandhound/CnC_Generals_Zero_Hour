@@ -34,6 +34,9 @@
 #include "Common/Debug.h"
 
 #ifndef NO_DEBUG_CRC
+#define NO_DEBUG_CRC
+#endif
+#ifndef NO_DEBUG_CRC
 	#ifdef DEBUG_LOGGING
 		#define DEBUG_CRC
 	#endif

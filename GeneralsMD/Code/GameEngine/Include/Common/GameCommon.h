@@ -495,11 +495,12 @@ inline Real stdAngleDiff(Real a1, Real a2)
 
 // ------------------------------------------------------------------------
 // NOTE NOTE NOTE: Keep TheRelationShipNames in sync with this enum
-enum Relationship
+enum Relationship : char
 {
 	ENEMIES = 0,
 	NEUTRAL,
-	ALLIES
+	ALLIES,
+	NULL_RELATION
 };
 
 

@@ -107,7 +107,7 @@ void TeamRelationMap::xfer( Xfer *xfer )
 
 	// team relations
 	TeamID teamID;
-	Relationship r;
+	int r;
 	if( xfer->getXferMode() == XFER_SAVE )
 	{
 
@@ -121,7 +121,7 @@ void TeamRelationMap::xfer( Xfer *xfer )
 			
 			// write relationship
 			r = (*teamRelationIt).second;
-			xfer->xferUser( &r, sizeof( Relationship ) );
+			xfer->xferUser( &r, sizeof( int ) );
 
 		}  // end for
 
@@ -136,10 +136,10 @@ void TeamRelationMap::xfer( Xfer *xfer )
 			xfer->xferUser( &teamID, sizeof( TeamID ) );
 
 			// read relationship
-			xfer->xferUser( &r, sizeof( Relationship ) );
+			xfer->xferUser( &r, sizeof( int ) );
 
 			// assign relationship
-			m_map[teamID] = r;
+			m_map[teamID] = (Relationship)r;
 			
 		}  // end for, i
 
@@ -1481,15 +1481,15 @@ Relationship Team::getRelationship(const Team *that) const
 	}
 
 	// hummm... well, do we have an override for that team's player?
-	if (!m_playerRelations->m_map.empty() && that != NULL)
+	if (m_playerRelations->rmapCount > 0 && that != NULL)
 	{
 		Player* thatPlayer = that->getControllingPlayer();
 		if (thatPlayer != NULL)
 		{
-			PlayerRelationMapType::const_iterator it = m_playerRelations->m_map.find(thatPlayer->getPlayerIndex());
-			if (it != m_playerRelations->m_map.end())
+			Relationship it = m_playerRelations->rmap[thatPlayer->getPlayerIndex()];
+			if (it != NULL_RELATION)
 			{
-				return (*it).second;
+				return it;
 			}
 		}
 	}
@@ -1586,26 +1586,29 @@ void Team::setOverridePlayerRelationship( Int playerIndex, Relationship r )
 	if (playerIndex != PLAYER_INDEX_INVALID)
 	{
 		// note that this creates the entry if it doesn't exist.
-		m_playerRelations->m_map[playerIndex] = r;
+		if (m_playerRelations->rmap[playerIndex] == NULL_RELATION)
+			m_playerRelations->rmapCount++;
+		m_playerRelations->rmap[playerIndex] = r;
 	}
 }
 
 // ------------------------------------------------------------------------
 Bool Team::removeOverridePlayerRelationship( Int playerIndex )
 {
-	if (!m_playerRelations->m_map.empty())
+	if (m_playerRelations->rmapCount > 0)
 	{
 		if (playerIndex == PLAYER_INDEX_INVALID)
 		{
-			m_playerRelations->m_map.clear();
+			m_playerRelations->rmapCount = 0;
+			memset(m_playerRelations->rmap.data(),NULL_RELATION,sizeof(m_playerRelations->rmap));
 			return true;
 		}
 		else
 		{
-			PlayerRelationMapType::iterator it = m_playerRelations->m_map.find(playerIndex);
-			if (it != m_playerRelations->m_map.end())
+			if (m_playerRelations->rmap[playerIndex] != NULL_RELATION)
 			{
-				m_playerRelations->m_map.erase(it);
+				m_playerRelations->rmap[playerIndex] = NULL_RELATION;
+				m_playerRelations->rmapCount--;
 				return true;
 			}
 		}

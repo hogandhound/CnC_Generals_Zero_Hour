@@ -661,7 +661,12 @@ void W3DProjectedShadowManager::flushDecals(W3DShadowTexture *texture, ShadowTyp
 	m_pDev->SetStreamSource(0,shadowDecalVertexBufferD3D,0,sizeof(SHADOW_DECAL_VERTEX));
 	m_pDev->SetFVF(SHADOW_DECAL_FVF);
 #endif
-
+	DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(shadowDecalVertexBufferD3D);
+	VkBufferTools::CreateVertexBuffer(&DX8Wrapper::_GetRenderTarget(), SHADOW_DECAL_VERTEX_SIZE * sizeof(SHADOW_DECAL_VERTEX),
+		pvVerticesDecal.data(), shadowDecalVertexBufferD3D);
+	DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(shadowDecalIndexBufferD3D);
+	VkBufferTools::CreateIndexBuffer(&DX8Wrapper::_GetRenderTarget(), SHADOW_DECAL_INDEX_SIZE * sizeof(uint16_t),
+		pvIndicesDecal.data(), shadowDecalIndexBufferD3D);
 
 	if (DX8Wrapper::_Is_Triangle_Draw_Enabled())
 	{
@@ -1001,9 +1006,6 @@ void W3DProjectedShadowManager::queueDecal(W3DProjectedShadow *shadow)
 			}
 		}
 
-		DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(shadowDecalVertexBufferD3D);
-		VkBufferTools::CreateVertexBuffer(&DX8Wrapper::_GetRenderTarget(), SHADOW_DECAL_VERTEX_SIZE * sizeof(SHADOW_DECAL_VERTEX),
-			pvVerticesDecal.data(), shadowDecalVertexBufferD3D);
 #ifdef INFO_VULKAN
 		shadowDecalVertexBufferD3D->Unlock();
 #endif
@@ -1066,9 +1068,6 @@ void W3DProjectedShadowManager::queueDecal(W3DProjectedShadow *shadow)
 		} catch(...) {
 			IndexBufferExceptionFunc();
 		}
-		DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(shadowDecalIndexBufferD3D);
-		VkBufferTools::CreateIndexBuffer(&DX8Wrapper::_GetRenderTarget(), SHADOW_DECAL_INDEX_SIZE * sizeof(uint16_t),
-			pvIndicesDecal.data(), shadowDecalIndexBufferD3D);
 #ifdef INFO_VULKAN
 		shadowDecalIndexBufferD3D->Unlock();
 #endif

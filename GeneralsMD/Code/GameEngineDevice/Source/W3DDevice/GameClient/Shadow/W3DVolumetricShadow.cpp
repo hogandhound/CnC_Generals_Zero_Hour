@@ -1445,12 +1445,12 @@ void W3DVolumetricShadow::RenderMeshVolume(Int meshIndex, Int lightIndex, const 
 	}
 }
 
+std::vector<SHADOW_DYNAMIC_VOLUME_VERTEX> pvVertices;
+std::vector<UnsignedShort> pvIndices;
 void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex, const Matrix3D *meshXform)
 {
 	Geometry *geometry;
 	Int numVerts, numPolys, numIndex;
-	std::vector<SHADOW_DYNAMIC_VOLUME_VERTEX> pvVertices;
-	std::vector<UnsignedShort> pvIndices;
 
 	//Get D3D Device used by W3D for quicker access.
 #ifdef INFO_VULKAN
@@ -1493,7 +1493,8 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 #ifdef SV_DEBUG
 	srand(0x1345465);
 #endif
-	pvVertices.resize(numVerts);
+	if (pvVertices.empty())
+		pvVertices.resize(SHADOW_VERTEX_SIZE);
 	{
 #ifdef SV_DEBUG
 		for (Int i=0; i<numVerts; i++)
@@ -1528,12 +1529,12 @@ void W3DVolumetricShadow::RenderDynamicMeshVolume(Int meshIndex, Int lightIndex,
 
 
 	try {
-		pvIndices.resize(numPolys * 3 * sizeof(short));
-	{
+		if (pvIndices.empty())
+			pvIndices.resize(SHADOW_INDEX_SIZE);
 		memcpy(pvIndices.data(), geometry->GetPolygonIndex(0, (short*)pvIndices.data()), numPolys * 3 * sizeof(short));
+		IndexBufferExceptionFunc();
 	}
-	IndexBufferExceptionFunc();
-	} catch(...) {
+	catch (...) {
 		IndexBufferExceptionFunc();
 	}
 	DX8Wrapper::_GetRenderTarget().PushSingleFrameBuffer(shadowIndexBufferD3D);

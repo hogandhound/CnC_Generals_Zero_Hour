@@ -209,7 +209,7 @@ void dumpBattlePlanBonuses(const BattlePlanBonuses *b, AsciiString name, const P
 // ------------------------------------------------------------------------------------------------
 PlayerRelationMap::PlayerRelationMap( void )
 {
-
+	memset(rmap.data(), NULL_RELATION, sizeof(rmap));
 }  // end PlayerRelationMap
 
 // ------------------------------------------------------------------------------------------------
@@ -218,7 +218,8 @@ PlayerRelationMap::~PlayerRelationMap( void )
 {
 
 	// make sure the data is cleared
-	m_map.clear();
+	rmapCount = 0;
+	memset(rmap.data(), NULL_RELATION, sizeof(rmap));
 
 }  // end ~PlayerRelationmap
 
@@ -245,27 +246,28 @@ void PlayerRelationMap::xfer( Xfer *xfer )
 	xfer->xferVersion( &version, currentVersion );
 
 	// player relation count
-	PlayerRelationMapType::iterator playerRelationIt;
-	UnsignedShort playerRelationCount = (uint16_t)m_map.size();
+	UnsignedShort playerRelationCount = (uint16_t)rmapCount;
 	xfer->xferUnsignedShort( &playerRelationCount );
 
 	// player relations
 	Int playerIndex;
-	Relationship r;
+	int r;
 	if( xfer->getXferMode() == XFER_SAVE )
 	{
 
 		// go through all player relations
-		for( playerRelationIt = m_map.begin(); playerRelationIt != m_map.end(); ++playerRelationIt )
+		for( int pr = 0; pr < RMAP_SIZE; ++pr)
 		{
+			if (rmap[pr] == NULL_RELATION)
+				continue;
 		
 			// write player index
-			playerIndex = (*playerRelationIt).first;
+			playerIndex = pr;
 			xfer->xferInt( &playerIndex );
 
 			// write relationship
-			r = (*playerRelationIt).second;
-			xfer->xferUser( &r, sizeof( Relationship ) );
+			r = rmap[pr];
+			xfer->xferUser( &r, sizeof( int ) );
 
 		}  // end for, playerRelationIt
 					
@@ -280,13 +282,13 @@ void PlayerRelationMap::xfer( Xfer *xfer )
 			xfer->xferInt( &playerIndex );
 
 			// read relationship
-			xfer->xferUser( &r, sizeof( Relationship ) );
+			xfer->xferUser( &r, sizeof( int ) );
 
 			// assign relationship
-			m_map[ playerIndex ] = r;
+			rmap[ playerIndex ] = (Relationship)r;
 				
 		}  // end for, i
-
+		rmapCount = playerRelationCount;
 	}  // end else, load
 
 }  // end xfer
@@ -587,16 +589,14 @@ Relationship Player::getRelationship(const Team *that) const
 		}
 		
 		// hummm... well, do we have something for that team's player?
-		if (!m_playerRelations->m_map.empty())
+		if (m_playerRelations->rmapCount > 0)
 		{
 			const Player* thatPlayer = that->getControllingPlayer();
 			if (thatPlayer != NULL)
 			{
-				PlayerRelationMapType::const_iterator it = m_playerRelations->m_map.find(thatPlayer->getPlayerIndex());
-				if (it != m_playerRelations->m_map.end())
-				{
-					return (*it).second;
-				}
+				Relationship rel = m_playerRelations->rmap[thatPlayer->getPlayerIndex()];
+				if (rel != NULL_RELATION)
+					return rel;
 			}
 		}
 	}
@@ -609,26 +609,30 @@ void Player::setPlayerRelationship(const Player *that, Relationship r)
 	if (that != NULL)
 	{
 		// note that this creates the entry if it doesn't exist.
-		m_playerRelations->m_map[that->getPlayerIndex()] = r;
+		if (m_playerRelations->rmap[that->getPlayerIndex()] == NULL_RELATION)
+			m_playerRelations->rmapCount++;
+		m_playerRelations->rmap[that->getPlayerIndex()] = r;
 	}
 }
 
 // ------------------------------------------------------------------------
 Bool Player::removePlayerRelationship(const Player *that)
 {
-	if (!m_playerRelations->m_map.empty())
+	if (m_playerRelations->rmapCount > 0)
 	{
 		if (that == NULL)
 		{
-			m_playerRelations->m_map.clear();
+			memset(m_playerRelations->rmap.data(), NULL_RELATION, sizeof(m_playerRelations->rmap));
+			m_playerRelations->rmapCount = 0;
 			return true;
 		}
 		else
 		{
-			PlayerRelationMapType::iterator it = m_playerRelations->m_map.find(that->getPlayerIndex());
-			if (it != m_playerRelations->m_map.end())
+			Relationship it = m_playerRelations->rmap[that->getPlayerIndex()];
+			if (it != NULL_RELATION)
 			{
-				m_playerRelations->m_map.erase(it);
+				m_playerRelations->rmap[that->getPlayerIndex()] = NULL_RELATION;
+				m_playerRelations->rmapCount--;
 				return true;
 			}
 		}
@@ -1014,7 +1018,8 @@ void Player::initFromDict(const Dict* d)
 	m_handicap.readFromDict(d);
 
 	/// @todo Ack!  the todo in PlayerList::reset() mentioning the need for a Player::reset() really needs to get done.
-	m_playerRelations->m_map.clear(); // For now, it has been decided to just fix this one.  Dear god me must reset.
+	m_playerRelations->rmapCount = 0; // For now, it has been decided to just fix this one.  Dear god me must reset.
+	memset(m_playerRelations->rmap.data(), NULL_RELATION, sizeof(m_playerRelations->rmap));
 	m_teamRelations->m_map.clear(); // For now, it has been decided to just fix this one.  Dear god me must reset.
 	
 	Int i;
